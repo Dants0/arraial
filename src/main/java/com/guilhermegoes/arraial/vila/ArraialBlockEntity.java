@@ -83,15 +83,27 @@ public class ArraialBlockEntity extends BlockEntity {
 		}
 	}
 
+	/** Workstations (cepo, balaio, forno) inside the arraial that nobody has claimed yet. */
+	public long postosLivres(ServerLevel level) {
+		return level.getPoiManager().getCountInRange(com.guilhermegoes.arraial.registry.ModPois::ePosto,
+				worldPosition, Vilas.RAIO, PoiManager.Occupancy.HAS_SPACE);
+	}
+
 	public static void tick(Level level, BlockPos pos, BlockState state, ArraialBlockEntity arraial) {
 		if (!(level instanceof ServerLevel server) || server.getGameTime() % 100 != 0) {
 			return;
 		}
 		arraial.fundar(server);
 
-		long livres = arraial.camas(server) - arraial.moradores(server).size();
-		if (livres <= 0) {
-			// Nobody comes while there is nowhere to live; the clock starts when a bed frees up.
+		List<MoradorEntity> moradores = arraial.moradores(server);
+		long camasLivres = arraial.camas(server) - moradores.size();
+		// Free work also draws people in, even with nowhere to sleep (they arrive homeless,
+		// which pushes the player to build houses), but only while there are few homeless.
+		long semCasa = moradores.stream().filter(m -> m.casa() == null).count();
+		boolean atraiPorTrabalho = arraial.postosLivres(server) > 0 && semCasa < Vilas.MAX_SEM_CASA
+				&& moradores.stream().noneMatch(m -> m.profissao() == Profissao.NENHUMA);
+		if (camasLivres <= 0 && !atraiPorTrabalho) {
+			// Nobody comes while there is nowhere to live or work; the clock starts when that changes.
 			arraial.proximaChegada = Math.max(arraial.proximaChegada, server.getGameTime() + Vilas.INTERVALO_CHEGADA);
 			return;
 		}

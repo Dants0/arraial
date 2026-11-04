@@ -126,6 +126,10 @@ public class ArraialBlock extends Block implements EntityBlock {
 		if (camas <= moradores.size()) {
 			player.sendSystemMessage(Component.translatable("arraial.vila.sem_vaga").withStyle(ChatFormatting.GRAY));
 		}
+		long postos = arraial.postosLivres(level);
+		if (postos > 0) {
+			player.sendSystemMessage(Component.translatable("arraial.vila.postos_livres", postos).withStyle(ChatFormatting.YELLOW));
+		}
 		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, arraial.getBlockPos());
 		if (armazens.isEmpty()) {
 			player.sendSystemMessage(Component.translatable("arraial.vila.sem_armazem").withStyle(ChatFormatting.RED));

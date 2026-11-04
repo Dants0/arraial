@@ -19,6 +19,8 @@ public final class Vilas {
 	public static final int DISTANCIA_MINIMA = RAIO * 2;
 	/** Time between newcomers while there are free beds: one in-game hour (50 s). */
 	public static final int INTERVALO_CHEGADA = 1000;
+	/** Job-seekers stop coming while this many moradores already have no bed. */
+	public static final int MAX_SEM_CASA = 2;
 
 	private static final List<String> NOMES = List.of(
 			"Arraial de Santa Luzia", "Arraial do Bom Jesus", "Arraial de São Bento", "Arraial da Boa Vista",

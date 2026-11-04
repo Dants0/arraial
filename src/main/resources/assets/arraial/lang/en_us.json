@@ -71,6 +71,9 @@
 	"arraial.profissao.oleiro.f": "Potter",
 
 	"arraial.morador.com_fome": "hungry",
+	"arraial.morador.dispensado": "%s is no longer a %s and will look for other work in the village.",
+	"arraial.cronica.dispensado": "%s left the trade of %s.",
+	"arraial.vila.postos_livres": "Free workstations: %s",
 	"arraial.morador.foi_embora": "%s left the village for lack of food.",
 
 	"arraial.oficio.buscando": "fetching materials for %s",

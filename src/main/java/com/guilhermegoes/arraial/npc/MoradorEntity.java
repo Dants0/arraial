@@ -428,6 +428,19 @@ public class MoradorEntity extends PathfinderMob {
 			player.sendSystemMessage(Component.translatable("arraial.morador.virou", nome(), titulo()).withStyle(ChatFormatting.GOLD));
 			return InteractionResult.SUCCESS;
 		}
+		if (stack.isEmpty() && player.isShiftKeyDown() && profissao() != Profissao.NENHUMA) {
+			// Dismiss: back to plain morador, freeing the workstation; they'll pick up any free one.
+			Component antigo = titulo();
+			if (level() instanceof ServerLevel server) {
+				soltar(server, posto);
+				posto = null;
+				obra = null;
+				setProfissao(Profissao.NENHUMA);
+				Cronica.anotar(server, vila, Component.translatable("arraial.cronica.dispensado", nome(), antigo));
+			}
+			player.sendSystemMessage(Component.translatable("arraial.morador.dispensado", nome(), antigo).withStyle(ChatFormatting.YELLOW));
+			return InteractionResult.SUCCESS;
+		}
 		if (stack.isEmpty()) {
 			ArraialBlockEntity a = arraial();
 			Component onde = a != null ? Component.literal(a.nome()) : Component.translatable("arraial.morador.sem_vila");

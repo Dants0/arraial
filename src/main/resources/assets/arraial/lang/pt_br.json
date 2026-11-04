@@ -71,6 +71,9 @@
 	"arraial.profissao.oleiro.f": "Oleira",
 
 	"arraial.morador.com_fome": "com fome",
+	"arraial.morador.dispensado": "%s deixou de ser %s. Vai procurar outro trabalho no arraial.",
+	"arraial.cronica.dispensado": "%s deixou o ofício de %s.",
+	"arraial.vila.postos_livres": "Postos de trabalho livres: %s",
 	"arraial.morador.foi_embora": "%s foi embora do arraial por falta de comida.",
 
 	"arraial.oficio.buscando": "buscando material para %s",
