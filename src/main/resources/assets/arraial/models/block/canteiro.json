@@ -1,0 +1,32 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"poste": "minecraft:block/stripped_oak_log",
+		"placa": "minecraft:block/oak_planks",
+		"particle": "minecraft:block/oak_planks"
+	},
+	"elements": [
+		{
+			"from": [7, 0, 7], "to": [9, 13, 9],
+			"faces": {
+				"north": {"uv": [7, 3, 9, 16], "texture": "#poste"},
+				"south": {"uv": [7, 3, 9, 16], "texture": "#poste"},
+				"east":  {"uv": [7, 3, 9, 16], "texture": "#poste"},
+				"west":  {"uv": [7, 3, 9, 16], "texture": "#poste"},
+				"up":    {"uv": [7, 7, 9, 9], "texture": "#poste"},
+				"down":  {"uv": [7, 7, 9, 9], "texture": "#poste", "cullface": "down"}
+			}
+		},
+		{
+			"from": [2, 7, 6], "to": [14, 14, 7],
+			"faces": {
+				"north": {"uv": [2, 2, 14, 9], "texture": "#placa"},
+				"south": {"uv": [2, 2, 14, 9], "texture": "#placa"},
+				"east":  {"uv": [6, 2, 7, 9], "texture": "#placa"},
+				"west":  {"uv": [6, 2, 7, 9], "texture": "#placa"},
+				"up":    {"uv": [2, 6, 14, 7], "texture": "#placa"},
+				"down":  {"uv": [2, 6, 14, 7], "texture": "#placa"}
+			}
+		}
+	]
+}

@@ -1,0 +1,21 @@
+{
+	"schemaVersion": 1,
+	"id": "arraial",
+	"version": "${version}",
+	"name": "Arraial",
+	"description": "Moradores que constroem. Contrate um pedreiro, escolha um projeto e veja seu arraial crescer, do pau a pique à metrópole.",
+	"authors": ["Guilherme Goes"],
+	"license": "All-Rights-Reserved",
+	"icon": "assets/arraial/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["com.guilhermegoes.arraial.Arraial"],
+		"client": ["com.guilhermegoes.arraial.client.ArraialClient"]
+	},
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

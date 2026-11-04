@@ -1,0 +1,32 @@
+{
+	"itemGroup.arraial": "Arraial",
+	"block.arraial.canteiro": "Construction Marker",
+	"item.arraial.livro_de_projetos": "Book of Blueprints",
+	"item.arraial.contrato_pedreiro": "Mason's Contract",
+	"entity.arraial.pedreiro": "Mason",
+
+	"projeto.arraial.poco": "Well",
+	"projeto.arraial.casebre": "Wattle-and-Daub Hut",
+
+	"arraial.canteiro.projeto": "Blueprint: %s",
+	"arraial.canteiro.tamanho": " — %s×%s×%s, %s blocks",
+	"arraial.canteiro.sem_arquivo": "This blueprint's structure file was not found!",
+	"arraial.canteiro.obra_em_andamento": "Construction already started! Break the marker to cancel.",
+	"arraial.canteiro.vazio": "No blueprint chosen. Right-click the marker with the Book of Blueprints (sneak to go back).",
+	"arraial.canteiro.concluida": "%s finished!",
+	"arraial.canteiro.status": "%s — %s%% built",
+	"arraial.canteiro.sem_bau": "Place a chest next to the marker with the materials.",
+	"arraial.canteiro.falta": "Missing: %s× %s",
+	"arraial.canteiro.tudo_pronto": "The chest has everything this build needs!",
+
+	"arraial.pedreiro.titulo": "%s the Mason",
+	"arraial.pedreiro.contratado": "%s was hired! He'll look for a Construction Marker nearby.",
+	"arraial.pedreiro.sem_obra": "waiting for work",
+	"arraial.pedreiro.sem_planta": "where's the blueprint?",
+	"arraial.pedreiro.sem_bau": "where's the supply chest?",
+	"arraial.pedreiro.indo_bau": "fetching materials",
+	"arraial.pedreiro.falta": "need %s× %s",
+	"arraial.pedreiro.construindo": "%s (%s%%)",
+	"arraial.pedreiro.terminou": "finished the %s!",
+	"arraial.pedreiro.aviso_fim": "%s finished building: %s!"
+}

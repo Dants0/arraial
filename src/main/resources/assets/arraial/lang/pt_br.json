@@ -1,0 +1,32 @@
+{
+	"itemGroup.arraial": "Arraial",
+	"block.arraial.canteiro": "Marco da Obra",
+	"item.arraial.livro_de_projetos": "Livro de Projetos",
+	"item.arraial.contrato_pedreiro": "Contrato de Pedreiro",
+	"entity.arraial.pedreiro": "Pedreiro",
+
+	"projeto.arraial.poco": "Poço",
+	"projeto.arraial.casebre": "Casebre de Taipa",
+
+	"arraial.canteiro.projeto": "Projeto: %s",
+	"arraial.canteiro.tamanho": " — %s×%s×%s, %s blocos",
+	"arraial.canteiro.sem_arquivo": "A planta deste projeto não foi encontrada!",
+	"arraial.canteiro.obra_em_andamento": "A obra já começou! Quebre o marco para cancelar.",
+	"arraial.canteiro.vazio": "Nenhum projeto escolhido. Clique no marco com o Livro de Projetos (agachado para voltar).",
+	"arraial.canteiro.concluida": "%s concluído!",
+	"arraial.canteiro.status": "%s — %s%% construído",
+	"arraial.canteiro.sem_bau": "Coloque um baú do lado do marco com os materiais.",
+	"arraial.canteiro.falta": "Falta: %s× %s",
+	"arraial.canteiro.tudo_pronto": "O baú tem tudo que a obra precisa!",
+
+	"arraial.pedreiro.titulo": "%s, o Pedreiro",
+	"arraial.pedreiro.contratado": "%s foi contratado! Ele vai procurar um Marco da Obra por perto.",
+	"arraial.pedreiro.sem_obra": "esperando serviço",
+	"arraial.pedreiro.sem_planta": "cadê a planta?",
+	"arraial.pedreiro.sem_bau": "cadê o baú de material?",
+	"arraial.pedreiro.indo_bau": "buscando material",
+	"arraial.pedreiro.falta": "falta %s× %s",
+	"arraial.pedreiro.construindo": "%s (%s%%)",
+	"arraial.pedreiro.terminou": "terminei o %s!",
+	"arraial.pedreiro.aviso_fim": "%s terminou de construir: %s!"
+}
