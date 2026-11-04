@@ -2,6 +2,9 @@ package com.guilhermegoes.arraial.npc;
 
 import com.guilhermegoes.arraial.registry.ModEntities;
 import com.guilhermegoes.arraial.registry.ModItems;
+import com.guilhermegoes.arraial.registry.ModPois;
+import com.guilhermegoes.arraial.vila.Cronica;
+import net.minecraft.core.component.DataComponents;
 import com.guilhermegoes.arraial.vila.ArraialBlockEntity;
 import com.guilhermegoes.arraial.vila.Vilas;
 import com.mojang.serialization.Codec;
@@ -73,6 +76,14 @@ public class MoradorEntity extends PathfinderMob {
 	private @Nullable BlockPos casa;
 	/** The arraial's Cruzeiro. */
 	private @Nullable BlockPos vila;
+	/** The workstation (cepo, balaio, forno) this morador works at. */
+	private @Nullable BlockPos posto;
+	/** Hungry days in a row; at {@link #DIAS_ATE_IR_EMBORA} the morador leaves. */
+	private int diasSemComer = 0;
+	/** Days of food a newcomer brings with them. */
+	private int provisoes = 2;
+	private long ultimoDia = 0;
+	public static final int DIAS_ATE_IR_EMBORA = 3;
 
 	public MoradorEntity(EntityType<? extends MoradorEntity> type, Level level) {
 		super(type, level);
@@ -113,6 +124,9 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new DormirGoal(this));
 		goalSelector.addGoal(2, new ConstruirGoal(this));
+		goalSelector.addGoal(2, new ArtesaoGoal(this));
+		goalSelector.addGoal(3, new LenhadorGoal(this));
+		goalSelector.addGoal(3, new RoceiroGoal(this));
 		goalSelector.addGoal(3, new OpenDoorGoal(this, true));
 		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.6));
 		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
@@ -197,11 +211,29 @@ public class MoradorEntity extends PathfinderMob {
 		}
 	}
 
-	/** Every couple of seconds: join an arraial, claim a bed, and drop a home that no longer exists. */
+	/** Used by the arraial when it welcomes a newcomer. */
+	public void definirVila(BlockPos cruzeiro) {
+		vila = cruzeiro.immutable();
+	}
+
+	/** Hungry moradores don't work. */
+	public boolean comFome() {
+		return diasSemComer > 0;
+	}
+
+	public @Nullable BlockPos posto() {
+		return posto;
+	}
+
+	/**
+	 * Every couple of seconds: join an arraial, claim a bed and a workstation,
+	 * drop what no longer exists, and eat once a day.
+	 */
 	private void cuidarDaVida(ServerLevel level) {
 		if (vila != null && arraial() == null && level.isLoaded(vila)) {
 			vila = null; // the Cruzeiro was broken
-			soltarCasa(level);
+			soltar(level, casa);
+			casa = null;
 		}
 		if (vila == null) {
 			BlockPos encontrada = Vilas.maisProxima(level, blockPosition());
@@ -215,33 +247,115 @@ public class MoradorEntity extends PathfinderMob {
 			clearHome();
 		}
 
+		// Home
 		if (casa != null && level.isLoaded(casa) && !level.getBlockState(casa).is(BlockTags.BEDS)) {
-			soltarCasa(level); // the bed was broken
+			soltar(level, casa); // the bed was broken
+			casa = null;
 		}
 		if (casa == null && vila != null) {
 			level.getPoiManager()
 					.take(h -> h.is(PoiTypes.HOME), (h, pos) -> true, vila, Vilas.RAIO)
 					.ifPresent(cama -> casa = cama.immutable());
 		}
-		if (status.getString().isEmpty() || status.equals(Component.translatable("arraial.morador.sem_casa"))) {
-			setStatus(casa == null && vila != null ? Component.translatable("arraial.morador.sem_casa") : Component.empty());
+
+		// Workstation: lose the job if the posto is gone; the unemployed take a free one.
+		Profissao p = profissao();
+		if (posto != null && level.isLoaded(posto) && p.posto() != null && !level.getBlockState(posto).is(p.posto())) {
+			soltar(level, posto);
+			posto = null;
+			setProfissao(Profissao.NENHUMA);
+		}
+		if (p == Profissao.NENHUMA && vila != null) {
+			level.getPoiManager()
+					.take(ModPois::ePosto, (h, pos) -> true, vila, Vilas.RAIO)
+					.ifPresent(pos -> {
+						Profissao nova = Profissao.doPosto(level.getBlockState(pos).getBlock());
+						if (nova != null) {
+							posto = pos.immutable();
+							setProfissao(nova);
+							Cronica.anotar(level, vila, Component.translatable("arraial.cronica.profissao", nome(), titulo()));
+						} else {
+							level.getPoiManager().release(pos);
+						}
+					});
+		}
+
+		comer(level);
+
+		if (status.getString().isEmpty() || status.equals(Component.translatable("arraial.morador.sem_casa"))
+				|| status.equals(Component.translatable("arraial.morador.com_fome"))) {
+			Component s = Component.empty();
+			if (comFome()) {
+				s = Component.translatable("arraial.morador.com_fome");
+			} else if (casa == null && vila != null) {
+				s = Component.translatable("arraial.morador.sem_casa");
+			}
+			setStatus(s);
 		}
 	}
 
-	private void soltarCasa(ServerLevel level) {
-		if (casa != null) {
-			PoiManager poi = level.getPoiManager();
-			if (poi.exists(casa, h -> h.is(PoiTypes.HOME))) {
-				poi.release(casa);
+	/**
+	 * Once per in-game day a morador eats one food item from the armazém. Newcomers bring a
+	 * couple of days of provisions. After {@link #DIAS_ATE_IR_EMBORA} hungry days they leave.
+	 */
+	private void comer(ServerLevel level) {
+		long hoje = Vilas.dia(level);
+		if (ultimoDia == 0) {
+			ultimoDia = hoje;
+			return;
+		}
+		if (hoje <= ultimoDia || vila == null) {
+			return;
+		}
+		ultimoDia = hoje;
+		if (provisoes > 0) {
+			provisoes--;
+			return;
+		}
+		int comeu = Vilas.retirar(Vilas.armazens(level, vila), s -> s.has(DataComponents.FOOD), 1).size();
+		if (comeu > 0) {
+			if (diasSemComer > 0) {
+				Cronica.anotar(level, vila, Component.translatable("arraial.cronica.matou_fome", nome()));
 			}
-			casa = null;
+			diasSemComer = 0;
+			return;
+		}
+		diasSemComer++;
+		Cronica.anotar(level, vila, Component.translatable("arraial.cronica.fome", nome(), diasSemComer));
+		if (diasSemComer >= DIAS_ATE_IR_EMBORA) {
+			irEmbora(level);
+		}
+	}
+
+	/** Leaves the arraial for good (hunger). */
+	private void irEmbora(ServerLevel level) {
+		Component aviso = Component.translatable("arraial.morador.foi_embora", nome()).withStyle(ChatFormatting.RED);
+		Cronica.anotar(level, vila, Component.translatable("arraial.cronica.foi_embora", nome()));
+		for (net.minecraft.server.level.ServerPlayer pl : level.players()) {
+			if (pl.distanceToSqr(this) < 96 * 96) {
+				pl.sendSystemMessage(aviso);
+			}
+		}
+		soltar(level, casa);
+		soltar(level, posto);
+		discard();
+	}
+
+	private static void soltar(ServerLevel level, @Nullable BlockPos pos) {
+		if (pos != null) {
+			PoiManager poi = level.getPoiManager();
+			if (poi.getType(pos).isPresent()) {
+				poi.release(pos);
+			}
 		}
 	}
 
 	@Override
 	public void die(DamageSource source) {
 		if (level() instanceof ServerLevel server) {
-			soltarCasa(server);
+			soltar(server, casa);
+			soltar(server, posto);
+			Cronica.anotar(server, vila, Component.translatable("arraial.cronica.morte", nome()));
 		}
 		super.die(source);
 	}
@@ -254,6 +368,14 @@ public class MoradorEntity extends PathfinderMob {
 
 	public void setObra(@Nullable BlockPos obra) {
 		this.obra = obra;
+	}
+
+	public Map<Item, Integer> cargaCopia() {
+		return Map.copyOf(carga);
+	}
+
+	public int cargaTotal() {
+		return carga.values().stream().mapToInt(Integer::intValue).sum();
 	}
 
 	public int carregando(Item item) {
@@ -293,6 +415,11 @@ public class MoradorEntity extends PathfinderMob {
 			if (profissao() == Profissao.PEDREIRO) {
 				player.sendOverlayMessage(Component.translatable("arraial.morador.ja_e", nome(), titulo()));
 				return InteractionResult.SUCCESS;
+			}
+			if (level() instanceof ServerLevel server) {
+				soltar(server, posto);
+				posto = null;
+				Cronica.anotar(server, vila, Component.translatable("arraial.cronica.profissao", nome(), Profissao.PEDREIRO.titulo(feminino())));
 			}
 			setProfissao(Profissao.PEDREIRO);
 			if (!player.getAbilities().instabuild) {
@@ -335,6 +462,12 @@ public class MoradorEntity extends PathfinderMob {
 		if (vila != null) {
 			output.store("Vila", BlockPos.CODEC, vila);
 		}
+		if (posto != null) {
+			output.store("Posto", BlockPos.CODEC, posto);
+		}
+		output.putInt("DiasSemComer", diasSemComer);
+		output.putInt("Provisoes", provisoes);
+		output.putLong("UltimoDia", ultimoDia);
 	}
 
 	@Override
@@ -349,6 +482,10 @@ public class MoradorEntity extends PathfinderMob {
 		obra = input.read("Obra", BlockPos.CODEC).orElse(null);
 		casa = input.read("Casa", BlockPos.CODEC).orElse(null);
 		vila = input.read("Vila", BlockPos.CODEC).orElse(null);
+		posto = input.read("Posto", BlockPos.CODEC).orElse(null);
+		diasSemComer = input.getIntOr("DiasSemComer", 0);
+		provisoes = input.getIntOr("Provisoes", 2);
+		ultimoDia = input.getLongOr("UltimoDia", 0L);
 		atualizarPlaca();
 	}
 }

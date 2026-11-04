@@ -3,6 +3,9 @@ package com.guilhermegoes.arraial.npc;
 import com.guilhermegoes.arraial.obra.CanteiroBlock;
 import com.guilhermegoes.arraial.obra.CanteiroBlockEntity;
 import com.guilhermegoes.arraial.obra.PlanoDeObra;
+import com.guilhermegoes.arraial.vila.ArmazemBlockEntity;
+import com.guilhermegoes.arraial.vila.Cronica;
+import com.guilhermegoes.arraial.vila.Vilas;
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -55,7 +58,7 @@ public class ConstruirGoal extends Goal {
 		}
 		proximaBusca = 10;
 		ServerLevel level = getServerLevel(pedreiro);
-		if (pedreiro.profissao() != Profissao.PEDREIRO || !level.isBrightOutside()) {
+		if (pedreiro.profissao() != Profissao.PEDREIRO || !level.isBrightOutside() || pedreiro.comFome()) {
 			return false; // only pedreiros build, and only by day
 		}
 		CanteiroBlockEntity atual = canteiro(level, pedreiro.obra());
@@ -133,7 +136,16 @@ public class ConstruirGoal extends Goal {
 	}
 
 	private void buscarMateriais(ServerLevel level, CanteiroBlockEntity canteiro, PlanoDeObra plano, PlanoDeObra.Custo precisa) {
+		// Where to fetch from: the site chest if it has the item, otherwise the arraial's armazém.
 		Container bau = canteiro.bau(level);
+		if (bau == null || CanteiroBlock.contar(bau, precisa.item()) == 0) {
+			for (ArmazemBlockEntity a : Vilas.armazens(level, Vilas.maisProxima(level, canteiro.getBlockPos()))) {
+				if (CanteiroBlock.contar(a, precisa.item()) > 0) {
+					bau = a;
+					break;
+				}
+			}
+		}
 		if (bau == null) {
 			pedreiro.setStatus(Component.translatable("arraial.pedreiro.sem_bau"));
 			andarAte(canteiro.getBlockPos());
@@ -233,6 +245,8 @@ public class ConstruirGoal extends Goal {
 		pedreiro.segurar(ItemStack.EMPTY);
 		Component nomeObra = canteiro.projeto().get().nome();
 		pedreiro.setStatus(Component.translatable("arraial.pedreiro.terminou", nomeObra));
+		Cronica.anotar(level, Vilas.maisProxima(level, canteiro.getBlockPos()),
+				Component.translatable("arraial.cronica.obra", pedreiro.nome(), nomeObra));
 		Component aviso = Component.translatable("arraial.pedreiro.aviso_fim", pedreiro.nome(), nomeObra);
 		for (ServerPlayer p : level.players()) {
 			if (p.distanceToSqr(pedreiro) < 64 * 64) {

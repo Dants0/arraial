@@ -80,9 +80,42 @@ public class ArraialBlock extends Block implements EntityBlock {
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (level instanceof ServerLevel server && level.getBlockEntity(pos) instanceof ArraialBlockEntity arraial) {
-			relatorio(server, player, arraial);
+			if (player.isShiftKeyDown()) {
+				ultimasNoticias(player, arraial);
+			} else {
+				relatorio(server, player, arraial);
+			}
 		}
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+			net.minecraft.world.InteractionHand hand, BlockHitResult hit) {
+		if (!stack.is(net.minecraft.world.item.Items.BOOK)) {
+			return InteractionResult.TRY_WITH_EMPTY_HAND;
+		}
+		if (level instanceof ServerLevel && level.getBlockEntity(pos) instanceof ArraialBlockEntity arraial) {
+			// A plain book becomes a copy of the chronicle.
+			if (!player.getAbilities().instabuild) {
+				stack.shrink(1);
+			}
+			ItemStack copia = Cronica.livro(arraial);
+			if (!player.getInventory().add(copia)) {
+				Block.popResource(level, player.blockPosition(), copia);
+			}
+			player.sendSystemMessage(Component.translatable("arraial.cronica.copiada", arraial.nome()).withStyle(ChatFormatting.GOLD));
+		}
+		return InteractionResult.SUCCESS;
+	}
+
+	private static void ultimasNoticias(Player player, ArraialBlockEntity arraial) {
+		List<Cronica.Entrada> todas = arraial.cronica();
+		player.sendSystemMessage(Component.translatable("arraial.cronica.titulo", arraial.nome()).withStyle(ChatFormatting.GOLD));
+		for (Cronica.Entrada e : todas.subList(Math.max(0, todas.size() - 8), todas.size())) {
+			player.sendSystemMessage(e.linha());
+		}
+		player.sendSystemMessage(Component.translatable("arraial.cronica.dica").withStyle(ChatFormatting.GRAY));
 	}
 
 	private static void relatorio(ServerLevel level, Player player, ArraialBlockEntity arraial) {
@@ -92,6 +125,15 @@ public class ArraialBlock extends Block implements EntityBlock {
 		player.sendSystemMessage(Component.translatable("arraial.vila.populacao", moradores.size(), camas).withStyle(ChatFormatting.YELLOW));
 		if (camas <= moradores.size()) {
 			player.sendSystemMessage(Component.translatable("arraial.vila.sem_vaga").withStyle(ChatFormatting.GRAY));
+		}
+		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, arraial.getBlockPos());
+		if (armazens.isEmpty()) {
+			player.sendSystemMessage(Component.translatable("arraial.vila.sem_armazem").withStyle(ChatFormatting.RED));
+		} else {
+			int comida = Vilas.contar(armazens, s -> s.has(net.minecraft.core.component.DataComponents.FOOD));
+			int dias = moradores.isEmpty() ? 0 : comida / moradores.size();
+			player.sendSystemMessage(Component.translatable("arraial.vila.comida", comida, dias)
+					.withStyle(dias < 2 ? ChatFormatting.RED : ChatFormatting.GREEN));
 		}
 		for (MoradorEntity m : moradores) {
 			Component casa = m.casa() != null ? Component.translatable("arraial.morador.tem_casa") : Component.translatable("arraial.morador.sem_casa");

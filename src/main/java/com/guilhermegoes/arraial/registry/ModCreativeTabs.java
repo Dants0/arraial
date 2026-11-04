@@ -17,6 +17,10 @@ public final class ModCreativeTabs {
 					.displayItems((params, output) -> {
 						output.accept(ModBlocks.CRUZEIRO);
 						output.accept(ModBlocks.CANTEIRO);
+						output.accept(ModBlocks.ARMAZEM);
+						output.accept(ModBlocks.CEPO);
+						output.accept(ModBlocks.BALAIO);
+						output.accept(ModBlocks.FORNO_OLARIA);
 						output.accept(ModItems.LIVRO_DE_PROJETOS);
 						output.accept(ModItems.CONTRATO_PEDREIRO);
 					})

@@ -6,6 +6,7 @@ import com.guilhermegoes.arraial.registry.ModBlocks;
 import com.guilhermegoes.arraial.registry.ModCreativeTabs;
 import com.guilhermegoes.arraial.registry.ModEntities;
 import com.guilhermegoes.arraial.registry.ModItems;
+import com.guilhermegoes.arraial.registry.ModPois;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ public class Arraial implements ModInitializer {
 		ModComponents.init();
 		ModBlocks.init();
 		ModBlockEntities.init();
+		ModPois.init();
 		ModEntities.init();
 		ModItems.init();
 		ModCreativeTabs.init();

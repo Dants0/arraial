@@ -1,0 +1,1 @@
+{"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["A", "L"], "key": {"A": "#minecraft:axes", "L": "#minecraft:logs"}, "result": {"id": "arraial:cepo"}}

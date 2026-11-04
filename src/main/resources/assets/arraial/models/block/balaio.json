@@ -1,0 +1,15 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {"lado": "minecraft:block/hay_block_side", "topo": "minecraft:block/hay_block_top", "particle": "minecraft:block/hay_block_side"},
+	"elements": [{
+		"from": [2, 0, 2], "to": [14, 9, 14],
+		"faces": {
+			"north": {"uv": [2, 7, 14, 16], "texture": "#lado"},
+			"south": {"uv": [2, 7, 14, 16], "texture": "#lado"},
+			"east":  {"uv": [2, 7, 14, 16], "texture": "#lado"},
+			"west":  {"uv": [2, 7, 14, 16], "texture": "#lado"},
+			"up":    {"uv": [2, 2, 14, 14], "texture": "#topo"},
+			"down":  {"uv": [2, 2, 14, 14], "texture": "#topo", "cullface": "down"}
+		}
+	}]
+}

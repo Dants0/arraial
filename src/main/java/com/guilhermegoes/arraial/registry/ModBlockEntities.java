@@ -19,6 +19,11 @@ public final class ModBlockEntities {
 			Arraial.id("arraial"),
 			FabricBlockEntityTypeBuilder.create(ArraialBlockEntity::new, ModBlocks.CRUZEIRO).build());
 
+	public static final BlockEntityType<com.guilhermegoes.arraial.vila.ArmazemBlockEntity> ARMAZEM = Registry.register(
+			BuiltInRegistries.BLOCK_ENTITY_TYPE,
+			Arraial.id("armazem"),
+			FabricBlockEntityTypeBuilder.create(com.guilhermegoes.arraial.vila.ArmazemBlockEntity::new, ModBlocks.ARMAZEM).build());
+
 	public static void init() {
 	}
 

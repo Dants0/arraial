@@ -56,5 +56,50 @@
 	"arraial.vila.populacao": "População: %s moradores · %s camas",
 	"arraial.vila.sem_vaga": "Sem camas livres: construa mais casas para o arraial crescer.",
 	"arraial.vila.linha_morador": "%s (%s) — %s",
-	"arraial.vila.linha_obra": "Obra: %s (%s%%)"
+	"arraial.vila.linha_obra": "Obra: %s (%s%%)",
+
+	"block.arraial.armazem": "Armazém do Arraial",
+	"block.arraial.cepo": "Cepo de Lenhador",
+	"block.arraial.balaio": "Balaio do Roceiro",
+	"block.arraial.forno_olaria": "Forno de Olaria",
+
+	"arraial.profissao.lenhador.m": "Lenhador",
+	"arraial.profissao.lenhador.f": "Lenhadora",
+	"arraial.profissao.roceiro.m": "Roceiro",
+	"arraial.profissao.roceiro.f": "Roceira",
+	"arraial.profissao.oleiro.m": "Oleiro",
+	"arraial.profissao.oleiro.f": "Oleira",
+
+	"arraial.morador.com_fome": "com fome",
+	"arraial.morador.foi_embora": "%s foi embora do arraial por falta de comida.",
+
+	"arraial.oficio.buscando": "buscando material para %s",
+	"arraial.oficio.fazendo": "fazendo %s",
+	"arraial.oficio.entregando": "levando %s pro armazém",
+	"arraial.lenhador.sem_arvore": "sem árvore por perto",
+	"arraial.lenhador.cortando": "cortando árvore",
+	"arraial.lenhador.replantou": "plantou uma muda",
+	"arraial.lenhador.lenha": "lenha",
+	"arraial.roceiro.sem_semente": "sem semente no armazém",
+	"arraial.roceiro.esperando": "esperando a roça crescer",
+	"arraial.roceiro.buscando_semente": "buscando semente",
+	"arraial.roceiro.colheita": "a colheita",
+	"arraial.roceiro.na_roca": "na roça",
+
+	"arraial.vila.sem_armazem": "Sem Armazém: os moradores não têm onde guardar nem de onde comer!",
+	"arraial.vila.comida": "Comida no armazém: %s (dá para %s dias)",
+
+	"arraial.cronica.titulo": "Crônica do %s — últimos acontecimentos:",
+	"arraial.cronica.dica": "Clique no Cruzeiro com um livro para levar uma cópia da crônica completa.",
+	"arraial.cronica.copiada": "Você copiou a crônica do %s.",
+	"arraial.cronica.capa": "Crônica do arraial\n%s registros",
+	"arraial.cronica.dia": "Dia %s:",
+	"arraial.cronica.fundacao": "Fundado o %s.",
+	"arraial.cronica.chegada": "%s chegou para morar no arraial.",
+	"arraial.cronica.profissao": "%s passou a trabalhar como %s.",
+	"arraial.cronica.obra": "%s terminou a obra: %s.",
+	"arraial.cronica.fome": "%s passou fome (%s dia(s)).",
+	"arraial.cronica.matou_fome": "%s voltou a comer.",
+	"arraial.cronica.foi_embora": "%s foi embora por causa da fome.",
+	"arraial.cronica.morte": "%s faleceu. Que descanse em paz."
 }

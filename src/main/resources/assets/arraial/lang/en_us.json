@@ -56,5 +56,50 @@
 	"arraial.vila.populacao": "Population: %s villagers · %s beds",
 	"arraial.vila.sem_vaga": "No free beds: build more houses for the village to grow.",
 	"arraial.vila.linha_morador": "%s (%s) — %s",
-	"arraial.vila.linha_obra": "Building: %s (%s%%)"
+	"arraial.vila.linha_obra": "Building: %s (%s%%)",
+
+	"block.arraial.armazem": "Village Storehouse",
+	"block.arraial.cepo": "Woodcutter's Stump",
+	"block.arraial.balaio": "Farmer's Basket",
+	"block.arraial.forno_olaria": "Potter's Kiln",
+
+	"arraial.profissao.lenhador.m": "Woodcutter",
+	"arraial.profissao.lenhador.f": "Woodcutter",
+	"arraial.profissao.roceiro.m": "Farmer",
+	"arraial.profissao.roceiro.f": "Farmer",
+	"arraial.profissao.oleiro.m": "Potter",
+	"arraial.profissao.oleiro.f": "Potter",
+
+	"arraial.morador.com_fome": "hungry",
+	"arraial.morador.foi_embora": "%s left the village for lack of food.",
+
+	"arraial.oficio.buscando": "fetching materials for %s",
+	"arraial.oficio.fazendo": "making %s",
+	"arraial.oficio.entregando": "taking %s to the storehouse",
+	"arraial.lenhador.sem_arvore": "no trees nearby",
+	"arraial.lenhador.cortando": "felling a tree",
+	"arraial.lenhador.replantou": "planted a sapling",
+	"arraial.lenhador.lenha": "the wood",
+	"arraial.roceiro.sem_semente": "no seeds in the storehouse",
+	"arraial.roceiro.esperando": "waiting for the crops",
+	"arraial.roceiro.buscando_semente": "fetching seeds",
+	"arraial.roceiro.colheita": "the harvest",
+	"arraial.roceiro.na_roca": "in the fields",
+
+	"arraial.vila.sem_armazem": "No Storehouse: the villagers have nowhere to store or get food!",
+	"arraial.vila.comida": "Food in storage: %s (enough for %s days)",
+
+	"arraial.cronica.titulo": "Chronicle of %s — latest events:",
+	"arraial.cronica.dica": "Right-click the Village Cross with a book to take a copy of the full chronicle.",
+	"arraial.cronica.copiada": "You copied the chronicle of %s.",
+	"arraial.cronica.capa": "Village chronicle\n%s entries",
+	"arraial.cronica.dia": "Day %s:",
+	"arraial.cronica.fundacao": "%s was founded.",
+	"arraial.cronica.chegada": "%s came to live in the village.",
+	"arraial.cronica.profissao": "%s started working as a %s.",
+	"arraial.cronica.obra": "%s finished building: %s.",
+	"arraial.cronica.fome": "%s went hungry (%s day(s)).",
+	"arraial.cronica.matou_fome": "%s is eating again.",
+	"arraial.cronica.foi_embora": "%s left because of hunger.",
+	"arraial.cronica.morte": "%s passed away. Rest in peace."
 }

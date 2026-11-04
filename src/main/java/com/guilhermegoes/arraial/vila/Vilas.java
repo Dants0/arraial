@@ -67,6 +67,105 @@ public final class Vilas {
 		return false;
 	}
 
+	// ------------------------------------------------------------ armazéns (storehouses)
+
+	private static final Map<ResourceKey<Level>, Set<BlockPos>> ARMAZENS = new ConcurrentHashMap<>();
+
+	static void registrarArmazem(Level level, BlockPos pos) {
+		ARMAZENS.computeIfAbsent(level.dimension(), k -> ConcurrentHashMap.newKeySet()).add(pos.immutable());
+	}
+
+	static void removerArmazem(Level level, BlockPos pos) {
+		Set<BlockPos> s = ARMAZENS.get(level.dimension());
+		if (s != null) {
+			s.remove(pos);
+		}
+	}
+
+	/** Loaded storehouses inside the arraial whose Cruzeiro is at {@code vila}. */
+	public static List<ArmazemBlockEntity> armazens(ServerLevel level, @Nullable BlockPos vila) {
+		if (vila == null) {
+			return List.of();
+		}
+		List<ArmazemBlockEntity> lista = new java.util.ArrayList<>();
+		for (BlockPos p : ARMAZENS.getOrDefault(level.dimension(), Set.of())) {
+			if (p.closerThan(vila, RAIO) && level.isLoaded(p) && level.getBlockEntity(p) instanceof ArmazemBlockEntity a) {
+				lista.add(a);
+			}
+		}
+		return lista;
+	}
+
+	public static int contar(List<? extends net.minecraft.world.Container> fontes, java.util.function.Predicate<net.minecraft.world.item.ItemStack> filtro) {
+		int total = 0;
+		for (net.minecraft.world.Container c : fontes) {
+			for (int i = 0; i < c.getContainerSize(); i++) {
+				net.minecraft.world.item.ItemStack s = c.getItem(i);
+				if (!s.isEmpty() && filtro.test(s)) {
+					total += s.getCount();
+				}
+			}
+		}
+		return total;
+	}
+
+	public static int contar(List<? extends net.minecraft.world.Container> fontes, net.minecraft.world.item.Item item) {
+		return contar(fontes, s -> s.is(item));
+	}
+
+	/** Removes up to {@code quantidade} matching items; returns what was taken (may be several stacks merged into a list). */
+	public static List<net.minecraft.world.item.ItemStack> retirar(List<? extends net.minecraft.world.Container> fontes,
+			java.util.function.Predicate<net.minecraft.world.item.ItemStack> filtro, int quantidade) {
+		List<net.minecraft.world.item.ItemStack> pegou = new java.util.ArrayList<>();
+		int falta = quantidade;
+		for (net.minecraft.world.Container c : fontes) {
+			for (int i = 0; i < c.getContainerSize() && falta > 0; i++) {
+				net.minecraft.world.item.ItemStack s = c.getItem(i);
+				if (!s.isEmpty() && filtro.test(s)) {
+					net.minecraft.world.item.ItemStack tirado = c.removeItem(i, falta);
+					falta -= tirado.getCount();
+					pegou.add(tirado);
+				}
+			}
+			c.setChanged();
+		}
+		return pegou;
+	}
+
+	public static int retirar(List<? extends net.minecraft.world.Container> fontes, net.minecraft.world.item.Item item, int quantidade) {
+		return retirar(fontes, s -> s.is(item), quantidade).stream().mapToInt(net.minecraft.world.item.ItemStack::getCount).sum();
+	}
+
+	/** Puts {@code quantidade} of {@code item} into the storehouses; returns how many did not fit. */
+	public static int depositar(List<? extends net.minecraft.world.Container> fontes, net.minecraft.world.item.Item item, int quantidade) {
+		int resta = quantidade;
+		int max = item.getDefaultMaxStackSize();
+		for (net.minecraft.world.Container c : fontes) {
+			// First top up existing stacks, then use empty slots.
+			for (int passo = 0; passo < 2 && resta > 0; passo++) {
+				for (int i = 0; i < c.getContainerSize() && resta > 0; i++) {
+					net.minecraft.world.item.ItemStack s = c.getItem(i);
+					if (passo == 0 && s.is(item) && s.getCount() < max) {
+						int cabe = Math.min(resta, max - s.getCount());
+						s.grow(cabe);
+						resta -= cabe;
+					} else if (passo == 1 && s.isEmpty()) {
+						int cabe = Math.min(resta, max);
+						c.setItem(i, new net.minecraft.world.item.ItemStack(item, cabe));
+						resta -= cabe;
+					}
+				}
+			}
+			c.setChanged();
+		}
+		return resta;
+	}
+
+	/** Current in-game day, starting at 1. */
+	public static long dia(ServerLevel level) {
+		return level.getOverworldClockTime() / 24000L + 1;
+	}
+
 	static String nomeAleatorio(RandomSource random) {
 		return NOMES.get(random.nextInt(NOMES.size()));
 	}

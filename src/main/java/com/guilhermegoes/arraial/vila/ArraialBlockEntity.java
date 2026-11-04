@@ -26,6 +26,7 @@ import net.minecraft.world.phys.AABB;
 public class ArraialBlockEntity extends BlockEntity {
 	private String nome = "";
 	private long proximaChegada = 0;
+	private final java.util.ArrayList<Cronica.Entrada> cronica = new java.util.ArrayList<>();
 
 	public ArraialBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.ARRAIAL, pos, state);
@@ -33,6 +34,18 @@ public class ArraialBlockEntity extends BlockEntity {
 
 	public String nome() {
 		return nome;
+	}
+
+	public List<Cronica.Entrada> cronica() {
+		return java.util.Collections.unmodifiableList(cronica);
+	}
+
+	void anotar(Cronica.Entrada entrada) {
+		cronica.add(entrada);
+		while (cronica.size() > Cronica.MAXIMO) {
+			cronica.remove(0);
+		}
+		setChanged();
 	}
 
 	@Override
@@ -65,6 +78,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		if (nome.isEmpty()) {
 			nome = Vilas.nomeAleatorio(level.getRandom());
 			proximaChegada = level.getGameTime() + Vilas.INTERVALO_CHEGADA;
+			anotar(new Cronica.Entrada(Vilas.dia(level), Component.translatable("arraial.cronica.fundacao", nome)));
 			setChanged();
 		}
 	}
@@ -98,6 +112,8 @@ public class ArraialBlockEntity extends BlockEntity {
 		if (novo == null) {
 			return;
 		}
+		novo.definirVila(worldPosition);
+		anotar(new Cronica.Entrada(Vilas.dia(level), Component.translatable("arraial.cronica.chegada", novo.nome())));
 		Component aviso = Component.translatable("arraial.vila.chegou", novo.nome(), nome).withStyle(ChatFormatting.AQUA);
 		for (ServerPlayer p : level.players()) {
 			if (p.blockPosition().closerThan(worldPosition, Vilas.RAIO * 2)) {
@@ -111,6 +127,8 @@ public class ArraialBlockEntity extends BlockEntity {
 		super.loadAdditional(input);
 		nome = input.getStringOr("Nome", "");
 		proximaChegada = input.getLongOr("ProximaChegada", 0L);
+		cronica.clear();
+		input.read("Cronica", Cronica.LISTA).ifPresent(cronica::addAll);
 	}
 
 	@Override
@@ -118,5 +136,6 @@ public class ArraialBlockEntity extends BlockEntity {
 		super.saveAdditional(output);
 		output.putString("Nome", nome);
 		output.putLong("ProximaChegada", proximaChegada);
+		output.store("Cronica", Cronica.LISTA, List.copyOf(cronica));
 	}
 }
