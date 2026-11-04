@@ -6,6 +6,9 @@ import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,14 +21,18 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 /**
- * The roceiro tends the farmland around his balaio: harvests ripe crops, replants right away,
- * sows empty farmland with seeds from the armazém, and stores the harvest. (The player
- * prepares the farmland; the roceiro keeps it going.)
+ * The roceiro tends the land around his balaio: harvests ripe crops, replants right away,
+ * sows empty farmland, tills watered ground next to the field so it grows, and when there
+ * are no seeds at all he cuts wild grass to find some. The harvest goes to the armazém.
  */
 public class RoceiroGoal extends OficioGoal {
-	private enum Fase { TRABALHAR, BUSCAR_SEMENTES, ENTREGAR }
+	private enum Fase { TRABALHAR, BUSCAR_SEMENTES, CAPINAR, ENTREGAR }
 
 	private static final int RAIO = 9;
+	/** Where he looks for wild grass when there are no seeds. */
+	private static final int RAIO_CAPIM = 14;
+	/** He stops tilling new ground once the field has this many blocks of farmland. */
+	private static final int MAX_ROCA = 48;
 	private static final int CARGA_CHEIA = 32;
 	private static final int SEMENTES_NA_MAO = 16;
 
@@ -47,23 +54,26 @@ public class RoceiroGoal extends OficioGoal {
 			fase = Fase.ENTREGAR;
 			return true;
 		}
-		alvo = proximaTarefa();
+		boolean naMao = sementeNaMao() != null;
+		boolean noArmazem = sementesNoArmazem() > 0;
+		alvo = proximaTarefa(naMao || noArmazem);
 		if (alvo != null) {
-			boolean precisaSemente = level().getBlockState(alvo).isAir() && sementeNaMao() == null;
-			fase = precisaSemente ? Fase.BUSCAR_SEMENTES : Fase.TRABALHAR;
-			if (precisaSemente && Vilas.contar(armazens(), s -> semente(s.getItem()) != null) == 0) {
-				morador.setStatus(Component.translatable("arraial.roceiro.sem_semente"));
-				if (colheita() > 0 && !armazens().isEmpty()) {
-					fase = Fase.ENTREGAR; // at least store what was harvested
-					return true;
-				}
-				return false;
-			}
+			// Only needs to fetch seeds when the task is sowing/tilling and he has none on him.
+			fase = !naMao && !madura(alvo) ? Fase.BUSCAR_SEMENTES : Fase.TRABALHAR;
 			return true;
 		}
 		if (colheita() > 0 && !armazens().isEmpty()) {
 			fase = Fase.ENTREGAR;
 			return true;
+		}
+		if (!naMao && !noArmazem && temTerraVazia()) {
+			alvo = procurarCapim();
+			if (alvo != null) {
+				fase = Fase.CAPINAR;
+				return true;
+			}
+			morador.setStatus(Component.translatable("arraial.roceiro.sem_semente"));
+			return false;
 		}
 		morador.setStatus(Component.translatable("arraial.roceiro.esperando"));
 		return false;
@@ -71,7 +81,7 @@ public class RoceiroGoal extends OficioGoal {
 
 	@Override
 	public boolean canContinueToUse() {
-		return podeTrabalhar() && (fase != Fase.TRABALHAR || alvo != null);
+		return podeTrabalhar() && (fase == Fase.ENTREGAR || fase == Fase.BUSCAR_SEMENTES || alvo != null);
 	}
 
 	@Override
@@ -82,6 +92,12 @@ public class RoceiroGoal extends OficioGoal {
 	}
 
 	@Override
+	public void stop() {
+		super.stop();
+		alvo = null;
+	}
+
+	@Override
 	public void tick() {
 		if (espera > 0) {
 			espera--;
@@ -89,10 +105,12 @@ public class RoceiroGoal extends OficioGoal {
 		}
 		switch (fase) {
 			case TRABALHAR -> trabalhar();
+			case CAPINAR -> capinar();
 			case BUSCAR_SEMENTES -> {
 				var a = armazemMaisProximo();
-				if (a == null) {
+				if (a == null || sementesNoArmazem() == 0) {
 					alvo = null;
+					fase = Fase.TRABALHAR;
 					return;
 				}
 				morador.setStatus(Component.translatable("arraial.roceiro.buscando_semente"));
@@ -104,12 +122,14 @@ public class RoceiroGoal extends OficioGoal {
 					morador.guardar(s.getItem(), s.getCount());
 				}
 				bater();
+				travado = 0;
 				fase = Fase.TRABALHAR;
 			}
 			case ENTREGAR -> {
 				var a = armazemMaisProximo();
 				if (a == null) {
 					alvo = null;
+					fase = Fase.TRABALHAR;
 					return;
 				}
 				morador.setStatus(Component.translatable("arraial.oficio.entregando", Component.translatable("arraial.roceiro.colheita")));
@@ -119,46 +139,162 @@ public class RoceiroGoal extends OficioGoal {
 				}
 				entregar(sementesParaGuardar());
 				alvo = null;
-				fase = Fase.TRABALHAR;
+				fase = Fase.TRABALHAR; // alvo == null ends the goal; canUse decides what's next
 			}
 		}
 	}
 
 	private void trabalhar() {
-		if (alvo == null) {
+		BlockPos p = alvo;
+		if (p == null) {
 			return;
 		}
 		ServerLevel level = level();
 		morador.setStatus(Component.translatable("arraial.roceiro.na_roca"));
-		if (morador.getEyePosition().distanceTo(Vec3.atCenterOf(alvo)) > 3.5 && travado++ < 100) {
-			andarAte(alvo);
+		if (morador.getEyePosition().distanceTo(Vec3.atCenterOf(p)) > 3.5 && travado++ < 100) {
+			andarAte(p);
 			return;
 		}
 		morador.getNavigation().stop();
-		morador.getLookControl().setLookAt(Vec3.atCenterOf(alvo));
-		BlockState state = level.getBlockState(alvo);
-		if (state.getBlock() instanceof CropBlock crop && crop.isMaxAge(state)) {
-			for (ItemStack drop : Block.getDrops(state, level, alvo, null)) {
+		morador.getLookControl().setLookAt(Vec3.atCenterOf(p));
+
+		BlockState state = level.getBlockState(p);
+		boolean fez = false;
+		if (madura(p)) {
+			for (ItemStack drop : Block.getDrops(state, level, p, null)) {
 				morador.guardar(drop.getItem(), drop.getCount());
 			}
-			level.destroyBlock(alvo, false, morador, 512);
-			state = level.getBlockState(alvo);
+			level.destroyBlock(p, false, morador, 512);
+			state = level.getBlockState(p);
+			fez = true;
 		}
-		if (state.isAir() && level.getBlockState(alvo.below()).is(Blocks.FARMLAND)) {
+		// Till watered ground first, then sow.
+		if (state.isAir() && podeArar(level, p.below())) {
+			if (sementeNaMao() != null) {
+				level.setBlockAndUpdate(p.below(), Blocks.FARMLAND.defaultBlockState());
+				level.playSound(null, p, SoundEvents.HOE_TILL.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
+				fez = true;
+			}
+		}
+		if (state.isAir() && level.getBlockState(p.below()).is(Blocks.FARMLAND)) {
 			Item s = sementeNaMao();
-			if (s != null && semente(s) != null) {
-				level.setBlockAndUpdate(alvo, semente(s).defaultBlockState());
+			CropBlock crop = s == null ? null : semente(s);
+			if (crop != null) {
+				level.setBlockAndUpdate(p, crop.defaultBlockState());
 				morador.gastar(s, 1);
+				fez = true;
 			}
 		}
 		bater();
 		travado = 0;
 		espera = 10;
-		alvo = proximaTarefa(); // keep going row by row
+		if (!fez) {
+			// Nothing could be done here (out of seeds): stop instead of hitting the same spot forever.
+			alvo = null;
+			return;
+		}
+		boolean naMao = sementeNaMao() != null;
+		alvo = proximaTarefa(naMao); // keep going row by row
+		if (alvo != null && !naMao && !madura(alvo)) {
+			alvo = null; // out of seeds: end, canUse will send him to the armazém
+		}
 	}
 
-	/** The nearest ripe crop, or empty farmland we have seeds for (or can fetch seeds for). */
-	private @Nullable BlockPos proximaTarefa() {
+	/** Cuts wild grass for seeds when the arraial has none at all. */
+	private void capinar() {
+		BlockPos p = alvo;
+		if (p == null) {
+			return;
+		}
+		ServerLevel level = level();
+		BlockState s = level.getBlockState(p);
+		if (!capim(s) || sementeNaMao() != null) {
+			alvo = sementeNaMao() != null ? null : procurarCapim();
+			return;
+		}
+		morador.setStatus(Component.translatable("arraial.roceiro.capinando"));
+		if (morador.getEyePosition().distanceTo(Vec3.atCenterOf(p)) > 3.5 && travado++ < 120) {
+			andarAte(p);
+			return;
+		}
+		morador.getNavigation().stop();
+		morador.getLookControl().setLookAt(Vec3.atCenterOf(p));
+		for (ItemStack drop : Block.getDrops(s, level, p, null)) {
+			morador.guardar(drop.getItem(), drop.getCount());
+		}
+		level.destroyBlock(p, false, morador, 512);
+		bater();
+		travado = 0;
+		espera = 6;
+		alvo = sementeNaMao() != null ? null : procurarCapim();
+	}
+
+	/**
+	 * The nearest ripe crop; with seeds, also empty farmland and watered ground next to the
+	 * field that can be tilled.
+	 */
+	private @Nullable BlockPos proximaTarefa(boolean comSemente) {
+		BlockPos centro = morador.posto();
+		if (centro == null) {
+			return null;
+		}
+		ServerLevel level = level();
+		int roca = 0;
+		BlockPos melhor = null;
+		double melhorDist = Double.MAX_VALUE;
+		BlockPos arar = null;
+		double ararDist = Double.MAX_VALUE;
+		for (BlockPos p : BlockPos.betweenClosed(centro.offset(-RAIO, -2, -RAIO), centro.offset(RAIO, 2, RAIO))) {
+			BlockState chao = level.getBlockState(p);
+			BlockPos cima = p.above();
+			if (chao.is(Blocks.FARMLAND)) {
+				roca++;
+				BlockState s = level.getBlockState(cima);
+				boolean madura = s.getBlock() instanceof CropBlock c && c.isMaxAge(s);
+				if (madura || (comSemente && s.isAir())) {
+					double d = cima.distSqr(morador.blockPosition());
+					if (d < melhorDist) {
+						melhor = cima.immutable();
+						melhorDist = d;
+					}
+				}
+			} else if (comSemente && podeArar(level, p) && level.getBlockState(cima).isAir()) {
+				double d = cima.distSqr(morador.blockPosition());
+				if (d < ararDist) {
+					arar = cima.immutable();
+					ararDist = d;
+				}
+			}
+		}
+		if (melhor != null) {
+			return melhor;
+		}
+		return roca < MAX_ROCA ? arar : null;
+	}
+
+	/** Grass or dirt with water close enough to keep farmland wet (like vanilla: 4 blocks around). */
+	private boolean podeArar(ServerLevel level, BlockPos p) {
+		BlockState s = level.getBlockState(p);
+		if (!(s.is(Blocks.GRASS_BLOCK) || s.is(Blocks.DIRT)) || !level.getBlockState(p.above()).isAir()) {
+			return false;
+		}
+		BlockPos posto = morador.posto();
+		if (posto != null && p.equals(posto.below())) {
+			return false; // never dig out the ground under the balaio
+		}
+		for (BlockPos q : BlockPos.betweenClosed(p.offset(-4, 0, -4), p.offset(4, 1, 4))) {
+			if (level.getFluidState(q).is(FluidTags.WATER)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean temTerraVazia() {
+		return proximaTarefa(true) != null;
+	}
+
+	private @Nullable BlockPos procurarCapim() {
 		BlockPos centro = morador.posto();
 		if (centro == null) {
 			return null;
@@ -166,22 +302,29 @@ public class RoceiroGoal extends OficioGoal {
 		ServerLevel level = level();
 		BlockPos melhor = null;
 		double melhorDist = Double.MAX_VALUE;
-		for (BlockPos p : BlockPos.betweenClosed(centro.offset(-RAIO, -2, -RAIO), centro.offset(RAIO, 2, RAIO))) {
-			if (!level.getBlockState(p).is(Blocks.FARMLAND)) {
-				continue;
-			}
-			BlockPos cima = p.above();
-			BlockState s = level.getBlockState(cima);
-			boolean madura = s.getBlock() instanceof CropBlock c && c.isMaxAge(s);
-			if (madura || s.isAir()) {
-				double d = cima.distSqr(morador.blockPosition());
+		for (BlockPos p : BlockPos.betweenClosed(centro.offset(-RAIO_CAPIM, -3, -RAIO_CAPIM), centro.offset(RAIO_CAPIM, 3, RAIO_CAPIM))) {
+			if (capim(level.getBlockState(p))) {
+				double d = p.distSqr(morador.blockPosition());
 				if (d < melhorDist) {
-					melhor = cima.immutable();
+					melhor = p.immutable();
 					melhorDist = d;
 				}
 			}
 		}
 		return melhor;
+	}
+
+	private static boolean capim(BlockState s) {
+		return s.is(Blocks.SHORT_GRASS) || s.is(Blocks.TALL_GRASS) || s.is(Blocks.FERN);
+	}
+
+	private boolean madura(BlockPos p) {
+		BlockState s = level().getBlockState(p);
+		return s.getBlock() instanceof CropBlock c && c.isMaxAge(s);
+	}
+
+	private int sementesNoArmazem() {
+		return Vilas.contar(armazens(), s -> semente(s.getItem()) != null);
 	}
 
 	private @Nullable Item sementeNaMao() {

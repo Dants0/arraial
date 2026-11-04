@@ -136,10 +136,15 @@ public class ConstruirGoal extends Goal {
 	}
 
 	private void buscarMateriais(ServerLevel level, CanteiroBlockEntity canteiro, PlanoDeObra plano, PlanoDeObra.Custo precisa) {
-		// Where to fetch from: the site chest if it has the item, otherwise the arraial's armazém.
-		Container bau = canteiro.bau(level);
-		if (bau == null || CanteiroBlock.contar(bau, precisa.item()) == 0) {
-			for (ArmazemBlockEntity a : Vilas.armazens(level, Vilas.maisProxima(level, canteiro.getBlockPos()))) {
+		// Where to fetch from: the site chest if it has the item, otherwise any armazém of the arraial.
+		Container bauDaObra = canteiro.bau(level);
+		BlockPos vila = Vilas.maisProxima(level, canteiro.getBlockPos());
+		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, vila != null ? vila : pedreiro.vila());
+		Container bau = null;
+		if (bauDaObra != null && CanteiroBlock.contar(bauDaObra, precisa.item()) > 0) {
+			bau = bauDaObra;
+		} else {
+			for (ArmazemBlockEntity a : armazens) {
 				if (CanteiroBlock.contar(a, precisa.item()) > 0) {
 					bau = a;
 					break;
@@ -147,9 +152,17 @@ public class ConstruirGoal extends Goal {
 			}
 		}
 		if (bau == null) {
-			pedreiro.setStatus(Component.translatable("arraial.pedreiro.sem_bau"));
+			if (bauDaObra == null && armazens.isEmpty()) {
+				pedreiro.setStatus(Component.translatable("arraial.pedreiro.sem_bau"));
+			} else {
+				// There is somewhere to take from, it just doesn't have this yet: wait for the
+				// trades (or the player) to bring it, and say exactly what is missing.
+				int total = plano.materiais(canteiro.progresso()).getOrDefault(precisa.item(), 0) - pedreiro.carregando(precisa.item());
+				pedreiro.setStatus(Component.translatable("arraial.pedreiro.esperando",
+						Math.max(total, 1), precisa.item().getDefaultInstance().getHoverName()));
+			}
 			andarAte(canteiro.getBlockPos());
-			espera = 40;
+			espera = 60;
 			return;
 		}
 		BlockPos posBau = ((net.minecraft.world.level.block.entity.BlockEntity) bau).getBlockPos();

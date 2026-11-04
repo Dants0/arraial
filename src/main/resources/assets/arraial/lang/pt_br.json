@@ -104,5 +104,12 @@
 	"arraial.cronica.fome": "%s passou fome (%s dia(s)).",
 	"arraial.cronica.matou_fome": "%s voltou a comer.",
 	"arraial.cronica.foi_embora": "%s foi embora por causa da fome.",
-	"arraial.cronica.morte": "%s faleceu. Que descanse em paz."
+	"arraial.cronica.morte": "%s faleceu. Que descanse em paz.",
+
+	"arraial.pedreiro.esperando": "esperando %s× %s no armazém",
+	"arraial.lenhador.limpando": "limpando a galhada",
+	"arraial.lenhador.plantando": "plantando muda",
+	"arraial.lenhador.buscando_mudas": "buscando mudas",
+	"arraial.lenhador.esperando_mudas": "esperando as mudas crescerem",
+	"arraial.roceiro.capinando": "capinando atrás de semente"
 }

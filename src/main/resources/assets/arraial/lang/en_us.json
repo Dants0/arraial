@@ -104,5 +104,12 @@
 	"arraial.cronica.fome": "%s went hungry (%s day(s)).",
 	"arraial.cronica.matou_fome": "%s is eating again.",
 	"arraial.cronica.foi_embora": "%s left because of hunger.",
-	"arraial.cronica.morte": "%s passed away. Rest in peace."
+	"arraial.cronica.morte": "%s passed away. Rest in peace.",
+
+	"arraial.pedreiro.esperando": "waiting for %s× %s in the storehouse",
+	"arraial.lenhador.limpando": "clearing the branches",
+	"arraial.lenhador.plantando": "planting a sapling",
+	"arraial.lenhador.buscando_mudas": "fetching saplings",
+	"arraial.lenhador.esperando_mudas": "waiting for the saplings to grow",
+	"arraial.roceiro.capinando": "cutting grass for seeds"
 }
