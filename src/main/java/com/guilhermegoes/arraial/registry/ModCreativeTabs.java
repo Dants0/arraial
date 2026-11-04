@@ -15,6 +15,7 @@ public final class ModCreativeTabs {
 					.title(Component.translatable("itemGroup.arraial"))
 					.icon(() -> new ItemStack(ModItems.LIVRO_DE_PROJETOS))
 					.displayItems((params, output) -> {
+						output.accept(ModBlocks.CRUZEIRO);
 						output.accept(ModBlocks.CANTEIRO);
 						output.accept(ModItems.LIVRO_DE_PROJETOS);
 						output.accept(ModItems.CONTRATO_PEDREIRO);

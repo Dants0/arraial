@@ -1,12 +1,18 @@
 {
 	"itemGroup.arraial": "Arraial",
 	"block.arraial.canteiro": "Marco da Obra",
+	"block.arraial.cruzeiro": "Cruzeiro",
 	"item.arraial.livro_de_projetos": "Livro de Projetos",
 	"item.arraial.contrato_pedreiro": "Contrato de Pedreiro",
-	"entity.arraial.pedreiro": "Pedreiro",
+	"entity.arraial.morador": "Morador",
 
 	"projeto.arraial.poco": "Poço",
 	"projeto.arraial.casebre": "Casebre de Taipa",
+
+	"arraial.profissao.morador.m": "Morador",
+	"arraial.profissao.morador.f": "Moradora",
+	"arraial.profissao.pedreiro.m": "Pedreiro",
+	"arraial.profissao.pedreiro.f": "Pedreira",
 
 	"arraial.canteiro.projeto": "Projeto: %s",
 	"arraial.canteiro.tamanho": " — %s×%s×%s, %s blocos",
@@ -19,14 +25,32 @@
 	"arraial.canteiro.falta": "Falta: %s× %s",
 	"arraial.canteiro.tudo_pronto": "O baú tem tudo que a obra precisa!",
 
-	"arraial.pedreiro.titulo": "%s, o Pedreiro",
-	"arraial.pedreiro.contratado": "%s foi contratado! Ele vai procurar um Marco da Obra por perto.",
+	"arraial.morador.placa": "%s (%s)",
+	"arraial.morador.ficha": "%s, %s — %s, %s",
+	"arraial.morador.sem_vila": "sem arraial",
+	"arraial.morador.sem_casa": "sem casa",
+	"arraial.morador.tem_casa": "tem casa",
+	"arraial.morador.indo_dormir": "indo pra casa",
+	"arraial.morador.dormindo": "dormindo… zzz",
+	"arraial.morador.ja_e": "%s já é %s.",
+	"arraial.morador.virou": "%s agora é %s!",
+
+	"arraial.pedreiro.contratado": "%s chegou para trabalhar como %s!",
 	"arraial.pedreiro.sem_obra": "esperando serviço",
 	"arraial.pedreiro.sem_planta": "cadê a planta?",
 	"arraial.pedreiro.sem_bau": "cadê o baú de material?",
 	"arraial.pedreiro.indo_bau": "buscando material",
 	"arraial.pedreiro.falta": "falta %s× %s",
 	"arraial.pedreiro.construindo": "%s (%s%%)",
-	"arraial.pedreiro.terminou": "terminei o %s!",
-	"arraial.pedreiro.aviso_fim": "%s terminou de construir: %s!"
+	"arraial.pedreiro.terminou": "terminei: %s!",
+	"arraial.pedreiro.aviso_fim": "%s terminou de construir: %s!",
+
+	"arraial.vila.fundado": "Você fundou o %s!",
+	"arraial.vila.dica": "Construa casas com cama: cada cama livre atrai um morador novo. Clique no Cruzeiro para ver o arraial.",
+	"arraial.vila.muito_perto": "Já existe um arraial a menos de %s blocos daqui.",
+	"arraial.vila.chegou": "%s chegou ao %s. Seja bem-vindo(a)!",
+	"arraial.vila.populacao": "População: %s moradores · %s camas",
+	"arraial.vila.sem_vaga": "Sem camas livres: construa mais casas para o arraial crescer.",
+	"arraial.vila.linha_morador": "%s (%s) — %s",
+	"arraial.vila.linha_obra": "Obra: %s (%s%%)"
 }

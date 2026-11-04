@@ -1,12 +1,18 @@
 {
 	"itemGroup.arraial": "Arraial",
 	"block.arraial.canteiro": "Construction Marker",
+	"block.arraial.cruzeiro": "Village Cross",
 	"item.arraial.livro_de_projetos": "Book of Blueprints",
 	"item.arraial.contrato_pedreiro": "Mason's Contract",
-	"entity.arraial.pedreiro": "Mason",
+	"entity.arraial.morador": "Villager",
 
 	"projeto.arraial.poco": "Well",
 	"projeto.arraial.casebre": "Wattle-and-Daub Hut",
+
+	"arraial.profissao.morador.m": "Villager",
+	"arraial.profissao.morador.f": "Villager",
+	"arraial.profissao.pedreiro.m": "Mason",
+	"arraial.profissao.pedreiro.f": "Mason",
 
 	"arraial.canteiro.projeto": "Blueprint: %s",
 	"arraial.canteiro.tamanho": " — %s×%s×%s, %s blocks",
@@ -19,14 +25,32 @@
 	"arraial.canteiro.falta": "Missing: %s× %s",
 	"arraial.canteiro.tudo_pronto": "The chest has everything this build needs!",
 
-	"arraial.pedreiro.titulo": "%s the Mason",
-	"arraial.pedreiro.contratado": "%s was hired! He'll look for a Construction Marker nearby.",
+	"arraial.morador.placa": "%s (%s)",
+	"arraial.morador.ficha": "%s, %s — %s, %s",
+	"arraial.morador.sem_vila": "no village",
+	"arraial.morador.sem_casa": "homeless",
+	"arraial.morador.tem_casa": "has a home",
+	"arraial.morador.indo_dormir": "heading home",
+	"arraial.morador.dormindo": "sleeping… zzz",
+	"arraial.morador.ja_e": "%s is already a %s.",
+	"arraial.morador.virou": "%s is now a %s!",
+
+	"arraial.pedreiro.contratado": "%s arrived to work as a %s!",
 	"arraial.pedreiro.sem_obra": "waiting for work",
 	"arraial.pedreiro.sem_planta": "where's the blueprint?",
 	"arraial.pedreiro.sem_bau": "where's the supply chest?",
 	"arraial.pedreiro.indo_bau": "fetching materials",
 	"arraial.pedreiro.falta": "need %s× %s",
 	"arraial.pedreiro.construindo": "%s (%s%%)",
-	"arraial.pedreiro.terminou": "finished the %s!",
-	"arraial.pedreiro.aviso_fim": "%s finished building: %s!"
+	"arraial.pedreiro.terminou": "finished: %s!",
+	"arraial.pedreiro.aviso_fim": "%s finished building: %s!",
+
+	"arraial.vila.fundado": "You founded %s!",
+	"arraial.vila.dica": "Build houses with beds: every free bed attracts a new villager. Right-click the Village Cross to see the village.",
+	"arraial.vila.muito_perto": "There is already a village less than %s blocks from here.",
+	"arraial.vila.chegou": "%s arrived at %s. Welcome!",
+	"arraial.vila.populacao": "Population: %s villagers · %s beds",
+	"arraial.vila.sem_vaga": "No free beds: build more houses for the village to grow.",
+	"arraial.vila.linha_morador": "%s (%s) — %s",
+	"arraial.vila.linha_obra": "Building: %s (%s%%)"
 }

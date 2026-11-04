@@ -34,14 +34,14 @@ public class ConstruirGoal extends Goal {
 	private static final double ALCANCE = 4.5;
 	private static final double VELOCIDADE = 1.0;
 
-	private final PedreiroEntity pedreiro;
+	private final MoradorEntity pedreiro;
 	private int espera;
 	private int travado;
 	private double ultimaDistancia = Double.MAX_VALUE;
 	private int recalcularCaminho;
 	private int proximaBusca;
 
-	public ConstruirGoal(PedreiroEntity pedreiro) {
+	public ConstruirGoal(MoradorEntity pedreiro) {
 		this.pedreiro = pedreiro;
 		setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 	}
@@ -55,6 +55,9 @@ public class ConstruirGoal extends Goal {
 		}
 		proximaBusca = 10;
 		ServerLevel level = getServerLevel(pedreiro);
+		if (pedreiro.profissao() != Profissao.PEDREIRO || !level.isBrightOutside()) {
+			return false; // only pedreiros build, and only by day
+		}
 		CanteiroBlockEntity atual = canteiro(level, pedreiro.obra());
 		if (atual != null && atual.temTrabalho()) {
 			return true;
@@ -69,8 +72,9 @@ public class ConstruirGoal extends Goal {
 
 	@Override
 	public boolean canContinueToUse() {
-		CanteiroBlockEntity c = canteiro(getServerLevel(pedreiro), pedreiro.obra());
-		return c != null && c.temTrabalho();
+		ServerLevel level = getServerLevel(pedreiro);
+		CanteiroBlockEntity c = canteiro(level, pedreiro.obra());
+		return c != null && c.temTrabalho() && level.isBrightOutside();
 	}
 
 	@Override
@@ -89,6 +93,7 @@ public class ConstruirGoal extends Goal {
 	public void stop() {
 		pedreiro.getNavigation().stop();
 		pedreiro.segurar(ItemStack.EMPTY);
+		pedreiro.setStatus(Component.empty());
 	}
 
 	@Override

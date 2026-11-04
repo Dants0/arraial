@@ -2,6 +2,7 @@ package com.guilhermegoes.arraial.registry;
 
 import com.guilhermegoes.arraial.Arraial;
 import com.guilhermegoes.arraial.obra.CanteiroBlock;
+import com.guilhermegoes.arraial.vila.ArraialBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -19,6 +20,14 @@ public final class ModBlocks {
 			new CanteiroBlock(props("canteiro")
 					.mapColor(MapColor.WOOD)
 					.strength(1.5F)
+					.sound(SoundType.WOOD)
+					.noOcclusion()));
+
+	/** "Cruzeiro": the wooden cross that founds an arraial and marks its centre. */
+	public static final Block CRUZEIRO = register("cruzeiro",
+			new ArraialBlock(props("cruzeiro")
+					.mapColor(MapColor.WOOD)
+					.strength(2.0F)
 					.sound(SoundType.WOOD)
 					.noOcclusion()));
 

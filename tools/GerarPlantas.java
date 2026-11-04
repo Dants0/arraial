@@ -40,11 +40,13 @@ public class GerarPlantas {
 		casebre.put('e', "minecraft:brick_stairs[facing=east,half=bottom,shape=straight]");
 		casebre.put('w', "minecraft:brick_stairs[facing=west,half=bottom,shape=straight]");
 		casebre.put('s', "minecraft:brick_slab[type=bottom]");
+		casebre.put('b', "minecraft:red_bed[facing=south,part=foot,occupied=false]");
+		casebre.put('B', "minecraft:red_bed[facing=south,part=head,occupied=false]");
 		escrever(out.resolve("casebre.nbt"), casebre, List.of(
 				// y0: floor, cobblestone foundation around planks
 				new String[] {"CCCCC", "CPPPC", "CPPPC", "CPPPC", "CCCCC"},
-				// y1: walls, door at the front
-				new String[] {"LMdML", "M...M", "M...M", "M...M", "LMMML"},
+				// y1: walls, door at the front, a bed against the back wall
+				new String[] {"LMdML", "M...M", "Mb..M", "MB..M", "LMMML"},
 				// y2: walls with window holes and the upper half of the door
 				new String[] {"LMDML", "M...M", "....." , "M...M", "LM.ML"},
 				// y3: top of the walls, torch hanging on the back wall
