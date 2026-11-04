@@ -1,6 +1,7 @@
 package com.guilhermegoes.arraial;
 
 import com.guilhermegoes.arraial.registry.ModBlockEntities;
+import com.guilhermegoes.arraial.registry.ModComponents;
 import com.guilhermegoes.arraial.registry.ModBlocks;
 import com.guilhermegoes.arraial.registry.ModCreativeTabs;
 import com.guilhermegoes.arraial.registry.ModEntities;
@@ -20,6 +21,7 @@ public class Arraial implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		ModComponents.init();
 		ModBlocks.init();
 		ModBlockEntities.init();
 		ModEntities.init();

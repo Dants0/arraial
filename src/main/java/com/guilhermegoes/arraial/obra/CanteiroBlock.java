@@ -66,8 +66,16 @@ public class CanteiroBlock extends HorizontalDirectionalBlock implements EntityB
 			return InteractionResult.SUCCESS;
 		}
 
-		String atual = canteiro.projeto().map(Catalogo.Projeto::id).orElse("");
-		Catalogo.Projeto novo = Catalogo.vizinho(atual, player.isShiftKeyDown());
+		// The book carries the choice (picked by right-clicking in the air); the marker only receives it.
+		Catalogo.Projeto novo = LivroDeProjetosItem.selecionado(stack).orElse(null);
+		if (novo == null) {
+			player.sendOverlayMessage(Component.translatable("arraial.livro.escolha_primeiro").withStyle(ChatFormatting.YELLOW));
+			return InteractionResult.SUCCESS;
+		}
+		if (canteiro.projeto().map(novo::equals).orElse(false)) {
+			relatorio(server, player, canteiro);
+			return InteractionResult.SUCCESS;
+		}
 		canteiro.escolherProjeto(novo);
 
 		MutableComponent msg = Component.translatable("arraial.canteiro.projeto", novo.nome().copy().withStyle(ChatFormatting.GOLD));
