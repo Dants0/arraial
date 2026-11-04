@@ -1,0 +1,1 @@
+{"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["S", "C", "B"], "key": {"S": "#minecraft:shovels", "C": "minecraft:clay_ball", "B": "minecraft:bowl"}, "result": {"id": "arraial:gamela"}}

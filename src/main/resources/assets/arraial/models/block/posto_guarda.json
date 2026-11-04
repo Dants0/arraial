@@ -1,0 +1,27 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {"madeira": "minecraft:block/dark_oak_planks", "ferro": "minecraft:block/iron_block", "particle": "minecraft:block/dark_oak_planks"},
+	"elements": [
+		{"from": [1, 0, 6], "to": [15, 2, 10], "faces": {
+			"north": {"uv": [1, 14, 15, 16], "texture": "#madeira"}, "south": {"uv": [1, 14, 15, 16], "texture": "#madeira"},
+			"east": {"uv": [6, 14, 10, 16], "texture": "#madeira"}, "west": {"uv": [6, 14, 10, 16], "texture": "#madeira"},
+			"up": {"uv": [1, 6, 15, 10], "texture": "#madeira"}, "down": {"uv": [1, 6, 15, 10], "texture": "#madeira", "cullface": "down"}}},
+		{"from": [2, 2, 7], "to": [4, 15, 9], "faces": {
+			"north": {"uv": [2, 1, 4, 14], "texture": "#madeira"}, "south": {"uv": [2, 1, 4, 14], "texture": "#madeira"},
+			"east": {"uv": [7, 1, 9, 14], "texture": "#madeira"}, "west": {"uv": [7, 1, 9, 14], "texture": "#madeira"},
+			"up": {"uv": [2, 7, 4, 9], "texture": "#madeira"}}},
+		{"from": [12, 2, 7], "to": [14, 15, 9], "faces": {
+			"north": {"uv": [12, 1, 14, 14], "texture": "#madeira"}, "south": {"uv": [12, 1, 14, 14], "texture": "#madeira"},
+			"east": {"uv": [7, 1, 9, 14], "texture": "#madeira"}, "west": {"uv": [7, 1, 9, 14], "texture": "#madeira"},
+			"up": {"uv": [12, 7, 14, 9], "texture": "#madeira"}}},
+		{"from": [4, 11, 7], "to": [12, 13, 9], "faces": {
+			"north": {"uv": [4, 3, 12, 5], "texture": "#madeira"}, "south": {"uv": [4, 3, 12, 5], "texture": "#madeira"},
+			"up": {"uv": [4, 7, 12, 9], "texture": "#madeira"}, "down": {"uv": [4, 7, 12, 9], "texture": "#madeira"}}},
+		{"from": [6, 2, 7.5], "to": [7, 14, 8.5], "faces": {
+			"north": {"uv": [6, 2, 7, 14], "texture": "#ferro"}, "south": {"uv": [6, 2, 7, 14], "texture": "#ferro"},
+			"east": {"uv": [7, 2, 8, 14], "texture": "#ferro"}, "west": {"uv": [7, 2, 8, 14], "texture": "#ferro"}, "up": {"uv": [6, 7, 7, 8], "texture": "#ferro"}}},
+		{"from": [9, 2, 7.5], "to": [10, 14, 8.5], "faces": {
+			"north": {"uv": [9, 2, 10, 14], "texture": "#ferro"}, "south": {"uv": [9, 2, 10, 14], "texture": "#ferro"},
+			"east": {"uv": [7, 2, 8, 14], "texture": "#ferro"}, "west": {"uv": [7, 2, 8, 14], "texture": "#ferro"}, "up": {"uv": [9, 7, 10, 8], "texture": "#ferro"}}}
+	]
+}

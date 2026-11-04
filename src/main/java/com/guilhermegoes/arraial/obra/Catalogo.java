@@ -25,7 +25,15 @@ public final class Catalogo {
 
 	public static final List<Projeto> PROJETOS = List.of(
 			new Projeto("poco"),
-			new Projeto("casebre"));
+			new Projeto("casebre"),
+			new Projeto("rancho"),
+			new Projeto("serraria"),
+			new Projeto("roca"),
+			new Projeto("olaria"),
+			new Projeto("curral"),
+			new Projeto("guarita"),
+			new Projeto("barreira"),
+			new Projeto("pedreira"));
 
 	public static Optional<Projeto> porId(String id) {
 		return PROJETOS.stream().filter(p -> p.id().equals(id)).findFirst();

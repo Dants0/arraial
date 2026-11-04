@@ -83,6 +83,8 @@ public class MoradorEntity extends PathfinderMob {
 	/** Days of food a newcomer brings with them. */
 	private int provisoes = 2;
 	private long ultimoDia = 0;
+	private long diaChegada = 0;
+	private boolean prefeito = false;
 	public static final int DIAS_ATE_IR_EMBORA = 3;
 
 	public MoradorEntity(EntityType<? extends MoradorEntity> type, Level level) {
@@ -108,7 +110,8 @@ public class MoradorEntity extends PathfinderMob {
 		return Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, 20.0)
 				.add(Attributes.MOVEMENT_SPEED, 0.3)
-				.add(Attributes.FOLLOW_RANGE, 32.0);
+				.add(Attributes.FOLLOW_RANGE, 32.0)
+				.add(Attributes.ATTACK_DAMAGE, 1.0);
 	}
 
 	@Override
@@ -122,12 +125,20 @@ public class MoradorEntity extends PathfinderMob {
 	@Override
 	protected void registerGoals() {
 		goalSelector.addGoal(0, new FloatGoal(this));
+		goalSelector.addGoal(1, new SoldadoGoal.Atacar(this));
+		goalSelector.addGoal(1, new FugirGoal(this));
 		goalSelector.addGoal(1, new DormirGoal(this));
 		goalSelector.addGoal(2, new ConstruirGoal(this));
 		goalSelector.addGoal(2, new ArtesaoGoal(this));
 		goalSelector.addGoal(3, new LenhadorGoal(this));
 		goalSelector.addGoal(3, new RoceiroGoal(this));
+		goalSelector.addGoal(3, new PastorGoal(this));
+		goalSelector.addGoal(3, new CavarGoal(this, Profissao.BARREIRO));
+		goalSelector.addGoal(3, new CavarGoal(this, Profissao.CAVOUQUEIRO));
 		goalSelector.addGoal(3, new OpenDoorGoal(this, true));
+		goalSelector.addGoal(4, new SoldadoGoal(this));
+		targetSelector.addGoal(1, new SoldadoGoal.Revidar(this));
+		targetSelector.addGoal(2, new SoldadoGoal.Cacar(this));
 		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.6));
 		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		goalSelector.addGoal(6, new LookAtPlayerGoal(this, MoradorEntity.class, 5.0F));
@@ -142,7 +153,41 @@ public class MoradorEntity extends PathfinderMob {
 
 	public void setProfissao(Profissao p) {
 		entityData.set(PROFISSAO, p.ordinal());
+		armar(p == Profissao.SOLDADO);
 		atualizarPlaca();
+	}
+
+	/** Soldados wear an iron helmet and chestplate and carry a sword (none of it drops). */
+	private void armar(boolean soldado) {
+		if (level().isClientSide()) {
+			return;
+		}
+		setItemSlot(EquipmentSlot.HEAD, soldado ? new ItemStack(net.minecraft.world.item.Items.IRON_HELMET) : ItemStack.EMPTY);
+		setItemSlot(EquipmentSlot.CHEST, soldado ? new ItemStack(net.minecraft.world.item.Items.LEATHER_CHESTPLATE) : ItemStack.EMPTY);
+		setItemSlot(EquipmentSlot.MAINHAND, soldado ? new ItemStack(net.minecraft.world.item.Items.IRON_SWORD) : ItemStack.EMPTY);
+		for (EquipmentSlot slot : EquipmentSlot.values()) {
+			setDropChance(slot, 0.0F);
+		}
+		if (!soldado) {
+			setTarget(null);
+		}
+	}
+
+	public boolean prefeito() {
+		return prefeito;
+	}
+
+	/** Set by the arraial after an election. */
+	public void setPrefeito(boolean sim) {
+		if (prefeito != sim) {
+			prefeito = sim;
+			atualizarPlaca();
+		}
+	}
+
+	/** In-game day this morador settled in the arraial (seniority counts in elections). */
+	public long diaChegada() {
+		return diaChegada;
 	}
 
 	public boolean feminino() {
@@ -178,7 +223,10 @@ public class MoradorEntity extends PathfinderMob {
 		if (level().isClientSide()) {
 			return;
 		}
-		MutableComponent placa = Component.translatable("arraial.morador.placa", nome(), titulo()).withStyle(ChatFormatting.GOLD);
+		MutableComponent placa = prefeito
+				? Component.translatable("arraial.morador.placa_prefeito", nome(), titulo(),
+						Component.translatable(feminino() ? "arraial.prefeito.f" : "arraial.prefeito.m")).withStyle(ChatFormatting.GOLD)
+				: Component.translatable("arraial.morador.placa", nome(), titulo()).withStyle(ChatFormatting.GOLD);
 		if (!status.getString().isEmpty()) {
 			placa.append(Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY)).append(status.copy().withStyle(ChatFormatting.WHITE));
 		}
@@ -213,7 +261,24 @@ public class MoradorEntity extends PathfinderMob {
 
 	/** Used by the arraial when it welcomes a newcomer. */
 	public void definirVila(BlockPos cruzeiro) {
+		if (!cruzeiro.equals(vila) && level() instanceof ServerLevel server) {
+			diaChegada = Vilas.dia(server);
+		}
 		vila = cruzeiro.immutable();
+	}
+
+	/** When a morador is attacked, the arraial's soldados come running. */
+	@Override
+	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+		boolean ferido = super.hurtServer(level, source, damage);
+		if (ferido && source.getEntity() instanceof net.minecraft.world.entity.LivingEntity agressor
+				&& !(agressor instanceof MoradorEntity) && !(agressor instanceof Player)) {
+			for (MoradorEntity s : level.getEntitiesOfClass(MoradorEntity.class, getBoundingBox().inflate(32),
+					m -> m.profissao() == Profissao.SOLDADO && m.getTarget() == null)) {
+				s.setTarget(agressor);
+			}
+		}
+		return ferido;
 	}
 
 	/** Hungry moradores don't work. */
@@ -238,8 +303,18 @@ public class MoradorEntity extends PathfinderMob {
 		if (vila == null) {
 			BlockPos encontrada = Vilas.maisProxima(level, blockPosition());
 			if (encontrada != null) {
-				vila = encontrada;
+				definirVila(encontrada);
 			}
+		}
+		if (vila == null && prefeito) {
+			setPrefeito(false);
+		}
+		// Fed moradores slowly heal their wounds.
+		if (!comFome() && getHealth() < getMaxHealth()) {
+			heal(1.0F);
+		}
+		if (profissao() == Profissao.SOLDADO && getMainHandItem().isEmpty()) {
+			armar(true);
 		}
 		if (vila != null) {
 			setHomeTo(vila, Vilas.RAIO);
@@ -481,6 +556,8 @@ public class MoradorEntity extends PathfinderMob {
 		output.putInt("DiasSemComer", diasSemComer);
 		output.putInt("Provisoes", provisoes);
 		output.putLong("UltimoDia", ultimoDia);
+		output.putLong("DiaChegada", diaChegada);
+		output.putBoolean("Prefeito", prefeito);
 	}
 
 	@Override
@@ -499,6 +576,8 @@ public class MoradorEntity extends PathfinderMob {
 		diasSemComer = input.getIntOr("DiasSemComer", 0);
 		provisoes = input.getIntOr("Provisoes", 2);
 		ultimoDia = input.getLongOr("UltimoDia", 0L);
+		diaChegada = input.getLongOr("DiaChegada", 0L);
+		prefeito = input.getBooleanOr("Prefeito", false);
 		atualizarPlaca();
 	}
 }

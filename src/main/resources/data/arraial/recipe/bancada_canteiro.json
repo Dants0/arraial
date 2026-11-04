@@ -1,0 +1,1 @@
+{"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["K", "C"], "key": {"K": "#minecraft:pickaxes", "C": "minecraft:cobblestone"}, "result": {"id": "arraial:bancada_canteiro"}}

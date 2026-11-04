@@ -50,6 +50,24 @@ public final class ModBlocks {
 	public static final Block FORNO_OLARIA = register("forno_olaria",
 			new Block(props("forno_olaria").mapColor(MapColor.COLOR_RED).strength(3.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
+
+	/** Workstation of the soldado: a rack of weapons by the guard post. */
+	public static final Block POSTO_GUARDA = register("posto_guarda",
+			new Block(props("posto_guarda").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+
+	/** Workstation of the pastor (herder): a feeding trough. */
+	public static final Block COCHO = register("cocho",
+			new Block(props("cocho").mapColor(MapColor.WOOD).strength(1.5F).sound(SoundType.WOOD).noOcclusion()));
+
+	/** Workstation of the barreiro (clay digger): a tub of wet clay; the pit opens in front of it. */
+	public static final Block GAMELA = register("gamela",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("gamela").mapColor(MapColor.CLAY).strength(1.0F).sound(SoundType.MUD).noOcclusion()));
+
+	/** Workstation of the cavouqueiro (quarryman): a stonecutting bench; the quarry opens in front of it. */
+	public static final Block BANCADA_CANTEIRO = register("bancada_canteiro",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("bancada_canteiro").mapColor(MapColor.STONE).strength(2.5F)
+					.requiresCorrectToolForDrops().sound(SoundType.STONE)));
+
 	private static BlockBehaviour.Properties props(String name) {
 		return BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Arraial.id(name)));
 	}

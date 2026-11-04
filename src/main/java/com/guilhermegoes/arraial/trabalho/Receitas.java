@@ -39,6 +39,19 @@ public final class Receitas {
 		add(Profissao.OLEIRO, Items.MUD_BRICKS, 1, Map.of(Items.DIRT, 1, Items.WHEAT, 1));
 		add(Profissao.OLEIRO, Items.FLOWER_POT, 1, Map.of(Items.BRICK, 3));
 
+		// Lenhador: chests for new storehouses.
+		add(Profissao.LENHADOR, Items.CHEST, 1, Map.of(Items.OAK_PLANKS, 8));
+
+		// Pastor: beds for the houses (the red is dyed with urucum, so it costs nothing extra).
+		add(Profissao.PASTOR, Items.BED.red(), 1, Map.of(Items.WOOL.white(), 3, Items.OAK_PLANKS, 3));
+		add(Profissao.PASTOR, Items.BED.white(), 1, Map.of(Items.WOOL.white(), 3, Items.OAK_PLANKS, 3));
+
+		// Cavouqueiro: dressed stone.
+		add(Profissao.CAVOUQUEIRO, Items.COBBLESTONE_STAIRS, 4, Map.of(Items.COBBLESTONE, 6));
+		add(Profissao.CAVOUQUEIRO, Items.COBBLESTONE_SLAB, 6, Map.of(Items.COBBLESTONE, 3));
+		add(Profissao.CAVOUQUEIRO, Items.COBBLESTONE_WALL, 6, Map.of(Items.COBBLESTONE, 6));
+		add(Profissao.CAVOUQUEIRO, Items.FURNACE, 1, Map.of(Items.COBBLESTONE, 8));
+
 		// Roceiro: bread for the arraial's table.
 		add(Profissao.ROCEIRO, Items.BREAD, 1, Map.of(Items.WHEAT, 3));
 	}

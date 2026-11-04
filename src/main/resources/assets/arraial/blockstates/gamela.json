@@ -1,0 +1,6 @@
+{"variants": {
+	"facing=north": {"model": "arraial:block/gamela"},
+	"facing=east": {"model": "arraial:block/gamela", "y": 90},
+	"facing=south": {"model": "arraial:block/gamela", "y": 180},
+	"facing=west": {"model": "arraial:block/gamela", "y": 270}
+}}

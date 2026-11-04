@@ -27,6 +27,20 @@ public class ArraialBlockEntity extends BlockEntity {
 	private String nome = "";
 	private long proximaChegada = 0;
 	private final java.util.ArrayList<Cronica.Entrada> cronica = new java.util.ArrayList<>();
+	/** The elected prefeito (a morador's UUID), managed by {@link Prefeitura}. */
+	java.util.@org.jspecify.annotations.Nullable UUID prefeito;
+	/** Last day the prefeito made the morning rounds. */
+	long ultimoDespacho = 0;
+	/** What the prefeito wants but cannot do (shown at the Cruzeiro); empty when all is well. */
+	Component pedido = Component.empty();
+
+	public java.util.@org.jspecify.annotations.Nullable UUID prefeito() {
+		return prefeito;
+	}
+
+	public Component pedido() {
+		return pedido;
+	}
 
 	public ArraialBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.ARRAIAL, pos, state);
@@ -96,6 +110,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		arraial.fundar(server);
 
 		List<MoradorEntity> moradores = arraial.moradores(server);
+		Prefeitura.cuidar(server, arraial, moradores);
 		long camasLivres = arraial.camas(server) - moradores.size();
 		// Free work also draws people in, even with nowhere to sleep (they arrive homeless,
 		// which pushes the player to build houses), but only while there are few homeless.
@@ -141,6 +156,9 @@ public class ArraialBlockEntity extends BlockEntity {
 		proximaChegada = input.getLongOr("ProximaChegada", 0L);
 		cronica.clear();
 		input.read("Cronica", Cronica.LISTA).ifPresent(cronica::addAll);
+		prefeito = input.read("Prefeito", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+		ultimoDespacho = input.getLongOr("UltimoDespacho", 0L);
+		pedido = input.read("Pedido", net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(Component.empty());
 	}
 
 	@Override
@@ -149,5 +167,10 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.putString("Nome", nome);
 		output.putLong("ProximaChegada", proximaChegada);
 		output.store("Cronica", Cronica.LISTA, List.copyOf(cronica));
+		if (prefeito != null) {
+			output.store("Prefeito", net.minecraft.core.UUIDUtil.CODEC, prefeito);
+		}
+		output.putLong("UltimoDespacho", ultimoDespacho);
+		output.store("Pedido", net.minecraft.network.chat.ComponentSerialization.CODEC, pedido);
 	}
 }

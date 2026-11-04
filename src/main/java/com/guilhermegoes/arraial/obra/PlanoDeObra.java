@@ -128,6 +128,23 @@ public final class PlanoDeObra {
 		};
 	}
 
+	/**
+	 * Blocks the pedreiro makes on the spot from raw materials instead of fetching them ready:
+	 * ground (farmland, paths, grass) is just earth, and the workstations are built from wood or
+	 * stone, so the arraial never needs a lenhador to build the lenhador's own shed.
+	 */
+	private static final Map<net.minecraft.world.level.block.Block, Custo> CUSTOS_ESPECIAIS = Map.ofEntries(
+			Map.entry(net.minecraft.world.level.block.Blocks.FARMLAND, new Custo(Items.DIRT, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.DIRT_PATH, new Custo(Items.DIRT, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.GRASS_BLOCK, new Custo(Items.DIRT, 1)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.CEPO, new Custo(Items.OAK_LOG, 2)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BALAIO, new Custo(Items.OAK_PLANKS, 4)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.POSTO_GUARDA, new Custo(Items.OAK_PLANKS, 4)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.COCHO, new Custo(Items.OAK_PLANKS, 5)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.GAMELA, new Custo(Items.OAK_PLANKS, 3)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BANCADA_CANTEIRO, new Custo(Items.OAK_LOG, 2)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.FORNO_OLARIA, new Custo(Items.COBBLESTONE, 8)));
+
 	public static Custo custo(BlockState state) {
 		if (state.isAir()) {
 			return null;
@@ -139,6 +156,10 @@ public final class PlanoDeObra {
 		if (state.hasProperty(BlockStateProperties.BED_PART)
 				&& state.getValue(BlockStateProperties.BED_PART) == BedPart.HEAD) {
 			return null;
+		}
+		Custo especial = CUSTOS_ESPECIAIS.get(state.getBlock());
+		if (especial != null) {
+			return especial.quantidade() == 0 ? null : especial;
 		}
 		Item item = state.getBlock().asItem();
 		if (item == Items.AIR) {

@@ -21,6 +21,10 @@ public final class ModCreativeTabs {
 						output.accept(ModBlocks.CEPO);
 						output.accept(ModBlocks.BALAIO);
 						output.accept(ModBlocks.FORNO_OLARIA);
+						output.accept(ModBlocks.POSTO_GUARDA);
+						output.accept(ModBlocks.COCHO);
+						output.accept(ModBlocks.GAMELA);
+						output.accept(ModBlocks.BANCADA_CANTEIRO);
 						output.accept(ModItems.LIVRO_DE_PROJETOS);
 						output.accept(ModItems.CONTRATO_PEDREIRO);
 					})

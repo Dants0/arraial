@@ -1,6 +1,7 @@
 package com.guilhermegoes.arraial.trabalho;
 
 import com.guilhermegoes.arraial.npc.MoradorEntity;
+import com.guilhermegoes.arraial.npc.Profissao;
 import com.guilhermegoes.arraial.obra.CanteiroBlock;
 import com.guilhermegoes.arraial.obra.CanteiroBlockEntity;
 import com.guilhermegoes.arraial.obra.PlanoDeObra;
@@ -82,6 +83,85 @@ public final class Demanda {
 			extra.forEach((k, v) -> falta.merge(k, v, Integer::sum));
 		}
 		return falta;
+	}
+
+	// ------------------------------------------------------------ can the arraial get it?
+
+	/** Raw materials and which trade gathers them. */
+	private static final Map<Item, Profissao> FONTES = new java.util.HashMap<>();
+
+	static {
+		for (Item i : List.of(Items.COBBLESTONE, Items.COBBLED_DEEPSLATE, Items.ANDESITE, Items.DIORITE, Items.GRANITE,
+				Items.COAL, Items.RAW_IRON, Items.RAW_COPPER)) {
+			FONTES.put(i, Profissao.CAVOUQUEIRO);
+		}
+		for (Item i : List.of(Items.DIRT, Items.CLAY_BALL, Items.SAND, Items.GRAVEL, Items.MUD)) {
+			FONTES.put(i, Profissao.BARREIRO);
+		}
+		for (Item i : List.of(Items.WHEAT, Items.WHEAT_SEEDS, Items.CARROT, Items.POTATO, Items.BEETROOT, Items.BEETROOT_SEEDS)) {
+			FONTES.put(i, Profissao.ROCEIRO);
+		}
+		for (Item i : List.of(Items.MUTTON, Items.BEEF, Items.PORKCHOP, Items.CHICKEN, Items.LEATHER, Items.FEATHER, Items.EGG)) {
+			FONTES.put(i, Profissao.PASTOR);
+		}
+		Items.WOOL.forEach(i -> FONTES.put(i, Profissao.PASTOR));
+		FONTES.put(Items.APPLE, Profissao.LENHADOR);
+	}
+
+	/** The trades present in the arraial. */
+	public static java.util.Set<Profissao> oficios(ServerLevel level, BlockPos vila) {
+		java.util.Set<Profissao> set = java.util.EnumSet.noneOf(Profissao.class);
+		for (MoradorEntity m : level.getEntitiesOfClass(MoradorEntity.class, new AABB(vila).inflate(Vilas.RAIO), m -> vila.equals(m.vila()))) {
+			set.add(m.profissao());
+		}
+		return set;
+	}
+
+	/**
+	 * The first material of {@code materiais} the arraial cannot get: not in stock, nobody
+	 * gathers it, and no trade present can make it. Empty when everything is reachable.
+	 */
+	public static java.util.Optional<Item> inviavel(ServerLevel level, BlockPos vila, Map<Item, Integer> materiais, java.util.Set<Profissao> oficios) {
+		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, vila);
+		for (Map.Entry<Item, Integer> e : materiais.entrySet()) {
+			if (!obtivel(armazens, e.getKey(), e.getValue(), oficios, 0)) {
+				return java.util.Optional.of(e.getKey());
+			}
+		}
+		return java.util.Optional.empty();
+	}
+
+	private static boolean obtivel(List<ArmazemBlockEntity> armazens, Item item, int quantidade, java.util.Set<Profissao> oficios, int nivel) {
+		if (Vilas.contar(armazens, item) >= quantidade) {
+			return true;
+		}
+		Profissao fonte = item.getDefaultInstance().is(net.minecraft.tags.ItemTags.LOGS) ? Profissao.LENHADOR : FONTES.get(item);
+		if (fonte != null && oficios.contains(fonte)) {
+			return true;
+		}
+		if (nivel >= 4) {
+			return false;
+		}
+		var receita = Receitas.para(item);
+		if (receita.isEmpty() || !oficios.contains(receita.get().quem())) {
+			return false;
+		}
+		int lotes = (quantidade + receita.get().quantidade() - 1) / receita.get().quantidade();
+		for (Map.Entry<Item, Integer> ing : receita.get().entrada().entrySet()) {
+			if (!obtivel(armazens, ing.getKey(), ing.getValue() * lotes, oficios, nivel + 1)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/** The trade that gathers or makes {@code item}, or null. */
+	public static @org.jspecify.annotations.Nullable Profissao quemFaz(Item item) {
+		var r = Receitas.para(item);
+		if (r.isPresent()) {
+			return r.get().quem();
+		}
+		return item.getDefaultInstance().is(net.minecraft.tags.ItemTags.LOGS) ? Profissao.LENHADOR : FONTES.get(item);
 	}
 
 	private Demanda() {

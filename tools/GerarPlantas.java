@@ -57,6 +57,83 @@ public class GerarPlantas {
 				new String[] {" eMw ", " e.w ", " e.w ", " e.w ", " eMw "},
 				// y6: ridge
 				new String[] {"  s  ", "  s  ", "  s  ", "  s  ", "  s  "}));
+		// ---- Marco 4: everything the prefeito can order. Only wood (and a little stone) where
+		// possible, so a young arraial with just a lenhador can still build it.
+		Map<Character, String> madeira = new HashMap<>();
+		madeira.put('P', "minecraft:oak_planks");
+		madeira.put('L', "minecraft:oak_log[axis=y]");
+		madeira.put('x', "minecraft:oak_log[axis=x]");
+		madeira.put('d', "minecraft:oak_door[facing=south,half=lower,hinge=left,open=false]");
+		madeira.put('D', "minecraft:oak_door[facing=south,half=upper,hinge=left,open=false]");
+		madeira.put('t', "minecraft:wall_torch[facing=north]");
+		madeira.put('T', "minecraft:torch");
+		madeira.put('e', "minecraft:oak_stairs[facing=east,half=bottom,shape=straight]");
+		madeira.put('w', "minecraft:oak_stairs[facing=west,half=bottom,shape=straight]");
+		madeira.put('s', "minecraft:oak_slab[type=bottom]");
+		madeira.put('f', "minecraft:oak_fence");
+		madeira.put('g', "minecraft:oak_fence_gate[facing=south,in_wall=false,open=false,powered=false]");
+		madeira.put('b', "minecraft:red_bed[facing=south,part=foot,occupied=false]");
+		madeira.put('B', "minecraft:red_bed[facing=south,part=head,occupied=false]");
+		madeira.put('W', "minecraft:water");
+		madeira.put('c', "arraial:cepo");
+		madeira.put('o', "arraial:forno_olaria");
+		madeira.put('k', "arraial:balaio");
+		madeira.put('q', "arraial:posto_guarda");
+		madeira.put('h', "arraial:cocho");
+		madeira.put('m', "arraial:gamela[facing=south]");
+		madeira.put('n', "arraial:bancada_canteiro[facing=south]");
+
+		// Rancho: a wooden house for when there are no mud bricks yet.
+		escrever(out.resolve("rancho.nbt"), madeira, List.of(
+				new String[] {"PPPPP", "PPPPP", "PPPPP", "PPPPP", "PPPPP"},
+				new String[] {"LPdPL", "P...P", "Pb..P", "PB..P", "LPPPL"},
+				new String[] {"LPDPL", "P...P", ".....", "P...P", "LP.PL"},
+				new String[] {"LPPPL", "P...P", "P...P", "P.t.P", "LPPPL"},
+				new String[] {"ePPPw", "e...w", "e...w", "e...w", "ePPPw"},
+				new String[] {" ePw ", " e.w ", " e.w ", " e.w ", " ePw "},
+				new String[] {"  s  ", "  s  ", "  s  ", "  s  ", "  s  "}));
+
+		// Serraria: an open shed with the lenhador's cepo and a log pile.
+		escrever(out.resolve("serraria.nbt"), madeira, List.of(
+				new String[] {"PPPPP", "PPPPP", "PPPPP", "PPPPP"},
+				new String[] {"L...L", ".....", "..c..", "LxxxL"},
+				new String[] {"L...L", ".....", ".....", "L...L"},
+				new String[] {"sssss", "sssss", "sssss", "sssss"}));
+
+		// Roça: a water hole and the roceiro's balaio; he tills the wet ground around it himself.
+		escrever(out.resolve("roca.nbt"), madeira, List.of(
+				new String[] {"       ", "       ", "       ", "   W   ", "       ", "       ", "       "},
+				new String[] {"...k...", ".......", ".......", ".......", ".......", ".......", "......."}));
+
+		// Olaria: the potter's workshop around the kiln.
+		escrever(out.resolve("olaria.nbt"), madeira, List.of(
+				new String[] {"PPPPP", "PPPPP", "PPPPP", "PPPPP"},
+				new String[] {"P...P", "P...P", "P.o.P", "PPPPP"},
+				new String[] {"P...P", "P...P", "P...P", "PPPPP"},
+				new String[] {"sssss", "sssss", "sssss", "sssss"}));
+
+		// Guarita: a small watchtower with the soldados' weapon rack.
+		escrever(out.resolve("guarita.nbt"), madeira, List.of(
+				new String[] {"PPP", "PPP", "PPP"},
+				new String[] {"L.L", ".q.", "L.L"},
+				new String[] {"L.L", "...", "L.L"},
+				new String[] {"L.L", "...", "L.L"},
+				new String[] {"PPP", "PPP", "PPP"},
+				new String[] {"f.f", ".T.", "f.f"}));
+
+		// Curral: a fenced pen with the pastor's trough.
+		escrever(out.resolve("curral.nbt"), madeira, List.of(
+				new String[] {"       ", "       ", "       ", "       ", "       ", "       ", "       "},
+				new String[] {"fffgfff", "f.....f", "f.....f", "f.....f", "f.....f", "f..h..f", "fffffff"}));
+
+		// Barreira and Pedreira: the digging posts. The pit opens in front of them (the '.' area).
+		escrever(out.resolve("barreira.nbt"), madeira, List.of(
+				new String[] {"     ", "     ", "     ", "     ", "     ", "     "},
+				new String[] {"..m..", ".....", ".....", ".....", ".....", "....."}));
+		escrever(out.resolve("pedreira.nbt"), madeira, List.of(
+				new String[] {"     ", "     ", "     ", "     ", "     ", "     ", "     "},
+				new String[] {"..n..", ".....", ".....", ".....", ".....", ".....", "....."}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

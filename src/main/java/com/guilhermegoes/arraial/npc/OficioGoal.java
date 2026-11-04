@@ -93,6 +93,27 @@ public abstract class OficioGoal extends Goal {
 		morador.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
 	}
 
+	/** Picks up the loose items lying around {@code centro} (e.g. what an animal dropped). */
+	protected void recolherItens(Vec3 centro, double raio) {
+		for (net.minecraft.world.entity.item.ItemEntity item : level().getEntitiesOfClass(
+				net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(centro, centro).inflate(raio))) {
+			ItemStack s = item.getItem();
+			if (!s.isEmpty()) {
+				morador.guardar(s.getItem(), s.getCount());
+			}
+			item.discard();
+		}
+	}
+
+	/** Takes up to {@code quantidade} of {@code item} from the armazéns into the hands. */
+	protected int pegar(Item item, int quantidade) {
+		int n = Vilas.retirar(armazens(), item, quantidade);
+		if (n > 0) {
+			morador.guardar(item, n);
+		}
+		return n;
+	}
+
 	/** Puts the carried items (minus {@code manter}) into the armazém; returns false if there is none. */
 	protected boolean entregar(Map<Item, Integer> manter) {
 		List<ArmazemBlockEntity> lista = armazens();

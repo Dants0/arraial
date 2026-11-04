@@ -1,0 +1,6 @@
+{"variants": {
+	"facing=north": {"model": "arraial:block/bancada_canteiro"},
+	"facing=east": {"model": "arraial:block/bancada_canteiro", "y": 90},
+	"facing=south": {"model": "arraial:block/bancada_canteiro", "y": 180},
+	"facing=west": {"model": "arraial:block/bancada_canteiro", "y": 270}
+}}

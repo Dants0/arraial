@@ -297,7 +297,9 @@ public class ConstruirGoal extends Goal {
 		double melhorDist = (double) RAIO_BUSCA * RAIO_BUSCA;
 		for (BlockPos pos : CanteiroBlockEntity.ativos(level)) {
 			double d = pedreiro.distanceToSqr(Vec3.atCenterOf(pos));
-			if (d < melhorDist) {
+			// Any site of his own arraial counts, however far; elsewhere only nearby ones.
+			boolean daVila = pedreiro.vila() != null && pos.closerThan(pedreiro.vila(), Vilas.RAIO);
+			if (d < melhorDist || (daVila && melhor == null)) {
 				CanteiroBlockEntity c = canteiro(level, pos);
 				if (c != null && c.temTrabalho()) {
 					melhor = pos;

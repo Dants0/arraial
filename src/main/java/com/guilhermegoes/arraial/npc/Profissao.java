@@ -8,13 +8,18 @@ import org.jspecify.annotations.Nullable;
 /**
  * What a morador does for the arraial. Professions with a workstation ("posto") are taken
  * automatically by an unemployed morador who finds a free one inside the arraial.
+ * New values go at the END: saves store the ordinal.
  */
 public enum Profissao {
 	NENHUMA("morador"),
 	PEDREIRO("pedreiro"),
 	LENHADOR("lenhador"),
 	ROCEIRO("roceiro"),
-	OLEIRO("oleiro");
+	OLEIRO("oleiro"),
+	SOLDADO("soldado"),
+	PASTOR("pastor"),
+	BARREIRO("barreiro"),
+	CAVOUQUEIRO("cavouqueiro");
 
 	private final String id;
 
@@ -37,6 +42,10 @@ public enum Profissao {
 			case LENHADOR -> ModBlocks.CEPO;
 			case ROCEIRO -> ModBlocks.BALAIO;
 			case OLEIRO -> ModBlocks.FORNO_OLARIA;
+			case SOLDADO -> ModBlocks.POSTO_GUARDA;
+			case PASTOR -> ModBlocks.COCHO;
+			case BARREIRO -> ModBlocks.GAMELA;
+			case CAVOUQUEIRO -> ModBlocks.BANCADA_CANTEIRO;
 			default -> null;
 		};
 	}

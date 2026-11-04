@@ -1,0 +1,10 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {"lado": "minecraft:block/stripped_oak_log", "barro": "minecraft:block/clay", "particle": "minecraft:block/clay"},
+	"elements": [
+		{"from": [2, 0, 2], "to": [14, 6, 14], "faces": {
+			"north": {"uv": [2, 10, 14, 16], "texture": "#lado"}, "south": {"uv": [2, 10, 14, 16], "texture": "#lado"},
+			"east": {"uv": [2, 10, 14, 16], "texture": "#lado"}, "west": {"uv": [2, 10, 14, 16], "texture": "#lado"},
+			"up": {"uv": [2, 2, 14, 14], "texture": "#barro"}, "down": {"uv": [2, 2, 14, 14], "texture": "#lado", "cullface": "down"}}}
+	]
+}
