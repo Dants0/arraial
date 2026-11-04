@@ -50,21 +50,24 @@ public class ArtesaoGoal extends OficioGoal {
 		if (armazens.isEmpty()) {
 			return false;
 		}
-		Map<Item, Integer> falta = Demanda.calcular(level(), morador.vila());
-		for (Receitas.Receita r : Receitas.de(morador.profissao())) {
-			Integer quer = falta.get(r.saida());
-			if (quer == null) {
-				continue;
-			}
-			int possivel = MAX_LOTES;
-			for (Map.Entry<Item, Integer> e : r.entrada().entrySet()) {
-				possivel = Math.min(possivel, Vilas.contar(armazens, e.getKey()) / e.getValue());
-			}
-			int necessario = (quer + r.quantidade() - 1) / r.quantidade();
-			if (possivel > 0) {
-				receita = r;
-				lotes = Math.min(possivel, necessario);
-				return true;
+		// Most urgent shortage first; ingredients claimed by construction sites stay in the armazém.
+		Demanda.Resultado demanda = Demanda.calcular(level(), morador.vila());
+		List<Receitas.Receita> sabe = Receitas.de(morador.profissao());
+		for (Map.Entry<Item, Integer> pedido : demanda.pedidos()) {
+			for (Receitas.Receita r : sabe) {
+				if (r.saida() != pedido.getKey()) {
+					continue;
+				}
+				int possivel = MAX_LOTES;
+				for (Map.Entry<Item, Integer> e : r.entrada().entrySet()) {
+					possivel = Math.min(possivel, demanda.livre(e.getKey()) / e.getValue());
+				}
+				int necessario = (pedido.getValue() + r.quantidade() - 1) / r.quantidade();
+				if (possivel > 0) {
+					receita = r;
+					lotes = Math.min(possivel, necessario);
+					return true;
+				}
 			}
 		}
 		return false;

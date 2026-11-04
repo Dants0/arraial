@@ -164,5 +164,15 @@
 	"arraial.vila.pedido": "O prefeito quer construir %s, mas falta %s e ninguém no arraial sabe conseguir.",
 	"arraial.vila.pedido_lugar": "O prefeito quer construir %s, mas não achou terreno plano e livre.",
 	"arraial.vila.prefeito": "%s: %s",
-	"arraial.vila.sem_prefeito": "Sem prefeito: com %s moradores o arraial elege o morador mais antigo."
+	"arraial.vila.sem_prefeito": "Sem prefeito: com %s moradores o arraial elege o morador mais antigo.",
+
+	"arraial.prioridade.baixa": "baixa",
+	"arraial.prioridade.normal": "normal",
+	"arraial.prioridade.alta": "alta",
+	"arraial.prioridade.urgente": "urgente",
+	"arraial.canteiro.prioridade": "Prioridade: %s",
+	"arraial.canteiro.prioridade_dica": " (agachado, clique com a mão vazia para mudar)",
+	"arraial.canteiro.prioridade_mudou": "Prioridade da obra: %s",
+	"arraial.pedreiro.reservado": "%s reservado p/ obra mais urgente",
+	"arraial.vila.metas": "📦 Reserva do prefeito:"
 }

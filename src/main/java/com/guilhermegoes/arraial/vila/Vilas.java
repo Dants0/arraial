@@ -115,6 +115,20 @@ public final class Vilas {
 		return contar(fontes, s -> s.is(item));
 	}
 
+	/** Everything stored in {@code fontes}, counted per item. */
+	public static Map<net.minecraft.world.item.Item, Integer> inventario(List<? extends net.minecraft.world.Container> fontes) {
+		Map<net.minecraft.world.item.Item, Integer> mapa = new java.util.HashMap<>();
+		for (net.minecraft.world.Container c : fontes) {
+			for (int i = 0; i < c.getContainerSize(); i++) {
+				net.minecraft.world.item.ItemStack s = c.getItem(i);
+				if (!s.isEmpty()) {
+					mapa.merge(s.getItem(), s.getCount(), Integer::sum);
+				}
+			}
+		}
+		return mapa;
+	}
+
 	/** Removes up to {@code quantidade} matching items; returns what was taken (may be several stacks merged into a list). */
 	public static List<net.minecraft.world.item.ItemStack> retirar(List<? extends net.minecraft.world.Container> fontes,
 			java.util.function.Predicate<net.minecraft.world.item.ItemStack> filtro, int quantidade) {

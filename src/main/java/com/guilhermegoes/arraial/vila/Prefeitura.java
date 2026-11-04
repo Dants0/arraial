@@ -5,6 +5,7 @@ import com.guilhermegoes.arraial.npc.Profissao;
 import com.guilhermegoes.arraial.obra.CanteiroBlockEntity;
 import com.guilhermegoes.arraial.obra.Catalogo;
 import com.guilhermegoes.arraial.obra.PlanoDeObra;
+import com.guilhermegoes.arraial.obra.Prioridade;
 import com.guilhermegoes.arraial.obra.Terreno;
 import com.guilhermegoes.arraial.registry.ModPois;
 import com.guilhermegoes.arraial.trabalho.Demanda;
@@ -37,6 +38,8 @@ import org.jspecify.annotations.Nullable;
  */
 public final class Prefeitura {
 	public static final int MIN_ELEITORES = 4;
+	/** At most this many buildings going up at once; the second one only when it is urgent. */
+	private static final int MAX_OBRAS = 2;
 
 	private static final Map<Profissao, String> OFICINA = Map.of(
 			Profissao.LENHADOR, "serraria",
@@ -110,11 +113,14 @@ public final class Prefeitura {
 
 	private static void despachar(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, List<MoradorEntity> moradores) {
 		BlockPos vila = arraial.getBlockPos();
-		if (obraEmAndamento(level, vila)) {
+		List<CanteiroBlockEntity> ativas = CanteiroBlockEntity.daVila(level, vila);
+		if (ativas.size() >= MAX_OBRAS) {
 			contratarPedreiro(level, arraial, prefeito, moradores);
 			arraial.pedido = Component.empty();
 			return;
 		}
+		Set<String> emObra = new HashSet<>();
+		ativas.forEach(c -> c.projeto().ifPresent(p -> emObra.add(p.id())));
 		if (Vilas.armazens(level, vila).isEmpty()) {
 			arraial.pedido = Component.translatable("arraial.vila.pedido_armazem");
 			return;
@@ -149,6 +155,27 @@ public final class Prefeitura {
 		}
 		if (desejos.isEmpty() && camasLivres <= 1) {
 			desejos.add("casa");
+		}
+
+		// Urgent: people without a bed, or less than a day of food. Urgent sites go first and may
+		// start while another building is still going up; everything else waits its turn.
+		Set<String> urgentes = new HashSet<>();
+		if (semCasa > 0) {
+			urgentes.add("casa");
+		}
+		if (comida < n) {
+			urgentes.add("roca");
+		}
+		desejos.removeIf(d -> emObra.contains(d) || (d.equals("casa") && (emObra.contains("casebre") || emObra.contains("rancho"))));
+		if (!ativas.isEmpty()) {
+			desejos.removeIf(d -> !urgentes.contains(d));
+		}
+		if (desejos.isEmpty()) {
+			if (!ativas.isEmpty()) {
+				contratarPedreiro(level, arraial, prefeito, moradores);
+			}
+			arraial.pedido = Component.empty();
+			return;
 		}
 
 		Set<Profissao> oficios = Demanda.oficios(level, vila);
@@ -187,7 +214,8 @@ public final class Prefeitura {
 					}
 					continue;
 				}
-				if (Terreno.marcar(level, lugar.get(), projeto)) {
+				Prioridade prioridade = urgentes.contains(desejo) ? Prioridade.URGENTE : Prioridade.NORMAL;
+				if (Terreno.marcar(level, lugar.get(), projeto, prioridade)) {
 					Cronica.anotar(level, vila, Component.translatable("arraial.cronica.ordem", prefeito.nome(), cargo(prefeito), projeto.nome()));
 					avisar(level, arraial, Component.translatable("arraial.vila.ordem", cargo(prefeito), prefeito.nome(), projeto.nome())
 							.withStyle(ChatFormatting.AQUA));
@@ -205,6 +233,9 @@ public final class Prefeitura {
 				String oficina = quem == null ? null : OFICINA.get(quem);
 				if (oficina != null && !tentados.contains(oficina) && postosDe(level, vila, quem) == 0) {
 					desejos.add(i + 1, oficina);
+					if (urgentes.contains(desejo)) {
+						urgentes.add(oficina);
+					}
 				}
 			}
 		}
@@ -213,7 +244,10 @@ public final class Prefeitura {
 
 	/** Makes sure some pedreiro will take the job: an unemployed morador is hired if needed. */
 	private static void contratarPedreiro(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, List<MoradorEntity> moradores) {
-		if (moradores.stream().anyMatch(m -> m.profissao() == Profissao.PEDREIRO)) {
+		// One pedreiro per building going up.
+		int obras = Math.max(1, CanteiroBlockEntity.daVila(level, arraial.getBlockPos()).size());
+		long pedreiros = moradores.stream().filter(m -> m.profissao() == Profissao.PEDREIRO).count();
+		if (pedreiros >= obras) {
 			return;
 		}
 		moradores.stream().filter(m -> m.profissao() == Profissao.NENHUMA).findFirst().ifPresent(m -> {
@@ -221,15 +255,6 @@ public final class Prefeitura {
 			Cronica.anotar(level, arraial.getBlockPos(),
 					Component.translatable("arraial.cronica.contratou", prefeito.nome(), m.nome(), m.titulo()));
 		});
-	}
-
-	private static boolean obraEmAndamento(ServerLevel level, BlockPos vila) {
-		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {
-			if (p.closerThan(vila, Vilas.RAIO) && level.getBlockEntity(p) instanceof CanteiroBlockEntity c && c.temTrabalho()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/** Finished (or started) buildings of a given project inside the arraial. */

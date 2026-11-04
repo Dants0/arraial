@@ -77,6 +77,8 @@ public class CanteiroBlock extends HorizontalDirectionalBlock implements EntityB
 			return InteractionResult.SUCCESS;
 		}
 		canteiro.escolherProjeto(novo);
+		// The player is the one in charge: their sites go before the prefeito's routine ones.
+		canteiro.setPrioridade(Prioridade.ALTA);
 
 		MutableComponent msg = Component.translatable("arraial.canteiro.projeto", novo.nome().copy().withStyle(ChatFormatting.GOLD));
 		canteiro.plano(server).ifPresentOrElse(
@@ -92,6 +94,11 @@ public class CanteiroBlock extends HorizontalDirectionalBlock implements EntityB
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (level instanceof ServerLevel server && level.getBlockEntity(pos) instanceof CanteiroBlockEntity canteiro) {
+			if (player.isShiftKeyDown() && canteiro.temTrabalho()) {
+				canteiro.setPrioridade(canteiro.prioridade().proxima());
+				player.sendOverlayMessage(Component.translatable("arraial.canteiro.prioridade_mudou", canteiro.prioridade().nome()));
+				return InteractionResult.SUCCESS;
+			}
 			relatorio(server, player, canteiro);
 		}
 		return InteractionResult.SUCCESS;
@@ -117,6 +124,8 @@ public class CanteiroBlock extends HorizontalDirectionalBlock implements EntityB
 		int pct = plano.etapas().isEmpty() ? 100 : canteiro.progresso() * 100 / plano.etapas().size();
 		player.sendSystemMessage(Component.translatable("arraial.canteiro.status", canteiro.projeto().get().nome(), pct)
 				.withStyle(ChatFormatting.GOLD));
+		player.sendSystemMessage(Component.translatable("arraial.canteiro.prioridade", canteiro.prioridade().nome())
+				.append(Component.translatable("arraial.canteiro.prioridade_dica").withStyle(ChatFormatting.DARK_GRAY)));
 
 		Container bau = canteiro.bau(server);
 		if (bau == null) {

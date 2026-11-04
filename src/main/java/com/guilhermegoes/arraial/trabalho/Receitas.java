@@ -12,24 +12,47 @@ import net.minecraft.world.item.Items;
  * What each trade knows how to make at its workstation. Quantities follow vanilla crafting,
  * slightly simplified (e.g. the oleiro bakes one brick per clay ball; mud bricks take dirt + wheat
  * like vanilla packed mud).
+ *
+ * <p>Wood recipes exist once per wood family, so an arraial in a spruce forest makes sticks,
+ * chests and beds out of spruce. Several recipes can therefore make the same item; {@link #todasPara}
+ * lists them and {@link Demanda} picks the one the armazém can best supply.
  */
 public final class Receitas {
 	public record Receita(Profissao quem, Item saida, int quantidade, Map<Item, Integer> entrada) {
 	}
 
+	/** One wood family: log, planks and the carpentry made from them. */
+	public record Madeira(Item tora, Item tabua, Item porta, Item cerca, Item laje, Item escada) {
+	}
+
+	public static final List<Madeira> MADEIRAS = List.of(
+			new Madeira(Items.OAK_LOG, Items.OAK_PLANKS, Items.OAK_DOOR, Items.OAK_FENCE, Items.OAK_SLAB, Items.OAK_STAIRS),
+			new Madeira(Items.SPRUCE_LOG, Items.SPRUCE_PLANKS, Items.SPRUCE_DOOR, Items.SPRUCE_FENCE, Items.SPRUCE_SLAB, Items.SPRUCE_STAIRS),
+			new Madeira(Items.BIRCH_LOG, Items.BIRCH_PLANKS, Items.BIRCH_DOOR, Items.BIRCH_FENCE, Items.BIRCH_SLAB, Items.BIRCH_STAIRS),
+			new Madeira(Items.JUNGLE_LOG, Items.JUNGLE_PLANKS, Items.JUNGLE_DOOR, Items.JUNGLE_FENCE, Items.JUNGLE_SLAB, Items.JUNGLE_STAIRS),
+			new Madeira(Items.ACACIA_LOG, Items.ACACIA_PLANKS, Items.ACACIA_DOOR, Items.ACACIA_FENCE, Items.ACACIA_SLAB, Items.ACACIA_STAIRS),
+			new Madeira(Items.DARK_OAK_LOG, Items.DARK_OAK_PLANKS, Items.DARK_OAK_DOOR, Items.DARK_OAK_FENCE, Items.DARK_OAK_SLAB, Items.DARK_OAK_STAIRS),
+			new Madeira(Items.CHERRY_LOG, Items.CHERRY_PLANKS, Items.CHERRY_DOOR, Items.CHERRY_FENCE, Items.CHERRY_SLAB, Items.CHERRY_STAIRS),
+			new Madeira(Items.MANGROVE_LOG, Items.MANGROVE_PLANKS, Items.MANGROVE_DOOR, Items.MANGROVE_FENCE, Items.MANGROVE_SLAB, Items.MANGROVE_STAIRS));
+
 	private static final List<Receita> TODAS = new ArrayList<>();
 
 	static {
-		// Lenhador: carpentry for each common wood.
-		madeira(Items.OAK_LOG, Items.OAK_PLANKS, Items.OAK_DOOR, Items.OAK_FENCE, Items.OAK_SLAB, Items.OAK_STAIRS);
-		madeira(Items.SPRUCE_LOG, Items.SPRUCE_PLANKS, Items.SPRUCE_DOOR, Items.SPRUCE_FENCE, Items.SPRUCE_SLAB, Items.SPRUCE_STAIRS);
-		madeira(Items.BIRCH_LOG, Items.BIRCH_PLANKS, Items.BIRCH_DOOR, Items.BIRCH_FENCE, Items.BIRCH_SLAB, Items.BIRCH_STAIRS);
-		madeira(Items.JUNGLE_LOG, Items.JUNGLE_PLANKS, Items.JUNGLE_DOOR, Items.JUNGLE_FENCE, Items.JUNGLE_SLAB, Items.JUNGLE_STAIRS);
-		madeira(Items.ACACIA_LOG, Items.ACACIA_PLANKS, Items.ACACIA_DOOR, Items.ACACIA_FENCE, Items.ACACIA_SLAB, Items.ACACIA_STAIRS);
-		madeira(Items.DARK_OAK_LOG, Items.DARK_OAK_PLANKS, Items.DARK_OAK_DOOR, Items.DARK_OAK_FENCE, Items.DARK_OAK_SLAB, Items.DARK_OAK_STAIRS);
-		add(Profissao.LENHADOR, Items.STICK, 4, Map.of(Items.OAK_PLANKS, 2));
+		for (Madeira m : MADEIRAS) {
+			// Lenhador: carpentry, sticks, charcoal and chests, from any wood.
+			add(Profissao.LENHADOR, m.tabua(), 4, Map.of(m.tora(), 1));
+			add(Profissao.LENHADOR, m.porta(), 3, Map.of(m.tabua(), 6));
+			add(Profissao.LENHADOR, m.cerca(), 3, Map.of(m.tabua(), 4, Items.STICK, 2));
+			add(Profissao.LENHADOR, m.laje(), 6, Map.of(m.tabua(), 3));
+			add(Profissao.LENHADOR, m.escada(), 4, Map.of(m.tabua(), 6));
+			add(Profissao.LENHADOR, Items.STICK, 4, Map.of(m.tabua(), 2));
+			add(Profissao.LENHADOR, Items.CHARCOAL, 1, Map.of(m.tora(), 2));
+			add(Profissao.LENHADOR, Items.CHEST, 1, Map.of(m.tabua(), 8));
+			// Pastor: beds for the houses (the red is dyed with urucum, so it costs nothing extra).
+			add(Profissao.PASTOR, Items.BED.red(), 1, Map.of(Items.WOOL.white(), 3, m.tabua(), 3));
+			add(Profissao.PASTOR, Items.BED.white(), 1, Map.of(Items.WOOL.white(), 3, m.tabua(), 3));
+		}
 		add(Profissao.LENHADOR, Items.TORCH, 4, Map.of(Items.STICK, 1, Items.CHARCOAL, 1));
-		add(Profissao.LENHADOR, Items.CHARCOAL, 1, Map.of(Items.OAK_LOG, 2));
 
 		// Oleiro: clay, bricks and mud bricks.
 		add(Profissao.OLEIRO, Items.BRICK, 1, Map.of(Items.CLAY_BALL, 1));
@@ -39,13 +62,6 @@ public final class Receitas {
 		add(Profissao.OLEIRO, Items.MUD_BRICKS, 1, Map.of(Items.DIRT, 1, Items.WHEAT, 1));
 		add(Profissao.OLEIRO, Items.FLOWER_POT, 1, Map.of(Items.BRICK, 3));
 
-		// Lenhador: chests for new storehouses.
-		add(Profissao.LENHADOR, Items.CHEST, 1, Map.of(Items.OAK_PLANKS, 8));
-
-		// Pastor: beds for the houses (the red is dyed with urucum, so it costs nothing extra).
-		add(Profissao.PASTOR, Items.BED.red(), 1, Map.of(Items.WOOL.white(), 3, Items.OAK_PLANKS, 3));
-		add(Profissao.PASTOR, Items.BED.white(), 1, Map.of(Items.WOOL.white(), 3, Items.OAK_PLANKS, 3));
-
 		// Cavouqueiro: dressed stone.
 		add(Profissao.CAVOUQUEIRO, Items.COBBLESTONE_STAIRS, 4, Map.of(Items.COBBLESTONE, 6));
 		add(Profissao.CAVOUQUEIRO, Items.COBBLESTONE_SLAB, 6, Map.of(Items.COBBLESTONE, 3));
@@ -54,14 +70,6 @@ public final class Receitas {
 
 		// Roceiro: bread for the arraial's table.
 		add(Profissao.ROCEIRO, Items.BREAD, 1, Map.of(Items.WHEAT, 3));
-	}
-
-	private static void madeira(Item tora, Item tabua, Item porta, Item cerca, Item laje, Item escada) {
-		add(Profissao.LENHADOR, tabua, 4, Map.of(tora, 1));
-		add(Profissao.LENHADOR, porta, 3, Map.of(tabua, 6));
-		add(Profissao.LENHADOR, cerca, 3, Map.of(tabua, 4, Items.STICK, 2));
-		add(Profissao.LENHADOR, laje, 6, Map.of(tabua, 3));
-		add(Profissao.LENHADOR, escada, 4, Map.of(tabua, 6));
 	}
 
 	private static void add(Profissao quem, Item saida, int qtd, Map<Item, Integer> entrada) {
@@ -76,6 +84,12 @@ public final class Receitas {
 		return TODAS.stream().filter(r -> r.quem() == p).toList();
 	}
 
+	/** Every recipe that makes {@code saida} (one per wood family for wood goods). */
+	public static List<Receita> todasPara(Item saida) {
+		return TODAS.stream().filter(r -> r.saida() == saida).toList();
+	}
+
+	/** The first (default) recipe for {@code saida}. */
 	public static Optional<Receita> para(Item saida) {
 		return TODAS.stream().filter(r -> r.saida() == saida).findFirst();
 	}

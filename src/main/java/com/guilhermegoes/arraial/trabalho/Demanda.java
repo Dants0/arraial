@@ -8,87 +8,221 @@ import com.guilhermegoes.arraial.obra.PlanoDeObra;
 import com.guilhermegoes.arraial.vila.ArmazemBlockEntity;
 import com.guilhermegoes.arraial.vila.Vilas;
 import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
+import org.jspecify.annotations.Nullable;
 
 /**
- * What the arraial is short of right now: materials its construction sites still need
- * (beyond what is in their chests and the armazém), expanded through the trades' recipes
- * (a missing door means planks are needed, which means logs...), plus bread when food runs low.
+ * What the arraial is short of right now, and how urgently:
+ * <ul>
+ * <li>materials its construction sites still need (beyond their chests), ranked by each site's
+ * {@link com.guilhermegoes.arraial.obra.Prioridade};</li>
+ * <li>bread when food runs low (top urgency when there is not even a day's worth);</li>
+ * <li>the prefeito's minimum stock ({@link Estoque}), lowest urgency;</li>
+ * <li>all of that expanded through the trades' recipes (a missing door means planks, which means
+ * logs...), choosing for each item the recipe variant the armazém can best supply.</li>
+ * </ul>
  */
 public final class Demanda {
-	private static final int PROFUNDIDADE = 3;
+	private static final int PROFUNDIDADE = 4;
 	/** The arraial wants this many days of food per morador in stock. */
 	private static final int DIAS_DE_RESERVA = 3;
 
-	public static Map<Item, Integer> calcular(ServerLevel level, BlockPos vila) {
+	/** Urgency ranks: site priorities map to 10..40; reserve stock is the lowest. */
+	public static final int URGENCIA_META = 5;
+	private static final int URGENCIA_PAO = 25;
+	private static final int URGENCIA_FOME = 45;
+
+	/**
+	 * @param falta      what is missing, per item
+	 * @param urgencia   how urgent each missing item is (higher first)
+	 * @param reservado  materials the construction sites still need straight from the armazém;
+	 *                   artisans must not use them as ingredients
+	 * @param estoque    what the armazéns hold
+	 */
+	public record Resultado(Map<Item, Integer> falta, Map<Item, Integer> urgencia, Map<Item, Integer> reservado, Map<Item, Integer> estoque) {
+		/** What of {@code item} the armazém holds beyond what the sites have claimed. */
+		public int livre(Item item) {
+			return estoque.getOrDefault(item, 0) - reservado.getOrDefault(item, 0);
+		}
+
+		public int urgenciaDe(Item item) {
+			return urgencia.getOrDefault(item, 0);
+		}
+
+		/** The missing items, most urgent first. */
+		public List<Map.Entry<Item, Integer>> pedidos() {
+			List<Map.Entry<Item, Integer>> lista = new ArrayList<>(falta.entrySet());
+			lista.sort((a, b) -> Integer.compare(urgenciaDe(b.getKey()), urgenciaDe(a.getKey())));
+			return lista;
+		}
+	}
+
+	public static int urgencia(com.guilhermegoes.arraial.obra.Prioridade p) {
+		return 10 + 10 * p.ordinal();
+	}
+
+	public static Resultado calcular(ServerLevel level, BlockPos vila) {
 		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, vila);
-		Map<Item, Integer> falta = new LinkedHashMap<>();
+		Map<Item, Integer> inv = Vilas.inventario(armazens);
+		Map<Item, Integer> bruto = new LinkedHashMap<>();
+		Map<Item, Integer> urgencia = new HashMap<>();
+		Map<Item, Integer> reservado = new HashMap<>();
 
-		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {
-			if (!p.closerThan(vila, Vilas.RAIO) || !(level.getBlockEntity(p) instanceof CanteiroBlockEntity c) || !c.temTrabalho()) {
-				continue;
-			}
-			PlanoDeObra plano = c.plano(level).orElse(null);
-			if (plano == null) {
-				continue;
-			}
-			Container bau = c.bau(level);
-			for (Map.Entry<Item, Integer> e : plano.materiais(c.progresso()).entrySet()) {
-				int temBau = bau == null ? 0 : CanteiroBlock.contar(bau, e.getKey());
-				int n = e.getValue() - temBau;
-				if (n > 0) {
-					falta.merge(e.getKey(), n, Integer::sum);
-				}
+		// 1. Construction sites, most urgent first.
+		for (CanteiroBlockEntity c : CanteiroBlockEntity.daVila(level, vila)) {
+			for (Map.Entry<Item, Integer> e : restante(level, c).entrySet()) {
+				bruto.merge(e.getKey(), e.getValue(), Integer::sum);
+				reservado.merge(e.getKey(), e.getValue(), Integer::sum);
+				urgencia.merge(e.getKey(), urgencia(c.prioridade()), Math::max);
 			}
 		}
-		// Subtract what the armazém already holds.
-		falta.replaceAll((item, n) -> n - Vilas.contar(armazens, item));
-		falta.values().removeIf(n -> n <= 0);
 
-		// Food: keep a few days of bread for everyone.
-		int moradores = level.getEntitiesOfClass(MoradorEntity.class, new AABB(vila).inflate(Vilas.RAIO),
-				m -> vila.equals(m.vila())).size();
+		// 2. Food: keep a few days of bread for everyone.
+		List<MoradorEntity> moradores = level.getEntitiesOfClass(MoradorEntity.class, new AABB(vila).inflate(Vilas.RAIO),
+				m -> vila.equals(m.vila()));
+		int n = moradores.size();
 		int comida = Vilas.contar(armazens, s -> s.has(DataComponents.FOOD));
-		int querComida = moradores * DIAS_DE_RESERVA - comida;
+		int querComida = n * DIAS_DE_RESERVA - comida;
 		if (querComida > 0) {
-			falta.merge(Items.BREAD, querComida, Integer::sum);
+			// Gross need = what is there + what is missing, so that need - stock = the shortfall.
+			bruto.merge(Items.BREAD, querComida + inv.getOrDefault(Items.BREAD, 0), Integer::sum);
+			urgencia.merge(Items.BREAD, comida < n ? URGENCIA_FOME : URGENCIA_PAO, Math::max);
 		}
 
-		// Expand through recipes: what is needed to make what is missing.
+		// 3. The prefeito's minimum stock.
+		Set<Profissao> oficios = EnumSet.noneOf(Profissao.class);
+		moradores.forEach(m -> oficios.add(m.profissao()));
+		Estoque.metas(level, vila, n, oficios, inv).forEach((item, alvo) -> {
+			bruto.merge(item, alvo, Integer::sum);
+			urgencia.merge(item, URGENCIA_META, Math::max);
+		});
+
+		// 4. Expand through recipes: whatever will be crafted needs its ingredients.
+		Map<Item, Integer> expandido = new HashMap<>();
 		for (int nivel = 0; nivel < PROFUNDIDADE; nivel++) {
-			Map<Item, Integer> extra = new LinkedHashMap<>();
-			for (Map.Entry<Item, Integer> e : new ArrayList<>(falta.entrySet())) {
-				Receitas.para(e.getKey()).ifPresent(r -> {
-					int lotes = (e.getValue() + r.quantidade() - 1) / r.quantidade();
-					r.entrada().forEach((ing, q) -> {
-						int precisa = lotes * q - Vilas.contar(armazens, ing);
-						if (precisa > 0 && !falta.containsKey(ing)) {
-							extra.merge(ing, precisa, Integer::sum);
-						}
-					});
+			boolean mudou = false;
+			for (Item item : new ArrayList<>(bruto.keySet())) {
+				int f = bruto.get(item) - inv.getOrDefault(item, 0) - expandido.getOrDefault(item, 0);
+				if (f <= 0) {
+					continue;
+				}
+				Receitas.Receita r = escolher(item, inv);
+				if (r == null) {
+					continue;
+				}
+				int lotes = (f + r.quantidade() - 1) / r.quantidade();
+				int u = urgencia.getOrDefault(item, 0);
+				r.entrada().forEach((ing, q) -> {
+					bruto.merge(ing, lotes * q, Integer::sum);
+					urgencia.merge(ing, u, Math::max);
 				});
+				expandido.merge(item, lotes * r.quantidade(), Integer::sum);
+				mudou = true;
 			}
-			if (extra.isEmpty()) {
+			if (!mudou) {
 				break;
 			}
-			extra.forEach((k, v) -> falta.merge(k, v, Integer::sum));
 		}
-		return falta;
+
+		Map<Item, Integer> falta = new LinkedHashMap<>();
+		bruto.forEach((item, q) -> {
+			int f = q - inv.getOrDefault(item, 0);
+			if (f > 0) {
+				falta.put(item, f);
+			}
+		});
+		return new Resultado(falta, urgencia, reservado, inv);
+	}
+
+	/** What a site still needs from the armazém: its remaining materials minus its own chest. */
+	public static Map<Item, Integer> restante(ServerLevel level, CanteiroBlockEntity c) {
+		Map<Item, Integer> mapa = new LinkedHashMap<>();
+		PlanoDeObra plano = c.plano(level).orElse(null);
+		if (plano == null) {
+			return mapa;
+		}
+		Container bau = c.bau(level);
+		for (Map.Entry<Item, Integer> e : plano.materiais(c.progresso()).entrySet()) {
+			int n = e.getValue() - (bau == null ? 0 : CanteiroBlock.contar(bau, e.getKey()));
+			if (n > 0) {
+				mapa.put(e.getKey(), n);
+			}
+		}
+		return mapa;
+	}
+
+	/**
+	 * How much of {@code item} the armazém must keep for sites more urgent than {@code site}
+	 * (those that come before it in {@link CanteiroBlockEntity#ORDEM}).
+	 */
+	public static int reservadoAntes(ServerLevel level, BlockPos vila, CanteiroBlockEntity site, Item item) {
+		int total = 0;
+		for (CanteiroBlockEntity c : CanteiroBlockEntity.daVila(level, vila)) {
+			if (c == site || CanteiroBlockEntity.ORDEM.compare(c, site) >= 0) {
+				break;
+			}
+			total += restante(level, c).getOrDefault(item, 0);
+		}
+		return total;
+	}
+
+	/** The recipe for {@code item} whose ingredients the armazém can best supply (ties: the first). */
+	public static Receitas.@Nullable Receita escolher(Item item, Map<Item, Integer> inv) {
+		List<Receitas.Receita> opcoes = Receitas.todasPara(item);
+		if (opcoes.size() <= 1) {
+			return opcoes.isEmpty() ? null : opcoes.get(0);
+		}
+		Receitas.Receita melhor = opcoes.get(0);
+		int melhorLotes = -1;
+		for (Receitas.Receita r : opcoes) {
+			int lotes = lotesPossiveis(r, inv, 1);
+			if (lotes > melhorLotes) {
+				melhorLotes = lotes;
+				melhor = r;
+			}
+		}
+		return melhor;
+	}
+
+	private static int lotesPossiveis(Receitas.Receita r, Map<Item, Integer> inv, int nivel) {
+		int lotes = Integer.MAX_VALUE;
+		for (Map.Entry<Item, Integer> ing : r.entrada().entrySet()) {
+			lotes = Math.min(lotes, disponivel(ing.getKey(), inv, nivel) / ing.getValue());
+		}
+		return lotes == Integer.MAX_VALUE ? 0 : lotes;
+	}
+
+	/** Stock of {@code item} plus what could be made of it from stock, {@code nivel} recipes deep. */
+	private static int disponivel(Item item, Map<Item, Integer> inv, int nivel) {
+		int d = inv.getOrDefault(item, 0);
+		if (nivel > 0) {
+			int fazer = 0;
+			for (Receitas.Receita r : Receitas.todasPara(item)) {
+				fazer = Math.max(fazer, lotesPossiveis(r, inv, nivel - 1) * r.quantidade());
+			}
+			d += fazer;
+		}
+		return d;
 	}
 
 	// ------------------------------------------------------------ can the arraial get it?
 
 	/** Raw materials and which trade gathers them. */
-	private static final Map<Item, Profissao> FONTES = new java.util.HashMap<>();
+	private static final Map<Item, Profissao> FONTES = new HashMap<>();
 
 	static {
 		for (Item i : List.of(Items.COBBLESTONE, Items.COBBLED_DEEPSLATE, Items.ANDESITE, Items.DIORITE, Items.GRANITE,
@@ -109,8 +243,8 @@ public final class Demanda {
 	}
 
 	/** The trades present in the arraial. */
-	public static java.util.Set<Profissao> oficios(ServerLevel level, BlockPos vila) {
-		java.util.Set<Profissao> set = java.util.EnumSet.noneOf(Profissao.class);
+	public static Set<Profissao> oficios(ServerLevel level, BlockPos vila) {
+		Set<Profissao> set = EnumSet.noneOf(Profissao.class);
 		for (MoradorEntity m : level.getEntitiesOfClass(MoradorEntity.class, new AABB(vila).inflate(Vilas.RAIO), m -> vila.equals(m.vila()))) {
 			set.add(m.profissao());
 		}
@@ -121,47 +255,54 @@ public final class Demanda {
 	 * The first material of {@code materiais} the arraial cannot get: not in stock, nobody
 	 * gathers it, and no trade present can make it. Empty when everything is reachable.
 	 */
-	public static java.util.Optional<Item> inviavel(ServerLevel level, BlockPos vila, Map<Item, Integer> materiais, java.util.Set<Profissao> oficios) {
-		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, vila);
+	public static Optional<Item> inviavel(ServerLevel level, BlockPos vila, Map<Item, Integer> materiais, Set<Profissao> oficios) {
+		Map<Item, Integer> inv = Vilas.inventario(Vilas.armazens(level, vila));
 		for (Map.Entry<Item, Integer> e : materiais.entrySet()) {
-			if (!obtivel(armazens, e.getKey(), e.getValue(), oficios, 0)) {
-				return java.util.Optional.of(e.getKey());
+			if (!obtivel(inv, e.getKey(), e.getValue(), oficios, 0)) {
+				return Optional.of(e.getKey());
 			}
 		}
-		return java.util.Optional.empty();
+		return Optional.empty();
 	}
 
-	private static boolean obtivel(List<ArmazemBlockEntity> armazens, Item item, int quantidade, java.util.Set<Profissao> oficios, int nivel) {
-		if (Vilas.contar(armazens, item) >= quantidade) {
+	private static boolean obtivel(Map<Item, Integer> inv, Item item, int quantidade, Set<Profissao> oficios, int nivel) {
+		if (inv.getOrDefault(item, 0) >= quantidade) {
 			return true;
 		}
-		Profissao fonte = item.getDefaultInstance().is(net.minecraft.tags.ItemTags.LOGS) ? Profissao.LENHADOR : FONTES.get(item);
+		Profissao fonte = item.getDefaultInstance().is(ItemTags.LOGS) ? Profissao.LENHADOR : FONTES.get(item);
 		if (fonte != null && oficios.contains(fonte)) {
 			return true;
 		}
 		if (nivel >= 4) {
 			return false;
 		}
-		var receita = Receitas.para(item);
-		if (receita.isEmpty() || !oficios.contains(receita.get().quem())) {
-			return false;
-		}
-		int lotes = (quantidade + receita.get().quantidade() - 1) / receita.get().quantidade();
-		for (Map.Entry<Item, Integer> ing : receita.get().entrada().entrySet()) {
-			if (!obtivel(armazens, ing.getKey(), ing.getValue() * lotes, oficios, nivel + 1)) {
-				return false;
+		// Any recipe variant will do (oak or spruce planks, whichever the arraial can get).
+		for (Receitas.Receita r : Receitas.todasPara(item)) {
+			if (!oficios.contains(r.quem())) {
+				continue;
+			}
+			int lotes = (quantidade + r.quantidade() - 1) / r.quantidade();
+			boolean ok = true;
+			for (Map.Entry<Item, Integer> ing : r.entrada().entrySet()) {
+				if (!obtivel(inv, ing.getKey(), ing.getValue() * lotes, oficios, nivel + 1)) {
+					ok = false;
+					break;
+				}
+			}
+			if (ok) {
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/** The trade that gathers or makes {@code item}, or null. */
-	public static @org.jspecify.annotations.Nullable Profissao quemFaz(Item item) {
+	public static @Nullable Profissao quemFaz(Item item) {
 		var r = Receitas.para(item);
 		if (r.isPresent()) {
 			return r.get().quem();
 		}
-		return item.getDefaultInstance().is(net.minecraft.tags.ItemTags.LOGS) ? Profissao.LENHADOR : FONTES.get(item);
+		return item.getDefaultInstance().is(ItemTags.LOGS) ? Profissao.LENHADOR : FONTES.get(item);
 	}
 
 	private Demanda() {

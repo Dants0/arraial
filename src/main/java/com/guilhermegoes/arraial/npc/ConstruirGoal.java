@@ -3,6 +3,7 @@ package com.guilhermegoes.arraial.npc;
 import com.guilhermegoes.arraial.obra.CanteiroBlock;
 import com.guilhermegoes.arraial.obra.CanteiroBlockEntity;
 import com.guilhermegoes.arraial.obra.PlanoDeObra;
+import com.guilhermegoes.arraial.trabalho.Demanda;
 import com.guilhermegoes.arraial.vila.ArmazemBlockEntity;
 import com.guilhermegoes.arraial.vila.Cronica;
 import com.guilhermegoes.arraial.vila.Vilas;
@@ -43,6 +44,7 @@ public class ConstruirGoal extends Goal {
 	private double ultimaDistancia = Double.MAX_VALUE;
 	private int recalcularCaminho;
 	private int proximaBusca;
+	private int esperas;
 
 	public ConstruirGoal(MoradorEntity pedreiro) {
 		this.pedreiro = pedreiro;
@@ -138,22 +140,28 @@ public class ConstruirGoal extends Goal {
 	private void buscarMateriais(ServerLevel level, CanteiroBlockEntity canteiro, PlanoDeObra plano, PlanoDeObra.Custo precisa) {
 		// Where to fetch from: the site chest if it has the item, otherwise any armazém of the arraial.
 		Container bauDaObra = canteiro.bau(level);
-		BlockPos vila = Vilas.maisProxima(level, canteiro.getBlockPos());
-		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, vila != null ? vila : pedreiro.vila());
+		BlockPos vila = vilaDa(level, canteiro);
+		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, vila);
 		Container bau = null;
+		boolean reservado = false;
 		if (bauDaObra != null && CanteiroBlock.contar(bauDaObra, precisa.item()) > 0) {
 			bau = bauDaObra;
-		} else {
+		} else if (livreNoArmazem(level, canteiro, precisa.item()) > 0) {
 			for (ArmazemBlockEntity a : armazens) {
 				if (CanteiroBlock.contar(a, precisa.item()) > 0) {
 					bau = a;
 					break;
 				}
 			}
+		} else {
+			// The armazém may have it, but a more urgent site has claimed it.
+			reservado = Vilas.contar(armazens, precisa.item()) > 0;
 		}
 		if (bau == null) {
 			if (bauDaObra == null && armazens.isEmpty()) {
 				pedreiro.setStatus(Component.translatable("arraial.pedreiro.sem_bau"));
+			} else if (reservado) {
+				pedreiro.setStatus(Component.translatable("arraial.pedreiro.reservado", precisa.item().getDefaultInstance().getHoverName()));
 			} else {
 				// There is somewhere to take from, it just doesn't have this yet: wait for the
 				// trades (or the player) to bring it, and say exactly what is missing.
@@ -163,8 +171,14 @@ public class ConstruirGoal extends Goal {
 			}
 			andarAte(canteiro.getBlockPos());
 			espera = 60;
+			// After a while, look again: another site may have what it needs.
+			if (++esperas >= 3) {
+				esperas = 0;
+				pedreiro.setObra(null);
+			}
 			return;
 		}
+		esperas = 0;
 		BlockPos posBau = ((net.minecraft.world.level.block.entity.BlockEntity) bau).getBlockPos();
 		if (!perto(posBau, 3.0)) {
 			pedreiro.setStatus(Component.translatable("arraial.pedreiro.indo_bau"));
@@ -184,8 +198,13 @@ public class ConstruirGoal extends Goal {
 				lista.merge(c.item(), c.quantidade(), Integer::sum);
 			}
 		}
+		boolean doArmazem = bau != bauDaObra;
 		for (Map.Entry<Item, Integer> e : lista.entrySet()) {
 			int falta = e.getValue() - pedreiro.carregando(e.getKey());
+			if (doArmazem) {
+				// Leave what more urgent sites have claimed.
+				falta = Math.min(falta, livreNoArmazem(level, canteiro, e.getKey()));
+			}
 			if (falta > 0) {
 				pedreiro.guardar(e.getKey(), retirar(bau, e.getKey(), falta));
 			}
@@ -293,13 +312,25 @@ public class ConstruirGoal extends Goal {
 	}
 
 	private @Nullable BlockPos procurarObra(ServerLevel level) {
+		// His own arraial first: the most urgent site that can move forward right now
+		// (materials at hand); if every site is waiting for materials, the most urgent one.
+		if (pedreiro.vila() != null) {
+			List<CanteiroBlockEntity> obras = CanteiroBlockEntity.daVila(level, pedreiro.vila());
+			for (CanteiroBlockEntity c : obras) {
+				if (podeAvancar(level, c)) {
+					return c.getBlockPos();
+				}
+			}
+			if (!obras.isEmpty()) {
+				return obras.get(0).getBlockPos();
+			}
+		}
+		// No village work: help at any site nearby.
 		BlockPos melhor = null;
 		double melhorDist = (double) RAIO_BUSCA * RAIO_BUSCA;
 		for (BlockPos pos : CanteiroBlockEntity.ativos(level)) {
 			double d = pedreiro.distanceToSqr(Vec3.atCenterOf(pos));
-			// Any site of his own arraial counts, however far; elsewhere only nearby ones.
-			boolean daVila = pedreiro.vila() != null && pos.closerThan(pedreiro.vila(), Vilas.RAIO);
-			if (d < melhorDist || (daVila && melhor == null)) {
+			if (d < melhorDist) {
 				CanteiroBlockEntity c = canteiro(level, pos);
 				if (c != null && c.temTrabalho()) {
 					melhor = pos;
@@ -308,6 +339,40 @@ public class ConstruirGoal extends Goal {
 			}
 		}
 		return melhor;
+	}
+
+	/** True when the site's next step needs nothing, or its material is in the site chest or free in the armazém. */
+	private boolean podeAvancar(ServerLevel level, CanteiroBlockEntity c) {
+		PlanoDeObra plano = c.plano(level).orElse(null);
+		if (plano == null) {
+			return false;
+		}
+		if (c.progresso() >= plano.etapas().size()) {
+			return true;
+		}
+		PlanoDeObra.Custo custo = PlanoDeObra.custo(plano.etapas().get(c.progresso()).state());
+		if (custo == null || pedreiro.carregando(custo.item()) >= custo.quantidade()) {
+			return true;
+		}
+		Container bau = c.bau(level);
+		if (bau != null && CanteiroBlock.contar(bau, custo.item()) > 0) {
+			return true;
+		}
+		return livreNoArmazem(level, c, custo.item()) > 0;
+	}
+
+	/** Armazém stock of {@code item} not claimed by more urgent sites. */
+	private int livreNoArmazem(ServerLevel level, CanteiroBlockEntity c, Item item) {
+		BlockPos vila = vilaDa(level, c);
+		if (vila == null) {
+			return 0;
+		}
+		return Vilas.contar(Vilas.armazens(level, vila), item) - Demanda.reservadoAntes(level, vila, c, item);
+	}
+
+	private @Nullable BlockPos vilaDa(ServerLevel level, CanteiroBlockEntity c) {
+		BlockPos vila = Vilas.maisProxima(level, c.getBlockPos());
+		return vila != null ? vila : pedreiro.vila();
 	}
 
 	private static @Nullable CanteiroBlockEntity canteiro(ServerLevel level, @Nullable BlockPos pos) {

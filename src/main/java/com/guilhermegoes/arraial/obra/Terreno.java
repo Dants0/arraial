@@ -107,13 +107,14 @@ public final class Terreno {
 	}
 
 	/** Puts down a Marco da Obra holding {@code projeto}; the pedreiros will find it. */
-	public static boolean marcar(ServerLevel level, Lugar lugar, Catalogo.Projeto projeto) {
+	public static boolean marcar(ServerLevel level, Lugar lugar, Catalogo.Projeto projeto, Prioridade prioridade) {
 		BlockState marco = ModBlocks.CANTEIRO.defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, lugar.frente());
 		if (!level.setBlock(lugar.marco(), marco, Block.UPDATE_ALL)) {
 			return false;
 		}
 		if (level.getBlockEntity(lugar.marco()) instanceof CanteiroBlockEntity c) {
 			c.escolherProjeto(projeto);
+			c.setPrioridade(prioridade);
 			return true;
 		}
 		return false;

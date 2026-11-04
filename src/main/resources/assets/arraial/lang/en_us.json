@@ -164,5 +164,15 @@
 	"arraial.vila.pedido": "The mayor wants to build %s, but %s is missing and nobody in the arraial can get it.",
 	"arraial.vila.pedido_lugar": "The mayor wants to build %s, but found no flat, free ground.",
 	"arraial.vila.prefeito": "%s: %s",
-	"arraial.vila.sem_prefeito": "No mayor: with %s moradores the arraial elects its oldest resident."
+	"arraial.vila.sem_prefeito": "No mayor: with %s moradores the arraial elects its oldest resident.",
+
+	"arraial.prioridade.baixa": "low",
+	"arraial.prioridade.normal": "normal",
+	"arraial.prioridade.alta": "high",
+	"arraial.prioridade.urgente": "urgent",
+	"arraial.canteiro.prioridade": "Priority: %s",
+	"arraial.canteiro.prioridade_dica": " (sneak + right-click with an empty hand to change)",
+	"arraial.canteiro.prioridade_mudou": "Site priority: %s",
+	"arraial.pedreiro.reservado": "%s is reserved for a more urgent site",
+	"arraial.vila.metas": "📦 Mayor's reserve stock:"
 }

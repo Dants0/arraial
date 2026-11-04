@@ -27,6 +27,10 @@ public class CanteiroBlockEntity extends BlockEntity {
 	private String projeto = "";
 	private int progresso = 0;
 	private boolean concluida = false;
+	// Sites from before priorities existed were all placed by the player.
+	private Prioridade prioridade = Prioridade.ALTA;
+	/** Game time the project was chosen: older sites go first among equal priorities. */
+	private long criada = 0;
 	private @Nullable PlanoDeObra plano;
 
 	public CanteiroBlockEntity(BlockPos pos, BlockState state) {
@@ -75,11 +79,39 @@ public class CanteiroBlockEntity extends BlockEntity {
 
 	public void escolherProjeto(Catalogo.Projeto novo) {
 		projeto = novo.id();
+		criada = level != null ? level.getGameTime() : 0;
 		progresso = 0;
 		concluida = false;
 		plano = null;
 		setChanged();
 	}
+
+	public Prioridade prioridade() {
+		return prioridade;
+	}
+
+	public void setPrioridade(Prioridade p) {
+		prioridade = p;
+		setChanged();
+	}
+
+	/** Unfinished sites of the arraial at {@code vila}, most urgent first (then oldest first). */
+	public static java.util.List<CanteiroBlockEntity> daVila(ServerLevel level, BlockPos vila) {
+		java.util.List<CanteiroBlockEntity> lista = new java.util.ArrayList<>();
+		for (BlockPos p : ativos(level)) {
+			if (p.closerThan(vila, com.guilhermegoes.arraial.vila.Vilas.RAIO) && level.isLoaded(p)
+					&& level.getBlockEntity(p) instanceof CanteiroBlockEntity c && c.temTrabalho()) {
+				lista.add(c);
+			}
+		}
+		lista.sort(ORDEM);
+		return lista;
+	}
+
+	public static final java.util.Comparator<CanteiroBlockEntity> ORDEM = java.util.Comparator
+			.comparing((CanteiroBlockEntity c) -> -c.prioridade.ordinal())
+			.thenComparingLong(c -> c.criada)
+			.thenComparing(c -> c.worldPosition);
 
 	public void avancar() {
 		progresso++;
@@ -123,6 +155,8 @@ public class CanteiroBlockEntity extends BlockEntity {
 		projeto = input.getStringOr("Projeto", "");
 		progresso = input.getIntOr("Progresso", 0);
 		concluida = input.getBooleanOr("Concluida", false);
+		prioridade = Prioridade.de(input.getIntOr("Prioridade", Prioridade.ALTA.ordinal()));
+		criada = input.getLongOr("Criada", 0L);
 		plano = null;
 	}
 
@@ -132,5 +166,7 @@ public class CanteiroBlockEntity extends BlockEntity {
 		output.putString("Projeto", projeto);
 		output.putInt("Progresso", progresso);
 		output.putBoolean("Concluida", concluida);
+		output.putInt("Prioridade", prioridade.ordinal());
+		output.putLong("Criada", criada);
 	}
 }

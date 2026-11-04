@@ -4,7 +4,14 @@ import com.guilhermegoes.arraial.npc.MoradorEntity;
 import com.guilhermegoes.arraial.obra.CanteiroBlockEntity;
 import com.guilhermegoes.arraial.obra.PlanoDeObra;
 import com.guilhermegoes.arraial.registry.ModBlockEntities;
+import com.guilhermegoes.arraial.npc.Profissao;
+import com.guilhermegoes.arraial.trabalho.Estoque;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.Item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -156,14 +163,32 @@ public class ArraialBlock extends Block implements EntityBlock {
 					.withStyle(ChatFormatting.WHITE));
 		}
 		BlockPos centro = arraial.getBlockPos();
-		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {
-			if (p.closerThan(centro, Vilas.RAIO) && level.getBlockEntity(p) instanceof CanteiroBlockEntity c && c.temTrabalho()) {
-				int total = c.plano(level).map(PlanoDeObra::etapas).map(List::size).orElse(0);
-				int pct = total == 0 ? 0 : c.progresso() * 100 / total;
-				player.sendSystemMessage(Component.literal(" ⚒ ")
-						.append(Component.translatable("arraial.vila.linha_obra", c.projeto().get().nome(), pct))
-						.withStyle(ChatFormatting.AQUA));
+		// Sites in the order the pedreiros take them.
+		for (CanteiroBlockEntity c : CanteiroBlockEntity.daVila(level, centro)) {
+			int total = c.plano(level).map(PlanoDeObra::etapas).map(List::size).orElse(0);
+			int pct = total == 0 ? 0 : c.progresso() * 100 / total;
+			player.sendSystemMessage(Component.literal(" ⚒ ")
+					.append(Component.translatable("arraial.vila.linha_obra", c.projeto().get().nome(), pct).withStyle(ChatFormatting.AQUA))
+					.append(Component.literal(" · "))
+					.append(c.prioridade().nome()));
+		}
+		// The prefeito's minimum stock and how far along it is.
+		Map<Item, Integer> inv = Vilas.inventario(armazens);
+		Set<Profissao> oficios = EnumSet.noneOf(Profissao.class);
+		moradores.forEach(m -> oficios.add(m.profissao()));
+		Map<Item, Integer> metas = Estoque.metas(level, centro, moradores.size(), oficios, inv);
+		if (!metas.isEmpty()) {
+			MutableComponent linha = Component.translatable("arraial.vila.metas").withStyle(ChatFormatting.GOLD);
+			boolean primeiro = true;
+			for (Map.Entry<Item, Integer> e : metas.entrySet()) {
+				int tem = inv.getOrDefault(e.getKey(), 0);
+				linha.append(Component.literal(primeiro ? " " : " · ").withStyle(ChatFormatting.DARK_GRAY));
+				linha.append(Component.empty().append(e.getKey().getDefaultInstance().getHoverName())
+						.append(" " + Math.min(tem, e.getValue()) + "/" + e.getValue())
+						.withStyle(tem >= e.getValue() ? ChatFormatting.GREEN : ChatFormatting.GRAY));
+				primeiro = false;
 			}
+			player.sendSystemMessage(linha);
 		}
 	}
 }
