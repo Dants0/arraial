@@ -129,12 +129,14 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 ## 18. Famílias e sucessão
 - [x] Sobrenome; casamento entre amigos (afinidade ≥ 30) com fogos; filhos (crianças menores que crescem em 3 dias)
 - [x] Sucessão no coronelismo: filho mais velho ou cônjuge do último chefe; parentes votam em parentes
-- [x] , 
+- [x] Comandos de teste: /arraial casamento, /arraial nascimento
+
 ## 19. Eras e modernização
 - [x] Colonial → Imperial (Vila + olaria + 40 réis) → Republicana (Vila próspera + Capela + Cartório + 80 réis)
 - [x] Reforma das construções (taipa→tijolo→cal; telhado de telha; pedra lavrada; lampião) e das ruas (terra→calçamento→paralelepípedo), com material do armazém
 - [x] Engenheiro faz rua e poste no estilo da era; Capela (Imperial) e Chafariz (Republicana)
-- [x] , 
+- [x] Comandos de teste: /arraial era (colonial, imperial, republicana), /arraial obra_pronta (projeto)
+
 ## 20. Teste automático no cliente
 - [x] Roteiro (ARRAIAL_ROTEIRO=1 runClient) com fotos e verificações: itens, vaqueiro, foice, cantil, saque, festa, política, missão, família, território, eras
 
