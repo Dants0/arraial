@@ -10,7 +10,8 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": ["com.guilhermegoes.arraial.Arraial"],
-		"client": ["com.guilhermegoes.arraial.client.ArraialClient"]
+		"client": ["com.guilhermegoes.arraial.client.ArraialClient"],
+		"jei_mod_plugin": ["com.guilhermegoes.arraial.client.ArraialJei"]
 	},
 	"depends": {
 		"fabricloader": ">=0.20.1",
