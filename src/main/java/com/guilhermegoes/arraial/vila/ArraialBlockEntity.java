@@ -42,6 +42,8 @@ public class ArraialBlockEntity extends BlockEntity {
 	/** Supply orders signed by players (see {@link Comercio}) and money owed to them. */
 	final java.util.Map<java.util.UUID, String> encomendas = new java.util.HashMap<>();
 	final java.util.Map<java.util.UUID, Integer> pagamentos = new java.util.HashMap<>();
+	/** Each player's cultural recognition here (see {@link Cultura}). */
+	final java.util.Map<java.util.UUID, Integer> cultura = new java.util.HashMap<>();
 
 	public Politica politica() {
 		return politica;
@@ -103,6 +105,14 @@ public class ArraialBlockEntity extends BlockEntity {
 	}
 
 	public void mudarReputacao(java.util.UUID jogador, int delta) {
+		// Customs: the hospitable warm up to strangers faster, the wary slower.
+		if (delta > 0 && level instanceof ServerLevel s) {
+			if (Cultura.costume(s, this, "hospitaleiros")) {
+				delta = (int) Math.ceil(delta * 1.5);
+			} else if (Cultura.costume(s, this, "desconfiados")) {
+				delta = Math.max(1, (int) Math.floor(delta * 0.6));
+			}
+		}
 		reputacao.merge(jogador, delta, (a, b) -> Math.max(-100, Math.min(100, a + b)));
 		setChanged();
 	}
@@ -335,6 +345,8 @@ public class ArraialBlockEntity extends BlockEntity {
 		politica.ler(input);
 		encomendas.clear();
 		input.read("Encomendas", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.STRING)).ifPresent(encomendas::putAll);
+		cultura.clear();
+		input.read("CulturaJogador", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT)).ifPresent(cultura::putAll);
 		pagamentos.clear();
 		input.read("Pagamentos", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT)).ifPresent(pagamentos::putAll);
 		satisfacao = input.getIntOr("Satisfacao", 60);
@@ -368,6 +380,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		festa.gravar(output);
 		politica.gravar(output);
 		output.store("Encomendas", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.STRING), java.util.Map.copyOf(encomendas));
+		output.store("CulturaJogador", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT), java.util.Map.copyOf(cultura));
 		output.store("Pagamentos", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT), java.util.Map.copyOf(pagamentos));
 		output.putInt("Satisfacao", satisfacao);
 		output.putLong("UltimoDiario", ultimoDiario);

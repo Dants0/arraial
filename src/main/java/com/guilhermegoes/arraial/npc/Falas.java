@@ -60,7 +60,7 @@ public final class Falas {
 		if (a != null && r.nextFloat() < 0.35F) {
 			var prox = com.guilhermegoes.arraial.vila.Calendario.proxima(level, a);
 			if (prox != null && prox.dias() >= 1 && prox.dias() <= 3) {
-				return linha(r, "festa_chegando", prox.tipo().nome(a), prox.dias());
+				return linha(r, "festa_chegando", prox.nome(), prox.dias());
 			}
 		}
 		if (m.casa() == null && r.nextFloat() < 0.5F) {
@@ -132,7 +132,7 @@ public final class Falas {
 		if (vila != null) {
 			var prox = com.guilhermegoes.arraial.vila.Calendario.proxima(level, vila);
 			if (prox != null && prox.dias() <= 3) {
-				festa = prox.tipo().nome(vila);
+				festa = prox.nome();
 				temas.add("festa");
 				temas.add("festa");
 			}

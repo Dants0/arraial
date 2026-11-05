@@ -89,6 +89,7 @@ public final class Simulacao {
 		info.satisfacao = a.satisfacao;
 		info.especialidade = Economia.especialidade(info.oficios).id();
 		info.abandonada = a.abandonada;
+		Cultura.garantir(level, a, info);
 		if (!a.abandonada) {
 			info.fome = 0;
 			info.criseLonge = "";

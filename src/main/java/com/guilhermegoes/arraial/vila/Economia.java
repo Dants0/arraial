@@ -167,7 +167,7 @@ public final class Economia {
 			if (v.estoque.getOrDefault(item, 0) < 24) {
 				continue; // nothing to spare there
 			}
-			double frete = base * (0.15 + dist / 1500.0) * (1 + risco(meu, e.getKey(), hoje) * 2) * (batida(meu, e.getKey()) ? 0.7 : 1.0);
+			double frete = base * (0.15 + dist / 1500.0) * (1 + risco(meu, e.getKey(), hoje) * 2) * (batida(meu, e.getKey()) ? 0.7 : 1.0) * (Territorio.tem(meu, e.getKey(), "comercio", hoje) ? 0.8 : 1.0);
 			double la = v.precos.getOrDefault(item, base) + frete;
 			melhor = Math.min(melhor, la);
 		}

@@ -90,9 +90,25 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] Contratos de fornecimento entre vilas (comida, pedra, madeira), preferindo especialistas; rota fechada rompe
 - [x] Estrada batida (10+ viagens): frete 30% menor e mais segura; `/arraial mascate`
 
-## Próximos (ver ROADMAP, fases E–H)
+## 13. Território (fase E)
+- [x] Território por chunks (raio cresce com estágio e população); Marco de Fronteira amplia (3x3 chunks); terra anexada é exclusiva
+- [x] Aviso na tela ao cruzar fronteira (terras de X / terra disputada / terra de ninguém)
+- [x] Tensão diária com causa: terra em comum, mesmos recursos, rixa (reputação), roubos na estrada; tratados acalmam
+- [x] Disputa → piora relações → guerra (rotas fechadas), escaramuças por força (gente, soldados, marcos, estágio); milícia ataca a vila carregada
+- [x] Paz com tributo diário e anexação da terra disputada; tratados de paz, comércio (frete menor), aliança, fronteira (divide a terra)
+- [x] Escrivaninha: jogador vê vizinhos (reputação, tensão, força, tratados) e propõe tratados, que podem ser recusados; `/arraial guerra`
+
+## 14. Cultura (fase F)
+- [x] Cultura de cada vila pelo bioma e pela economia: cores, símbolo, bandeira hasteada no Cruzeiro (também para vilas distantes)
+- [x] Costumes: hospitaleiros, desconfiados, festeiros, trabalhadores, devotos, comerciantes (efeitos reais)
+- [x] 11 tradições (Folia de Reis, Navegantes, Colheita, Congada, Divino, Pinhão, Bumba-meu-boi, Cavalhada, Mutirão, Vaquejada, Santa Bárbara) viram festas no calendário, com estilo próprio (roda, procissão, feira, procissão até a água)
+- [x] Intercâmbio cultural entre vizinhos amigos com estrada batida ou tratado
+- [x] Reconhecimento do jogador (participar de festas, levar doces): conhecido → amigo da festa (ganha a bandeira) → filho da terra
+- [x] Cerimônias: posse do prefeito com fogos; luto quando um morador morre
+
+## Próximos (ver ROADMAP, fases G–H)
 - [ ] Teste em jogo de tudo acima (T)
-- [ ] E Território · F Cultura · G Vida pessoal · H Ruínas e ocupação
+- [ ] G Vida pessoal · H Ruínas e ocupação
 - [ ] Famílias e sucessão; blocos coloniais
 - [ ] Eras/modernização
 - [ ] Tratados e embargo (diplomacia completa); tela de diplomacia

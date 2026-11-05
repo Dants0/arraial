@@ -86,7 +86,7 @@ public final class ModBlocks {
 
 	/** Workstation of relações públicas: a writing desk for letters to the neighbours. */
 	public static final Block ESCRIVANINHA = register("escrivaninha",
-			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("escrivaninha").mapColor(MapColor.WOOD).strength(1.5F)
+			new com.guilhermegoes.arraial.vila.EscrivaninhaBlock(props("escrivaninha").mapColor(MapColor.WOOD).strength(1.5F)
 					.sound(SoundType.WOOD).noOcclusion()));
 
 	/** Lampião: an oil lamp of tin and glass, standing or hanging, with a flickering flame. */
@@ -123,6 +123,11 @@ public final class ModBlocks {
 	public static final Block URNA = register("urna",
 			new com.guilhermegoes.arraial.vila.UrnaBlock(props("urna").mapColor(MapColor.WOOD).strength(1.5F)
 					.sound(SoundType.WOOD).noOcclusion()));
+
+	/** Marco de Fronteira: extends the arraial's territory (see Territorio). */
+	public static final Block MARCO_FRONTEIRA = register("marco_fronteira",
+			new com.guilhermegoes.arraial.vila.MarcoFronteiraBlock(props("marco_fronteira").mapColor(MapColor.STONE).strength(2.0F)
+					.requiresCorrectToolForDrops().sound(SoundType.STONE).noOcclusion()));
 
 	/** Bandeirinhas: the string of little flags of the festas juninas (decoration). */
 	public static final Block BANDEIRINHAS = register("bandeirinhas",

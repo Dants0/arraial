@@ -438,6 +438,8 @@ public final class Comercio {
 			executar(level, e.getKey(), v, hoje);
 			assinar(level, e.getKey(), v, hoje);
 		}
+		Territorio.diario(level, hoje);
+		Cultura.intercambio(level, hoje);
 	}
 
 	private static String categoria(String item) {

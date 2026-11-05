@@ -62,11 +62,14 @@ public final class Calendario {
 		if (d == 1 && (m == 3 || m == 9) && a.temFeira(level)) {
 			return Festa.Tipo.FEIRA_GRANDE;
 		}
+		if (d == 1 && Cultura.doMes(Registro.get(Economia.id(level, a.getBlockPos())), m) != null) {
+			return Festa.Tipo.TRADICAO;
+		}
 		return null;
 	}
 
 	/** The next festa from today on: the type and how many days away (0 = today). */
-	public record Proxima(Festa.Tipo tipo, int dias) {
+	public record Proxima(Festa.Tipo tipo, int dias, Component nome) {
 	}
 
 	public static @Nullable Proxima proxima(ServerLevel level, ArraialBlockEntity a) {
@@ -74,7 +77,9 @@ public final class Calendario {
 		for (int i = 0; i <= DIAS_POR_ANO; i++) {
 			Festa.Tipo t = festaDoDia(level, a, hoje + i);
 			if (t != null) {
-				return new Proxima(t, i);
+				Component nome = t == Festa.Tipo.TRADICAO
+						? Cultura.doMes(Registro.get(Economia.id(level, a.getBlockPos())), mes(hoje + i)).nome() : t.nome(a);
+				return new Proxima(t, i, nome);
 			}
 		}
 		return null;

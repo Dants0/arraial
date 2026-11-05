@@ -701,6 +701,11 @@ public class MoradorEntity extends PathfinderMob {
 			soltar(server, casa);
 			soltar(server, posto);
 			Cronica.anotar(server, vila, Component.translatable("arraial.cronica.morte", nome()));
+			// Mourning: the arraial grieves its dead.
+			if (vila != null && profissao() != Profissao.MASCATE) {
+				com.guilhermegoes.arraial.vila.Satisfacao.agradar(server, vila, -3);
+				Cronica.anotar(server, vila, Component.translatable("arraial.cronica.luto", nome()));
+			}
 			// Killed by a player: the whole arraial remembers.
 			if (source.getEntity() instanceof net.minecraft.world.entity.player.Player p) {
 				ArraialBlockEntity a = arraial();
@@ -811,6 +816,18 @@ public class MoradorEntity extends PathfinderMob {
 				Cronica.anotar(server, vila, Component.translatable("arraial.cronica.dispensado", nome(), antigo));
 			}
 			player.sendSystemMessage(Component.translatable("arraial.morador.dispensado", nome(), antigo).withStyle(ChatFormatting.YELLOW));
+			return InteractionResult.SUCCESS;
+		}
+		// Sweets for the festa: the village remembers who brought them.
+		if (level() instanceof ServerLevel server && arraial() != null && arraial().festa().agora() != null
+				&& (stack.is(ModItems.QUENTAO) || stack.is(ModItems.PE_DE_MOLEQUE) || stack.is(ModItems.PACOCA) || stack.is(ModItems.RAPADURA) || stack.is(ModItems.BEIJU))) {
+			if (!player.getAbilities().instabuild) {
+				stack.shrink(1);
+			}
+			diasSemComer = 0;
+			dizer(Component.translatable("arraial.fala.festa_presente", player.getName()), 80);
+			com.guilhermegoes.arraial.vila.Satisfacao.agradar(server, vila, 1);
+			com.guilhermegoes.arraial.vila.Cultura.reconhecer(server, arraial(), player, 3);
 			return InteractionResult.SUCCESS;
 		}
 		// A gift of food for someone hungry (or a remedy for someone sick).

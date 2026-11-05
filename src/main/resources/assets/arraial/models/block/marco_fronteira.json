@@ -1,0 +1,10 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {"pedra": "minecraft:block/stone_bricks", "topo": "minecraft:block/chiseled_stone_bricks", "faixa": "minecraft:block/red_wool", "particle": "minecraft:block/stone_bricks"},
+	"elements": [
+		{"name": "base", "from": [4, 0, 4], "to": [12, 2, 12], "faces": {"north": {"uv": [4, 14, 12, 16], "texture": "#pedra"}, "south": {"uv": [4, 14, 12, 16], "texture": "#pedra"}, "east": {"uv": [4, 14, 12, 16], "texture": "#pedra"}, "west": {"uv": [4, 14, 12, 16], "texture": "#pedra"}, "up": {"uv": [4, 4, 12, 12], "texture": "#pedra"}, "down": {"uv": [4, 4, 12, 12], "texture": "#pedra", "cullface": "down"}}},
+		{"name": "poste", "from": [5, 2, 5], "to": [11, 13, 11], "faces": {"north": {"uv": [5, 3, 11, 14], "texture": "#pedra"}, "south": {"uv": [5, 3, 11, 14], "texture": "#pedra"}, "east": {"uv": [5, 3, 11, 14], "texture": "#pedra"}, "west": {"uv": [5, 3, 11, 14], "texture": "#pedra"}}},
+		{"name": "faixa", "from": [4.9, 9, 4.9], "to": [11.1, 10, 11.1], "faces": {"north": {"uv": [5, 0, 11, 1], "texture": "#faixa"}, "south": {"uv": [5, 0, 11, 1], "texture": "#faixa"}, "east": {"uv": [5, 0, 11, 1], "texture": "#faixa"}, "west": {"uv": [5, 0, 11, 1], "texture": "#faixa"}}},
+		{"name": "topo", "from": [4.5, 13, 4.5], "to": [11.5, 15, 11.5], "faces": {"north": {"uv": [4, 1, 11, 3], "texture": "#topo"}, "south": {"uv": [4, 1, 11, 3], "texture": "#topo"}, "east": {"uv": [4, 1, 11, 3], "texture": "#topo"}, "west": {"uv": [4, 1, 11, 3], "texture": "#topo"}, "up": {"uv": [4, 4, 11, 11], "texture": "#topo"}}}
+	]
+}

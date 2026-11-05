@@ -130,6 +130,8 @@ public final class Prefeitura {
 		eleito.setPrefeito(true);
 		Component cargo = cargo(eleito);
 		Cronica.anotar(level, arraial.getBlockPos(), Component.translatable("arraial.cronica.eleicao", eleito.nome(), cargo));
+		// The swearing-in: fireworks over the Cruzeiro.
+		Festa.soltarFogos(level, arraial.getBlockPos(), 3);
 		avisar(level, arraial, Component.translatable("arraial.vila.eleicao", eleito.nome(), cargo, arraial.nomeCompleto()).withStyle(ChatFormatting.GOLD));
 		return eleito;
 	}

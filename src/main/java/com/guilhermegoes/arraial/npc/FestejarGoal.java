@@ -91,10 +91,11 @@ public class FestejarGoal extends Goal {
 		}
 		t++;
 		BlockPos c = a.festa().centro(a);
-		switch (tipo) {
-			case SAO_JOAO -> roda(c, 3.5, 0.012, 0.55, true);
-			case PADROEIRO -> roda(c, 7.0, 0.005, 0.4, false);
-			case FEIRA_GRANDE -> feira(c);
+		switch (a.festa().estilo()) {
+			case RODA -> roda(c, 3.5, 0.012, 0.55, true);
+			case PROCISSAO -> roda(c, 7.0, 0.005, 0.4, false);
+			case AGUA -> roda(c, 5.0, 0.006, 0.4, false);
+			case FEIRA -> feira(c);
 		}
 		if (t % 100 == 0 && morador.getRandom().nextFloat() < 0.15F) {
 			morador.dizer(fala(tipo, a), 60);
@@ -141,6 +142,7 @@ public class FestejarGoal extends Goal {
 			case SAO_JOAO -> Component.translatable("arraial.fala.quadrilha." + morador.getRandom().nextInt(6));
 			case PADROEIRO -> Component.translatable("arraial.fala.procissao." + morador.getRandom().nextInt(3), Calendario.padroeiro(a.nome()));
 			case FEIRA_GRANDE -> Component.translatable("arraial.fala.feira_grande." + morador.getRandom().nextInt(3));
+			case TRADICAO -> Component.translatable("arraial.fala.tradicao." + a.festa().tradicaoId() + "." + morador.getRandom().nextInt(2));
 		};
 	}
 }

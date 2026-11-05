@@ -152,8 +152,8 @@ public class ArraialBlock extends Block implements EntityBlock {
 		Calendario.Proxima prox = Calendario.proxima(level, arraial);
 		if (prox != null) {
 			cal.append(" · ").append(prox.dias() == 0
-					? Component.translatable("arraial.calendario.festa_hoje", prox.tipo().nome(arraial))
-					: Component.translatable("arraial.calendario.proxima_festa", prox.tipo().nome(arraial), prox.dias()));
+					? Component.translatable("arraial.calendario.festa_hoje", prox.nome())
+					: Component.translatable("arraial.calendario.proxima_festa", prox.nome(), prox.dias()));
 		}
 		player.sendSystemMessage(cal.withStyle(ChatFormatting.LIGHT_PURPLE));
 		if (estagio.ordinal() < Estagio.values().length - 1) {
@@ -197,6 +197,10 @@ public class ArraialBlock extends Block implements EntityBlock {
 		if (eu != null) {
 			player.sendSystemMessage(Component.translatable("arraial.vila.especialidade", Economia.Especialidade.de(eu.especialidade).nome())
 					.withStyle(ChatFormatting.DARK_AQUA));
+			int r = Territorio.raio(eu) * 2 + 1;
+			player.sendSystemMessage(Component.translatable("arraial.vila.territorio", r, r, eu.marcos.size(), eu.disputas.size(), eu.guerras.size(),
+					eu.tratados.size()).withStyle(eu.guerras.isEmpty() ? ChatFormatting.DARK_AQUA : ChatFormatting.RED));
+			Cultura.relatorio(level, arraial, player, eu);
 			for (java.util.Map.Entry<String, Registro.Info> e : Registro.todas().entrySet()) {
 				if (!e.getKey().equals(meu)) {
 					int rep = eu.reputacaoCom(e.getKey());

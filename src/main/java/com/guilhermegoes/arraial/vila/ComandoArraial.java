@@ -82,6 +82,22 @@ public final class ComandoArraial {
 								ArraialBlockEntity a = arraial(c.getSource());
 								return a == null ? 0 : Politica.forcar(c.getSource().getLevel(), a, true, c.getSource());
 							})))
+					// Bad blood with the nearest neighbour: war breaks out on the next day.
+					.then(Commands.literal("guerra").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						if (a == null) {
+							return 0;
+						}
+						String meu = Economia.id(c.getSource().getLevel(), a.getBlockPos());
+						String alvo = Registro.todas().entrySet().stream().filter(e -> !e.getKey().equals(meu) && !e.getValue().abandonada)
+								.min(java.util.Comparator.comparingDouble(e -> e.getValue().posicao().distSqr(a.getBlockPos()))).map(java.util.Map.Entry::getKey).orElse(null);
+						if (alvo == null) {
+							return 0;
+						}
+						Registro.mudarReputacao(meu, alvo, -60 - Registro.obter(meu).reputacaoCom(alvo));
+						c.getSource().sendSuccess(() -> Component.translatable("arraial.comando.guerra", a.nomeCompleto(), Registro.get(alvo).nome), true);
+						return 1;
+					}))
 					// A mascate from a neighbour, right now.
 					.then(Commands.literal("mascate").executes(c -> {
 						ArraialBlockEntity a = arraial(c.getSource());

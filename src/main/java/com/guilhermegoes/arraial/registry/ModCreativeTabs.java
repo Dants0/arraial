@@ -52,6 +52,7 @@ public final class ModCreativeTabs {
 						output.accept(ModItems.PE_DE_MOLEQUE);
 						output.accept(ModBlocks.BANDEIRINHAS);
 						output.accept(ModBlocks.URNA);
+						output.accept(ModBlocks.MARCO_FRONTEIRA);
 					})
 					.build());
 

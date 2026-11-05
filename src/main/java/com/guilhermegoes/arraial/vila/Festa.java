@@ -39,13 +39,17 @@ import org.jspecify.annotations.Nullable;
  */
 public final class Festa {
 	public enum Tipo {
-		SAO_JOAO, PADROEIRO, FEIRA_GRANDE;
+		SAO_JOAO, PADROEIRO, FEIRA_GRANDE, TRADICAO;
 
 		public String id() {
 			return name().toLowerCase(java.util.Locale.ROOT);
 		}
 
 		public Component nome(ArraialBlockEntity a) {
+			if (this == TRADICAO) {
+				Cultura.Tradicao t = Cultura.tradicao(a.festa.tradicao);
+				return t == null ? Component.translatable("arraial.festa.tradicao") : t.nome();
+			}
 			return Component.translatable("arraial.festa." + id(), Calendario.padroeiro(a.nome()));
 		}
 
@@ -76,6 +80,29 @@ public final class Festa {
 	long fimForcado;
 	long ultima;
 	@Nullable BlockPos fogueira;
+	/** The tradition being celebrated (for TRADICAO), and the water spot for a procession to the water. */
+	String tradicao = "";
+	@Nullable BlockPos agua;
+
+	public String tradicaoId() {
+		return tradicao.isEmpty() ? "divino" : tradicao;
+	}
+
+	/** How today's festa is celebrated. */
+	public Cultura.Estilo estilo() {
+		if (tipo == null) {
+			return Cultura.Estilo.RODA;
+		}
+		return switch (tipo) {
+			case SAO_JOAO -> Cultura.Estilo.RODA;
+			case PADROEIRO -> Cultura.Estilo.PROCISSAO;
+			case FEIRA_GRANDE -> Cultura.Estilo.FEIRA;
+			case TRADICAO -> {
+				Cultura.Tradicao t = Cultura.tradicao(tradicao);
+				yield t == null ? Cultura.Estilo.RODA : t.estilo() == Cultura.Estilo.AGUA && agua == null ? Cultura.Estilo.PROCISSAO : t.estilo();
+			}
+		};
+	}
 
 	/** The festa going on right now (after noon), if any. */
 	public @Nullable Tipo agora() {
@@ -84,7 +111,7 @@ public final class Festa {
 
 	/** Where the moradores gather: the fogueira for São João, the Cruzeiro otherwise. */
 	public BlockPos centro(ArraialBlockEntity a) {
-		return fogueira != null ? fogueira : a.getBlockPos();
+		return fogueira != null ? fogueira : agua != null ? agua : a.getBlockPos();
 	}
 
 	static void tick(ServerLevel level, ArraialBlockEntity a, int moradores) {
@@ -106,6 +133,9 @@ public final class Festa {
 			}
 			if (!f.comecou && (f.fimForcado > 0 || hora >= INICIO)) {
 				comecar(level, a, moradores);
+			}
+			if (f.comecou && level.getGameTime() % 1200 == 0) {
+				Cultura.participacao(level, a, f.centro(a));
 			}
 			if (f.comecou && f.pagouFogos && !f.fogos
 					&& (f.fimForcado > 0 ? level.getGameTime() >= f.fimForcado - 600 : hora >= FIM - 800)) {
@@ -142,6 +172,19 @@ public final class Festa {
 		Festa f = a.festa;
 		f.tipo = t;
 		f.dia = Vilas.dia(level);
+		f.tradicao = "";
+		f.agua = null;
+		if (t == Tipo.TRADICAO) {
+			Registro.Info info = Registro.get(Economia.id(level, a.getBlockPos()));
+			Cultura.Tradicao tr = Cultura.doMes(info, Calendario.mes(f.dia));
+			if (tr == null && info != null && !info.tradicoes.isEmpty()) {
+				tr = Cultura.tradicao(info.tradicoes.get(0)); // forced by command
+			}
+			f.tradicao = tr == null ? "" : tr.id();
+			if (tr != null && tr.estilo() == Cultura.Estilo.AGUA) {
+				f.agua = beiraDagua(level, a.getBlockPos());
+			}
+		}
 		f.comecou = false;
 		f.fogos = false;
 		a.setChanged();
@@ -153,7 +196,7 @@ public final class Festa {
 	private static void comecar(ServerLevel level, ArraialBlockEntity a, int moradores) {
 		Festa f = a.festa;
 		f.comecou = true;
-		if (f.tipo == Tipo.SAO_JOAO) {
+		if (f.estilo() == Cultura.Estilo.RODA && f.tipo != Tipo.FEIRA_GRANDE) {
 			f.fogueira = acenderFogueira(level, a.getBlockPos());
 		}
 		// The feast: festa sweets first, then any food.
@@ -193,7 +236,9 @@ public final class Festa {
 				texto = Component.translatable("arraial.cronica.festa_interrompida", t.nome(a));
 			} else {
 				boolean enfeitada = bandeirinhas(level, a.getBlockPos()) >= 4;
-				int bonus = 4 + (f.farta ? 4 : 0) + (enfeitada ? 3 : 0) + (gente >= 5 ? 2 : 0);
+				int bonus = 4 + (f.farta ? 4 : 0) + (enfeitada ? 3 : 0) + (gente >= 5 ? 2 : 0)
+						+ (Cultura.costume(level, a, "festeiros") ? 3 : 0)
+						+ (Cultura.costume(level, a, "devotos") && f.estilo() == Cultura.Estilo.PROCISSAO ? 3 : 0);
 				Satisfacao.agradar(level, a.getBlockPos(), bonus);
 				if (a.prefeito != null) {
 					a.legitimidade = Math.min(100, a.legitimidade + 3);
@@ -213,6 +258,7 @@ public final class Festa {
 		f.pagouFogos = false;
 		f.fimForcado = 0;
 		f.fogueira = null;
+		f.agua = null;
 		a.setChanged();
 	}
 
@@ -249,7 +295,7 @@ public final class Festa {
 	}
 
 	/** Open ground: nothing built in the 3x3 around and above, firm soil below. */
-	private static boolean livre(ServerLevel level, BlockPos p) {
+	static boolean livre(ServerLevel level, BlockPos p) {
 		if (!level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)) {
 			return false;
 		}
@@ -260,6 +306,20 @@ public final class Festa {
 			}
 		}
 		return true;
+	}
+
+	/** The nearest open water within reach (for the procession to the water). */
+	private static @Nullable BlockPos beiraDagua(ServerLevel level, BlockPos c) {
+		for (int r = 4; r <= 32; r += 2) {
+			for (int i = 0; i < 16; i++) {
+				double ang = i * Math.PI / 8;
+				BlockPos p = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, c.offset((int) (Math.cos(ang) * r), 0, (int) (Math.sin(ang) * r)));
+				if (level.getFluidState(p.below()).is(net.minecraft.tags.FluidTags.WATER)) {
+					return p.below();
+				}
+			}
+		}
+		return null;
 	}
 
 	private static int bandeirinhas(ServerLevel level, BlockPos c) {
@@ -290,6 +350,9 @@ public final class Festa {
 
 	void ler(ValueInput in) {
 		tipo = Tipo.de(in.getStringOr("Festa", ""));
+		tradicao = in.getStringOr("FestaTradicao", "");
+		long ag = in.getLongOr("FestaAgua", Long.MIN_VALUE);
+		agua = ag == Long.MIN_VALUE ? null : BlockPos.of(ag);
 		dia = in.getLongOr("FestaDia", 0L);
 		comecou = in.getBooleanOr("FestaComecou", false);
 		farta = in.getBooleanOr("FestaFarta", false);
@@ -303,6 +366,10 @@ public final class Festa {
 
 	void gravar(ValueOutput out) {
 		out.putString("Festa", tipo == null ? "" : tipo.id());
+		out.putString("FestaTradicao", tradicao);
+		if (agua != null) {
+			out.putLong("FestaAgua", agua.asLong());
+		}
 		out.putLong("FestaDia", dia);
 		out.putBoolean("FestaComecou", comecou);
 		out.putBoolean("FestaFarta", farta);

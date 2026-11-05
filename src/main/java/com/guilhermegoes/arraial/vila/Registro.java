@@ -65,6 +65,24 @@ public final class Registro {
 		/** Things that happened while nobody was looking (copied into the Crônica on load). */
 		public java.util.List<Evento> historia = new java.util.ArrayList<>();
 		public java.util.List<Evento> historiaPendente = new java.util.ArrayList<>();
+		// ---- Territory (see Territorio)
+		/** Chunks (ChunkPos.asLong) where a Marco de Fronteira stands: each claims the 3x3 around it. */
+		public java.util.List<Long> marcos = new java.util.ArrayList<>();
+		/** Chunks taken by treaty: they belong only to this arraial. */
+		public java.util.List<Long> anexos = new java.util.ArrayList<>();
+		public Map<String, Integer> tensao = new HashMap<>();
+		public java.util.List<String> disputas = new java.util.ArrayList<>();
+		public Map<String, Long> guerras = new HashMap<>();
+		public Map<String, Tratado> tratados = new HashMap<>();
+		public long ultimaProposta;
+		// ---- Culture (see Cultura)
+		public String simbolo = "";
+		public String cor1 = "";
+		public String cor2 = "";
+		public String bioma = "";
+		public java.util.List<String> costumes = new java.util.ArrayList<>();
+		public java.util.List<String> tradicoes = new java.util.ArrayList<>();
+		public boolean bandeiraHasteada;
 		/** Supply contracts this arraial has signed as buyer. */
 		public java.util.List<Contrato> contratos = new java.util.ArrayList<>();
 
@@ -78,6 +96,13 @@ public final class Registro {
 	}
 
 	/** A road between two arraiais: how often it was used, robbed, and whether it is closed. */
+	/** A treaty with another arraial: kind, until when, and tribute (+ received, - paid) per day. */
+	public static final class Tratado {
+		public String tipo = "";
+		public long ate;
+		public int tributo;
+	}
+
 	/** A supply contract (kept by the buyer): every day {@code qtd} of {@code item} from the supplier. */
 	public static final class Contrato {
 		public String fornecedor = "";

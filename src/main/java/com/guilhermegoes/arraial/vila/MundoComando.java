@@ -36,6 +36,21 @@ final class MundoComando {
 				.append(Component.translatable("arraial.mundo.linha", v.populacao, Economia.Especialidade.de(v.especialidade).nome(),
 						v.tesouro, Mundo.comida(v)).withStyle(ChatFormatting.WHITE))
 				.append(" · ").append(estado);
+		if (!v.simbolo.isEmpty()) {
+			l.append(Component.literal(" ⚑ ").append(Component.translatable("arraial.simbolo." + v.simbolo)).withStyle(Cultura.cor(v)));
+		}
+		for (String o : v.disputas) {
+			Registro.Info ov = Registro.get(o);
+			if (ov != null && !v.guerras.containsKey(o)) {
+				l.append(Component.literal(" ⚠ ").append(Component.translatable("arraial.mundo.disputa", ov.nome)).withStyle(ChatFormatting.GOLD));
+			}
+		}
+		for (Map.Entry<String, Registro.Tratado> t : v.tratados.entrySet()) {
+			Registro.Info ov = Registro.get(t.getKey());
+			if (ov != null && t.getValue().ate >= hoje) {
+				l.append(Component.literal(" 🕊 ").append(Component.translatable("arraial.mundo.tratado", Component.translatable("arraial.tratado." + t.getValue().tipo), ov.nome)).withStyle(ChatFormatting.GREEN));
+			}
+		}
 		if (Mundo.carregada(level, v)) {
 			l.append(Component.translatable("arraial.mundo.carregada").withStyle(ChatFormatting.DARK_GRAY));
 		}

@@ -124,6 +124,7 @@ public final class Mundo {
 		if (v.abandonada) {
 			return;
 		}
+		Cultura.garantirLonge(level, id, v);
 		RandomSource r = level.getRandom();
 		int pop = v.populacao;
 		if (pop <= 0) {
@@ -144,6 +145,9 @@ public final class Mundo {
 		// Those without a trade keep a small plot for themselves.
 		int semOficio = Math.max(0, pop - of.values().stream().mapToInt(Integer::intValue).sum());
 		double clima = v.criseLonge.equals("seca") ? 0.4 : Calendario.tempoDaSeca(d) ? 0.8 : 1.0;
+		if (Cultura.costume(v, "trabalhadores")) {
+			clima *= 1.15;
+		}
 		int roc = n(of, "roceiro"), far = n(of, "farinheiro");
 		somar(v, "minecraft:bread", (int) Math.round((4 * roc + 0.6 * semOficio) * clima + r.nextFloat() - 0.5));
 		somar(v, "arraial:farinha", (int) Math.round(5 * far * clima));
@@ -277,7 +281,7 @@ public final class Mundo {
 	 */
 	private static void mercador(ServerLevel level, String id, Registro.Info v, long d) {
 		RandomSource r = level.getRandom();
-		if (v.abandonada || v.populacao < 2 || r.nextFloat() > 0.4F) {
+		if (v.abandonada || v.populacao < 2 || r.nextFloat() > (Cultura.costume(v, "comerciantes") ? 0.6F : 0.4F)) {
 			return;
 		}
 		int comida = comida(v);

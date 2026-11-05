@@ -227,6 +227,9 @@ public final class Politica {
 		double o = interesse(Grupo.de(m.profissao()), proposta, alvo, e) + ruido(m);
 		if (autorJogador != null) {
 			o += a.reputacao(autorJogador) / 40.0 + (cidadaos.contains(autorJogador) ? 0.5 : 0);
+			if (Cultura.costume(level, a, "desconfiados")) {
+				o -= 0.5; // wary of strangers' ideas
+			}
 			if (proposta == Tipo.CIDADANIA) {
 				o += a.reputacao(autorJogador) / 25.0 - 1.0;
 			}
