@@ -395,5 +395,7 @@
 	"arraial.vila.avistou": "Você avistou fumaça de fogão a lenha: há um povoado por perto, o %s!",
 	"arraial.comando.tropa": "%s vai pegar a estrada (ou volta agora).",
 	"arraial.comando.sem_tropeiro": "Este arraial não tem tropeiro (construa um Rancho de Tropeiro).",
-	"arraial.comando.tesouro": "Tesouro do %s: %s réis."
+	"arraial.comando.tesouro": "Tesouro do %s: %s réis.",
+	"arraial.cava.subindo": "subindo a escada",
+	"arraial.cava.descendo": "descendo a escada"
 }

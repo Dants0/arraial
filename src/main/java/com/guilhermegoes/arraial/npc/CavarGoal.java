@@ -70,7 +70,8 @@ public class CavarGoal extends OficioGoal {
 
 	@Override
 	public boolean canContinueToUse() {
-		return podeTrabalhar() && (fase == Fase.ENTREGAR || alvo != null);
+		// Night falls or the job ends with him down the pit: he still climbs out by the ladder first.
+		return podeTrabalhar() && (fase == Fase.ENTREGAR || alvo != null) || noBuraco();
 	}
 
 	@Override
@@ -88,6 +89,13 @@ public class CavarGoal extends OficioGoal {
 
 	@Override
 	public void tick() {
+		morador.resetFallDistance();
+		if (!podeTrabalhar()) {
+			if (!subir()) {
+				alvo = null;
+			}
+			return;
+		}
 		if (espera > 0) {
 			espera--;
 			return;
@@ -99,7 +107,9 @@ public class CavarGoal extends OficioGoal {
 				alvo = null;
 				return;
 			}
-			sairDoBuraco();
+			if (subir()) {
+				return;
+			}
 			morador.setStatus(Component.translatable("arraial.oficio.entregando",
 					Component.translatable(pedra ? "arraial.cava.pedra" : "arraial.cava.barro")));
 			if (!perto(a.getBlockPos(), 2.5)) {
@@ -123,6 +133,9 @@ public class CavarGoal extends OficioGoal {
 			return;
 		}
 		morador.setStatus(Component.translatable(pedra ? "arraial.cava.quebrando_pedra" : "arraial.cava.cavando"));
+		if (descer(p)) {
+			return;
+		}
 		double dist = morador.getEyePosition().distanceTo(Vec3.atCenterOf(p));
 		// Long-handled tools: after trying to get close he works the pit from its edge.
 		if (dist > 4.5 && !(travado > 40 && dist <= profundidade + 4)) {
@@ -137,19 +150,109 @@ public class CavarGoal extends OficioGoal {
 			morador.guardar(drop.getItem(), drop.getCount());
 		}
 		level.destroyBlock(p, false, morador, 512);
+		porEscada(level, p);
 		bater();
 		travado = 0;
 		espera = pedra ? 14 : 8;
-		sairDoBuraco();
 		alvo = morador.cargaTotal() >= CARGA_CHEIA ? null : proximoBloco();
 	}
 
-	/** If he fell into a deep pit, he climbs out (by the ladder nobody sees) next to his posto. */
-	private void sairDoBuraco() {
+	// ------------------------------------------------------------ the ladder
+
+	private Direction frente() {
 		BlockPos posto = morador.posto();
-		if (posto != null && morador.getY() < posto.getY() - 2) {
-			morador.teleportTo(posto.getX() + 0.5, posto.getY() + 1, posto.getZ() + 0.5);
+		BlockState st = posto == null ? null : level().getBlockState(posto);
+		return st != null && st.hasProperty(HorizontalDirectionalBlock.FACING) ? st.getValue(HorizontalDirectionalBlock.FACING) : Direction.NORTH;
+	}
+
+	/** The ladder column: the pit's middle, against the wall on the posto's side. */
+	private @Nullable BlockPos colunaEscada() {
+		BlockPos posto = morador.posto();
+		return posto == null ? null : posto.relative(frente(), 2);
+	}
+
+	/** Down in his own pit. */
+	private boolean noBuraco() {
+		BlockPos posto = morador.posto();
+		if (posto == null || morador.getY() > posto.getY() - 0.05) {
+			return false;
 		}
+		BlockPos aqui = morador.blockPosition();
+		return Math.abs(aqui.getX() - posto.getX()) <= largura + 3 && Math.abs(aqui.getZ() - posto.getZ()) <= largura + 3;
+	}
+
+	/** Hangs a ladder in a freshly dug cell of the ladder column, against the wall. */
+	private void porEscada(ServerLevel level, BlockPos p) {
+		BlockPos col = colunaEscada();
+		if (col == null || p.getX() != col.getX() || p.getZ() != col.getZ() || !level.getBlockState(p).isAir()) {
+			return;
+		}
+		Direction f = frente();
+		BlockPos parede = p.relative(f.getOpposite());
+		if (level.getBlockState(parede).isFaceSturdy(level, parede, f)) {
+			level.setBlock(p, Blocks.LADDER.defaultBlockState().setValue(net.minecraft.world.level.block.LadderBlock.FACING, f), Block.UPDATE_ALL);
+		}
+	}
+
+	/** Climbs out of the pit by the ladder; true while still on the way up. */
+	private boolean subir() {
+		BlockPos posto = morador.posto();
+		BlockPos col = colunaEscada();
+		if (posto == null || col == null || !noBuraco()) {
+			return false;
+		}
+		ServerLevel level = level();
+		// Pits dug before there were ladders get theirs now.
+		for (int y = (int) Math.floor(morador.getY()); y < posto.getY(); y++) {
+			porEscada(level, new BlockPos(col.getX(), y, col.getZ()));
+		}
+		morador.setStatus(Component.translatable("arraial.cava.subindo"));
+		morador.resetFallDistance();
+		double dx = col.getX() + 0.5 - morador.getX(), dz = col.getZ() + 0.5 - morador.getZ();
+		if (dx * dx + dz * dz > 0.5 * 0.5 && !morador.onClimbable()) {
+			morador.getNavigation().moveTo(col.getX() + 0.5, morador.getY(), col.getZ() + 0.5, 0.9);
+			if (++travado > 300) {
+				morador.teleportTo(posto.getX() + 0.5, posto.getY() + 1, posto.getZ() + 0.5); // truly stuck
+				travado = 0;
+			}
+			return true;
+		}
+		morador.getNavigation().stop();
+		morador.getLookControl().setLookAt(Vec3.atCenterOf(col.relative(frente().getOpposite())));
+		if (morador.getY() >= posto.getY() - 0.2) {
+			// At the top: step off onto the edge, towards the posto.
+			Direction volta = frente().getOpposite();
+			morador.setDeltaMovement(volta.getStepX() * 0.25, 0.2, volta.getStepZ() * 0.25);
+		} else {
+			morador.setDeltaMovement(dx * 0.3, 0.2, dz * 0.3);
+		}
+		return true;
+	}
+
+	/** Goes down the ladder to reach a block deep in the pit; true while on the way down. */
+	private boolean descer(BlockPos alvo) {
+		BlockPos posto = morador.posto();
+		BlockPos col = colunaEscada();
+		if (posto == null || col == null || noBuraco() || alvo.getY() >= posto.getY() - 2) {
+			return false;
+		}
+		morador.resetFallDistance();
+		double dx = col.getX() + 0.5 - morador.getX(), dz = col.getZ() + 0.5 - morador.getZ();
+		double d2 = dx * dx + dz * dz;
+		if (d2 > 1.6 * 1.6) {
+			andarAte(new BlockPos(col.getX(), posto.getY(), col.getZ()));
+			return true;
+		}
+		if (d2 > 0.3 * 0.3) {
+			// The last step onto the ladder: the pathfinder will not walk into a hole, so just step in.
+			morador.getNavigation().stop();
+			morador.setDeltaMovement(dx * 0.25, morador.getDeltaMovement().y, dz * 0.25);
+			return true;
+		}
+		morador.getNavigation().stop();
+		morador.setStatus(Component.translatable("arraial.cava.descendo"));
+		morador.setDeltaMovement(dx * 0.3, -0.15, dz * 0.3);
+		return true;
 	}
 
 	/** Next block to dig: natural clay nearby (barreiro), else the highest diggable block of the pit. */

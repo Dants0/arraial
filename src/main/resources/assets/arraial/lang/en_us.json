@@ -395,5 +395,7 @@
 	"arraial.vila.avistou": "You spot wood-stove smoke: there is a hamlet nearby, %s!",
 	"arraial.comando.tropa": "%s will hit the road (or come back now).",
 	"arraial.comando.sem_tropeiro": "This village has no muleteer (build a Muleteer's Shelter).",
-	"arraial.comando.tesouro": "%s treasury: %s réis."
+	"arraial.comando.tesouro": "%s treasury: %s réis.",
+	"arraial.cava.subindo": "climbing the ladder",
+	"arraial.cava.descendo": "going down the ladder"
 }
