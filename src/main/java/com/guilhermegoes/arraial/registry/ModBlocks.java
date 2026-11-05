@@ -86,7 +86,7 @@ public final class ModBlocks {
 
 	/** Workstation of the feirante: a market stall with an awning. */
 	public static final Block BANCA_FEIRA = register("banca_feira",
-			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("banca_feira").mapColor(MapColor.WOOD).strength(1.5F)
+			new com.guilhermegoes.arraial.vila.BancaFeiraBlock(props("banca_feira").mapColor(MapColor.WOOD).strength(1.5F)
 					.sound(SoundType.WOOD).noOcclusion()));
 
 	/** Workstation of the tropeiro: the cangalha, the pack saddle of the mule troop. */

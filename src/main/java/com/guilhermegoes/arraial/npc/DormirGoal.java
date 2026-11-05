@@ -24,7 +24,7 @@ public class DormirGoal extends Goal {
 
 	@Override
 	public boolean canUse() {
-		return morador.profissao() != Profissao.SOLDADO && getServerLevel(morador).isDarkOutside() && camaValida() != null;
+		return morador.profissao() != Profissao.SOLDADO && !morador.viajando() && getServerLevel(morador).isDarkOutside() && camaValida() != null;
 	}
 
 	@Override

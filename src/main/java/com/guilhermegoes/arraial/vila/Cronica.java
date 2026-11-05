@@ -50,7 +50,7 @@ public final class Cronica {
 	public static ItemStack livro(ArraialBlockEntity arraial) {
 		List<Filterable<Component>> paginas = new ArrayList<>();
 		List<Entrada> entradas = arraial.cronica();
-		MutableComponent capa = Component.literal(arraial.nome()).withStyle(ChatFormatting.BOLD)
+		MutableComponent capa = Component.literal(arraial.nomeCompleto()).withStyle(ChatFormatting.BOLD)
 				.append(Component.literal("\n\n")).append(Component.translatable("arraial.cronica.capa", entradas.size()).withStyle(ChatFormatting.RESET));
 		paginas.add(Filterable.passThrough(capa));
 		MutableComponent pagina = Component.empty();
@@ -70,7 +70,7 @@ public final class Cronica {
 			paginas.add(Filterable.passThrough(pagina));
 		}
 		ItemStack livro = new ItemStack(Items.WRITTEN_BOOK);
-		String titulo = arraial.nome().length() > 32 ? arraial.nome().substring(0, 32) : arraial.nome();
+		String titulo = arraial.nomeCompleto().length() > 32 ? arraial.nomeCompleto().substring(0, 32) : arraial.nomeCompleto();
 		livro.set(DataComponents.WRITTEN_BOOK_CONTENT,
 				new WrittenBookContent(Filterable.passThrough(titulo), "Crônica", 0, paginas, true));
 		return livro;

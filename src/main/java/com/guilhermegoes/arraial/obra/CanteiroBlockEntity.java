@@ -122,6 +122,16 @@ public class CanteiroBlockEntity extends BlockEntity {
 		setChanged();
 	}
 
+	/** Something knocked part of the finished building down: back to work from step {@code desde}. */
+	public void reabrir(int desde) {
+		concluida = false;
+		progresso = Math.max(0, desde);
+		if (prioridade.ordinal() < Prioridade.ALTA.ordinal()) {
+			prioridade = Prioridade.ALTA;
+		}
+		setChanged();
+	}
+
 	public void concluir() {
 		concluida = true;
 		setChanged();

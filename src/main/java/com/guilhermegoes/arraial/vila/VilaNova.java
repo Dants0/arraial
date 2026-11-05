@@ -1,0 +1,182 @@
+package com.guilhermegoes.arraial.vila;
+
+import com.guilhermegoes.arraial.npc.MoradorEntity;
+import com.guilhermegoes.arraial.npc.Profissao;
+import com.guilhermegoes.arraial.obra.CanteiroBlockEntity;
+import com.guilhermegoes.arraial.obra.Catalogo;
+import com.guilhermegoes.arraial.obra.PlanoDeObra;
+import com.guilhermegoes.arraial.obra.Prioridade;
+import com.guilhermegoes.arraial.obra.Terreno;
+import com.guilhermegoes.arraial.registry.ModBlocks;
+import com.guilhermegoes.arraial.registry.ModItems;
+import java.util.List;
+import java.util.Optional;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+
+/**
+ * Autonomous villages (GDD 7, "mundo vivo"): while a player explores far from every arraial, a
+ * povoado may be found ahead: a Cruzeiro, an armazém with some provisions, a few houses, a roça,
+ * a woodshed and a well, and its first moradores. From there it runs itself like any arraial
+ * (elects a prefeito, orders buildings, grows) and joins the world's trade.
+ */
+public final class VilaNova {
+	private static final int MAX_AUTONOMAS = 4;
+	private static final int LONGE = 350;
+	private static final int INTERVALO = 6000;
+	private static final List<String> COMECO = List.of("casebre", "rancho", "roca", "serraria", "poco");
+
+	public static void init() {
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			if (server.getTickCount() % INTERVALO != 0) {
+				return;
+			}
+			ServerLevel level = server.overworld();
+			for (ServerPlayer p : level.players()) {
+				if (level.getRandom().nextFloat() < 0.35F) {
+					tentar(level, p);
+				}
+			}
+		});
+	}
+
+	private static void tentar(ServerLevel level, ServerPlayer p) {
+		String dim = level.dimension().identifier().toString();
+		long autonomas = Registro.todas().values().stream().filter(i -> i.autonoma).count();
+		if (autonomas >= MAX_AUTONOMAS) {
+			return;
+		}
+		for (Registro.Info i : Registro.todas().values()) {
+			if (i.dimensao.equals(dim) && i.posicao().distSqr(p.blockPosition()) < (double) LONGE * LONGE) {
+				return;
+			}
+		}
+		for (BlockPos v : Vilas.ativas(level)) {
+			if (v.distSqr(p.blockPosition()) < (double) LONGE * LONGE) {
+				return;
+			}
+		}
+		RandomSource r = level.getRandom();
+		for (int tentativa = 0; tentativa < 6; tentativa++) {
+			double a = r.nextDouble() * Math.PI * 2;
+			int dist = 56 + r.nextInt(28);
+			BlockPos alvo = p.blockPosition().offset((int) (Math.cos(a) * dist), 0, (int) (Math.sin(a) * dist));
+			BlockPos centro = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, alvo);
+			if (plano(level, centro)) {
+				fundar(level, centro, p);
+				return;
+			}
+		}
+	}
+
+	/** Loaded, dry and flat enough around {@code centro}. */
+	private static boolean plano(ServerLevel level, BlockPos centro) {
+		int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+		for (int dx = -14; dx <= 14; dx += 2) {
+			for (int dz = -14; dz <= 14; dz += 2) {
+				BlockPos c = centro.offset(dx, 0, dz);
+				if (!level.isLoaded(c)) {
+					return false;
+				}
+				int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, c.getX(), c.getZ());
+				BlockState topo = level.getBlockState(new BlockPos(c.getX(), y - 1, c.getZ()));
+				if (!topo.getFluidState().isEmpty() || topo.is(BlockTags.LOGS)) {
+					return false;
+				}
+				min = Math.min(min, y);
+				max = Math.max(max, y);
+			}
+		}
+		return max - min <= 3;
+	}
+
+	/** Lays out a new povoado at {@code centro} and brings its first moradores. */
+	public static void fundar(ServerLevel level, BlockPos centro, ServerPlayer quem) {
+		level.setBlock(centro, ModBlocks.CRUZEIRO.defaultBlockState(), Block.UPDATE_ALL);
+		if (!(level.getBlockEntity(centro) instanceof ArraialBlockEntity arraial)) {
+			return;
+		}
+		arraial.autonoma = true;
+		arraial.fundar(level);
+		Vilas.registrar(level, centro);
+
+		// The armazém, with provisions for the first days.
+		BlockPos arm = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, centro.offset(3, 0, 0));
+		level.setBlock(arm, ModBlocks.ARMAZEM.defaultBlockState(), Block.UPDATE_ALL);
+		if (level.getBlockEntity(arm) instanceof ArmazemBlockEntity a) {
+			Item tora = madeiraLocal(level, centro);
+			List<ArmazemBlockEntity> l = List.of(a);
+			Vilas.depositar(l, Items.BREAD, 24);
+			Vilas.depositar(l, ModItems.FARINHA, 16);
+			Vilas.depositar(l, ModItems.MANIVA, 12);
+			Vilas.depositar(l, Items.WHEAT_SEEDS, 12);
+			Vilas.depositar(l, tora, 48);
+			Vilas.depositar(l, Items.COBBLESTONE, 32);
+			Vilas.depositar(l, Items.TORCH, 8);
+		}
+
+		// The first buildings, already standing.
+		for (String id : COMECO) {
+			Catalogo.porId(id).ifPresent(projeto -> {
+				Optional<Terreno.Lugar> lugar = Terreno.procurar(level, centro, projeto);
+				if (lugar.isPresent() && Terreno.marcar(level, lugar.get(), projeto, Prioridade.NORMAL)
+						&& level.getBlockEntity(lugar.get().marco()) instanceof CanteiroBlockEntity c) {
+					erguer(level, c);
+				}
+			});
+		}
+
+		// Its first moradores.
+		for (int i = 0; i < 5; i++) {
+			BlockPos onde = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+					centro.offset(level.getRandom().nextInt(9) - 4, 0, level.getRandom().nextInt(9) - 4));
+			MoradorEntity m = MoradorEntity.criar(level, onde, Profissao.NENHUMA);
+			if (m != null) {
+				m.definirVila(centro);
+			}
+		}
+		Cronica.anotar(level, centro, Component.translatable("arraial.cronica.autonoma"));
+		quem.sendSystemMessage(Component.translatable("arraial.vila.avistou", arraial.nomeCompleto()).withStyle(ChatFormatting.AQUA));
+	}
+
+	/** Builds the whole plan at once (no pedreiro needed for the founders' houses). */
+	private static void erguer(ServerLevel level, CanteiroBlockEntity c) {
+		PlanoDeObra plano = c.plano(level).orElse(null);
+		if (plano == null) {
+			return;
+		}
+		for (PlanoDeObra.Etapa e : plano.etapas()) {
+			level.setBlock(e.pos(), e.state(), Block.UPDATE_CLIENTS);
+		}
+		for (PlanoDeObra.Etapa e : plano.etapas()) {
+			c.avancar();
+		}
+		c.concluir();
+	}
+
+	/** The wood of the nearest tree, so the povoado builds with what grows around it. */
+	private static Item madeiraLocal(Level level, BlockPos centro) {
+		for (BlockPos p : BlockPos.betweenClosed(centro.offset(-20, -2, -20), centro.offset(20, 12, 20))) {
+			BlockState s = level.getBlockState(p);
+			if (s.is(BlockTags.LOGS)) {
+				return s.getBlock().asItem();
+			}
+		}
+		return Items.OAK_LOG;
+	}
+
+	private VilaNova() {
+	}
+}

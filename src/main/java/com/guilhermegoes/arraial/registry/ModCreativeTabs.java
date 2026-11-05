@@ -42,6 +42,7 @@ public final class ModCreativeTabs {
 						output.accept(ModItems.CUIA_GARAPA);
 						output.accept(ModItems.CHAPEU_COURO);
 						output.accept(ModItems.REIS);
+						output.accept(ModItems.REMEDIO);
 					})
 					.build());
 

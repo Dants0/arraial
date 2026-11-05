@@ -31,6 +31,12 @@ public final class Estoque {
 			metas.put(Items.TORCH, 8 + 2 * n);
 			metas.put(m.porta(), 2);
 		}
+		if (oficios.contains(Profissao.BOTICARIO)) {
+			metas.put(com.guilhermegoes.arraial.registry.ModItems.REMEDIO, 2 + n / 6);
+		}
+		if (oficios.contains(Profissao.FARINHEIRO)) {
+			metas.put(com.guilhermegoes.arraial.registry.ModItems.BEIJU, 4);
+		}
 		if (oficios.contains(Profissao.OLEIRO)) {
 			metas.put(Items.BRICKS, 8 + 2 * n);
 		}

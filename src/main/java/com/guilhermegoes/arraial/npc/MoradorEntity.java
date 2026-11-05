@@ -133,7 +133,9 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(1, new SoldadoGoal.Atacar(this));
 		goalSelector.addGoal(1, new FugirGoal(this));
 		goalSelector.addGoal(1, new DormirGoal(this));
+		goalSelector.addGoal(1, new ApagarFogoGoal(this));
 		goalSelector.addGoal(2, new ConstruirGoal(this));
+		goalSelector.addGoal(2, new BoticarioGoal(this));
 		goalSelector.addGoal(2, new ArtesaoGoal(this));
 		goalSelector.addGoal(2, new SoldadoGoal.Escoltar(this));
 		goalSelector.addGoal(3, new LenhadorGoal(this));
@@ -142,10 +144,13 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(3, new CavarGoal(this, Profissao.BARREIRO));
 		goalSelector.addGoal(3, new CavarGoal(this, Profissao.CAVOUQUEIRO));
 		goalSelector.addGoal(3, new PrefeitoGoal(this));
+		goalSelector.addGoal(3, new TropeiroGoal(this));
+		goalSelector.addGoal(3, new FeiranteGoal(this));
 		goalSelector.addGoal(3, new OpenDoorGoal(this, true));
 		goalSelector.addGoal(4, new SoldadoGoal(this));
 		targetSelector.addGoal(1, new SoldadoGoal.Revidar(this));
 		targetSelector.addGoal(2, new SoldadoGoal.Cacar(this));
+		goalSelector.addGoal(5, new ConversarGoal(this));
 		goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 0.6));
 		goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		goalSelector.addGoal(6, new LookAtPlayerGoal(this, MoradorEntity.class, 5.0F));
@@ -278,11 +283,119 @@ public class MoradorEntity extends PathfinderMob {
 				? Component.translatable("arraial.morador.placa_prefeito", nome(), titulo(),
 						Component.translatable(feminino() ? "arraial.prefeito.f" : "arraial.prefeito.m")).withStyle(ChatFormatting.GOLD)
 				: Component.translatable("arraial.morador.placa", nome(), titulo()).withStyle(ChatFormatting.GOLD);
-		if (!status.getString().isEmpty()) {
+		if (!fala.getString().isEmpty()) {
+			placa.append(Component.literal(" 💬 ").withStyle(ChatFormatting.WHITE)).append(fala.copy().withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC));
+		} else if (doenteDias > 0) {
+			placa.append(Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY)).append(Component.translatable("arraial.morador.doente").withStyle(ChatFormatting.GREEN));
+		} else if (!status.getString().isEmpty()) {
 			placa.append(Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY)).append(status.copy().withStyle(ChatFormatting.WHITE));
 		}
 		setCustomName(placa);
-		setCustomNameVisible(true);
+		setCustomNameVisible(viagemFase != 3);
+	}
+
+	// ---------------------------------------------------------------- tropeiro's trips
+
+	/** 0 at home, 1 loading, 2 leaving, 3 away (invisible at the cangalha), 4 back and unloading. */
+	private int viagemFase;
+	private String viagemDestino = "";
+	private long viagemVolta;
+
+	public int viagemFase() {
+		return viagemFase;
+	}
+
+	public String viagemDestino() {
+		return viagemDestino;
+	}
+
+	public long viagemVolta() {
+		return viagemVolta;
+	}
+
+	public void setViagem(int fase, String destino, long volta) {
+		viagemFase = fase;
+		viagemDestino = destino;
+		viagemVolta = volta;
+		boolean fora = fase == 3;
+		setInvisible(fora);
+		setPermanentlyInvulnerable(fora);
+		atualizarPlaca();
+	}
+
+	public boolean viajando() {
+		return viagemFase == 3;
+	}
+
+	// ---------------------------------------------------------------- talk
+
+	/** Who this morador is chatting with right now (not saved). */
+	private @Nullable MoradorEntity interlocutor;
+	private long proximaConversa;
+	/** A line being said: shown in the name tag as a speech bubble until {@link #falaAte}. */
+	private Component fala = Component.empty();
+	private long falaAte;
+	/** Days left of illness (epidemia); a sick morador rests instead of working. */
+	private int doenteDias;
+
+	public @Nullable MoradorEntity interlocutor() {
+		return interlocutor;
+	}
+
+	public void setInterlocutor(@Nullable MoradorEntity m) {
+		interlocutor = m;
+	}
+
+	public long proximaConversa() {
+		return proximaConversa;
+	}
+
+	public void setProximaConversa(long quando) {
+		proximaConversa = quando;
+	}
+
+	/** Idle, awake, not already chatting and not chatted too recently. */
+	public boolean livreParaConversar(long agora) {
+		return interlocutor == null && viagemFase == 0 && !isSleeping() && status.getString().isEmpty() && agora >= proximaConversa && !comFome()
+				&& getNavigation().isDone();
+	}
+
+	/** Says a line out loud: a bubble over the head and a chat line for players close by. */
+	public void dizer(Component texto, int ticks) {
+		if (!(level() instanceof ServerLevel server)) {
+			return;
+		}
+		fala = texto;
+		falaAte = server.getGameTime() + ticks;
+		atualizarPlaca();
+		Component linha = Component.literal(nome() + ": ").withStyle(ChatFormatting.GOLD)
+				.append(texto.copy().withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC));
+		for (net.minecraft.server.level.ServerPlayer p : server.players()) {
+			if (p.distanceToSqr(this) < 12 * 12) {
+				p.sendSystemMessage(linha);
+			}
+		}
+	}
+
+	public boolean doente() {
+		return doenteDias > 0;
+	}
+
+	public void adoecer(int dias) {
+		doenteDias = Math.max(doenteDias, dias);
+		atualizarPlaca();
+	}
+
+	public void curar() {
+		doenteDias = 0;
+		atualizarPlaca();
+	}
+
+	/** Called once a day: illness wears off by itself, slowly. */
+	void passarDiaDoente() {
+		if (doenteDias > 0 && --doenteDias == 0) {
+			atualizarPlaca();
+		}
 	}
 
 	// ---------------------------------------------------------------- village & home
@@ -305,6 +418,15 @@ public class MoradorEntity extends PathfinderMob {
 	@Override
 	protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
+		if (viagemFase == 3) {
+			// Away with the troop: stays put, out of sight, until the day he comes back.
+			getNavigation().stop();
+			setDeltaMovement(0, getDeltaMovement().y, 0);
+			if (level.getGameTime() >= viagemVolta) {
+				com.guilhermegoes.arraial.vila.Caravana.voltar(level, this);
+			}
+			return;
+		}
 		if (!portoes.isEmpty() && tickCount % 10 == 0) {
 			portoes.entrySet().removeIf(e -> {
 				if (level.getGameTime() - e.getValue() < 30 || !Porteira.podeFechar(level, e.getKey(), this)) {
@@ -313,6 +435,10 @@ public class MoradorEntity extends PathfinderMob {
 				Porteira.fechar(level, e.getKey());
 				return true;
 			});
+		}
+		if (!fala.getString().isEmpty() && level.getGameTime() >= falaAte) {
+			fala = Component.empty();
+			atualizarPlaca();
 		}
 		if ((tickCount + getId()) % 40 == 0) {
 			cuidarDaVida(level);
@@ -447,6 +573,7 @@ public class MoradorEntity extends PathfinderMob {
 			return;
 		}
 		ultimoDia = hoje;
+		passarDiaDoente();
 		if (provisoes > 0) {
 			provisoes--;
 			return;
@@ -467,6 +594,13 @@ public class MoradorEntity extends PathfinderMob {
 	}
 
 	/** Leaves the arraial for good (hunger). */
+	/** Leaves the arraial for good for another reason (the chronicle line is written by the caller). */
+	public void irEmboraDaVila(ServerLevel level) {
+		soltar(level, casa);
+		soltar(level, posto);
+		discard();
+	}
+
 	private void irEmbora(ServerLevel level) {
 		Component aviso = Component.translatable("arraial.morador.foi_embora", nome()).withStyle(ChatFormatting.RED);
 		Cronica.anotar(level, vila, Component.translatable("arraial.cronica.foi_embora", nome()));
@@ -495,6 +629,14 @@ public class MoradorEntity extends PathfinderMob {
 			soltar(server, casa);
 			soltar(server, posto);
 			Cronica.anotar(server, vila, Component.translatable("arraial.cronica.morte", nome()));
+			// Killed by a player: the whole arraial remembers.
+			if (source.getEntity() instanceof net.minecraft.world.entity.player.Player p) {
+				ArraialBlockEntity a = arraial();
+				if (a != null) {
+					a.mudarReputacao(p.getUUID(), -30);
+				}
+				com.guilhermegoes.arraial.vila.Satisfacao.agradar(server, vila, -10);
+			}
 		}
 		super.die(source);
 	}
@@ -507,6 +649,11 @@ public class MoradorEntity extends PathfinderMob {
 
 	public void setObra(@Nullable BlockPos obra) {
 		this.obra = obra;
+	}
+
+	/** Drops everything carried (the load was sold, or stolen on the road). */
+	public void esvaziarCarga() {
+		carga.clear();
 	}
 
 	public Map<Item, Integer> cargaCopia() {
@@ -580,11 +727,33 @@ public class MoradorEntity extends PathfinderMob {
 			player.sendSystemMessage(Component.translatable("arraial.morador.dispensado", nome(), antigo).withStyle(ChatFormatting.YELLOW));
 			return InteractionResult.SUCCESS;
 		}
+		// A gift of food for someone hungry (or a remedy for someone sick).
+		if (level() instanceof ServerLevel server && (comFome() && stack.has(DataComponents.FOOD)
+				|| doente() && stack.is(ModItems.REMEDIO))) {
+			if (doente() && stack.is(ModItems.REMEDIO)) {
+				curar();
+			} else {
+				diasSemComer = 0;
+				Cronica.anotar(server, vila, Component.translatable("arraial.cronica.presente", player.getName(), nome()));
+			}
+			if (!player.getAbilities().instabuild) {
+				stack.shrink(1);
+			}
+			getLookControl().setLookAt(player);
+			dizer(Falas.presente(server, player.getName().getString()), 80);
+			com.guilhermegoes.arraial.vila.Satisfacao.agradar(server, vila, 5);
+			return InteractionResult.SUCCESS;
+		}
 		if (stack.isEmpty()) {
 			ArraialBlockEntity a = arraial();
-			Component onde = a != null ? Component.literal(a.nome()) : Component.translatable("arraial.morador.sem_vila");
+			Component onde = a != null ? Component.literal(a.nomeCompleto()) : Component.translatable("arraial.morador.sem_vila");
 			Component lar = casa != null ? Component.translatable("arraial.morador.tem_casa") : Component.translatable("arraial.morador.sem_casa");
 			player.sendSystemMessage(Component.translatable("arraial.morador.ficha", nome(), titulo(), onde, lar).withStyle(ChatFormatting.YELLOW));
+			if (level() instanceof ServerLevel server) {
+				getNavigation().stop();
+				getLookControl().setLookAt(player);
+				dizer(Falas.paraJogador(server, this, player.getName().getString()), 100);
+			}
 			return InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(player, hand);
@@ -602,6 +771,10 @@ public class MoradorEntity extends PathfinderMob {
 		super.addAdditionalSaveData(output);
 		output.putString("Nome", nome());
 		output.putInt("Profissao", profissao().ordinal());
+		output.putInt("Doente", doenteDias);
+		output.putInt("ViagemFase", viagemFase);
+		output.putString("ViagemDestino", viagemDestino);
+		output.putLong("ViagemVolta", viagemVolta);
 		output.putInt("Visual", visual());
 		output.putBoolean("Feminino", feminino());
 		output.store("Carga", CARGA_CODEC, Map.copyOf(carga));
@@ -628,6 +801,14 @@ public class MoradorEntity extends PathfinderMob {
 	protected void readAdditionalSaveData(ValueInput input) {
 		super.readAdditionalSaveData(input);
 		entityData.set(PROFISSAO, input.getIntOr("Profissao", 0));
+		doenteDias = input.getIntOr("Doente", 0);
+		viagemFase = input.getIntOr("ViagemFase", 0);
+		viagemDestino = input.getStringOr("ViagemDestino", "");
+		viagemVolta = input.getLongOr("ViagemVolta", 0L);
+		if (viagemFase == 3) {
+			setInvisible(true);
+			setPermanentlyInvulnerable(true);
+		}
 		entityData.set(VISUAL, input.getIntOr("Visual", 0));
 		entityData.set(FEMININO, input.getBooleanOr("Feminino", false));
 		nome = input.getStringOr("Nome", "");

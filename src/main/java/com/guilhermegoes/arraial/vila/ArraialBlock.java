@@ -79,7 +79,7 @@ public class ArraialBlock extends Block implements EntityBlock {
 		}
 		arraial.fundar(server);
 		if (by instanceof Player p) {
-			p.sendSystemMessage(Component.translatable("arraial.vila.fundado", arraial.nome()).withStyle(ChatFormatting.GOLD));
+			p.sendSystemMessage(Component.translatable("arraial.vila.fundado", arraial.nomeCompleto()).withStyle(ChatFormatting.GOLD));
 			p.sendSystemMessage(Component.translatable("arraial.vila.dica").withStyle(ChatFormatting.GRAY));
 		}
 	}
@@ -111,14 +111,14 @@ public class ArraialBlock extends Block implements EntityBlock {
 			if (!player.getInventory().add(copia)) {
 				Block.popResource(level, player.blockPosition(), copia);
 			}
-			player.sendSystemMessage(Component.translatable("arraial.cronica.copiada", arraial.nome()).withStyle(ChatFormatting.GOLD));
+			player.sendSystemMessage(Component.translatable("arraial.cronica.copiada", arraial.nomeCompleto()).withStyle(ChatFormatting.GOLD));
 		}
 		return InteractionResult.SUCCESS;
 	}
 
 	private static void ultimasNoticias(Player player, ArraialBlockEntity arraial) {
 		List<Cronica.Entrada> todas = arraial.cronica();
-		player.sendSystemMessage(Component.translatable("arraial.cronica.titulo", arraial.nome()).withStyle(ChatFormatting.GOLD));
+		player.sendSystemMessage(Component.translatable("arraial.cronica.titulo", arraial.nomeCompleto()).withStyle(ChatFormatting.GOLD));
 		for (Cronica.Entrada e : todas.subList(Math.max(0, todas.size() - 8), todas.size())) {
 			player.sendSystemMessage(e.linha());
 		}
@@ -128,7 +128,7 @@ public class ArraialBlock extends Block implements EntityBlock {
 	private static void relatorio(ServerLevel level, Player player, ArraialBlockEntity arraial) {
 		List<MoradorEntity> moradores = arraial.moradores(level);
 		long camas = arraial.camas(level);
-		player.sendSystemMessage(Component.literal("✝ " + arraial.nome()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
+		player.sendSystemMessage(Component.literal("✝ " + arraial.nomeCompleto()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 		player.sendSystemMessage(Component.translatable("arraial.vila.populacao", moradores.size(), camas).withStyle(ChatFormatting.YELLOW));
 		MoradorEntity prefeito = moradores.stream().filter(m -> m.getUUID().equals(arraial.prefeito())).findFirst().orElse(null);
 		if (prefeito != null) {
@@ -136,6 +136,35 @@ public class ArraialBlock extends Block implements EntityBlock {
 					.withStyle(ChatFormatting.GOLD));
 		} else if (arraial.prefeito() == null) {
 			player.sendSystemMessage(Component.translatable("arraial.vila.sem_prefeito", Prefeitura.MIN_ELEITORES).withStyle(ChatFormatting.GRAY));
+		}
+		// Stage, mood and money.
+		Estagio estagio = arraial.estagio();
+		player.sendSystemMessage(Component.translatable("arraial.vila.estagio", estagio.nome()).withStyle(ChatFormatting.AQUA));
+		if (estagio.ordinal() < Estagio.values().length - 1) {
+			Estagio proximo = Estagio.values()[estagio.ordinal() + 1];
+			List<Component> falta = proximo.falta(level, arraial, moradores.size());
+			if (!falta.isEmpty()) {
+				MutableComponent f = Component.translatable("arraial.vila.proximo_estagio", proximo.nome());
+				for (int i = 0; i < falta.size(); i++) {
+					f.append(Component.literal(i == 0 ? " " : ", ")).append(falta.get(i));
+				}
+				player.sendSystemMessage(f.withStyle(ChatFormatting.GRAY));
+			}
+		}
+		player.sendSystemMessage(Component.translatable("arraial.vila.humor", arraial.satisfacao(), arraial.legitimidade(),
+				arraial.tesouro(), arraial.reputacao(player.getUUID()))
+				.withStyle(arraial.satisfacao() < 30 ? ChatFormatting.RED : ChatFormatting.GREEN));
+		String meu = Registro.id(level.dimension().identifier().toString(), arraial.getBlockPos());
+		Registro.Info eu = Registro.get(meu);
+		if (eu != null) {
+			for (java.util.Map.Entry<String, Registro.Info> e : Registro.todas().entrySet()) {
+				if (!e.getKey().equals(meu)) {
+					int rep = eu.reputacaoCom(e.getKey());
+					player.sendSystemMessage(Component.translatable("arraial.vila.vizinha", e.getValue().nome,
+							(int) Math.sqrt(e.getValue().posicao().distSqr(arraial.getBlockPos())), rep)
+							.withStyle(rep < 0 ? ChatFormatting.RED : ChatFormatting.DARK_AQUA));
+				}
+			}
 		}
 		Component crise = arraial.crise().descricao(level);
 		if (crise != null) {

@@ -12,8 +12,9 @@ Estado atual e próximas fases, alinhado ao [GDD](GDD.md) (seção 17). Detalhe 
 | Marco 4 | Prefeito eleito, soldado, pastor, barreiro, cavouqueiro, monstros atacam moradores. |
 | Ajustes | Receitas por madeira, estoque mínimo, prioridade de obras, skins low profile, curral e porteira. |
 | Etapa 2 | Crises (seca, enchente, praga, salteadores), Prefeitura, paliçada, comando `/arraial crise`. |
+| Vale muito | Mandioca/farinha, itens Blockbench, diálogos, feira e réis, tropeiro e vilas autônomas, epidemia/incêndio, estágios, satisfação. |
 
-## Em andamento — "vale muito"
+## Feito nesta fase — "vale muito" (aguardando teste em jogo)
 
 1. **Mandioca e Casa de Farinha** — cultivo, farinheiro, farinha e beiju (resolve a falta de comida).
 2. **Itens Blockbench + diálogos** — itens novos com modelo/textura/animação; conversa NPC↔jogador e NPC↔NPC.

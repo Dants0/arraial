@@ -38,7 +38,7 @@ public class ArtesaoGoal extends OficioGoal {
 	@Override
 	protected boolean podeTrabalhar() {
 		Profissao p = morador.profissao();
-		return p.posto() != null && !morador.comFome() && morador.posto() != null && level().isBrightOutside();
+		return p.posto() != null && !morador.comFome() && !morador.doente() && !morador.viajando() && morador.posto() != null && level().isBrightOutside();
 	}
 
 	@Override

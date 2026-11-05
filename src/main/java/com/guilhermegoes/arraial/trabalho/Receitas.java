@@ -76,6 +76,12 @@ public final class Receitas {
 		add(Profissao.FARINHEIRO, com.guilhermegoes.arraial.registry.ModItems.BEIJU, 2, Map.of(com.guilhermegoes.arraial.registry.ModItems.MANDIOCA, 1));
 		add(Profissao.FARINHEIRO, com.guilhermegoes.arraial.registry.ModItems.PACOCA, 2, Map.of(com.guilhermegoes.arraial.registry.ModItems.FARINHA, 2, Items.COOKED_BEEF, 1));
 
+		// Boticário: a garrafada of wild herbs (two flowers of any kind).
+		for (Item flor : List.of(Items.DANDELION, Items.POPPY, Items.BLUE_ORCHID, Items.ALLIUM, Items.AZURE_BLUET, Items.RED_TULIP,
+				Items.ORANGE_TULIP, Items.WHITE_TULIP, Items.PINK_TULIP, Items.OXEYE_DAISY, Items.CORNFLOWER, Items.LILY_OF_THE_VALLEY)) {
+			add(Profissao.BOTICARIO, com.guilhermegoes.arraial.registry.ModItems.REMEDIO, 1, Map.of(flor, 2));
+		}
+
 		// Roceiro: bread for the arraial's table.
 		add(Profissao.ROCEIRO, Items.BREAD, 1, Map.of(Items.WHEAT, 3));
 	}

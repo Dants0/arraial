@@ -54,6 +54,8 @@ public final class ModItems {
 	/** Chapéu de couro: the sertanejo leather hat, worn on the head (3D model). */
 	public static final Item CHAPEU_COURO = register("chapeu_couro", Item::new, new Item.Properties().stacksTo(1)
 			.component(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.HEAD).build()));
+	/** Garrafada: the boticário's herbal remedy; cures a sick morador (epidemia). */
+	public static final Item REMEDIO = register("remedio", Item::new, new Item.Properties().stacksTo(16));
 	/** Réis: the arraial's money, used at the feira. */
 	public static final Item REIS = register("reis", Item::new, new Item.Properties());
 

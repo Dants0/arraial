@@ -115,6 +115,7 @@ public final class Prefeitura {
 		}
 		// The oldest resident wins; ties go to whoever has a trade, then by name.
 		MoradorEntity eleito = moradores.stream()
+				.filter(m -> !m.getUUID().equals(arraial.deposto))
 				.min(Comparator.comparingLong(MoradorEntity::diaChegada)
 						.thenComparing(m -> m.profissao() == Profissao.NENHUMA)
 						.thenComparing(MoradorEntity::nome))
@@ -127,8 +128,22 @@ public final class Prefeitura {
 		eleito.setPrefeito(true);
 		Component cargo = cargo(eleito);
 		Cronica.anotar(level, arraial.getBlockPos(), Component.translatable("arraial.cronica.eleicao", eleito.nome(), cargo));
-		avisar(level, arraial, Component.translatable("arraial.vila.eleicao", eleito.nome(), cargo, arraial.nome()).withStyle(ChatFormatting.GOLD));
+		avisar(level, arraial, Component.translatable("arraial.vila.eleicao", eleito.nome(), cargo, arraial.nomeCompleto()).withStyle(ChatFormatting.GOLD));
 		return eleito;
+	}
+
+	/** The arraial lost faith in its prefeito: he steps down and someone else is elected. */
+	static void depor(ServerLevel level, ArraialBlockEntity a) {
+		if (a.prefeito == null) {
+			return;
+		}
+		a.deposto = a.prefeito;
+		if (level.getEntity(a.prefeito) instanceof MoradorEntity m) {
+			m.setPrefeito(false);
+			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.deposto", m.nome()));
+		}
+		a.prefeito = null;
+		a.setChanged();
 	}
 
 	public static Component cargo(MoradorEntity m) {
@@ -182,11 +197,23 @@ public final class Prefeitura {
 		if (n >= 5 && postos(level, vila, ModPois.FORNO_FARINHA) == 0) {
 			desejos.add("casa_de_farinha");
 		}
+		// What each stage unlocks (see Estagio).
+		Estagio estagio = arraial.estagio;
+		if (estagio.pelo(Estagio.ARRAIAL) && !arraial.temFeira(level)) {
+			desejos.add("feira");
+		}
+		boolean epidemia = arraial.crise.tipo() == Crise.Tipo.EPIDEMIA;
+		if ((estagio.pelo(Estagio.VILA) || epidemia) && postos(level, vila, ModPois.BALCAO_BOTICA) == 0) {
+			desejos.add(epidemia ? 0 : desejos.size(), "botica");
+		}
+		if (estagio.pelo(Estagio.VILA) && postos(level, vila, ModPois.CANGALHA) == 0) {
+			desejos.add("rancho_tropeiro");
+		}
 		if (n >= 8 && obras(level, vila, "prefeitura") == 0) {
 			desejos.add("prefeitura");
 		}
 		// Safety: once there are soldados, a paliçada around the arraial keeps the night out.
-		if (n >= 6 && postos(level, vila, ModPois.POSTO_GUARDA) > 0 && obras(level, vila, Muralha.ID) == 0) {
+		if (n >= 6 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.POSTO_GUARDA) > 0 && obras(level, vila, Muralha.ID) == 0) {
 			desejos.add(Muralha.ID);
 		}
 		if (desejos.isEmpty() && camasLivres <= 1) {
@@ -208,6 +235,9 @@ public final class Prefeitura {
 			desejos.remove("poco");
 			desejos.add(0, "poco");
 			urgentes.add("poco");
+		}
+		if (crise == Crise.Tipo.EPIDEMIA) {
+			urgentes.add("botica");
 		}
 		if (crise == Crise.Tipo.SALTEADORES && postos(level, vila, ModPois.POSTO_GUARDA) == 0) {
 			desejos.remove("guarita");

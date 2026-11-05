@@ -48,7 +48,7 @@ import org.jspecify.annotations.Nullable;
  */
 public final class Crise {
 	public enum Tipo {
-		SECA, ENCHENTE, PRAGA, SALTEADORES;
+		SECA, ENCHENTE, PRAGA, SALTEADORES, EPIDEMIA, INCENDIO;
 
 		public String id() {
 			return name().toLowerCase(Locale.ROOT);
@@ -89,6 +89,14 @@ public final class Crise {
 	boolean chegaram;
 	/** What the crisis cost: crops lost, or items stolen. */
 	int perdas;
+	/** Incêndio: where the fire broke out (the moradores fight it from there). */
+	@Nullable BlockPos fogo;
+	/** Incêndio: ticks without any flame left. */
+	int semFogo;
+
+	public @Nullable BlockPos fogo() {
+		return tipo == Tipo.INCENDIO ? fogo : null;
+	}
 
 	public @Nullable Tipo tipo() {
 		return tipo;
@@ -126,6 +134,16 @@ public final class Crise {
 				return;
 			}
 			case ENCHENTE -> {
+			}
+			case EPIDEMIA -> {
+				if (agora % 1200 == 0) {
+					contagio(level, arraial);
+				}
+			}
+			case INCENDIO -> {
+				if (queimando(level, arraial)) {
+					return;
+				}
 			}
 		}
 		if (c.tipo != null && agora >= c.fim) {
@@ -165,15 +183,21 @@ public final class Crise {
 		int enchente = roca && level.isRaining() ? 3 : 0;
 		int praga = roca ? 2 : 0;
 		int salteadores = moradores >= 8 ? 3 : 2;
-		int total = seca + enchente + praga + salteadores;
+		int epidemia = moradores >= 6 ? 1 : 0;
+		int incendio = !level.isRaining() ? 1 : 0;
+		int total = seca + enchente + praga + salteadores + epidemia + incendio;
 		int x = r.nextInt(total);
-		Tipo t = (x -= seca) < 0 ? Tipo.SECA : (x -= enchente) < 0 ? Tipo.ENCHENTE : (x -= praga) < 0 ? Tipo.PRAGA : Tipo.SALTEADORES;
+		Tipo t = (x -= seca) < 0 ? Tipo.SECA : (x -= enchente) < 0 ? Tipo.ENCHENTE : (x -= praga) < 0 ? Tipo.PRAGA
+				: (x -= salteadores) < 0 ? Tipo.SALTEADORES : (x -= epidemia) < 0 ? Tipo.EPIDEMIA : Tipo.INCENDIO;
 		comecar(level, arraial, t);
 	}
 
 	/** Starts a crisis now (also used by the /arraial crise command). */
 	public static void comecar(ServerLevel level, ArraialBlockEntity arraial, Tipo tipo) {
 		Crise c = arraial.crise;
+		if (tipo == Tipo.INCENDIO && !acender(level, arraial)) {
+			return; // nothing made of wood to catch fire
+		}
 		if (c.tipo == Tipo.SALTEADORES) {
 			fugir(level, arraial);
 		}
@@ -187,6 +211,8 @@ public final class Crise {
 			case PRAGA -> (2 + r.nextInt(2)) * DIA / (galinhas(level, arraial.getBlockPos()) >= 4 ? 2 : 1);
 			case ENCHENTE -> DIA / 2;
 			case SALTEADORES -> DIA + DIA / 2; // a safety net: the raid ends at dawn
+			case EPIDEMIA -> 4 * DIA;
+			case INCENDIO -> DIA;
 		};
 		arraial.setChanged();
 		BlockPos vila = arraial.getBlockPos();
@@ -197,11 +223,15 @@ public final class Crise {
 		};
 		Cronica.anotar(level, vila, Component.translatable("arraial.cronica.crise." + tipo.id() + extra));
 		Prefeitura.avisar(level, arraial, Component.literal("⚠ ")
-				.append(Component.translatable("arraial.crise.aviso." + tipo.id(), arraial.nome()))
+				.append(Component.translatable("arraial.crise.aviso." + tipo.id(), arraial.nomeCompleto()))
 				.withStyle(ChatFormatting.RED));
 		if (tipo == Tipo.ENCHENTE) {
 			alagar(level, arraial);
 		}
+		if (tipo == Tipo.EPIDEMIA) {
+			adoecer(level, arraial);
+		}
+
 	}
 
 	/** Ends the current crisis; {@code motivo} picks the chronicle line (fim, chuva, expulsos, fugiram, roubaram, comando). */
@@ -336,6 +366,100 @@ public final class Crise {
 		return false;
 	}
 
+	// ------------------------------------------------------------ epidemia
+
+	/** One or two moradores fall ill. */
+	private static void adoecer(ServerLevel level, ArraialBlockEntity arraial) {
+		List<com.guilhermegoes.arraial.npc.MoradorEntity> moradores = arraial.moradores(level);
+		java.util.Collections.shuffle(moradores, new java.util.Random(level.getRandom().nextLong()));
+		for (int i = 0; i < Math.min(2, moradores.size()); i++) {
+			moradores.get(i).adoecer(3 + level.getRandom().nextInt(3));
+			arraial.crise.perdas++;
+		}
+		arraial.setChanged();
+	}
+
+	/** Every minute the sick may pass it on to whoever is close; with nobody sick, it is over. */
+	private static void contagio(ServerLevel level, ArraialBlockEntity arraial) {
+		List<com.guilhermegoes.arraial.npc.MoradorEntity> moradores = arraial.moradores(level);
+		List<com.guilhermegoes.arraial.npc.MoradorEntity> doentes = moradores.stream().filter(com.guilhermegoes.arraial.npc.MoradorEntity::doente).toList();
+		if (doentes.isEmpty()) {
+			terminar(level, arraial, "curados");
+			return;
+		}
+		// A botica halves the spread (the boticário's advice: boil the water, keep the sick apart).
+		float chance = Vilas.postosDe(level, arraial.getBlockPos(), ModPois.BALCAO_BOTICA) > 0 ? 0.04F : 0.08F;
+		for (var m : moradores) {
+			if (!m.doente() && doentes.stream().anyMatch(d -> d.distanceToSqr(m) < 4 * 4) && level.getRandom().nextFloat() < chance) {
+				m.adoecer(3 + level.getRandom().nextInt(3));
+				arraial.crise.perdas++;
+			}
+		}
+		arraial.setChanged();
+	}
+
+	// ------------------------------------------------------------ incêndio
+
+	/** Fire breaks out in a finished wooden building of the arraial. */
+	private static boolean acender(ServerLevel level, ArraialBlockEntity arraial) {
+		BlockPos vila = arraial.getBlockPos();
+		List<BlockPos> candidatos = new java.util.ArrayList<>();
+		for (BlockPos p : com.guilhermegoes.arraial.obra.CanteiroBlockEntity.ativos(level)) {
+			if (p.closerThan(vila, Vilas.RAIO) && level.getBlockEntity(p) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c
+					&& c.concluida() && !c.projeto().map(com.guilhermegoes.arraial.obra.Muralha::e).orElse(true)) {
+				c.plano(level).ifPresent(pl -> pl.etapas().stream()
+						.filter(e -> level.getBlockState(e.pos()).ignitedByLava() && level.getBlockState(e.pos().above()).isAir())
+						.forEach(e -> candidatos.add(e.pos().above())));
+			}
+		}
+		if (candidatos.isEmpty()) {
+			return false;
+		}
+		BlockPos onde = candidatos.get(level.getRandom().nextInt(candidatos.size()));
+		level.setBlock(onde, Blocks.FIRE.defaultBlockState(), Block.UPDATE_ALL);
+		arraial.crise.fogo = onde.immutable();
+		arraial.crise.semFogo = 0;
+		arraial.setChanged();
+		return true;
+	}
+
+	/** Flames left around where the fire started. */
+	public static List<BlockPos> chamas(ServerLevel level, BlockPos fogo) {
+		List<BlockPos> l = new java.util.ArrayList<>();
+		for (BlockPos p : BlockPos.betweenClosed(fogo.offset(-8, -4, -8), fogo.offset(8, 6, 8))) {
+			if (level.getBlockState(p).getBlock() instanceof net.minecraft.world.level.block.BaseFireBlock) {
+				l.add(p.immutable());
+			}
+		}
+		return l;
+	}
+
+	/** True while it burns; ends the crisis once every flame has been out for a while. */
+	private static boolean queimando(ServerLevel level, ArraialBlockEntity arraial) {
+		Crise c = arraial.crise;
+		if (c.fogo == null) {
+			terminar(level, arraial, "fim");
+			return true;
+		}
+		if (!chamas(level, c.fogo).isEmpty()) {
+			c.semFogo = 0;
+			return false;
+		}
+		if (++c.semFogo >= 10) {
+			terminar(level, arraial, "apagado");
+			return true;
+		}
+		return false;
+	}
+
+	/** A morador put a flame out. */
+	public static void apagou(ServerLevel level, BlockPos vila) {
+		if (level.getBlockEntity(vila) instanceof ArraialBlockEntity a && a.crise.tipo == Tipo.INCENDIO) {
+			a.crise.perdas++;
+			a.setChanged();
+		}
+	}
+
 	// ------------------------------------------------------------ salteadores
 
 	private static List<Vindicator> bando(ServerLevel level, BlockPos vila) {
@@ -440,7 +564,7 @@ public final class Crise {
 		arraial.setChanged();
 		Cronica.anotar(level, vila, Component.translatable("arraial.cronica.salteadores_chegaram", vieram));
 		Prefeitura.avisar(level, arraial, Component.literal("⚔ ")
-				.append(Component.translatable("arraial.crise.ataque", vieram, arraial.nome())).withStyle(ChatFormatting.DARK_RED));
+				.append(Component.translatable("arraial.crise.ataque", vieram, arraial.nomeCompleto())).withStyle(ChatFormatting.DARK_RED));
 	}
 
 	/** The band melts back into the woods (dawn, or the crisis was called off). */
@@ -476,6 +600,8 @@ public final class Crise {
 		ultimoSorteio = in.getLongOr("UltimoSorteio", 0L);
 		chegaram = in.getBooleanOr("SalteadoresChegaram", false);
 		perdas = in.getIntOr("CrisePerdas", 0);
+		long f = in.getLongOr("Fogo", Long.MIN_VALUE);
+		fogo = f == Long.MIN_VALUE ? null : BlockPos.of(f);
 	}
 
 	void gravar(ValueOutput out) {
@@ -485,5 +611,8 @@ public final class Crise {
 		out.putLong("UltimoSorteio", ultimoSorteio);
 		out.putBoolean("SalteadoresChegaram", chegaram);
 		out.putInt("CrisePerdas", perdas);
+		if (fogo != null) {
+			out.putLong("Fogo", fogo.asLong());
+		}
 	}
 }

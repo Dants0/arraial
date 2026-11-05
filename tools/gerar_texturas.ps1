@@ -158,4 +158,8 @@ Item 'frascos' (Pal 'k=#9A7448 K=#7A5634 v=#4F7F6E V=#7FB09C a=#8A4F7A A=#B07AA2
   'vppv.appa..vppv', 'vVvv.aAaa..vVvv', 'vvvv.aaaa..vvvv', '', '.kk...kk....KK', '.KK...KK....kk', 'aaaa.vvvv..aaaa',
   'aAaa.vVvv..aAaa', 'appa.vppv..appa', 'aaaa.vvvv..aaaa') 'block'
 
+Item 'remedio' (Pal 'k=#9A7448 K=#6E5030 g=#5E8C4A G=#8AB86A v=#C98A3A V=#E8B06A d=#7A4E1E p=#E8E0C8') @(
+  '', '......kk', '......KK', '......vv', '.....vVVv', '....vVvvvv', '...vVvgGvvv', '...vVgGgvvv',
+  '...vppppppv', '...vpppppdv', '...vvgvvvvv', '...vvvvvvdv', '....dvvvvd', '.....dddd')
+
 "texturas geradas em $Raiz"

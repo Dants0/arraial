@@ -1,6 +1,6 @@
 # TODO
 
-Legenda: `[x]` feito e compilado · `[ ]` a fazer · (T) testado em jogo pelo usuário.
+Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) testado em jogo pelo usuário.
 
 ## Documentação
 - [x] GDD versionado em `docs/GDD.md`
@@ -9,42 +9,49 @@ Legenda: `[x]` feito e compilado · `[ ]` a fazer · (T) testado em jogo pelo us
 ## 1. Mandioca e Casa de Farinha
 - [x] Bloco de cultivo mandioca (4 estágios) + item maniva/mandioca
 - [x] Itens farinha de mandioca e beiju (comida), texturas
-- [x] Ofício farinheiro com posto "tipiti/forno de farinha" e receitas
-- [x] Roceiro planta mandioca; mandioca pode ser achada no mato (grama)
-- [x] Planta "casa_de_farinha" no catálogo; prefeito pede quando há mandioca
+- [x] Ofício farinheiro com posto "forno de farinha" e receitas
+- [x] Roceiro planta mandioca; maniva pode ser achada no mato (grama)
+- [x] Planta "casa_de_farinha" no catálogo; prefeito pede com 5 moradores
 - [x] Skin do farinheiro
 
 ## 2. Itens Blockbench e diálogos
-- [x] Modelos `.bbmodel` em `tools/blockbench` + JSON exportado
-- [x] Cuia (beber, animação de uso), rapadura, paçoca, chapéu de couro, lampião
-- [x] Textura animada (lampião) via `.mcmeta`
-- [ ] Conversa jogador → morador por contexto (ofício, fome, casa, crise, prefeito)
-- [ ] Moradores conversam entre si quando se encontram (falas no chat próximo)
+- [x] Modelos `.bbmodel` em `tools/blockbench` (gerados por `tools/para_blockbench.js`) + JSON do jogo
+- [x] Cuia de garapa (beber, efeito), rapadura, paçoca, chapéu de couro 3D, lampião, réis, garrafada
+- [x] Texturas animadas (lampião, boca do forno) via `.mcmeta`
+- [x] Conversa jogador → morador por contexto (ofício, fome, casa, crise, prefeito, doença, clima)
+- [x] Dar comida a quem tem fome / garrafada a quem está doente
+- [x] Moradores conversam entre si quando se encontram (balão na placa + chat próximo)
 
 ## 3. Feira e preços
-- [ ] Moeda réis
-- [ ] Preço local por oferta/procura, suavizado, por dia
-- [ ] Bloco banca de feira + ofício feirante
-- [ ] Jogador compra/vende na banca; excedente vira réis no tesouro
+- [x] Moeda réis e tesouro do arraial
+- [x] Preço local por oferta/procura, suavizado, por dia
+- [x] Banca de feira + ofício feirante (pregões)
+- [x] Jogador compra/vende na banca; reputação dá desconto
 
 ## 4. Vilas autônomas, tropeiro e reputação
-- [ ] Registro de vilas em SavedData
-- [ ] Vila NPC surge no mundo longe do jogador (com Cruzeiro, casas, moradores)
-- [ ] Simulação distante (produção/consumo agregado por dia)
-- [ ] Tropeiro leva excedente entre vilas (caravana); pode ser assaltada
-- [ ] Reputação bilateral (-100..100), ajuda em crise aumenta reputação
+- [x] Registro de vilas no mundo (`arraial_vilas.json`)
+- [x] Povoado autônomo surge longe do jogador (Cruzeiro, armazém, casas, roça, moradores)
+- [x] Simulação distante (produção/consumo agregado dos dias perdidos)
+- [x] Tropeiro leva excedente e traz o que falta; caravana pode ser assaltada
+- [x] Reputação entre vilas e com o jogador; ajuda em crise rende muita reputação
 
 ## 5. Epidemia/botica e incêndio
-- [ ] Crise epidemia: moradores adoecem, param de trabalhar; botica + boticário curam
-- [ ] Crise incêndio: fogo numa construção de madeira; moradores apagam com balde
+- [x] Crise epidemia: doentes não trabalham; contágio; botica reduz; boticário cura com garrafada
+- [x] Crise incêndio: fogo numa construção de madeira; moradores apagam com balde
+- [x] Reparos: prefeito manda reconstruir blocos que sumiram das obras prontas
 
 ## 6. Estágios da vila
-- [ ] Povoado/Arraial/Vila/Vila próspera/Cidade por população e prédios
-- [ ] Desbloqueios por estágio; anúncio e Crônica
+- [x] Povoado → Arraial → Vila → Vila próspera → Cidade (nome muda junto)
+- [x] Desbloqueios por estágio (feira, botica, rancho, paliçada); anúncio, foguete e Crônica
 
 ## 7. Satisfação e legitimidade
-- [ ] Satisfação por casa, comida, segurança, crises, festas
-- [ ] Legitimidade do prefeito e nova eleição quando baixa
+- [x] Satisfação diária por comida, casa, saúde, segurança, serviços e crise
+- [x] Muito insatisfeitos vão embora; muito satisfeitos atraem gente mais rápido
+- [x] Legitimidade do prefeito; abaixo de 25 por 2 dias → nova eleição
 
-## Correções em aberto
-- [ ] Comida baixa em vilas grandes (mandioca deve resolver; conferir no teste)
+## Próximos
+- [ ] Teste em jogo de tudo acima (T)
+- [ ] Festas e calendário (São João, feira grande, padroeiro)
+- [ ] Famílias e sucessão; blocos coloniais
+- [ ] Eras/modernização
+- [ ] Tratados e embargo (diplomacia completa); tela de diplomacia

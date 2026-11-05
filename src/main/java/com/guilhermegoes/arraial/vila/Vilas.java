@@ -177,6 +177,12 @@ public final class Vilas {
 		return resta;
 	}
 
+	/** Workstations of a type inside the arraial at {@code vila}. */
+	public static long postosDe(ServerLevel level, BlockPos vila, net.minecraft.world.entity.ai.village.poi.PoiType tipo) {
+		return level.getPoiManager().getCountInRange(h -> h.value() == tipo, vila, RAIO,
+				net.minecraft.world.entity.ai.village.poi.PoiManager.Occupancy.ANY);
+	}
+
 	/** Current in-game day, starting at 1. */
 	public static long dia(ServerLevel level) {
 		return level.getOverworldClockTime() / 24000L + 1;
