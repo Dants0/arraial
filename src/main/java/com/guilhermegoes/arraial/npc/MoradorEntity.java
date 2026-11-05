@@ -51,7 +51,7 @@ import org.jspecify.annotations.Nullable;
  * a daily routine, and optionally a profession (e.g. pedreiro).
  */
 public class MoradorEntity extends PathfinderMob {
-	public static final int VISUAIS = 3;
+	public static final int VISUAIS = 4;
 
 	private static final List<String> NOMES_M = List.of(
 			"Zé", "Tião", "Chico", "Bento", "Severino", "Raimundo", "Damião", "Joaquim",
@@ -157,13 +157,13 @@ public class MoradorEntity extends PathfinderMob {
 		atualizarPlaca();
 	}
 
-	/** Soldados wear an iron helmet and chestplate and carry a sword (none of it drops). */
+	/** Soldados wear an iron helmet over their uniform and carry a sword (none of it drops). */
 	private void armar(boolean soldado) {
 		if (level().isClientSide()) {
 			return;
 		}
 		setItemSlot(EquipmentSlot.HEAD, soldado ? new ItemStack(net.minecraft.world.item.Items.IRON_HELMET) : ItemStack.EMPTY);
-		setItemSlot(EquipmentSlot.CHEST, soldado ? new ItemStack(net.minecraft.world.item.Items.LEATHER_CHESTPLATE) : ItemStack.EMPTY);
+		setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
 		setItemSlot(EquipmentSlot.MAINHAND, soldado ? new ItemStack(net.minecraft.world.item.Items.IRON_SWORD) : ItemStack.EMPTY);
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			setDropChance(slot, 0.0F);
@@ -270,6 +270,10 @@ public class MoradorEntity extends PathfinderMob {
 	/** When a morador is attacked, the arraial's soldados come running. */
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+		// The militia coat is padded: soldiers take a quarter less damage (no chestplate hides the uniform).
+		if (profissao() == Profissao.SOLDADO) {
+			damage *= 0.75F;
+		}
 		boolean ferido = super.hurtServer(level, source, damage);
 		if (ferido && source.getEntity() instanceof net.minecraft.world.entity.LivingEntity agressor
 				&& !(agressor instanceof MoradorEntity) && !(agressor instanceof Player)) {
@@ -313,7 +317,7 @@ public class MoradorEntity extends PathfinderMob {
 		if (!comFome() && getHealth() < getMaxHealth()) {
 			heal(1.0F);
 		}
-		if (profissao() == Profissao.SOLDADO && getMainHandItem().isEmpty()) {
+		if (profissao() == Profissao.SOLDADO && (getMainHandItem().isEmpty() || !getItemBySlot(EquipmentSlot.CHEST).isEmpty())) {
 			armar(true);
 		}
 		if (vila != null) {
