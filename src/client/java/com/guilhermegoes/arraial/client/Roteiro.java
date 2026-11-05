@@ -356,6 +356,44 @@ public final class Roteiro {
 				"setblock 34 141 31 arraial:cal", "setblock 34 142 31 arraial:telha_escada[facing=north]", "setblock 35 142 31 arraial:telha_escada[facing=north]",
 				"setblock 32 140 27 minecraft:glass", "tp @s 32.5 141 27.5 0 15"));
 		passo(60, () -> foto("27_blocos_coloniais"));
+		// The Guia: every page must fit the book (114 px wide, 14 lines); photos of a few.
+		passo(10, () -> cmd("item replace entity @s weapon.mainhand with arraial:guia"));
+		passo(20, () -> mc().gameMode.useItem(mc().player, InteractionHand.MAIN_HAND));
+		passo(20, () -> {
+			var livro = mc().player.getMainHandItem();
+			var acesso = net.minecraft.client.gui.screens.inventory.BookViewScreen.BookAccess.fromItem(livro);
+			if (acesso == null) {
+				log("guia: nao virou livro (" + mao() + ")");
+				return;
+			}
+			// Measured in both languages (the dev client runs in English).
+			var antes = net.minecraft.locale.Language.getInstance();
+			for (String lingua : new String[] {"en_us", "pt_br"}) {
+				net.minecraft.locale.Language.inject(net.minecraft.client.resources.language.ClientLanguage.loadFrom(mc().getResourceManager(),
+						List.of("en_us", lingua), false));
+				int grandes = 0;
+				for (int i = 0; i < acesso.getPageCount(); i++) {
+					int linhas = mc().font.split(acesso.getPage(i), 114).size();
+					if (linhas > 14) {
+						grandes++;
+						log("guia " + lingua + ": pagina " + (i + 1) + " com " + linhas + " linhas: "
+								+ acesso.getPage(i).getString().replace('\n', ' ').substring(0, 40));
+					}
+				}
+				log("guia " + lingua + ": " + acesso.getPageCount() + " paginas, " + grandes + " grandes demais");
+			}
+			net.minecraft.locale.Language.inject(antes);
+			mc().gui.setScreen(new net.minecraft.client.gui.screens.inventory.BookViewScreen(acesso));
+		});
+		for (int pg : new int[] {0, 1, 2, 7, 18, 28, 30, 39, 45}) {
+			passo(15, () -> {
+				if (mc().gui.screen() instanceof net.minecraft.client.gui.screens.inventory.BookViewScreen b) {
+					b.setPage(pg);
+				}
+			});
+			passo(15, () -> foto("28_guia_p" + (pg + 1)));
+		}
+		passo(10, () -> mc().gui.setScreen(null));
 		passo(20, () -> {
 			log("fim do roteiro");
 			mc().stop();

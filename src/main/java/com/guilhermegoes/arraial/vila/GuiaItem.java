@@ -2,8 +2,11 @@ package com.guilhermegoes.arraial.vila;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,13 +18,26 @@ import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.Level;
 
 /**
- * Guia do Arraial: opened (right-click) it turns into a written book explaining how the
- * arraial works: founding, trades, the prefeito, food, safety, crises, the feira, the other
- * villages, the stages and satisfaction. Pages live in the lang files ("arraial.guia.N"),
- * so the book reads in the player's language.
+ * Guia do Arraial: opened (right-click) it turns into a written book. It is laid out like a game
+ * manual: a cover, a clickable table of contents, then the early game (founding, first works,
+ * food), the mid game (mayor, stages, feira, crises, festas, neighbours, politics), the late game
+ * (eras, territory, diplomacy, culture, families, ruins, the road to Cidade), and reference
+ * chapters on the trades, commerce, items and blocks. Pages live in the lang files
+ * ("arraial.guia.&lt;page&gt;"), so the book reads in the player's language.
  */
 public class GuiaItem extends Item {
-	public static final int PAGINAS = 24;
+	private record Capitulo(String id, List<String> paginas) {
+	}
+
+	private static final List<Capitulo> CAPITULOS = List.of(
+			new Capitulo("inicio", List.of("inicio.1", "inicio.2", "inicio.3", "inicio.4", "inicio.5", "inicio.6")),
+			new Capitulo("meio", List.of("meio.1", "meio.2", "meio.3", "meio.4", "meio.5", "meio.6", "meio.7", "meio.8", "meio.9",
+					"meio.10", "meio.11")),
+			new Capitulo("fim", List.of("fim.1", "fim.2", "fim.3", "fim.4", "fim.5", "fim.6", "fim.7", "fim.8", "fim.9", "fim.10")),
+			new Capitulo("oficios", List.of("oficios.1", "oficios.2", "oficios.3", "oficios.4", "oficios.5", "oficios.6", "oficios.7")),
+			new Capitulo("comercio", List.of("comercio.1", "comercio.2", "comercio.3", "comercio.4", "comercio.5")),
+			new Capitulo("itens", List.of("itens.1", "itens.2", "itens.3", "itens.4", "itens.5", "itens.6")),
+			new Capitulo("dicas", List.of("dicas.1", "dicas.2")));
 
 	public GuiaItem(Properties properties) {
 		super(properties);
@@ -29,13 +45,31 @@ public class GuiaItem extends Item {
 
 	public static ItemStack livro() {
 		List<Filterable<Component>> paginas = new ArrayList<>();
-		for (int i = 0; i < PAGINAS; i++) {
-			paginas.add(Filterable.passThrough(Component.translatable("arraial.guia." + i)));
+		paginas.add(Filterable.passThrough(Component.translatable("arraial.guia.capa")));
+		paginas.add(Filterable.passThrough(sumario()));
+		for (Capitulo c : CAPITULOS) {
+			for (String p : c.paginas()) {
+				paginas.add(Filterable.passThrough(Component.translatable("arraial.guia." + p)));
+			}
 		}
 		ItemStack livro = new ItemStack(Items.WRITTEN_BOOK);
 		livro.set(DataComponents.WRITTEN_BOOK_CONTENT,
 				new WrittenBookContent(Filterable.passThrough("Guia do Arraial"), "Arraial", 0, paginas, true));
 		return livro;
+	}
+
+	/** The table of contents: each chapter is a link to its first page. */
+	private static Component sumario() {
+		MutableComponent s = Component.empty().append(Component.translatable("arraial.guia.sumario").withStyle(ChatFormatting.BOLD)).append("\n");
+		int pagina = 3; // 1: cover, 2: contents
+		for (Capitulo c : CAPITULOS) {
+			final int alvo = pagina;
+			s.append("\n").append(Component.literal("› ").append(Component.translatable("arraial.guia.cap." + c.id()))
+					.append(Component.literal(" " + pagina).withStyle(ChatFormatting.GRAY))
+					.withStyle(st -> st.withColor(ChatFormatting.DARK_BLUE).withUnderlined(true).withClickEvent(new ClickEvent.ChangePage(alvo))));
+			pagina += c.paginas().size();
+		}
+		return s.append("\n\n").append(Component.translatable("arraial.guia.sumario_dica").withStyle(ChatFormatting.DARK_GRAY));
 	}
 
 	@Override

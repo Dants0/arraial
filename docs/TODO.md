@@ -148,6 +148,10 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] Mapa da Região (item): biomas, terras com a cor da bandeira, terra disputada, estradas por estado, ruínas, bandidos, jogador e base
 - [x] Nomes de arraial sem repetição (lista maior)
 
+## 22. Guia do Arraial (manual)
+- [x] 49 páginas: capa, sumário clicável, Primeiros dias (early), Crescendo (mid), Grandeza (late), Ofícios, Comércio, Itens e blocos, Dicas
+- [x] Roteiro mede todas as páginas em pt_br e en_us (cabem em 14 linhas) e fotografa algumas
+
 ## Próximos
 - [ ] Teste em jogo pelo usuário (T)
 
