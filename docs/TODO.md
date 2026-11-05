@@ -74,9 +74,25 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] Especialidade econômica; vilas vizinhas nascem perto da vila do jogador
 - [x] História regional entra na Crônica quando a vila carrega; `/arraial mundo`, `/arraial avancar <dias>`
 
-## Próximos (ver ROADMAP, fases C–H)
+## 11. Política (fase C)
+- [x] Grupos de interesse por ofício (Lavoura, Ofícios, Ordem, Comércio, Povo) e conselho com um representante de cada
+- [x] Regime eleito (voto entre conselheiros) ou coronelismo hereditário (35% dos povoados autônomos)
+- [x] Propostas: imposto ±, segurança, festa, obra, cidadania honorária, investigação, nova eleição; votação no dia seguinte
+- [x] Jogador propõe na Urna (papel) e pode ser rejeitado; campanha com réis, com risco de escândalo
+- [x] Imposto enche o tesouro e pesa na satisfação; corrupção do prefeito, boatos e investigação
+- [x] Protestos de grupos insatisfeitos (param o trabalho no Cruzeiro) viram proposta
+- [x] `/arraial conselho propor|votar`, `/arraial cronica`
+
+## 12. Comércio avançado (fase D)
+- [x] Mascate: NPC de uma vila vizinha com mercadoria real; compra e vende com o jogador; volta ao anoitecer
+- [x] Escolta: espada na mão no tropeiro saindo; risco cai para 1/4; pagamento no Cruzeiro
+- [x] Encomendas do arraial ao jogador (banca + papel), com prazo e prêmio
+- [x] Contratos de fornecimento entre vilas (comida, pedra, madeira), preferindo especialistas; rota fechada rompe
+- [x] Estrada batida (10+ viagens): frete 30% menor e mais segura; `/arraial mascate`
+
+## Próximos (ver ROADMAP, fases E–H)
 - [ ] Teste em jogo de tudo acima (T)
-- [ ] C Política · D Comércio avançado · E Território · F Cultura · G Vida pessoal · H Ruínas e ocupação
+- [ ] E Território · F Cultura · G Vida pessoal · H Ruínas e ocupação
 - [ ] Famílias e sucessão; blocos coloniais
 - [ ] Eras/modernização
 - [ ] Tratados e embargo (diplomacia completa); tela de diplomacia
