@@ -36,6 +36,7 @@ public class Arraial implements ModInitializer {
 		com.guilhermegoes.arraial.vila.VilaNova.init();
 		com.guilhermegoes.arraial.vila.Mundo.init();
 		com.guilhermegoes.arraial.vila.Territorio.init();
+		com.guilhermegoes.arraial.vila.Bases.init();
 		LOGGER.info("Arraial: o pedreiro chegou.");
 	}
 }

@@ -95,6 +95,12 @@ public final class Falas {
 		return linha(level.getRandom(), "presente", jogador);
 	}
 
+	/** Two rivals meet: a quarrel instead of a chat. */
+	public static List<Component> briga(ServerLevel level, MoradorEntity a, MoradorEntity b) {
+		int v = level.getRandom().nextInt(3);
+		return List.of(Component.translatable("arraial.conversa.briga." + v + ".a", b.nome()), Component.translatable("arraial.conversa.briga." + v + ".b", a.nome()));
+	}
+
 	/** A short exchange between two moradores: the opening line and the reply. */
 	public static List<Component> conversa(ServerLevel level, MoradorEntity a, MoradorEntity b) {
 		RandomSource r = level.getRandom();

@@ -106,9 +106,29 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] Reconhecimento do jogador (participar de festas, levar doces): conhecido → amigo da festa (ganha a bandeira) → filho da terra
 - [x] Cerimônias: posse do prefeito com fogos; luto quando um morador morre
 
-## Próximos (ver ROADMAP, fases G–H)
+## 15. Vida pessoal (fase G)
+- [x] Personalidade (2 traços entre 10), comida preferida, lazer preferido, sonho próprio
+- [x] Necessidades: energia (cai de dia, volta dormindo; exausto para e descansa), convívio (cai sozinho, sobe com prosa e festa)
+- [x] Rotina: fim de tarde é lazer (passear, rezar no Cruzeiro, beira d'água, perto do fogo, prosear)
+- [x] Amizades e rivalidades entre moradores por compatibilidade de traços; rivais brigam em vez de conversar
+- [x] Amizade com o jogador: conversa diária, comida preferida; compadre/comadre (30), presente (60); confidência do sonho
+- [x] Missões sociais: trazer algo, levar bilhete, fazer as pazes com um rival; pagam réis, amizade e reputação
+- [x] Humor pessoal entra na satisfação da vila
+
+## 16. Ruínas e ocupação (fase H)
+- [x] Vila abandonada se deteriora dia a dia (blocos caem, pedra com musgo e rachada, teias) até virar ruína
+- [x] Vizinho com gente sobrando recoloniza as ruínas; ou bandidos fazem esconderijo (saqueiam vizinhos, estradas mais perigosas, saque fica no armazém)
+- [x] Jogador limpa o esconderijo (réis, reputação com vizinhos) e repovoa; moradores reconstroem
+- [x] Base do jogador (última cama) abandonada 8+ dias fora de território pode ser tomada por bandidos; retomar ao limpar
+- [x] `/arraial abandonar`, `/arraial ocupar`, `/arraial base`
+
+## Próximos (pedidos de 2026-11-05)
+- [ ] Crafts de tudo (jogável em sobrevivência) e compatibilidade com JEI
+- [ ] Itens novos do mod: ferramentas, armaduras, miscelânea; por craft, saques, loot e conquistas
+
+## Depois
 - [ ] Teste em jogo de tudo acima (T)
-- [ ] G Vida pessoal · H Ruínas e ocupação
+
 - [ ] Famílias e sucessão; blocos coloniais
 - [ ] Eras/modernização
 - [ ] Tratados e embargo (diplomacia completa); tela de diplomacia

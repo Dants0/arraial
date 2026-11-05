@@ -76,6 +76,9 @@ public class ArraialBlockEntity extends BlockEntity {
 	boolean autonoma;
 	/** Nobody lives here any more (see {@link Mundo}); it waits for someone to bring it back. */
 	boolean abandonada;
+	/** Last day the ruins were looked after (see {@link Ruinas}); empty checks of a hideout (not saved). */
+	long diaRuina;
+	int esconderijoVazio;
 
 	public boolean abandonada() {
 		return abandonada;
@@ -221,6 +224,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		arraial.diario(server, moradores);
 		Prefeitura.cuidar(server, arraial, moradores);
 		if (arraial.abandonada && !arraial.repovoar(server)) {
+			Ruinas.tick(server, arraial);
 			return;
 		}
 		long camasLivres = arraial.camas(server) - moradores.size();
@@ -257,6 +261,9 @@ public class ArraialBlockEntity extends BlockEntity {
 		}
 		ultimoDiario = hoje;
 		setChanged();
+		if (abandonada) {
+			return; // nobody left to run the arraial
+		}
 		Politica.diario(level, this, moradores);
 		if (Satisfacao.diario(level, this, moradores)) {
 			Prefeitura.depor(level, this);
@@ -311,6 +318,10 @@ public class ArraialBlockEntity extends BlockEntity {
 
 	/** A player came back to an abandoned arraial with food in the armazém: people return. */
 	boolean repovoar(ServerLevel level) {
+		Registro.Info dono = Registro.get(Registro.id(level.dimension().identifier().toString(), worldPosition));
+		if (dono != null && "bandidos".equals(dono.ocupadaPor)) {
+			return false; // first the bandits must go
+		}
 		boolean alguem = level.players().stream().anyMatch(p -> p.blockPosition().closerThan(worldPosition, 32));
 		int comida = Vilas.contar(Vilas.armazens(level, worldPosition), s -> s.has(net.minecraft.core.component.DataComponents.FOOD));
 		if (!alguem || comida < 8 || camas(level) == 0) {
@@ -353,6 +364,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		ultimoDiario = input.getLongOr("UltimoDiario", 0L);
 		autonoma = input.getBooleanOr("Autonoma", false);
 		abandonada = input.getBooleanOr("Abandonada", false);
+		diaRuina = input.getLongOr("DiaRuina", 0L);
 		deposto = input.read("Deposto", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 		legitimidade = input.getIntOr("Legitimidade", 60);
 		diasLegitimidadeBaixa = input.getIntOr("DiasLegitimidadeBaixa", 0);
@@ -386,6 +398,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.putLong("UltimoDiario", ultimoDiario);
 		output.putBoolean("Autonoma", autonoma);
 		output.putBoolean("Abandonada", abandonada);
+		output.putLong("DiaRuina", diaRuina);
 		if (deposto != null) {
 			output.store("Deposto", net.minecraft.core.UUIDUtil.CODEC, deposto);
 		}

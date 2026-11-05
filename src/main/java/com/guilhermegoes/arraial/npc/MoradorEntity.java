@@ -92,6 +92,13 @@ public class MoradorEntity extends PathfinderMob {
 	private @Nullable MoradorEntity escoltado;
 	public static final int DIAS_ATE_IR_EMBORA = 3;
 
+	/** Personal life: personality, needs, friendships, a dream, missions (see {@link Pessoa}). */
+	private final Pessoa pessoa = new Pessoa();
+
+	public Pessoa pessoa() {
+		return pessoa;
+	}
+
 	// ---- Mascate (a peddler from another arraial; see Comercio) and caravan escort
 	private String mascateOrigem = "";
 	private @Nullable BlockPos mascateVila;
@@ -155,6 +162,7 @@ public class MoradorEntity extends PathfinderMob {
 			m.entityData.set(VISUAL, m.getRandom().nextInt(VISUAIS));
 			m.setProfissao(profissao);
 			m.nome = "";
+			m.pessoa.gerar(m.getRandom());
 			m.nome();
 		}
 		return m;
@@ -204,6 +212,7 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(3, new EmissarioGoal(this));
 		goalSelector.addGoal(3, new OpenDoorGoal(this, true));
 		goalSelector.addGoal(4, new SoldadoGoal(this));
+		goalSelector.addGoal(4, new LazerGoal(this));
 		targetSelector.addGoal(1, new SoldadoGoal.Revidar(this));
 		targetSelector.addGoal(2, new SoldadoGoal.Cacar(this));
 		goalSelector.addGoal(5, new ConversarGoal(this));
@@ -474,6 +483,9 @@ public class MoradorEntity extends PathfinderMob {
 	@Override
 	protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
+		if (tickCount % 600 == 0 && vila != null) {
+			pessoa.passar(level, this);
+		}
 		if (viagemFase == 3) {
 			// Away with the troop: stays put, out of sight, until the day he comes back.
 			getNavigation().stop();
@@ -818,6 +830,10 @@ public class MoradorEntity extends PathfinderMob {
 			player.sendSystemMessage(Component.translatable("arraial.morador.dispensado", nome(), antigo).withStyle(ChatFormatting.YELLOW));
 			return InteractionResult.SUCCESS;
 		}
+		// Missions: the thing asked for, a note to deliver, a peace offering for a rival.
+		if (level() instanceof ServerLevel s && !stack.isEmpty() && Pessoa.cumprir(s, this, player, stack)) {
+			return InteractionResult.SUCCESS;
+		}
 		// Sweets for the festa: the village remembers who brought them.
 		if (level() instanceof ServerLevel server && arraial() != null && arraial().festa().agora() != null
 				&& (stack.is(ModItems.QUENTAO) || stack.is(ModItems.PE_DE_MOLEQUE) || stack.is(ModItems.PACOCA) || stack.is(ModItems.RAPADURA) || stack.is(ModItems.BEIJU))) {
@@ -828,6 +844,11 @@ public class MoradorEntity extends PathfinderMob {
 			dizer(Component.translatable("arraial.fala.festa_presente", player.getName()), 80);
 			com.guilhermegoes.arraial.vila.Satisfacao.agradar(server, vila, 1);
 			com.guilhermegoes.arraial.vila.Cultura.reconhecer(server, arraial(), player, 3);
+			return InteractionResult.SUCCESS;
+		}
+		// The favourite food: a gift that wins a friend.
+		if (level() instanceof ServerLevel s && !comFome() && pessoa.favoritaDada(s, this, player, stack)) {
+			getLookControl().setLookAt(player);
 			return InteractionResult.SUCCESS;
 		}
 		// A gift of food for someone hungry (or a remedy for someone sick).
@@ -856,6 +877,9 @@ public class MoradorEntity extends PathfinderMob {
 				getNavigation().stop();
 				getLookControl().setLookAt(player);
 				dizer(Falas.paraJogador(server, this, player.getName().getString()), 100);
+				pessoa.ficha(this, player).forEach(player::sendSystemMessage);
+				pessoa.conversouComJogador(server, this, player);
+				pessoa.oferecer(server, this, player);
 			}
 			return InteractionResult.SUCCESS;
 		}
@@ -889,6 +913,7 @@ public class MoradorEntity extends PathfinderMob {
 		}
 		output.putBoolean("Escoltada", escoltada);
 		output.putInt("Visual", visual());
+		pessoa.gravar(output);
 		output.putBoolean("Feminino", feminino());
 		output.store("Carga", CARGA_CODEC, Map.copyOf(carga));
 		if (obra != null) {
@@ -914,6 +939,10 @@ public class MoradorEntity extends PathfinderMob {
 	protected void readAdditionalSaveData(ValueInput input) {
 		super.readAdditionalSaveData(input);
 		entityData.set(PROFISSAO, input.getIntOr("Profissao", 0));
+		pessoa.ler(input);
+		if (pessoa.tracos.isEmpty()) {
+			pessoa.gerar(getRandom()); // moradores from before personal life
+		}
 		doenteDias = input.getIntOr("Doente", 0);
 		viagemFase = input.getIntOr("ViagemFase", 0);
 		viagemDestino = input.getStringOr("ViagemDestino", "");

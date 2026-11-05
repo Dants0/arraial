@@ -49,6 +49,11 @@ public final class Simulacao {
 		if (info.abandonada && !a.abandonada) {
 			a.abandonar(level, moradores);
 			moradores = List.of();
+		} else if (!info.abandonada && a.abandonada && info.saldoMoradores > 0) {
+			// Resettled by a neighbour while nobody was looking.
+			a.abandonada = false;
+			Registro.Info colono = Registro.get(info.colonia);
+			a.anotar(new Cronica.Entrada(Vilas.dia(level), Component.translatable("arraial.cronica.recolonizada", colono == null ? "?" : colono.nome)));
 		}
 		if (info.saldoMoradores > 0) {
 			for (int i = 0; i < Math.min(6, info.saldoMoradores); i++) {

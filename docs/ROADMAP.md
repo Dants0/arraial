@@ -44,5 +44,5 @@ Ordem de implementação (cada fase compila, é testada no servidor e vira commi
 | D | **Comércio avançado** — mascate visível (NPC mercador visita a vila), caravanas com inventário real e escolta pelo jogador, contratos de fornecimento assinados na banca, custo de transporte por estrada construída | ✅ feito |
 | E | **Território** — fronteiras por chunk, reivindicações, disputas por recursos com causa econômica/histórica, tratados e tributos, postos avançados, escaramuças e paz | ✅ feito |
 | F | **Cultura** — tradições por bioma e economia, bandeira e símbolo de cada vila, festivais próprios, cerimônias, intercâmbio cultural, reconhecimento cultural do jogador | ✅ feito |
-| G | **Vida pessoal** — necessidades (comida, descanso, convívio), personalidade e preferências, lazer, amizades e rivalidades, objetivos individuais, pequenas missões sociais | a fazer |
-| H | **Ruínas e ocupação** — vila abandonada vira ruína (deterioração), bandidos ocupam construções abandonadas (esconderijo), jogador pode restaurar; base abandonada do jogador também | a fazer |
+| G | **Vida pessoal** — necessidades (comida, descanso, convívio), personalidade e preferências, lazer, amizades e rivalidades, objetivos individuais, pequenas missões sociais | ✅ feito |
+| H | **Ruínas e ocupação** — vila abandonada vira ruína (deterioração), bandidos ocupam construções abandonadas (esconderijo), jogador pode restaurar; base abandonada do jogador também | ✅ feito |

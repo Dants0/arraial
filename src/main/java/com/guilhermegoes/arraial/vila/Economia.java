@@ -100,6 +100,10 @@ public final class Economia {
 		if (batida(a, b)) {
 			risco -= 0.02F; // a well-travelled road is safer
 		}
+		Registro.Info ib = Registro.get(b);
+		if (ia != null && Ruinas.esconderijoPerto(ia) || ib != null && Ruinas.esconderijoPerto(ib)) {
+			risco += 0.08F; // a bandit hideout nearby
+		}
 		if (r != null && hoje - r.ultimoRoubo < JANELA_ROUBOS) {
 			risco += 0.06F * r.roubos;
 		}

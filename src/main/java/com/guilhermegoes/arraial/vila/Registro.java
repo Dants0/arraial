@@ -75,6 +75,15 @@ public final class Registro {
 		public Map<String, Long> guerras = new HashMap<>();
 		public Map<String, Tratado> tratados = new HashMap<>();
 		public long ultimaProposta;
+		// ---- Ruins (see Ruinas)
+		public int diasAbandonada;
+		public int ruinaPendente;
+		/** Who took the empty arraial: "" (nobody) or "bandidos". */
+		public String ocupadaPor = "";
+		public int bandidos;
+		public boolean bandidosSpawnados;
+		/** The arraial that resettled it, if any. */
+		public String colonia = "";
 		// ---- Culture (see Cultura)
 		public String simbolo = "";
 		public String cor1 = "";

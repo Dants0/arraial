@@ -59,6 +59,11 @@ public final class Satisfacao {
 			alvo += 5;
 		}
 		alvo -= a.politica.imposto() * 4; // taxes weigh on everyone
+		// How the people feel in their own lives (rest, company, dreams).
+		if (!moradores.isEmpty()) {
+			double humor = moradores.stream().mapToInt(m -> m.pessoa().humor(m)).average().orElse(50);
+			alvo += (humor - 50) / 4;
+		}
 		if (a.crise.tipo() != null) {
 			alvo -= a.crise.tipo() == Crise.Tipo.SALTEADORES ? 15 : 10;
 		}

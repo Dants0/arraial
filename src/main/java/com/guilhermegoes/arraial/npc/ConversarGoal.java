@@ -47,13 +47,20 @@ public class ConversarGoal extends Goal {
 			return false;
 		}
 		checar = 40 + morador.getRandom().nextInt(40);
-		for (MoradorEntity m : level().getEntitiesOfClass(MoradorEntity.class, morador.getBoundingBox().inflate(8),
-				m -> m != morador && morador.vila().equals(m.vila()) && m.livreParaConversar(level().getGameTime()))) {
+		// Friends first; rivals are avoided (unless one of them is looking for a quarrel).
+		List<MoradorEntity> vizinhos = new java.util.ArrayList<>(level().getEntitiesOfClass(MoradorEntity.class, morador.getBoundingBox().inflate(8),
+				m -> m != morador && morador.vila().equals(m.vila()) && m.livreParaConversar(level().getGameTime())));
+		vizinhos.sort(java.util.Comparator.comparingInt(m -> -morador.pessoa().afinidadeCom(m)));
+		for (MoradorEntity m : vizinhos) {
+			boolean rivais = morador.pessoa().afinidadeCom(m) <= -40;
+			if (rivais && !morador.pessoa().tem("brigao") && morador.getRandom().nextFloat() < 0.8F) {
+				continue;
+			}
 			outro = m;
 			iniciou = true;
 			morador.setInterlocutor(m);
 			m.setInterlocutor(morador);
-			falas = Falas.conversa(level(), morador, m);
+			falas = rivais ? Falas.briga(level(), morador, m) : Falas.conversa(level(), morador, m);
 			return true;
 		}
 		return false;
@@ -97,6 +104,7 @@ public class ConversarGoal extends Goal {
 				morador.dizer(falas.get(0), 60);
 			} else if (perto == 70 && falas.size() > 1) {
 				outro.dizer(falas.get(1), 50);
+				Pessoa.conversaram(morador, outro, morador.getRandom());
 			}
 		}
 	}

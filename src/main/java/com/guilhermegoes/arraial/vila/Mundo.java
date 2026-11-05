@@ -122,6 +122,8 @@ public final class Mundo {
 
 	private static void dia(ServerLevel level, String id, Registro.Info v, long d) {
 		if (v.abandonada) {
+			v.ruinaPendente = Math.min(20, v.ruinaPendente + 1);
+			Ruinas.ocupar(level, id, v, d);
 			return;
 		}
 		Cultura.garantirLonge(level, id, v);

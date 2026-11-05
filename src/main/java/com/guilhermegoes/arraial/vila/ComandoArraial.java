@@ -98,6 +98,42 @@ public final class ComandoArraial {
 						c.getSource().sendSuccess(() -> Component.translatable("arraial.comando.guerra", a.nomeCompleto(), Registro.get(alvo).nome), true);
 						return 1;
 					}))
+					// Everybody leaves the nearest arraial (to see ruins and occupation).
+					.then(Commands.literal("abandonar").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						if (a == null) {
+							return 0;
+						}
+						ServerLevel lv = c.getSource().getLevel();
+						a.abandonar(lv, a.moradores(lv));
+						Registro.obter(Economia.id(lv, a.getBlockPos())).abandonada = true;
+						return 1;
+					}))
+					// Bandits take the nearest abandoned arraial now.
+					.then(Commands.literal("ocupar").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						if (a == null || !a.abandonada()) {
+							return 0;
+						}
+						Registro.Info v = Registro.obter(Economia.id(c.getSource().getLevel(), a.getBlockPos()));
+						v.ocupadaPor = "bandidos";
+						v.bandidos = 4;
+						v.bandidosSpawnados = false;
+						v.ruinaPendente = 6;
+						return 1;
+					}))
+					// Your base (where you last slept) is taken by bandits, as if you had been away for days.
+					.then(Commands.literal("base").executes(c -> {
+						var p = c.getSource().getPlayerOrException();
+						Bases.Base b = Bases.de(p.getUUID());
+						if (b == null) {
+							c.getSource().sendFailure(Component.translatable("arraial.base.sem_base"));
+							return 0;
+						}
+						Bases.ocupar(b);
+						c.getSource().sendSuccess(() -> Component.translatable("arraial.base.forcada"), false);
+						return 1;
+					}))
 					// A mascate from a neighbour, right now.
 					.then(Commands.literal("mascate").executes(c -> {
 						ArraialBlockEntity a = arraial(c.getSource());

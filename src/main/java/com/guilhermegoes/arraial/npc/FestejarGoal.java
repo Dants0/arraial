@@ -91,6 +91,10 @@ public class FestejarGoal extends Goal {
 		}
 		t++;
 		BlockPos c = a.festa().centro(a);
+		morador.pessoa().viuFesta = true;
+		if (t % 200 == 0) {
+			morador.pessoa().convivio = Math.min(100, morador.pessoa().convivio + 3);
+		}
 		switch (a.festa().estilo()) {
 			case RODA -> roda(c, 3.5, 0.012, 0.55, true);
 			case PROCISSAO -> roda(c, 7.0, 0.005, 0.4, false);

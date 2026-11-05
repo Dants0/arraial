@@ -137,6 +137,12 @@ public class ArraialBlock extends Block implements EntityBlock {
 		long camas = arraial.camas(level);
 		player.sendSystemMessage(Component.literal("✝ " + arraial.nomeCompleto()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 		player.sendSystemMessage(Component.translatable("arraial.vila.populacao", moradores.size(), camas).withStyle(ChatFormatting.YELLOW));
+		if (arraial.abandonada()) {
+			Registro.Info ab = Registro.get(Registro.id(level.dimension().identifier().toString(), arraial.getBlockPos()));
+			boolean bandidos = ab != null && "bandidos".equals(ab.ocupadaPor);
+			player.sendSystemMessage(Component.literal("🏚 ").append(Component.translatable(bandidos ? "arraial.ruina.relatorio_bandidos" : "arraial.ruina.relatorio"))
+					.withStyle(ChatFormatting.DARK_RED));
+		}
 		MoradorEntity prefeito = moradores.stream().filter(m -> m.getUUID().equals(arraial.prefeito())).findFirst().orElse(null);
 		if (prefeito != null) {
 			player.sendSystemMessage(Component.translatable("arraial.vila.prefeito", Prefeitura.cargo(prefeito), prefeito.nome())

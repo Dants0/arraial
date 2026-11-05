@@ -30,7 +30,8 @@ public abstract class OficioGoal extends Goal {
 
 	/** Only the right trade, by day, fed, and only re-checked every ~2 s (the selector polls every other tick). */
 	protected boolean podeTrabalhar() {
-		if (morador.profissao() != profissao || morador.comFome() || morador.doente() || morador.viajando() || morador.posto() == null) {
+		if (morador.profissao() != profissao || morador.comFome() || morador.doente() || morador.viajando() || morador.posto() == null
+				|| morador.pessoa().cansado() || LazerGoal.horaDeLazer(getServerLevel(morador))) {
 			return false;
 		}
 		ServerLevel level = getServerLevel(morador);

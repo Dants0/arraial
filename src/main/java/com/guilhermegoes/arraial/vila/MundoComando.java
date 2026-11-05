@@ -27,7 +27,8 @@ final class MundoComando {
 	}
 
 	static MutableComponent linha(ServerLevel level, String id, Registro.Info v, long hoje) {
-		Component estado = v.abandonada ? Component.translatable("arraial.mundo.abandonada").withStyle(ChatFormatting.DARK_RED)
+		Component estado = v.abandonada && "bandidos".equals(v.ocupadaPor) ? Component.translatable("arraial.mundo.esconderijo", v.bandidos).withStyle(ChatFormatting.DARK_RED)
+				: v.abandonada ? Component.translatable("arraial.mundo.abandonada").withStyle(ChatFormatting.DARK_RED)
 				: v.fome > 0 ? Component.translatable("arraial.mundo.fome").withStyle(ChatFormatting.RED)
 				: !v.criseLonge.isEmpty() ? Component.translatable("arraial.historia.estado." + v.criseLonge).withStyle(ChatFormatting.RED)
 				: Component.translatable(v.satisfacao >= 70 ? "arraial.mundo.prospera" : v.satisfacao < 35 ? "arraial.mundo.decadencia" : "arraial.mundo.estavel")
