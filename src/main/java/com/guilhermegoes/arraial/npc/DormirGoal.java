@@ -70,8 +70,7 @@ public class DormirGoal extends Goal {
 			return;
 		}
 		if (--recalcular <= 0 || morador.getNavigation().isDone()) {
-			recalcular = 20;
-			morador.getNavigation().moveTo(cama.getX() + 0.5, cama.getY(), cama.getZ() + 0.5, 1, 0.8);
+			recalcular = Porteira.caminhar(morador, cama, 0.8);
 		}
 	}
 

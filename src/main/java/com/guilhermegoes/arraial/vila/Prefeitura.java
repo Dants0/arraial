@@ -4,6 +4,7 @@ import com.guilhermegoes.arraial.npc.MoradorEntity;
 import com.guilhermegoes.arraial.npc.Profissao;
 import com.guilhermegoes.arraial.obra.CanteiroBlockEntity;
 import com.guilhermegoes.arraial.obra.Catalogo;
+import com.guilhermegoes.arraial.obra.Muralha;
 import com.guilhermegoes.arraial.obra.PlanoDeObra;
 import com.guilhermegoes.arraial.obra.Prioridade;
 import com.guilhermegoes.arraial.obra.Terreno;
@@ -56,6 +57,7 @@ public final class Prefeitura {
 		if (prefeito == null) {
 			return;
 		}
+		gabinete(level, arraial, prefeito);
 		long hoje = Vilas.dia(level);
 		if (hoje <= arraial.ultimoDespacho || !level.isBrightOutside()) {
 			return;
@@ -64,6 +66,25 @@ public final class Prefeitura {
 		arraial.setChanged();
 		ajustarPedreiros(level, arraial, prefeito, moradores);
 		despachar(level, arraial, prefeito, moradores);
+	}
+
+	/** With a finished Prefeitura, the prefeito leaves his trade and keeps office at its lectern. */
+	private static void gabinete(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito) {
+		BlockPos mesa = null;
+		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {
+			if (mesa == null && p.closerThan(arraial.getBlockPos(), Vilas.RAIO) && level.getBlockEntity(p) instanceof CanteiroBlockEntity c
+					&& c.concluida() && c.projeto().map(pr -> pr.id().equals("prefeitura")).orElse(false)) {
+				mesa = c.plano(level).flatMap(pl -> pl.etapas().stream()
+						.filter(e -> e.state().is(net.minecraft.world.level.block.Blocks.LECTERN) && level.getBlockState(e.pos()).is(net.minecraft.world.level.block.Blocks.LECTERN))
+						.map(PlanoDeObra.Etapa::pos).findFirst()).orElse(null);
+			}
+		}
+		if (mesa != null && prefeito.gabinete() == null && prefeito.profissao() != Profissao.NENHUMA) {
+			Component antigo = prefeito.titulo();
+			prefeito.largarOficio();
+			Cronica.anotar(level, arraial.getBlockPos(), Component.translatable("arraial.cronica.gabinete", prefeito.nome(), cargo(prefeito), antigo));
+		}
+		prefeito.setGabinete(mesa);
 	}
 
 	// ------------------------------------------------------------ elections
@@ -154,6 +175,13 @@ public final class Prefeitura {
 		if (n >= 3 && obras(level, vila, "poco") == 0) {
 			desejos.add("poco");
 		}
+		if (n >= 8 && obras(level, vila, "prefeitura") == 0) {
+			desejos.add("prefeitura");
+		}
+		// Safety: once there are soldados, a paliçada around the arraial keeps the night out.
+		if (n >= 6 && postos(level, vila, ModPois.POSTO_GUARDA) > 0 && obras(level, vila, Muralha.ID) == 0) {
+			desejos.add(Muralha.ID);
+		}
 		if (desejos.isEmpty() && camasLivres <= 1) {
 			desejos.add("casa");
 		}
@@ -166,6 +194,21 @@ public final class Prefeitura {
 		}
 		if (comida < n) {
 			urgentes.add("roca");
+		}
+		// Crises: a poço against the drought, a guarita against bandits, a curral (chickens) against the plague.
+		Crise.Tipo crise = arraial.crise.tipo();
+		if (crise == Crise.Tipo.SECA && obras(level, vila, "poco") == 0) {
+			desejos.remove("poco");
+			desejos.add(0, "poco");
+			urgentes.add("poco");
+		}
+		if (crise == Crise.Tipo.SALTEADORES && postos(level, vila, ModPois.POSTO_GUARDA) == 0) {
+			desejos.remove("guarita");
+			desejos.add(0, "guarita");
+			urgentes.add("guarita");
+		}
+		if (crise == Crise.Tipo.PRAGA && postos(level, vila, ModPois.COCHO) == 0 && !desejos.contains("curral")) {
+			desejos.add("curral");
 		}
 		desejos.removeIf(d -> emObra.contains(d) || (d.equals("casa") && (emObra.contains("casebre") || emObra.contains("rancho"))));
 		if (!ativas.isEmpty()) {
@@ -215,7 +258,8 @@ public final class Prefeitura {
 					}
 					continue;
 				}
-				Prioridade prioridade = urgentes.contains(desejo) ? Prioridade.URGENTE : Prioridade.NORMAL;
+				Prioridade prioridade = urgentes.contains(desejo) ? Prioridade.URGENTE
+						: desejo.equals(Muralha.ID) && arraial.crise.tipo() != Crise.Tipo.SALTEADORES ? Prioridade.BAIXA : Prioridade.NORMAL;
 				if (Terreno.marcar(level, lugar.get(), projeto, prioridade)) {
 					Cronica.anotar(level, vila, Component.translatable("arraial.cronica.ordem", prefeito.nome(), cargo(prefeito), projeto.nome()));
 					avisar(level, arraial, Component.translatable("arraial.vila.ordem", cargo(prefeito), prefeito.nome(), projeto.nome())
@@ -251,7 +295,7 @@ public final class Prefeitura {
 		if (pedreiros >= obras) {
 			return;
 		}
-		moradores.stream().filter(m -> m.profissao() == Profissao.NENHUMA).findFirst().ifPresent(m -> {
+		moradores.stream().filter(m -> m.profissao() == Profissao.NENHUMA && m.gabinete() == null).findFirst().ifPresent(m -> {
 			m.setProfissao(Profissao.PEDREIRO);
 			Cronica.anotar(level, arraial.getBlockPos(),
 					Component.translatable("arraial.cronica.contratou", prefeito.nome(), m.nome(), m.titulo()));
@@ -283,7 +327,7 @@ public final class Prefeitura {
 	}
 
 	/** Finished (or started) buildings of a given project inside the arraial. */
-	private static int obras(ServerLevel level, BlockPos vila, String id) {
+	static int obras(ServerLevel level, BlockPos vila, String id) {
 		int n = 0;
 		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {
 			if (p.closerThan(vila, Vilas.RAIO) && level.getBlockEntity(p) instanceof CanteiroBlockEntity c
@@ -303,7 +347,7 @@ public final class Prefeitura {
 		return tipo == null ? 0 : postos(level, vila, tipo);
 	}
 
-	private static void avisar(ServerLevel level, ArraialBlockEntity arraial, Component msg) {
+	static void avisar(ServerLevel level, ArraialBlockEntity arraial, Component msg) {
 		for (ServerPlayer p : level.players()) {
 			if (p.blockPosition().closerThan(arraial.getBlockPos(), Vilas.RAIO * 2)) {
 				p.sendSystemMessage(msg);

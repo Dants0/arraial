@@ -30,6 +30,7 @@ public class Arraial implements ModInitializer {
 		ModItems.init();
 		ModCreativeTabs.init();
 		com.guilhermegoes.arraial.npc.Ameacas.init();
+		com.guilhermegoes.arraial.vila.ComandoArraial.init();
 		LOGGER.info("Arraial: o pedreiro chegou.");
 	}
 }

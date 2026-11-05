@@ -20,6 +20,44 @@ import org.jspecify.annotations.Nullable;
 final class Porteira {
 	private static final int RAIO = 8;
 
+	/**
+	 * Walks {@code quem} towards {@code pos}, going through a gate when the way is fenced off (a
+	 * curral, the arraial's wall). Returns how many ticks to wait before calling again.
+	 */
+	static int caminhar(MoradorEntity quem, BlockPos pos, double velocidade) {
+		if (!(quem.level() instanceof ServerLevel level)) {
+			return 20;
+		}
+		var nav = quem.getNavigation();
+		int espera = 20;
+		net.minecraft.world.level.pathfinder.Path caminho = nav.createPath(pos, 1);
+		if (caminho != null && !caminho.canReach()) {
+			BlockPos portao = procurar(level, pos, quem.blockPosition());
+			if (portao == null) {
+				portao = procurar(level, quem.blockPosition(), quem.blockPosition()); // fenced in, going out
+			}
+			if (portao == null) {
+				portao = daMuralha(level, quem.vila(), quem.blockPosition()); // the arraial's wall
+			}
+			if (portao != null) {
+				if (quem.position().distanceTo(net.minecraft.world.phys.Vec3.atCenterOf(portao)) <= 2.2) {
+					abrir(level, portao, quem);
+					caminho = nav.createPath(pos, 1);
+					espera = 5;
+				} else {
+					caminho = nav.createPath(portao, 1);
+					espera = 10;
+				}
+			}
+		}
+		if (caminho != null) {
+			nav.moveTo(caminho, velocidade);
+		} else {
+			nav.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 1, velocidade);
+		}
+		return espera;
+	}
+
 	/** The closed gate nearest to {@code origem} around {@code destino}, or null. */
 	static @Nullable BlockPos procurar(ServerLevel level, BlockPos destino, BlockPos origem) {
 		BlockPos melhor = null;
@@ -31,6 +69,26 @@ final class Porteira {
 				if (x < d) {
 					d = x;
 					melhor = p.immutable();
+				}
+			}
+		}
+		return melhor;
+	}
+
+	/** The closed gate of the arraial's wall (paliçada) nearest to {@code origem}, or null. */
+	static @Nullable BlockPos daMuralha(ServerLevel level, @Nullable BlockPos vila, BlockPos origem) {
+		if (vila == null) {
+			return null;
+		}
+		BlockPos melhor = null;
+		double d = Double.MAX_VALUE;
+		for (BlockPos p : com.guilhermegoes.arraial.obra.Muralha.portoes(level, vila)) {
+			BlockState s = level.getBlockState(p);
+			if (s.getBlock() instanceof FenceGateBlock && !s.getValue(FenceGateBlock.OPEN)) {
+				double x = p.distSqr(origem);
+				if (x < d) {
+					d = x;
+					melhor = p;
 				}
 			}
 		}

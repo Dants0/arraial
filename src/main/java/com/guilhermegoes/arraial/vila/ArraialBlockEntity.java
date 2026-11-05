@@ -33,6 +33,14 @@ public class ArraialBlockEntity extends BlockEntity {
 	long ultimoDespacho = 0;
 	/** What the prefeito wants but cannot do (shown at the Cruzeiro); empty when all is well. */
 	Component pedido = Component.empty();
+	/** The crisis the arraial is going through, if any (see {@link Crise}). */
+	final Crise crise = new Crise();
+	/** Population at the last count (for the per-second crisis tick). */
+	int populacao;
+
+	public Crise crise() {
+		return crise;
+	}
 
 	public java.util.@org.jspecify.annotations.Nullable UUID prefeito() {
 		return prefeito;
@@ -104,19 +112,24 @@ public class ArraialBlockEntity extends BlockEntity {
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, ArraialBlockEntity arraial) {
-		if (!(level instanceof ServerLevel server) || server.getGameTime() % 100 != 0) {
+		if (!(level instanceof ServerLevel server) || server.getGameTime() % 20 != 0) {
+			return;
+		}
+		Crise.tick(server, arraial, arraial.populacao);
+		if (server.getGameTime() % 100 != 0) {
 			return;
 		}
 		arraial.fundar(server);
 
 		List<MoradorEntity> moradores = arraial.moradores(server);
+		arraial.populacao = moradores.size();
 		Prefeitura.cuidar(server, arraial, moradores);
 		long camasLivres = arraial.camas(server) - moradores.size();
 		// Free work also draws people in, even with nowhere to sleep (they arrive homeless,
 		// which pushes the player to build houses), but only while there are few homeless.
 		long semCasa = moradores.stream().filter(m -> m.casa() == null).count();
 		boolean atraiPorTrabalho = arraial.postosLivres(server) > 0 && semCasa < Vilas.MAX_SEM_CASA
-				&& moradores.stream().noneMatch(m -> m.profissao() == Profissao.NENHUMA);
+				&& moradores.stream().noneMatch(m -> m.profissao() == Profissao.NENHUMA && m.gabinete() == null);
 		if (camasLivres <= 0 && !atraiPorTrabalho) {
 			// Nobody comes while there is nowhere to live or work; the clock starts when that changes.
 			arraial.proximaChegada = Math.max(arraial.proximaChegada, server.getGameTime() + Vilas.INTERVALO_CHEGADA);
@@ -159,6 +172,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		prefeito = input.read("Prefeito", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 		ultimoDespacho = input.getLongOr("UltimoDespacho", 0L);
 		pedido = input.read("Pedido", net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(Component.empty());
+		crise.ler(input);
 	}
 
 	@Override
@@ -172,5 +186,6 @@ public class ArraialBlockEntity extends BlockEntity {
 		}
 		output.putLong("UltimoDespacho", ultimoDespacho);
 		output.store("Pedido", net.minecraft.network.chat.ComponentSerialization.CODEC, pedido);
+		crise.gravar(output);
 	}
 }

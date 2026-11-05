@@ -134,6 +134,27 @@ public class GerarPlantas {
 				new String[] {"     ", "     ", "     ", "     ", "     ", "     ", "     "},
 				new String[] {"..n..", ".....", ".....", ".....", ".....", ".....", "....."}));
 
+		// Prefeitura: the town hall, in taipa with a tiled roof. The prefeito keeps office at the
+		// lectern ('a'); benches for whoever comes with a request.
+		Map<Character, String> prefeitura = new HashMap<>(casebre);
+		prefeitura.put('a', "minecraft:lectern[facing=north,has_book=false,powered=false]");
+		prefeitura.put('n', "minecraft:oak_stairs[facing=south,half=bottom,shape=straight]");
+		prefeitura.put('T', "minecraft:torch");
+		escrever(out.resolve("prefeitura.nbt"), prefeitura, List.of(
+				// y0: stone foundation, plank floor
+				new String[] {"CCCCCCC", "CPPPPPC", "CPPPPPC", "CPPPPPC", "CPPPPPC", "CCCCCCC"},
+				// y1: door in the middle of the front, benches facing the lectern at the back
+				new String[] {"LMMdMML", "M.....M", "M.n.n.M", "M.....M", "M..a..M", "LMMMMML"},
+				// y2: windows on the sides
+				new String[] {"LMMDMML", "M.....M", ".......", "M.....M", "M.....M", "LMMMMML"},
+				// y3: top of the walls, torches on the back wall
+				new String[] {"LMMMMML", "M.....M", "M.....M", "M.....M", "M.t.t.M", "LMMMMML"},
+				// y4-y7: tiled roof with gable ends
+				new String[] {"eMMMMMw", "e.....w", "e.....w", "e.....w", "e.....w", "eMMMMMw"},
+				new String[] {" eMMMw ", " e...w ", " e...w ", " e...w ", " e...w ", " eMMMw "},
+				new String[] {"  eMw  ", "  e.w  ", "  e.w  ", "  e.w  ", "  e.w  ", "  eMw  "},
+				new String[] {"   s   ", "   s   ", "   s   ", "   s   ", "   s   ", "   s   "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

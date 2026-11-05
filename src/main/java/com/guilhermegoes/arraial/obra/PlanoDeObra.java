@@ -61,7 +61,15 @@ public final class PlanoDeObra {
 	 * starts one block ahead of the marker in the direction it faces, centred on it,
 	 * with its floor (layer 0) replacing the ground the marker stands on.
 	 */
+	/** A plan from ready-made steps (used by procedural projects like the {@link Muralha}). */
+	static PlanoDeObra de(List<Etapa> etapas, BoundingBox area) {
+		return new PlanoDeObra(List.copyOf(etapas), area);
+	}
+
 	public static Optional<PlanoDeObra> criar(ServerLevel level, Catalogo.Projeto projeto, BlockPos marco, Direction frente) {
+		if (Muralha.e(projeto)) {
+			return Muralha.planejar(level, marco, 0, madeiraDaVila(level, marco));
+		}
 		Optional<StructureTemplate> template = level.getStructureTemplateManager().get(projeto.estrutura());
 		if (template.isEmpty()) {
 			return Optional.empty();
@@ -143,7 +151,15 @@ public final class PlanoDeObra {
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.COCHO, new Custo(Items.OAK_PLANKS, 5)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.GAMELA, new Custo(Items.OAK_PLANKS, 3)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BANCADA_CANTEIRO, new Custo(Items.OAK_LOG, 2)),
-			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.FORNO_OLARIA, new Custo(Items.COBBLESTONE, 8)));
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.FORNO_OLARIA, new Custo(Items.COBBLESTONE, 8)),
+			Map.entry(net.minecraft.world.level.block.Blocks.LECTERN, new Custo(Items.OAK_PLANKS, 4)));
+
+	/** Index in {@link com.guilhermegoes.arraial.trabalho.Receitas#MADEIRAS} of the wood the arraial near {@code pos} uses most. */
+	static int madeiraDaVila(ServerLevel level, BlockPos pos) {
+		BlockPos vila = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, pos);
+		var inv = com.guilhermegoes.arraial.vila.Vilas.inventario(com.guilhermegoes.arraial.vila.Vilas.armazens(level, vila));
+		return com.guilhermegoes.arraial.trabalho.Receitas.MADEIRAS.indexOf(com.guilhermegoes.arraial.trabalho.Estoque.madeiraDaVila(inv));
+	}
 
 	public static Custo custo(BlockState state) {
 		if (state.isAir()) {

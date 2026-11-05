@@ -33,7 +33,9 @@ public final class Catalogo {
 			new Projeto("curral"),
 			new Projeto("guarita"),
 			new Projeto("barreira"),
-			new Projeto("pedreira"));
+			new Projeto("pedreira"),
+			new Projeto("prefeitura"),
+			new Projeto(Muralha.ID));
 
 	public static Optional<Projeto> porId(String id) {
 		return PROJETOS.stream().filter(p -> p.id().equals(id)).findFirst();

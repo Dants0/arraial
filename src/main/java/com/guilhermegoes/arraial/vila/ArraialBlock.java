@@ -137,6 +137,10 @@ public class ArraialBlock extends Block implements EntityBlock {
 		} else if (arraial.prefeito() == null) {
 			player.sendSystemMessage(Component.translatable("arraial.vila.sem_prefeito", Prefeitura.MIN_ELEITORES).withStyle(ChatFormatting.GRAY));
 		}
+		Component crise = arraial.crise().descricao(level);
+		if (crise != null) {
+			player.sendSystemMessage(Component.literal("⚠ ").append(crise).withStyle(ChatFormatting.RED));
+		}
 		if (!arraial.pedido().getString().isEmpty()) {
 			player.sendSystemMessage(Component.literal("📜 ").append(arraial.pedido()).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}

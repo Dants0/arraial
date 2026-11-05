@@ -32,6 +32,9 @@ public class CanteiroBlockEntity extends BlockEntity {
 	/** Game time the project was chosen: older sites go first among equal priorities. */
 	private long criada = 0;
 	private @Nullable PlanoDeObra plano;
+	/** Muralha only: the size and wood fixed when the wall was first drawn. */
+	private int muroRaio = 0;
+	private int muroMadeira = 0;
 
 	public CanteiroBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.CANTEIRO, pos, state);
@@ -83,6 +86,7 @@ public class CanteiroBlockEntity extends BlockEntity {
 		progresso = 0;
 		concluida = false;
 		plano = null;
+		muroRaio = 0;
 		setChanged();
 	}
 
@@ -129,7 +133,15 @@ public class CanteiroBlockEntity extends BlockEntity {
 
 	/** The block-by-block plan, built lazily from the structure file. */
 	public Optional<PlanoDeObra> plano(ServerLevel level) {
-		if (plano == null) {
+		if (plano == null && projeto().map(Muralha::e).orElse(false)) {
+			if (muroRaio <= 0) {
+				BlockPos vila = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, worldPosition);
+				muroRaio = Muralha.raioPara(level, vila == null ? worldPosition : vila);
+				muroMadeira = PlanoDeObra.madeiraDaVila(level, worldPosition);
+				setChanged();
+			}
+			Muralha.planejar(level, worldPosition, muroRaio, muroMadeira).ifPresent(p -> plano = p);
+		} else if (plano == null) {
 			projeto().flatMap(p -> PlanoDeObra.criar(level, p, worldPosition, frente())).ifPresent(p -> plano = p);
 		}
 		return Optional.ofNullable(plano);
@@ -157,6 +169,8 @@ public class CanteiroBlockEntity extends BlockEntity {
 		concluida = input.getBooleanOr("Concluida", false);
 		prioridade = Prioridade.de(input.getIntOr("Prioridade", Prioridade.ALTA.ordinal()));
 		criada = input.getLongOr("Criada", 0L);
+		muroRaio = input.getIntOr("MuroRaio", 0);
+		muroMadeira = input.getIntOr("MuroMadeira", 0);
 		plano = null;
 	}
 
@@ -168,5 +182,7 @@ public class CanteiroBlockEntity extends BlockEntity {
 		output.putBoolean("Concluida", concluida);
 		output.putInt("Prioridade", prioridade.ordinal());
 		output.putLong("Criada", criada);
+		output.putInt("MuroRaio", muroRaio);
+		output.putInt("MuroMadeira", muroMadeira);
 	}
 }

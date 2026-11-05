@@ -21,7 +21,8 @@ public final class ModBlocks {
 					.mapColor(MapColor.WOOD)
 					.strength(1.5F)
 					.sound(SoundType.WOOD)
-					.noOcclusion()));
+					.noOcclusion()
+					.noCollision()));
 
 	/** "Cruzeiro": the wooden cross that founds an arraial and marks its centre. */
 	public static final Block CRUZEIRO = register("cruzeiro",

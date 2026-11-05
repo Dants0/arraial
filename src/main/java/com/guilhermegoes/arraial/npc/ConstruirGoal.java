@@ -267,12 +267,55 @@ public class ConstruirGoal extends Goal {
 			if (custo != null) {
 				pedreiro.gastar(custo.item(), custo.quantidade());
 			}
+			// Nobody gets walled in: whoever stands where the block goes steps out first.
+			if (!etapa.state().getCollisionShape(level, pos).isEmpty()) {
+				afastar(level, pos);
+			}
 			// UPDATE_CLIENTS only: two-part blocks (doors) must not pop off before their other half is placed.
 			level.setBlock(pos, etapa.state(), Block.UPDATE_CLIENTS);
 			conectar(level, pos);
 			level.playSound(null, pos, etapa.state().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 0.9F);
 		}
 		pedreiro.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
+	}
+
+	/**
+	 * Moves every creature (moradores, animals; not players) whose body overlaps {@code pos} to the
+	 * nearest spot with solid ground and two free blocks above, so new blocks never trap anyone.
+	 */
+	static void afastar(ServerLevel level, BlockPos pos) {
+		net.minecraft.world.phys.AABB bloco = new net.minecraft.world.phys.AABB(pos);
+		for (net.minecraft.world.entity.LivingEntity e : level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class,
+				bloco.inflate(0.1), e -> !(e instanceof net.minecraft.world.entity.player.Player) && e.getBoundingBox().intersects(bloco))) {
+			BlockPos destino = lugarLivre(level, e.blockPosition(), pos);
+			if (destino != null) {
+				e.teleportTo(destino.getX() + 0.5, destino.getY(), destino.getZ() + 0.5);
+				if (e instanceof net.minecraft.world.entity.Mob mob) {
+					mob.getNavigation().stop();
+				}
+			}
+		}
+	}
+
+	private static @Nullable BlockPos lugarLivre(ServerLevel level, BlockPos perto, BlockPos evitar) {
+		BlockPos melhor = null;
+		double d = Double.MAX_VALUE;
+		for (BlockPos p : BlockPos.betweenClosed(perto.offset(-2, -1, -2), perto.offset(2, 2, 2))) {
+			if (p.equals(evitar) || p.above().equals(evitar)) {
+				continue;
+			}
+			if (level.getBlockState(p).getCollisionShape(level, p).isEmpty()
+					&& level.getBlockState(p.above()).getCollisionShape(level, p.above()).isEmpty()
+					&& level.getBlockState(p).getFluidState().isEmpty()
+					&& level.getBlockState(p.below()).isFaceSturdy(level, p.below(), net.minecraft.core.Direction.UP)) {
+				double x = p.distSqr(perto);
+				if (x < d) {
+					d = x;
+					melhor = p.immutable();
+				}
+			}
+		}
+		return melhor;
 	}
 
 	/**

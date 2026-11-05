@@ -31,12 +31,25 @@ public final class Terreno {
 
 	public static Optional<Lugar> procurar(ServerLevel level, BlockPos vila, Catalogo.Projeto projeto) {
 		List<BoundingBox> ocupadas = new ArrayList<>();
+		BoundingBox dentro = null;
 		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {
 			if (p.closerThan(vila, Vilas.RAIO * 2) && level.getBlockEntity(p) instanceof CanteiroBlockEntity c) {
-				c.plano(level).ifPresent(pl -> ocupadas.add(pl.area().inflatedBy(FOLGA)));
+				if (c.projeto().map(Muralha::e).orElse(false)) {
+					// The wall is a thin ring, not a footprint: new buildings just have to stay inside it.
+					BoundingBox anel = c.plano(level).map(PlanoDeObra::area).orElse(null);
+					if (anel != null && anel.getXSpan() > 8 && anel.getZSpan() > 8) {
+						dentro = new BoundingBox(anel.minX() + 2, anel.minY() - 64, anel.minZ() + 2, anel.maxX() - 2, anel.maxY() + 64, anel.maxZ() - 2);
+					}
+				} else {
+					c.plano(level).ifPresent(pl -> ocupadas.add(pl.area().inflatedBy(FOLGA)));
+				}
 				ocupadas.add(BoundingBox.fromCorners(p, p).inflatedBy(1));
 			}
 		}
+		if (Muralha.e(projeto)) {
+			return pertoDoCruzeiro(level, vila, ocupadas);
+		}
+		final BoundingBox muro = dentro;
 		ocupadas.add(BoundingBox.fromCorners(vila, vila).inflatedBy(3));
 
 		double inicio = level.getRandom().nextDouble() * Math.PI * 2;
@@ -49,7 +62,7 @@ public final class Terreno {
 				BlockPos marco = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, vila.offset(dx, 0, dz));
 				Direction frente = Math.abs(dx) > Math.abs(dz) ? (dx > 0 ? Direction.EAST : Direction.WEST)
 						: (dz > 0 ? Direction.SOUTH : Direction.NORTH);
-				if (serve(level, vila, projeto, marco, frente, ocupadas)) {
+				if (serve(level, vila, projeto, marco, frente, ocupadas, muro)) {
 					return Optional.of(new Lugar(marco, frente));
 				}
 			}
@@ -58,7 +71,7 @@ public final class Terreno {
 	}
 
 	private static boolean serve(ServerLevel level, BlockPos vila, Catalogo.Projeto projeto, BlockPos marco, Direction frente,
-			List<BoundingBox> ocupadas) {
+			List<BoundingBox> ocupadas, @org.jspecify.annotations.Nullable BoundingBox muro) {
 		if (!level.isLoaded(marco) || !livre(level.getBlockState(marco)) || !chao(level.getBlockState(marco.below()))) {
 			return false;
 		}
@@ -67,6 +80,10 @@ public final class Terreno {
 			return false;
 		}
 		BoundingBox area = plano.area();
+		if (muro != null && !(muro.isInside(new BlockPos(area.minX(), area.minY(), area.minZ()))
+				&& muro.isInside(new BlockPos(area.maxX(), area.maxY(), area.maxZ())))) {
+			return false;
+		}
 		for (BoundingBox o : ocupadas) {
 			if (o.intersects(area)) {
 				return false;
@@ -92,6 +109,20 @@ public final class Terreno {
 			}
 		}
 		return true;
+	}
+
+	/** The wall's marker goes on free ground a few blocks from the Cruzeiro. */
+	private static Optional<Lugar> pertoDoCruzeiro(ServerLevel level, BlockPos vila, List<BoundingBox> ocupadas) {
+		for (int raio = 5; raio <= 9; raio++) {
+			for (Direction d : Direction.Plane.HORIZONTAL) {
+				BlockPos marco = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, vila.relative(d, raio));
+				if (level.isLoaded(marco) && livre(level.getBlockState(marco)) && chao(level.getBlockState(marco.below()))
+						&& ocupadas.stream().noneMatch(o -> o.isInside(marco))) {
+					return Optional.of(new Lugar(marco, d.getOpposite()));
+				}
+			}
+		}
+		return Optional.empty();
 	}
 
 	/** Natural ground the pedreiro may dig into or build on. */

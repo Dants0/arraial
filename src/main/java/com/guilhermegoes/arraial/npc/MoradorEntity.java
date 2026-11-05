@@ -141,6 +141,7 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(3, new PastorGoal(this));
 		goalSelector.addGoal(3, new CavarGoal(this, Profissao.BARREIRO));
 		goalSelector.addGoal(3, new CavarGoal(this, Profissao.CAVOUQUEIRO));
+		goalSelector.addGoal(3, new PrefeitoGoal(this));
 		goalSelector.addGoal(3, new OpenDoorGoal(this, true));
 		goalSelector.addGoal(4, new SoldadoGoal(this));
 		targetSelector.addGoal(1, new SoldadoGoal.Revidar(this));
@@ -204,7 +205,31 @@ public class MoradorEntity extends PathfinderMob {
 		escoltado = pastor;
 	}
 
+	/** The prefeito's lectern at the Prefeitura, once there is one (set by the arraial; not saved). */
+	private @Nullable BlockPos gabinete;
+
+	public @Nullable BlockPos gabinete() {
+		return gabinete;
+	}
+
+	public void setGabinete(@Nullable BlockPos pos) {
+		gabinete = pos;
+	}
+
+	/** Leaves the current trade (and its workstation) for good, e.g. to govern full time. */
+	public void largarOficio() {
+		if (level() instanceof ServerLevel server) {
+			soltar(server, posto);
+		}
+		posto = null;
+		obra = null;
+		setProfissao(Profissao.NENHUMA);
+	}
+
 	public void setPrefeito(boolean sim) {
+		if (!sim) {
+			gabinete = null;
+		}
 		if (prefeito != sim) {
 			prefeito = sim;
 			atualizarPlaca();
@@ -379,7 +404,7 @@ public class MoradorEntity extends PathfinderMob {
 			posto = null;
 			setProfissao(Profissao.NENHUMA);
 		}
-		if (p == Profissao.NENHUMA && vila != null) {
+		if (p == Profissao.NENHUMA && vila != null && gabinete == null) {
 			level.getPoiManager()
 					.take(ModPois::ePosto, (h, pos) -> true, vila, Vilas.RAIO)
 					.ifPresent(pos -> {
