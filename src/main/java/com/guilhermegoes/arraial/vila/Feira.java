@@ -184,6 +184,14 @@ public final class Feira {
 					.withStyle(ChatFormatting.GREEN));
 			return;
 		}
+		// Supply orders: paper to see, sign or check one; the ordered good counts toward it.
+		if (mao.is(Items.PAPER)) {
+			Comercio.encomenda(level, a, p, mao);
+			return;
+		}
+		if (Comercio.entregarEncomenda(level, a, p, mao, armazens)) {
+			return;
+		}
 		double b = base(mao.getItem());
 		if (b < 0) {
 			p.sendOverlayMessage(Component.translatable("arraial.feira.nao_compra", mao.getHoverName()).withStyle(ChatFormatting.GRAY));
@@ -219,6 +227,9 @@ public final class Feira {
 	/** Friends of the arraial pay less (and get more): up to 20% either way with reputation. */
 	private static double desconto(ArraialBlockEntity a, Player p) {
 		double festa = a.festa().agora() == Festa.Tipo.FEIRA_GRANDE ? 0.85 : 1.0; // the feira grande: bargains
+		if (a.politica().cidadao(p.getUUID())) {
+			festa *= 0.9; // honorary citizens pay less
+		}
 		return (1.0 - a.reputacao(p.getUUID()) / 500.0) * festa;
 	}
 

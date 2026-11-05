@@ -120,13 +120,8 @@ public final class Prefeitura {
 			arraial.prefeito = null;
 			return null;
 		}
-		// The oldest resident wins; ties go to whoever has a trade, then by name.
-		MoradorEntity eleito = moradores.stream()
-				.filter(m -> !m.getUUID().equals(arraial.deposto))
-				.min(Comparator.comparingLong(MoradorEntity::diaChegada)
-						.thenComparing(m -> m.profissao() == Profissao.NENHUMA)
-						.thenComparing(MoradorEntity::nome))
-				.orElse(null);
+		// Elected among the councillors, or the oldest under a coronel (see Politica).
+		MoradorEntity eleito = Politica.escolher(level, arraial, moradores);
 		if (eleito == null) {
 			return null;
 		}
@@ -154,6 +149,10 @@ public final class Prefeitura {
 	}
 
 	public static Component cargo(MoradorEntity m) {
+		ArraialBlockEntity a = m.arraial();
+		if (a != null && a.politica.regime() == Politica.Regime.HEREDITARIO) {
+			return Component.translatable(m.feminino() ? "arraial.coronel.f" : "arraial.coronel.m");
+		}
 		return Component.translatable(m.feminino() ? "arraial.prefeito.f" : "arraial.prefeito.m");
 	}
 
@@ -266,6 +265,12 @@ public final class Prefeitura {
 		if (crise == Crise.Tipo.PRAGA && postos(level, vila, ModPois.COCHO) == 0 && !desejos.contains("curral")) {
 			desejos.add("curral");
 		}
+		// Voted by the council (or security it demanded): first, and urgent.
+		for (String votada : arraial.politica.obrasVotadas(level, arraial)) {
+			desejos.remove(votada);
+			desejos.add(0, votada);
+			urgentes.add(votada);
+		}
 		desejos.removeIf(d -> emObra.contains(d) || (d.equals("casa") && (emObra.contains("casebre") || emObra.contains("rancho"))));
 		if (!ativas.isEmpty()) {
 			desejos.removeIf(d -> !urgentes.contains(d));
@@ -317,6 +322,7 @@ public final class Prefeitura {
 				Prioridade prioridade = urgentes.contains(desejo) ? Prioridade.URGENTE
 						: desejo.equals(Muralha.ID) && arraial.crise.tipo() != Crise.Tipo.SALTEADORES ? Prioridade.BAIXA : Prioridade.NORMAL;
 				if (Terreno.marcar(level, lugar.get(), projeto, prioridade)) {
+					arraial.politica.obraIniciada(desejo);
 					Cronica.anotar(level, vila, Component.translatable("arraial.cronica.ordem", prefeito.nome(), cargo(prefeito), projeto.nome()));
 					avisar(level, arraial, Component.translatable("arraial.vila.ordem", cargo(prefeito), prefeito.nome(), projeto.nome())
 							.withStyle(ChatFormatting.AQUA));

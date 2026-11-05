@@ -92,6 +92,55 @@ public class MoradorEntity extends PathfinderMob {
 	private @Nullable MoradorEntity escoltado;
 	public static final int DIAS_ATE_IR_EMBORA = 3;
 
+	// ---- Mascate (a peddler from another arraial; see Comercio) and caravan escort
+	private String mascateOrigem = "";
+	private @Nullable BlockPos mascateVila;
+	private long mascateFim;
+	private int bolsa;
+	private java.util.@Nullable UUID escolta;
+	private boolean escoltada;
+
+	public void virarMascate(String origem, BlockPos vila, long fim, int bolsa) {
+		mascateOrigem = origem;
+		mascateVila = vila.immutable();
+		mascateFim = fim;
+		this.bolsa = bolsa;
+		setProfissao(Profissao.MASCATE);
+	}
+
+	public String mascateOrigem() {
+		return mascateOrigem;
+	}
+
+	public @Nullable BlockPos mascateVila() {
+		return mascateVila;
+	}
+
+	public long mascateFim() {
+		return mascateFim;
+	}
+
+	public int bolsa() {
+		return bolsa;
+	}
+
+	public void mudarBolsa(int delta) {
+		bolsa = Math.max(0, bolsa + delta);
+	}
+
+	public java.util.@Nullable UUID escolta() {
+		return escolta;
+	}
+
+	public boolean escoltada() {
+		return escoltada;
+	}
+
+	public void setEscolta(java.util.@Nullable UUID jogador, boolean confirmada) {
+		escolta = jogador;
+		escoltada = confirmada;
+	}
+
 	public MoradorEntity(EntityType<? extends MoradorEntity> type, Level level) {
 		super(type, level);
 		setPersistenceRequired();
@@ -135,6 +184,8 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(1, new DormirGoal(this));
 		goalSelector.addGoal(1, new ApagarFogoGoal(this));
 		goalSelector.addGoal(1, new FestejarGoal(this));
+		goalSelector.addGoal(1, new ProtestarGoal(this));
+		goalSelector.addGoal(2, new MascateGoal(this));
 		goalSelector.addGoal(2, new ConstruirGoal(this));
 		goalSelector.addGoal(2, new BoticarioGoal(this));
 		goalSelector.addGoal(2, new ArtesaoGoal(this));
@@ -499,7 +550,7 @@ public class MoradorEntity extends PathfinderMob {
 			soltar(level, casa);
 			casa = null;
 		}
-		if (vila == null) {
+		if (vila == null && profissao() != Profissao.MASCATE) { // a mascate is only passing through
 			BlockPos encontrada = Vilas.maisProxima(level, blockPosition());
 			if (encontrada != null) {
 				definirVila(encontrada);
@@ -718,6 +769,20 @@ public class MoradorEntity extends PathfinderMob {
 		if (level().isClientSide()) {
 			return InteractionResult.SUCCESS;
 		}
+		if (profissao() == Profissao.MASCATE && level() instanceof ServerLevel s) {
+			getNavigation().stop();
+			getLookControl().setLookAt(player);
+			com.guilhermegoes.arraial.vila.Comercio.negociar(s, this, player, stack);
+			return InteractionResult.SUCCESS;
+		}
+		// A sword in hand: "I will ride with the troop" (the escort cuts the risk of robbery).
+		if (profissao() == Profissao.TROPEIRO && (viagemFase == 1 || viagemFase == 2) && stack.is(net.minecraft.tags.ItemTags.SWORDS)) {
+			escolta = player.getUUID();
+			escoltada = false;
+			dizer(Component.translatable("arraial.fala.escolta", player.getName()), 80);
+			player.sendSystemMessage(Component.translatable("arraial.comercio.escolta_aceita", nome()).withStyle(ChatFormatting.GOLD));
+			return InteractionResult.SUCCESS;
+		}
 		if (stack.is(ModItems.CONTRATO_PEDREIRO)) {
 			if (profissao() == Profissao.PEDREIRO) {
 				player.sendOverlayMessage(Component.translatable("arraial.morador.ja_e", nome(), titulo()));
@@ -796,6 +861,16 @@ public class MoradorEntity extends PathfinderMob {
 		output.putInt("ViagemFase", viagemFase);
 		output.putString("ViagemDestino", viagemDestino);
 		output.putLong("ViagemVolta", viagemVolta);
+		output.putString("MascateOrigem", mascateOrigem);
+		if (mascateVila != null) {
+			output.putLong("MascateVila", mascateVila.asLong());
+		}
+		output.putLong("MascateFim", mascateFim);
+		output.putInt("Bolsa", bolsa);
+		if (escolta != null) {
+			output.store("Escolta", net.minecraft.core.UUIDUtil.CODEC, escolta);
+		}
+		output.putBoolean("Escoltada", escoltada);
 		output.putInt("Visual", visual());
 		output.putBoolean("Feminino", feminino());
 		output.store("Carga", CARGA_CODEC, Map.copyOf(carga));
@@ -826,6 +901,13 @@ public class MoradorEntity extends PathfinderMob {
 		viagemFase = input.getIntOr("ViagemFase", 0);
 		viagemDestino = input.getStringOr("ViagemDestino", "");
 		viagemVolta = input.getLongOr("ViagemVolta", 0L);
+		mascateOrigem = input.getStringOr("MascateOrigem", "");
+		long mv = input.getLongOr("MascateVila", Long.MIN_VALUE);
+		mascateVila = mv == Long.MIN_VALUE ? null : BlockPos.of(mv);
+		mascateFim = input.getLongOr("MascateFim", 0L);
+		bolsa = input.getIntOr("Bolsa", 0);
+		escolta = input.read("Escolta", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+		escoltada = input.getBooleanOr("Escoltada", false);
 		if (viagemFase == 3) {
 			setInvisible(true);
 			setPermanentlyInvulnerable(true);

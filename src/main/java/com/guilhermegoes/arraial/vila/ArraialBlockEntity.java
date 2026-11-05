@@ -37,6 +37,15 @@ public class ArraialBlockEntity extends BlockEntity {
 	final Crise crise = new Crise();
 	/** The festa of the day, if any (see {@link Festa}). */
 	final Festa festa = new Festa();
+	/** Council, proposals, taxes and the regime (see {@link Politica}). */
+	final Politica politica = new Politica();
+	/** Supply orders signed by players (see {@link Comercio}) and money owed to them. */
+	final java.util.Map<java.util.UUID, String> encomendas = new java.util.HashMap<>();
+	final java.util.Map<java.util.UUID, Integer> pagamentos = new java.util.HashMap<>();
+
+	public Politica politica() {
+		return politica;
+	}
 
 	public Festa festa() {
 		return festa;
@@ -238,6 +247,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		}
 		ultimoDiario = hoje;
 		setChanged();
+		Politica.diario(level, this, moradores);
 		if (Satisfacao.diario(level, this, moradores)) {
 			Prefeitura.depor(level, this);
 		}
@@ -246,6 +256,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		Reparos.verificar(level, this);
 		Caravana.diario(level, this, moradores);
 		Diplomacia.diario(level, this, moradores);
+		Comercio.diario(level, this, moradores);
 	}
 
 	/** A newcomer walks into town: spawned on the surface a few blocks from the Cruzeiro. */
@@ -321,6 +332,11 @@ public class ArraialBlockEntity extends BlockEntity {
 		pedido = input.read("Pedido", net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(Component.empty());
 		crise.ler(input);
 		festa.ler(input);
+		politica.ler(input);
+		encomendas.clear();
+		input.read("Encomendas", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.STRING)).ifPresent(encomendas::putAll);
+		pagamentos.clear();
+		input.read("Pagamentos", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT)).ifPresent(pagamentos::putAll);
 		satisfacao = input.getIntOr("Satisfacao", 60);
 		ultimoDiario = input.getLongOr("UltimoDiario", 0L);
 		autonoma = input.getBooleanOr("Autonoma", false);
@@ -350,6 +366,9 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.store("Pedido", net.minecraft.network.chat.ComponentSerialization.CODEC, pedido);
 		crise.gravar(output);
 		festa.gravar(output);
+		politica.gravar(output);
+		output.store("Encomendas", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.STRING), java.util.Map.copyOf(encomendas));
+		output.store("Pagamentos", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT), java.util.Map.copyOf(pagamentos));
 		output.putInt("Satisfacao", satisfacao);
 		output.putLong("UltimoDiario", ultimoDiario);
 		output.putBoolean("Autonoma", autonoma);

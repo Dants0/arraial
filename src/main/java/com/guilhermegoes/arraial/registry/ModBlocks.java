@@ -119,6 +119,11 @@ public final class ModBlocks {
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("balcao_botica").mapColor(MapColor.WOOD).strength(1.5F)
 					.sound(SoundType.WOOD).noOcclusion()));
 
+	/** Urna: the ballot box where players deal with the arraial's council. */
+	public static final Block URNA = register("urna",
+			new com.guilhermegoes.arraial.vila.UrnaBlock(props("urna").mapColor(MapColor.WOOD).strength(1.5F)
+					.sound(SoundType.WOOD).noOcclusion()));
+
 	/** Bandeirinhas: the string of little flags of the festas juninas (decoration). */
 	public static final Block BANDEIRINHAS = register("bandeirinhas",
 			new com.guilhermegoes.arraial.vila.BandeirinhasBlock(props("bandeirinhas").mapColor(MapColor.COLOR_RED).noCollision().instabreak()

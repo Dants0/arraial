@@ -51,6 +51,7 @@ public final class ModCreativeTabs {
 						output.accept(ModItems.QUENTAO);
 						output.accept(ModItems.PE_DE_MOLEQUE);
 						output.accept(ModBlocks.BANDEIRINHAS);
+						output.accept(ModBlocks.URNA);
 					})
 					.build());
 

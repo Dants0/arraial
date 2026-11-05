@@ -143,6 +143,10 @@ public final class VilaNova {
 			return;
 		}
 		arraial.autonoma = true;
+		// Some povoados of the backlands are ruled by a coronel.
+		if (level.getRandom().nextFloat() < 0.35F) {
+			arraial.politica.regime = Politica.Regime.HEREDITARIO;
+		}
 		arraial.fundar(level);
 		Vilas.registrar(level, centro);
 

@@ -27,7 +27,9 @@ public enum Profissao {
 	PESCADOR("pescador"),
 	CACADOR("cacador"),
 	ENGENHEIRO("engenheiro"),
-	RELACOES("relacoes");
+	RELACOES("relacoes"),
+	/** A travelling peddler from a neighbouring arraial (not a resident; see Comercio). */
+	MASCATE("mascate");
 
 	private final String id;
 

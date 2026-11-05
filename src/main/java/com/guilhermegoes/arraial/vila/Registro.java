@@ -65,6 +65,8 @@ public final class Registro {
 		/** Things that happened while nobody was looking (copied into the Crônica on load). */
 		public java.util.List<Evento> historia = new java.util.ArrayList<>();
 		public java.util.List<Evento> historiaPendente = new java.util.ArrayList<>();
+		/** Supply contracts this arraial has signed as buyer. */
+		public java.util.List<Contrato> contratos = new java.util.ArrayList<>();
 
 		public BlockPos posicao() {
 			return BlockPos.of(pos);
@@ -76,6 +78,16 @@ public final class Registro {
 	}
 
 	/** A road between two arraiais: how often it was used, robbed, and whether it is closed. */
+	/** A supply contract (kept by the buyer): every day {@code qtd} of {@code item} from the supplier. */
+	public static final class Contrato {
+		public String fornecedor = "";
+		public String item = "";
+		public int qtd;
+		public double preco;
+		public long ate;
+		public int falhas;
+	}
+
 	public static final class Rota {
 		public int viagens;
 		public int roubos;

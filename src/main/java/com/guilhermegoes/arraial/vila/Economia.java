@@ -97,6 +97,9 @@ public final class Economia {
 		Registro.Info ia = Registro.get(a);
 		Registro.Rota r = ia == null ? null : ia.rotas.get(b);
 		float risco = 0.06F;
+		if (batida(a, b)) {
+			risco -= 0.02F; // a well-travelled road is safer
+		}
 		if (r != null && hoje - r.ultimoRoubo < JANELA_ROUBOS) {
 			risco += 0.06F * r.roubos;
 		}
@@ -124,6 +127,13 @@ public final class Economia {
 			Mundo.historia(a, hoje, "arraial.historia.rota_bloqueada", ib.nome);
 			Mundo.historia(b, hoje, "arraial.historia.rota_bloqueada", ia.nome);
 		}
+	}
+
+	/** A beaten road: used often enough that it is cheaper and safer to travel. */
+	public static boolean batida(String a, String b) {
+		Registro.Info ia = Registro.get(a);
+		Registro.Rota r = ia == null ? null : ia.rotas.get(b);
+		return r != null && r.viagens >= 10;
 	}
 
 	public static void viagem(String a, String b) {
@@ -157,7 +167,7 @@ public final class Economia {
 			if (v.estoque.getOrDefault(item, 0) < 24) {
 				continue; // nothing to spare there
 			}
-			double frete = base * (0.15 + dist / 1500.0) * (1 + risco(meu, e.getKey(), hoje) * 2);
+			double frete = base * (0.15 + dist / 1500.0) * (1 + risco(meu, e.getKey(), hoje) * 2) * (batida(meu, e.getKey()) ? 0.7 : 1.0);
 			double la = v.precos.getOrDefault(item, base) + frete;
 			melhor = Math.min(melhor, la);
 		}

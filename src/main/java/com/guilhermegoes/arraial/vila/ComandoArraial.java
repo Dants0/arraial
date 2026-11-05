@@ -60,6 +60,37 @@ public final class ComandoArraial {
 					.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 					.then(crise)
 					.then(festa)
+					// The last entries of the Crônica, here in the chat.
+					.then(Commands.literal("cronica").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						if (a == null) {
+							return 0;
+						}
+						var l = a.cronica();
+						for (int i = Math.max(0, l.size() - 10); i < l.size(); i++) {
+							c.getSource().sendSystemMessage(l.get(i).linha());
+						}
+						return 1;
+					}))
+					// The council: put a proposal forward now, or vote the one in course now.
+					.then(Commands.literal("conselho")
+							.then(Commands.literal("propor").executes(c -> {
+								ArraialBlockEntity a = arraial(c.getSource());
+								return a == null ? 0 : Politica.forcar(c.getSource().getLevel(), a, false, c.getSource());
+							}))
+							.then(Commands.literal("votar").executes(c -> {
+								ArraialBlockEntity a = arraial(c.getSource());
+								return a == null ? 0 : Politica.forcar(c.getSource().getLevel(), a, true, c.getSource());
+							})))
+					// A mascate from a neighbour, right now.
+					.then(Commands.literal("mascate").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						if (a == null) {
+							return 0;
+						}
+						Comercio.mascate(c.getSource().getLevel(), a, a.moradores(c.getSource().getLevel()));
+						return 1;
+					}))
 					// The region at a glance: every arraial, its specialty, people, state and roads.
 					.then(Commands.literal("mundo").executes(c -> {
 						MundoComando.listar(c.getSource());

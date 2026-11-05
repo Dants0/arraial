@@ -66,6 +66,12 @@ public final class Falas {
 		if (m.casa() == null && r.nextFloat() < 0.5F) {
 			return linha(r, "sem_casa");
 		}
+		// A councillor speaks for their group.
+		com.guilhermegoes.arraial.vila.Politica.Grupo grupo = com.guilhermegoes.arraial.vila.Politica.grupoDoConselheiro(m);
+		if (grupo != null && a != null && r.nextFloat() < 0.6F) {
+			int humor = com.guilhermegoes.arraial.vila.Politica.humor(grupo, a, level, a.moradores(level));
+			return Component.translatable("arraial.fala.conselho." + grupo.id() + (humor < 40 ? ".ruim" : ".bom"), jogador, grupo.nome());
+		}
 		if (m.prefeito() && a != null && r.nextFloat() < 0.6F) {
 			if (!a.pedido().getString().isEmpty()) {
 				return Component.translatable("arraial.fala.prefeito.pedido.0", a.pedido());

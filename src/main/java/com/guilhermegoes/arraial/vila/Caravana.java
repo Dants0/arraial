@@ -133,6 +133,7 @@ public final class Caravana {
 		if (t.profissao() == Profissao.TROPEIRO) {
 			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.tropa_partiu", t.nome(), d.nome));
 		}
+		Comercio.partida(level, t);
 		BlockPos casa = t.posto() != null ? t.posto() : a.getBlockPos();
 		t.teleportTo(casa.getX() + 0.5, casa.getY() + 1, casa.getZ() + 0.5);
 		t.setViagem(3, t.viagemDestino(), level.getGameTime() + duracao);
@@ -154,11 +155,17 @@ public final class Caravana {
 		long soldados = a.moradores(level).stream().filter(m -> m.profissao() == Profissao.SOLDADO).count();
 		long hoje = Vilas.dia(level);
 		float risco = Math.max(0.03F, Economia.risco(meuId, destinoId, hoje) + 0.08F - 0.04F * soldados);
+		if (t.escoltada()) {
+			risco /= 4; // a player rides with the troop
+		}
+		int antes = a.tesouro();
+		boolean roubada = false;
 		if (d == null) {
 			levou.forEach(t::guardar);
 		} else if (level.getRandom().nextFloat() < risco) {
 			// Caravana assaltada: the load is lost on the road.
 			Economia.roubo(meuId, destinoId, hoje);
+			roubada = true;
 			Component texto = Component.translatable("arraial.cronica.tropa_assaltada", t.nome(), d.nome);
 			Cronica.anotar(level, vila, texto);
 			Prefeitura.avisar(level, a, texto.copy().withStyle(ChatFormatting.RED));
@@ -181,6 +188,7 @@ public final class Caravana {
 			Economia.viagem(meuId, destinoId);
 			negociar(level, a, t, meuId, destinoId, d, levou);
 		}
+		Comercio.pagarEscolta(level, a, t, Math.max(0, a.tesouro() - antes), roubada);
 		BlockPos borda = borda(level, vila, destinoId);
 		t.teleportTo(borda.getX() + 0.5, borda.getY(), borda.getZ() + 0.5);
 		t.setViagem(4, destinoId, 0);

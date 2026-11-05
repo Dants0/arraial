@@ -114,6 +114,12 @@ public final class Festa {
 			}
 			return;
 		}
+		// A festa voted by the council: today at noon.
+		if (a.politica.festaVotada == hoje && hora >= INICIO && hora < FIM && a.crise.tipo() == null) {
+			a.politica.festaVotada = 0;
+			forcar(level, a, Tipo.SAO_JOAO);
+			return;
+		}
 		if (hoje <= f.ultima || hora >= FIM || moradores < MIN_MORADORES) {
 			return;
 		}

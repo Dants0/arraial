@@ -170,8 +170,30 @@ public class ArraialBlock extends Block implements EntityBlock {
 		player.sendSystemMessage(Component.translatable("arraial.vila.humor", arraial.satisfacao(), arraial.legitimidade(),
 				arraial.tesouro(), arraial.reputacao(player.getUUID()))
 				.withStyle(arraial.satisfacao() < 30 ? ChatFormatting.RED : ChatFormatting.GREEN));
+		Politica pol = arraial.politica();
+		player.sendSystemMessage(Component.literal("🏛 ").append(Component.translatable("arraial.vila.politica",
+				Component.translatable("arraial.politica.regime." + pol.regime().name().toLowerCase(java.util.Locale.ROOT)), pol.imposto(), pol.descricao()))
+				.withStyle(ChatFormatting.GOLD));
 		String meu = Registro.id(level.dimension().identifier().toString(), arraial.getBlockPos());
 		Registro.Info eu = Registro.get(meu);
+		Comercio.receber(level, arraial, player);
+		if (eu != null) {
+			for (Registro.Contrato c : eu.contratos) {
+				Registro.Info f = Registro.get(c.fornecedor);
+				player.sendSystemMessage(Component.literal("📦 ").append(Component.translatable("arraial.vila.contrato_compra", c.qtd,
+						Simulacao.item(c.item).map(i -> i.getDefaultInstance().getHoverName()).orElse(Component.literal(c.item)), f == null ? "?" : f.nome, c.ate))
+						.withStyle(ChatFormatting.DARK_GREEN));
+			}
+			for (Registro.Info o : Registro.todas().values()) {
+				for (Registro.Contrato c : o.contratos) {
+					if (c.fornecedor.equals(meu)) {
+						player.sendSystemMessage(Component.literal("📦 ").append(Component.translatable("arraial.vila.contrato_venda", c.qtd,
+								Simulacao.item(c.item).map(i -> i.getDefaultInstance().getHoverName()).orElse(Component.literal(c.item)), o.nome, c.ate))
+								.withStyle(ChatFormatting.DARK_GREEN));
+					}
+				}
+			}
+		}
 		if (eu != null) {
 			player.sendSystemMessage(Component.translatable("arraial.vila.especialidade", Economia.Especialidade.de(eu.especialidade).nome())
 					.withStyle(ChatFormatting.DARK_AQUA));

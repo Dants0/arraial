@@ -215,6 +215,7 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
     'cacador'     { $o.camisa = '#5A6B3A'; $o.calca = '#4A3B2C'; $o.vestido = $false; $o.manga = 9 }
     'engenheiro'  { $o.camisa = '#E8E2D2'; $o.calca = '#3A3F4A'; $o.vestido = $false; $o.manga = 10; $o.punho = '#3A3F4A' }
     'relacoes'    { $o.camisa = '#6A2E3A'; $o.calca = '#2A2A30'; $o.manga = 10; $o.punho = '#C9A13A' }
+    'mascate'     { $o.camisa = '#C9862A'; $o.calca = '#3F5A4A'; $o.vestido = $false; $o.manga = 8; $o.punho = '#7A2E5A' }
   }
   Cabeca $b $o
   Roupa $b $o
@@ -236,6 +237,7 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
     'cacador'     { ChapeuCouro $b; Perneira $b }
     'engenheiro'  { Gorro $b '#2F3A55'; Suspensorio $b }
     'relacoes'    { }
+    'mascate'     { ChapeuPalha $b; Suspensorio $b }
   }
   $nome = '{0}_{1}_{2}.png' -f $oficio, $(if ($fem) { 'f' } else { 'm' }), $v
   $b.Save((Join-Path $Saida $nome), [System.Drawing.Imaging.ImageFormat]::Png)
@@ -243,7 +245,7 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
 }
 
 New-Item -ItemType Directory -Force $Saida | Out-Null
-$oficios = @('morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro', 'farinheiro', 'feirante', 'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes')
+$oficios = @('morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro', 'farinheiro', 'feirante', 'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes', 'mascate')
 $n = 0
 foreach ($of in $oficios) { foreach ($fem in @($false, $true)) { for ($v = 0; $v -lt 4; $v++) { Skin $of $fem $v; $n++ } } }
 "skins geradas: $n"

@@ -33,6 +33,7 @@ public final class Mundo {
 			if (server.getTickCount() % 200 == 0) {
 				ServerLevel level = server.overworld();
 				avancar(level, Vilas.dia(level), false);
+				Comercio.diaRegional(level);
 			}
 		});
 	}

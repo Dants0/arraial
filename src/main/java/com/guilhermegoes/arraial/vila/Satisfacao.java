@@ -58,6 +58,7 @@ public final class Satisfacao {
 		if (Prefeitura.obras(level, vila, "prefeitura") > 0) {
 			alvo += 5;
 		}
+		alvo -= a.politica.imposto() * 4; // taxes weigh on everyone
 		if (a.crise.tipo() != null) {
 			alvo -= a.crise.tipo() == Crise.Tipo.SALTEADORES ? 15 : 10;
 		}
