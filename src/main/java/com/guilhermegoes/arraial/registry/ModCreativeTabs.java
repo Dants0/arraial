@@ -53,6 +53,16 @@ public final class ModCreativeTabs {
 						output.accept(ModBlocks.BANDEIRINHAS);
 						output.accept(ModBlocks.URNA);
 						output.accept(ModBlocks.MARCO_FRONTEIRA);
+						output.accept(ModItems.FACAO);
+						output.accept(ModItems.PEIXEIRA);
+						output.accept(ModItems.FOICE);
+						output.accept(ModItems.GIBAO);
+						output.accept(ModItems.PERNEIRA);
+						output.accept(ModItems.ALPERCATAS);
+						output.accept(ModItems.CANTIL);
+						output.accept(ModItems.CANTIL_CHEIO);
+						output.accept(ModItems.SACO_SAQUE);
+						output.accept(ModItems.COMENDA);
 					})
 					.build());
 

@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:cidadao",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.pacificador.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.pacificador.description"
+    },
+    "icon": {
+      "id": "arraial:escrivaninha"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

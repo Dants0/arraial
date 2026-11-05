@@ -172,6 +172,9 @@ public final class Comercio {
 				net.minecraft.world.level.block.Block.popResource(level, p.blockPosition(), compra);
 			}
 			level.playSound(null, m.blockPosition(), SoundEvents.VILLAGER_YES, SoundSource.NEUTRAL, 0.7F, 1.1F);
+			if (p instanceof ServerPlayer sp) {
+				Conquistas.dar(sp, "mascate");
+			}
 			p.sendSystemMessage(Component.translatable("arraial.feira.comprou", qtd, e.getKey().getDefaultInstance().getHoverName(), custo)
 					.withStyle(ChatFormatting.GREEN));
 			return;
@@ -261,6 +264,10 @@ public final class Comercio {
 		}
 		int paga = Math.max(3, lucro / 10);
 		a.pagamentos.merge(j, paga, Integer::sum);
+		ServerPlayer escolta = level.getServer().getPlayerList().getPlayer(j);
+		if (escolta != null) {
+			Conquistas.dar(escolta, "escolta");
+		}
 		a.mudarReputacao(j, 5);
 		a.setChanged();
 		Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.escolta", t.nome(), nomeJogador(level, j), paga));
@@ -388,6 +395,9 @@ public final class Comercio {
 			a.mudarReputacao(p.getUUID(), 8);
 			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.encomenda_cumprida", p.getName().getString(), e.qtd(), e.nomeItem()));
 			p.sendSystemMessage(Component.translatable("arraial.comercio.encomenda_cumprida", e.valor()).withStyle(ChatFormatting.GOLD));
+			if (p instanceof ServerPlayer sp) {
+				Conquistas.dar(sp, "encomenda");
+			}
 		} else {
 			a.encomendas.put(p.getUUID(), e.texto());
 			p.sendSystemMessage(Component.translatable("arraial.comercio.encomenda_entregou", da, e.entregue(), e.qtd(), e.nomeItem())

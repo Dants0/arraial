@@ -1,0 +1,32 @@
+{
+  "parent": "arraial:fundador",
+  "criteria": {
+    "farinha": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "arraial:farinha"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.farinha.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.farinha.description"
+    },
+    "icon": {
+      "id": "arraial:farinha"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "farinha"
+    ]
+  ]
+}

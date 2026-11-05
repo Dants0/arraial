@@ -1,0 +1,54 @@
+{
+  "parent": "arraial:fundador",
+  "criteria": {
+    "facao": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "arraial:facao"
+          }
+        ]
+      }
+    },
+    "peixeira": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "arraial:peixeira"
+          }
+        ]
+      }
+    },
+    "foice": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "arraial:foice"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.ferramentas.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.ferramentas.description"
+    },
+    "icon": {
+      "id": "arraial:facao"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "facao",
+      "peixeira",
+      "foice"
+    ]
+  ]
+}

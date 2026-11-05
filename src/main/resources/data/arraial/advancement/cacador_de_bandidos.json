@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:fundador",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.cacador_de_bandidos.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.cacador_de_bandidos.description"
+    },
+    "icon": {
+      "id": "arraial:facao"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

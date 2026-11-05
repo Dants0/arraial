@@ -25,7 +25,8 @@ public class ArraialJei implements IModPlugin {
 			ModBlocks.POSTO_GUARDA, ModBlocks.FORNO_FARINHA, ModBlocks.BANCA_FEIRA, ModBlocks.CANGALHA, ModBlocks.BALCAO_BOTICA,
 			ModBlocks.COVO, ModBlocks.VARAL_CACA, ModBlocks.PRANCHETA, ModBlocks.ESCRIVANINHA, ModBlocks.URNA, ModBlocks.MARCO_FRONTEIRA,
 			ModBlocks.BANDEIRINHAS, ModBlocks.LAMPIAO, ModItems.REIS, ModItems.MANIVA, ModItems.MANDIOCA, ModItems.FARINHA,
-			ModItems.REMEDIO, ModItems.GUIA, ModItems.QUENTAO, ModItems.CUIA_GARAPA, ModItems.CHAPEU_COURO};
+			ModItems.REMEDIO, ModItems.GUIA, ModItems.QUENTAO, ModItems.CUIA_GARAPA, ModItems.CHAPEU_COURO,
+			ModItems.FACAO, ModItems.PEIXEIRA, ModItems.FOICE, ModItems.GIBAO, ModItems.CANTIL, ModItems.SACO_SAQUE, ModItems.COMENDA};
 
 	@Override
 	public Identifier getPluginUid() {

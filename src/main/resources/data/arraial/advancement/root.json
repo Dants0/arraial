@@ -1,0 +1,45 @@
+{
+  "criteria": {
+    "cruzeiro": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "arraial:cruzeiro"
+          }
+        ]
+      }
+    },
+    "guia": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "arraial:guia"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.root.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.root.description"
+    },
+    "icon": {
+      "id": "arraial:cruzeiro"
+    },
+    "frame": "task",
+    "background": "minecraft:gui/advancements/backgrounds/husbandry",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "requirements": [
+    [
+      "cruzeiro",
+      "guia"
+    ]
+  ]
+}

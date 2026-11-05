@@ -2,7 +2,7 @@
 # skins). Grids: one string per row, one char per pixel, '.' = transparent; rows shorter
 # than 16 are padded with '.'. Animated textures are vertical strips of 16x16 frames.
 # Usage: powershell -File tools/gerar_texturas.ps1 -Raiz src/main/resources/assets/arraial/textures
-param([string]$Raiz)
+param([string]$Raiz, [string]$Vanilla)
 Add-Type -AssemblyName System.Drawing
 
 function C([string]$hex) { [System.Drawing.ColorTranslator]::FromHtml($hex) }
@@ -177,5 +177,52 @@ Item 'pe_de_moleque' (Pal 'H=#9A5A28 m=#7A4218 d=#4E2A0E a=#E0B878 A=#C89A58') @
 Item 'bandeirinhas' (Pal 's=#E8E0C8 r=#D23A2A y=#F0C030 b=#2A6AD2 g=#3A9A3A') @(
   '', 'ssssssssssssssss', 'rrrr.yyyy.bbbb.g', 'rrrr.yyyy.bbbb.g', 'rrrr.yyyy.bbbb.g', '.rr...yy...bb...', '.rr...yy...bb...',
   '', '', 'ssssssssssssssss', 'gg.rrrr.yyyy.bbb', 'gg.rrrr.yyyy.bbb', 'gg.rrrr.yyyy.bbb', 'g....rr...yy...b', 'g....rr...yy...b') 'block'
+
+
+# Atlases for the 3D items made in Blockbench (tools/blockbench): four 8x8 swatches A B C D,
+# each a base colour with a sparse second colour for grain and a darker top-left edge.
+function Quadrantes([string]$nome, [string[]]$cores) {
+  $b = New-Object System.Drawing.Bitmap 16, 16
+  for ($q = 0; $q -lt 4; $q++) {
+    $ox = ($q % 2) * 8; $oy = [math]::Floor($q / 2) * 8
+    for ($y = 0; $y -lt 8; $y++) { for ($x = 0; $x -lt 8; $x++) {
+      $h = (($x * 7 + $y * 13 + $q * 5) % 9)
+      $c = if ($h -eq 0 -or $h -eq 4) { $cores[$q * 2 + 1] } else { $cores[$q * 2] }
+      if ($y -eq 0 -or $x -eq 0) { $c = $cores[$q * 2 + 1] }
+      $b.SetPixel($ox + $x, $oy + $y, (C $c))
+    } }
+  }
+  Salvar $b 'item' $nome
+}
+Quadrantes 'facao' @('#9AA3AD', '#7D858F', '#D6DCE2', '#B8C0C8', '#5A3A22', '#3E2716', '#B8923F', '#8C6A28')
+Quadrantes 'peixeira' @('#A9B2BB', '#868E97', '#E2E7EC', '#C4CBD2', '#3A2A22', '#24180F', '#C9A34A', '#9C7B30')
+Quadrantes 'foice' @('#7F8790', '#626A72', '#C9D0D6', '#A8B0B8', '#8A6038', '#6B4826', '#4A4A4E', '#333336')
+Quadrantes 'cantil' @('#8B5A2B', '#6E451F', '#5E3A1A', '#4A2C12', '#B98A55', '#8C6438', '#4A3018', '#2E1E0E')
+Quadrantes 'cantil_cheio' @('#8B5A2B', '#6E451F', '#5E3A1A', '#4A2C12', '#B98A55', '#8C6438', '#2E5E8A', '#1E3E5E')
+Quadrantes 'saco_saque' @('#B89A6A', '#9A7E52', '#9A7E52', '#7A6040', '#D8C8A0', '#A89870', '#D9A63A', '#A87A20')
+Quadrantes 'comenda' @('#E0B030', '#B88A18', '#F4D870', '#E0B848', '#2E8A3A', '#1E6A2A', '#F0C830', '#C8A020')
+
+# The vaqueiro's leather: vanilla leather armour (layers and icons) dyed saddle brown.
+function Tingir([string]$origem, [string]$pasta, [string]$nome, [string]$cor) {
+  if (-not (Test-Path $origem)) { return }
+  $src = New-Object System.Drawing.Bitmap $origem
+  $b = New-Object System.Drawing.Bitmap $src.Width, $src.Height
+  $t = C $cor
+  for ($y = 0; $y -lt $src.Height; $y++) { for ($x = 0; $x -lt $src.Width; $x++) {
+    $p = $src.GetPixel($x, $y)
+    if ($p.A -gt 0) {
+      $b.SetPixel($x, $y, [System.Drawing.Color]::FromArgb($p.A, [int]($p.R * $t.R / 255), [int]($p.G * $t.G / 255), [int]($p.B * $t.B / 255)))
+    }
+  } }
+  $src.Dispose()
+  Salvar $b $pasta $nome
+}
+if ($Vanilla) {
+  Tingir "$Vanilla\entity\equipment\humanoid\leather.png" 'entity\equipment\humanoid' 'vaqueiro' '#A0683A'
+  Tingir "$Vanilla\entity\equipment\humanoid_leggings\leather.png" 'entity\equipment\humanoid_leggings' 'vaqueiro' '#8A5A30'
+  Tingir "$Vanilla\item\leather_chestplate.png" 'item' 'gibao' '#A0683A'
+  Tingir "$Vanilla\item\leather_leggings.png" 'item' 'perneira' '#8A5A30'
+  Tingir "$Vanilla\item\leather_boots.png" 'item' 'alpercatas' '#C08850'
+}
 
 "texturas geradas em $Raiz"

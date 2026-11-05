@@ -233,6 +233,9 @@ public final class Pessoa {
 		int depois = Math.max(0, Math.min(100, antes + delta));
 		amizade.put(p.getUUID(), depois);
 		if (antes < 30 && depois >= 30) {
+			if (p instanceof net.minecraft.server.level.ServerPlayer sp) {
+				com.guilhermegoes.arraial.vila.Conquistas.dar(sp, "compadre");
+			}
 			p.sendSystemMessage(Component.translatable("arraial.pessoa.compadre", m.nome(),
 					Component.translatable(m.feminino() ? "arraial.pessoa.comadre_t" : "arraial.pessoa.compadre_t")).withStyle(ChatFormatting.GOLD));
 		}
@@ -405,6 +408,9 @@ public final class Pessoa {
 		}
 		m.dizer(Component.translatable("arraial.fala.missao.obrigado", p.getName()), 80);
 		p.sendSystemMessage(Component.literal("✦ ").append(Component.translatable("arraial.pessoa.missao_feita", m.nome(), reis)).withStyle(ChatFormatting.GREEN));
+		if (p instanceof net.minecraft.server.level.ServerPlayer sp) {
+			com.guilhermegoes.arraial.vila.Conquistas.dar(sp, "favor");
+		}
 		Cronica.anotar(level, m.vila(), Component.translatable("arraial.cronica.favor", p.getName().getString(), m.nome()));
 	}
 

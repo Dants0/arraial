@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:bom_negocio",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.encomenda.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.encomenda.description"
+    },
+    "icon": {
+      "id": "arraial:banca_feira"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

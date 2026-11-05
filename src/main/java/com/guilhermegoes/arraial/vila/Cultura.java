@@ -315,6 +315,9 @@ public final class Cultura {
 		a.setChanged();
 		for (int marco : new int[] {10, 30, 60}) {
 			if (antes < marco && depois >= marco) {
+				if (p instanceof ServerPlayer sp) {
+					Conquistas.dar(sp, marco == 60 ? "filho_da_terra" : "festeiro");
+				}
 				p.sendSystemMessage(Component.literal("⚑ ").append(Component.translatable("arraial.cultura.marco." + marco, a.nomeCompleto(), titulo(depois)))
 						.withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 				Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.reconhecimento", p.getName().getString(), titulo(depois)));
@@ -329,6 +332,10 @@ public final class Cultura {
 				}
 				if (marco == 60) {
 					a.mudarReputacao(p.getUUID(), 10);
+					ItemStack comenda = new ItemStack(com.guilhermegoes.arraial.registry.ModItems.COMENDA);
+					if (!p.getInventory().add(comenda)) {
+						net.minecraft.world.level.block.Block.popResource(level, p.blockPosition(), comenda);
+					}
 				}
 			}
 		}

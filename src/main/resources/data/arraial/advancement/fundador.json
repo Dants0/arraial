@@ -1,0 +1,31 @@
+{
+  "parent": "arraial:root",
+  "criteria": {
+    "cruzeiro": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": {
+          "type": "minecraft:match_block",
+          "blocks": "arraial:cruzeiro"
+        }
+      }
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.fundador.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.fundador.description"
+    },
+    "icon": {
+      "id": "arraial:cruzeiro"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "cruzeiro"
+    ]
+  ]
+}

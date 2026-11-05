@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:fundador",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.compadre.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.compadre.description"
+    },
+    "icon": {
+      "id": "arraial:pe_de_moleque"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

@@ -210,6 +210,7 @@ public final class Ruinas {
 			v.bandidosSpawnados = true;
 			int n = Math.max(2, v.bandidos);
 			int vieram = spawnar(level, c, n);
+			Conquistas.bau(level, c);
 			Component aviso = Component.literal("⚔ ").append(Component.translatable("arraial.ruina.esconderijo", a.nomeCompleto(), vieram));
 			perto.forEach(p -> p.sendSystemMessage(aviso.copy().withStyle(ChatFormatting.DARK_RED)));
 			return;
@@ -231,6 +232,11 @@ public final class Ruinas {
 		Cronica.anotar(level, c, Component.translatable("arraial.cronica.esconderijo_limpo", perto.get(0).getName().getString()));
 		for (ServerPlayer p : perto) {
 			p.sendSystemMessage(Component.literal("⚔ ").append(Component.translatable("arraial.ruina.limpo", a.nomeCompleto())).withStyle(ChatFormatting.GOLD));
+			Conquistas.dar(p, "esconderijo_limpo");
+			ItemStack honra = new ItemStack(com.guilhermegoes.arraial.registry.ModItems.COMENDA);
+			if (!p.getInventory().add(honra)) {
+				Block.popResource(level, p.blockPosition(), honra);
+			}
 			ItemStack premio = new ItemStack(com.guilhermegoes.arraial.registry.ModItems.REIS, 10);
 			if (!p.getInventory().add(premio)) {
 				Block.popResource(level, p.blockPosition(), premio);

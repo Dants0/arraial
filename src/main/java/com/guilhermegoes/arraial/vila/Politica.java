@@ -470,6 +470,7 @@ public final class Politica {
 					p.cidadaos.add(jogador);
 					ServerPlayer sp = level.getServer().getPlayerList().getPlayer(jogador);
 					if (sp != null) {
+						Conquistas.dar(sp, "cidadao");
 						sp.sendSystemMessage(Component.translatable("arraial.politica.cidadao", a.nomeCompleto()).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 					}
 				}

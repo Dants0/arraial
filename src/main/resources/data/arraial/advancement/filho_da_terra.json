@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:festeiro",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.filho_da_terra.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.filho_da_terra.description"
+    },
+    "icon": {
+      "id": "arraial:comenda"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

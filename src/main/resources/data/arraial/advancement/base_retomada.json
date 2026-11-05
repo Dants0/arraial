@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:cacador_de_bandidos",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.base_retomada.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.base_retomada.description"
+    },
+    "icon": {
+      "id": "arraial:marco_fronteira"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

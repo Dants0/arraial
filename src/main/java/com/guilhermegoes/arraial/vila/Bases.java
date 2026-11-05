@@ -122,6 +122,7 @@ public final class Bases {
 		if (!b.spawnados) {
 			b.spawnados = true;
 			int n = Ruinas.spawnar(level, pos, 3);
+			Conquistas.bau(level, pos);
 			p.sendSystemMessage(Component.literal("⚔ ").append(Component.translatable("arraial.base.ocupada", n)).withStyle(ChatFormatting.DARK_RED));
 			return;
 		}
@@ -134,6 +135,7 @@ public final class Bases {
 			b.ocupada = false;
 			b.spawnados = false;
 			b.ultimaVisita = hoje;
+			Conquistas.dar(p, "base_retomada");
 			p.sendSystemMessage(Component.literal("⚑ ").append(Component.translatable("arraial.base.retomada")).withStyle(ChatFormatting.GOLD));
 		}
 	}

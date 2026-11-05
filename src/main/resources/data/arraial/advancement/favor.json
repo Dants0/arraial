@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:compadre",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.favor.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.favor.description"
+    },
+    "icon": {
+      "id": "arraial:guia"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

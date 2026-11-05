@@ -107,6 +107,9 @@ public enum Estagio {
 			a.setChanged();
 			Component texto = Component.translatable("arraial.cronica.estagio", antes, a.nomeCompleto(), proximo.nome());
 			Cronica.anotar(level, a.getBlockPos(), texto);
+			if (proximo == CIDADE) {
+				Conquistas.darPerto(level, a.getBlockPos(), Vilas.RAIO * 2, "cidade");
+			}
 			Prefeitura.avisar(level, a, Component.literal("🎉 ").append(texto).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
 			var foguete = net.minecraft.world.entity.EntityTypes.FIREWORK_ROCKET.create(level, net.minecraft.world.entity.EntitySpawnReason.EVENT);
 			if (foguete != null) {

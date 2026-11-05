@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:fundador",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.cidade.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.cidade.description"
+    },
+    "icon": {
+      "id": "arraial:lampiao"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

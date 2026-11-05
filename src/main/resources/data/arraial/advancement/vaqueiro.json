@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:ferramentas",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.vaqueiro.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.vaqueiro.description"
+    },
+    "icon": {
+      "id": "arraial:gibao"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

@@ -220,6 +220,9 @@ public final class Feira {
 		}
 		a.mudarReputacao(p.getUUID(), 1);
 		level.playSound(null, banca, SoundEvents.VILLAGER_TRADE, SoundSource.NEUTRAL, 0.6F, 1.0F);
+		if (p instanceof net.minecraft.server.level.ServerPlayer sp) {
+			Conquistas.dar(sp, "bom_negocio");
+		}
 		p.sendSystemMessage(Component.translatable("arraial.feira.vendeu", vendido, item.getDefaultInstance().getHoverName(), pago)
 				.withStyle(ChatFormatting.GREEN));
 	}

@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:cacador_de_bandidos",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.esconderijo_limpo.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.esconderijo_limpo.description"
+    },
+    "icon": {
+      "id": "arraial:comenda"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

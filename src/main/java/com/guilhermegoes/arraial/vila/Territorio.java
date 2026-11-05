@@ -490,6 +490,9 @@ public final class Territorio {
 				Component texto = Component.translatable("arraial.cronica.tratado", nomeTratado, o.nome, p.getName().getString());
 				Cronica.anotar(level, vila, texto);
 				Mundo.historia(outro, hoje, "arraial.historia.tratado", nomeTratado.getString(), eu.nome);
+				if (p instanceof ServerPlayer sp) {
+					Conquistas.dar(sp, "pacificador");
+				}
 				a.mudarReputacao(p.getUUID(), 5);
 				p.sendSystemMessage(Component.literal("🕊 ").append(texto).withStyle(ChatFormatting.GREEN));
 				level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.BLOCKS, 1.0F, 1.0F);
