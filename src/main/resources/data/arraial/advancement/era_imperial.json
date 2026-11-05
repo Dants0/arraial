@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:fundador",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.era_imperial.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.era_imperial.description"
+    },
+    "icon": {
+      "id": "arraial:lampiao"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

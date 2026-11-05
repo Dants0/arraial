@@ -228,6 +228,45 @@ public class GerarPlantas {
 				new String[] {" eMw ", " e.w ", " e.w ", " e.w ", " eMw "},
 				new String[] {"  s  ", "  s  ", "  s  ", "  s  ", "  s  "}));
 
+		// ---- Eras: the Capela (Imperial era) and the Chafariz on the square (Republicana).
+		Map<Character, String> capela = new HashMap<>();
+		capela.put('C', "minecraft:cobblestone");
+		capela.put('M', "minecraft:bricks");
+		capela.put('d', "minecraft:oak_door[facing=south,half=lower,hinge=left,open=false]");
+		capela.put('D', "minecraft:oak_door[facing=south,half=upper,hinge=left,open=false]");
+		capela.put('G', "minecraft:glass_pane");
+		capela.put('e', "minecraft:brick_stairs[facing=east,half=bottom,shape=straight]");
+		capela.put('w', "minecraft:brick_stairs[facing=west,half=bottom,shape=straight]");
+		capela.put('s', "minecraft:brick_slab[type=bottom]");
+		capela.put('p', "minecraft:oak_stairs[facing=north,half=bottom,shape=straight]");
+		capela.put('A', "minecraft:chiseled_stone_bricks");
+		capela.put('c', "minecraft:candle[candles=3,lit=false,waterlogged=false]");
+		capela.put('B', "minecraft:bell[attachment=floor,facing=south,powered=false]");
+		capela.put('f', "minecraft:oak_fence");
+		capela.put('t', "minecraft:wall_torch[facing=north]");
+		escrever(out.resolve("capela.nbt"), capela, List.of(
+				new String[] {"CCCCC", "CCCCC", "CCCCC", "CCCCC", "CCCCC", "CCCCC", "CCCCC"},
+				new String[] {"MMdMM", "M...M", "Mp.pM", "Mp.pM", "M...M", "M.A.M", "MMMMM"},
+				new String[] {"MMDMM", "G...G", "M...M", "G...G", "M...M", "M.c.M", "MMMMM"},
+				new String[] {"MMMMM", "M...M", "M...M", "M...M", "M...M", "M.t.M", "MMMMM"},
+				new String[] {"eMMMw", "e...w", "e...w", "e...w", "e...w", "e...w", "eMMMw"},
+				new String[] {" eMw ", " e.w ", " e.w ", " e.w ", " e.w ", " e.w ", " eMw "},
+				new String[] {"  M  ", "  s  ", "  s  ", "  s  ", "  s  ", "  s  ", "  s  "},
+				new String[] {"  B  ", "     ", "     ", "     ", "     ", "     ", "     "},
+				new String[] {"  f  ", "     ", "     ", "     ", "     ", "     ", "     "},
+				new String[] {" fff ", "     ", "     ", "     ", "     ", "     ", "     "},
+				new String[] {"  f  ", "     ", "     ", "     ", "     ", "     ", "     "}));
+
+		Map<Character, String> chafariz = Map.of(
+				'C', "minecraft:stone_bricks",
+				'W', "minecraft:water",
+				'c', "minecraft:stone_brick_wall[east=none,north=none,south=none,up=true,waterlogged=false,west=none]");
+		escrever(out.resolve("chafariz.nbt"), chafariz, List.of(
+				new String[] {"CCCCC", "CCCCC", "CCCCC", "CCCCC", "CCCCC"},
+				new String[] {"CCCCC", "CWWWC", "CWcWC", "CWWWC", "CCCCC"},
+				new String[] {"     ", "     ", "  c  ", "     ", "     "},
+				new String[] {"     ", "     ", "  W  ", "     ", "     "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

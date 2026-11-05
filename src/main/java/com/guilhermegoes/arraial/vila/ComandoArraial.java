@@ -56,10 +56,25 @@ public final class ComandoArraial {
 				Festa.encerrar(c.getSource().getLevel(), a);
 				return 1;
 			}));
+			// The era now, with every building and street reformed at once (free).
+			LiteralArgumentBuilder<CommandSourceStack> era = Commands.literal("era");
+			for (Era e : Era.values()) {
+				era.then(Commands.literal(e.id()).executes(c -> {
+					ArraialBlockEntity a = arraial(c.getSource());
+					if (a == null) {
+						return 0;
+					}
+					Era.mudar(c.getSource().getLevel(), a, e, false);
+					int n = Era.reformar(c.getSource().getLevel(), a, 999, 99999, true);
+					c.getSource().sendSuccess(() -> Component.translatable("arraial.comando.era", e.nome(), n), true);
+					return 1;
+				}));
+			}
 			dispatcher.register(Commands.literal("arraial")
 					.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 					.then(crise)
 					.then(festa)
+					.then(era)
 					// The last entries of the Crônica, here in the chat.
 					.then(Commands.literal("cronica").executes(c -> {
 						ArraialBlockEntity a = arraial(c.getSource());
@@ -134,6 +149,24 @@ public final class ComandoArraial {
 						c.getSource().sendSuccess(() -> Component.translatable("arraial.base.forcada"), false);
 						return 1;
 					}))
+					// A wedding and a birth now (testing families).
+					.then(Commands.literal("casamento").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						return a != null && Familias.casamento(c.getSource().getLevel(), a, a.moradores(c.getSource().getLevel()), true) ? 1 : 0;
+					}))
+					.then(Commands.literal("nascimento").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						return a != null && Familias.nascimento(c.getSource().getLevel(), a, a.moradores(c.getSource().getLevel()), true) != null ? 1 : 0;
+					}))
+					// A finished building right now, at the nearest arraial (testing eras and ruins).
+					.then(Commands.literal("obra_pronta").then(Commands.argument("projeto", com.mojang.brigadier.arguments.StringArgumentType.word())
+							.executes(c -> {
+								ArraialBlockEntity a = arraial(c.getSource());
+								String id = com.mojang.brigadier.arguments.StringArgumentType.getString(c, "projeto");
+								boolean ok = a != null && VilaNova.construirPronto(c.getSource().getLevel(), a.getBlockPos(), id);
+								c.getSource().sendSystemMessage(Component.literal(id + (ok ? ": pronta" : ": sem lugar ou projeto desconhecido")));
+								return ok ? 1 : 0;
+							})))
 					// A mascate from a neighbour, right now.
 					.then(Commands.literal("mascate").executes(c -> {
 						ArraialBlockEntity a = arraial(c.getSource());

@@ -50,8 +50,10 @@ public final class Vilas {
 		BlockPos melhor = null;
 		double melhorDist = (double) RAIO * RAIO;
 		for (BlockPos centro : ativas(level)) {
-			double d = centro.distSqr(pos);
-			if (d <= melhorDist && level.getBlockEntity(centro) instanceof ArraialBlockEntity) {
+			// Horizontal distance (a village on a hill is still near the valley below it), within 64 up or down.
+			double dx = centro.getX() - pos.getX(), dz = centro.getZ() - pos.getZ();
+			double d = dx * dx + dz * dz;
+			if (Math.abs(centro.getY() - pos.getY()) <= 64 && d <= melhorDist && level.getBlockEntity(centro) instanceof ArraialBlockEntity) {
 				melhor = centro;
 				melhorDist = d;
 			}

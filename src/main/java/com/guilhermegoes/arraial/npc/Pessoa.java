@@ -309,6 +309,11 @@ public final class Pessoa {
 		}
 	}
 
+	/** For the automated test: asks the player for 3 apples. */
+	public void pedirFavorTeste(UUID jogador, long hoje) {
+		missao = new Missao("trazer", jogador, "minecraft:apple", 3, hoje + 3).texto();
+	}
+
 	@Nullable Missao missao() {
 		return Missao.de(missao);
 	}

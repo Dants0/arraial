@@ -143,6 +143,13 @@ public final class PlanoDeObra {
 	 */
 	private static final Map<net.minecraft.world.level.block.Block, Custo> CUSTOS_ESPECIAIS = Map.ofEntries(
 			Map.entry(net.minecraft.world.level.block.Blocks.FARMLAND, new Custo(Items.DIRT, 1)),
+			// The era buildings: the capela's bell, glass and altar, the fountain's dressed stone.
+			Map.entry(net.minecraft.world.level.block.Blocks.BELL, new Custo(Items.IRON_INGOT, 4)),
+			Map.entry(net.minecraft.world.level.block.Blocks.GLASS_PANE, new Custo(Items.SAND, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.CHISELED_STONE_BRICKS, new Custo(Items.COBBLESTONE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.STONE_BRICKS, new Custo(Items.COBBLESTONE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.STONE_BRICK_WALL, new Custo(Items.COBBLESTONE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.CANDLE, new Custo(Items.HONEYCOMB, 0)),
 			Map.entry(net.minecraft.world.level.block.Blocks.DIRT_PATH, new Custo(Items.DIRT, 1)),
 			Map.entry(net.minecraft.world.level.block.Blocks.GRASS_BLOCK, new Custo(Items.DIRT, 1)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.CEPO, new Custo(Items.OAK_LOG, 2)),

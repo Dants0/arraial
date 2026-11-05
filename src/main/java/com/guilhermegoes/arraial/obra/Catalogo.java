@@ -25,6 +25,8 @@ public final class Catalogo {
 
 	public static final List<Projeto> PROJETOS = List.of(
 			new Projeto("poco"),
+			new Projeto("capela"),
+			new Projeto("chafariz"),
 			new Projeto("casebre"),
 			new Projeto("rancho"),
 			new Projeto("serraria"),

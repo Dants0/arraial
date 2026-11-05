@@ -144,7 +144,7 @@ public final class Politica {
 	public static Map<Grupo, MoradorEntity> conselho(List<MoradorEntity> moradores) {
 		Map<Grupo, MoradorEntity> c = new EnumMap<>(Grupo.class);
 		for (MoradorEntity m : moradores) {
-			if (m.prefeito() || m.profissao() == Profissao.MASCATE) {
+			if (m.prefeito() || m.profissao() == Profissao.MASCATE || m.crianca()) {
 				continue;
 			}
 			Grupo g = Grupo.de(m.profissao());
@@ -402,7 +402,7 @@ public final class Politica {
 		int sim = 0, nao = 0;
 		Map<Grupo, double[]> porGrupo = new EnumMap<>(Grupo.class);
 		for (MoradorEntity m : moradores) {
-			if (m.profissao() == Profissao.MASCATE) {
+			if (m.profissao() == Profissao.MASCATE || m.crianca()) {
 				continue;
 			}
 			double o = p.opiniao(level, a, m, e);
@@ -540,12 +540,18 @@ public final class Politica {
 
 	/** Who takes office: the oldest under a coronel; a vote among the councillors otherwise. */
 	static @Nullable MoradorEntity escolher(ServerLevel level, ArraialBlockEntity a, List<MoradorEntity> moradores) {
-		List<MoradorEntity> aptos = moradores.stream().filter(m -> !m.getUUID().equals(a.deposto) && m.profissao() != Profissao.MASCATE).toList();
+		List<MoradorEntity> aptos = moradores.stream().filter(m -> !m.getUUID().equals(a.deposto) && m.profissao() != Profissao.MASCATE && !m.crianca()).toList();
 		if (aptos.isEmpty()) {
 			return null;
 		}
 		Comparator<MoradorEntity> antiguidade = Comparator.comparingLong(MoradorEntity::diaChegada).thenComparing(MoradorEntity::nome);
 		if (a.politica.regime == Regime.HEREDITARIO) {
+			// The heir: the late chief's eldest grown child, or the spouse; else the oldest.
+			MoradorEntity herdeiro = Familias.herdeiro(aptos, a.ultimoChefe);
+			if (herdeiro != null) {
+				Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.herdou", herdeiro.nome(), herdeiro.sobrenome()));
+				return herdeiro;
+			}
 			return aptos.stream().min(antiguidade).orElse(null);
 		}
 		List<MoradorEntity> candidatos = new ArrayList<>(conselho(aptos).values());
@@ -556,6 +562,7 @@ public final class Politica {
 		for (MoradorEntity eleitor : aptos) {
 			MoradorEntity escolha = candidatos.stream().max(Comparator.comparingDouble(c -> {
 				double v = Grupo.de(c.profissao()) == Grupo.de(eleitor.profissao()) ? 2.0 : 0;
+				v += Familias.parentes(c, eleitor) ? 2.5 : 0; // family votes for family
 				v += (Vilas.dia(level) - c.diaChegada()) / 20.0; // experience
 				v += new Random(eleitor.getUUID().getLeastSignificantBits() ^ c.getUUID().getMostSignificantBits()).nextGaussian();
 				return v;

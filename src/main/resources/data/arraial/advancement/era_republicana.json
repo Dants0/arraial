@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:era_imperial",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.era_republicana.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.era_republicana.description"
+    },
+    "icon": {
+      "id": "arraial:urna"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

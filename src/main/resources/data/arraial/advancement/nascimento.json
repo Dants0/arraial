@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:casamento",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.nascimento.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.nascimento.description"
+    },
+    "icon": {
+      "id": "arraial:beiju"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

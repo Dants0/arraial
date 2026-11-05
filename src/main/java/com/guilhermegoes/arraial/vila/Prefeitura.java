@@ -126,6 +126,7 @@ public final class Prefeitura {
 			return null;
 		}
 		arraial.prefeito = eleito.getUUID();
+		arraial.ultimoChefe = eleito.getUUID();
 		arraial.setChanged();
 		eleito.setPrefeito(true);
 		Component cargo = cargo(eleito);
@@ -235,6 +236,13 @@ public final class Prefeitura {
 		// Safety: once there are soldados, a paliçada around the arraial keeps the night out.
 		if (n >= 6 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.POSTO_GUARDA) > 0 && obras(level, vila, Muralha.ID) == 0) {
 			desejos.add(Muralha.ID);
+		}
+		// The era's buildings: the Capela (Imperial), the Chafariz on the square (Republicana).
+		if (arraial.era.ordinal() >= Era.IMPERIAL.ordinal() && obras(level, vila, "capela") == 0) {
+			desejos.add("capela");
+		}
+		if (arraial.era == Era.REPUBLICANA && obras(level, vila, "chafariz") == 0) {
+			desejos.add("chafariz");
 		}
 		if (desejos.isEmpty() && camasLivres <= 1) {
 			desejos.add("casa");

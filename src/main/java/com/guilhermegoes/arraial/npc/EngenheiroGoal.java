@@ -116,6 +116,12 @@ public class EngenheiroGoal extends OficioGoal {
 		return level().getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, coluna).below();
 	}
 
+	/** The arraial's era decides the street surface and the lamp (see Era). */
+	private com.guilhermegoes.arraial.vila.Era era() {
+		var a = morador.arraial();
+		return a == null ? com.guilhermegoes.arraial.vila.Era.COLONIAL : a.era();
+	}
+
 	private @Nullable Trabalho proximo() {
 		for (List<BlockPos> rua : ruas()) {
 			int desdeLuz = 99;
@@ -207,7 +213,7 @@ public class EngenheiroGoal extends OficioGoal {
 				if (acima.canBeReplaced() && !acima.isAir()) {
 					level().destroyBlock(t.pos().above(), false);
 				}
-				level().setBlock(t.pos(), Blocks.DIRT_PATH.defaultBlockState(), Block.UPDATE_ALL);
+				level().setBlock(t.pos(), era().rua().defaultBlockState(), Block.UPDATE_ALL);
 				level().playSound(null, t.pos(), SoundEvents.SHOVEL_FLATTEN.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
 			}
 			case PONTE -> {
@@ -219,7 +225,7 @@ public class EngenheiroGoal extends OficioGoal {
 			case POSTE -> {
 				morador.segurar(new ItemStack(Items.TORCH));
 				level().setBlock(t.pos(), Block.byItem(madeira.cerca()).defaultBlockState(), Block.UPDATE_ALL);
-				level().setBlock(t.pos().above(), Blocks.TORCH.defaultBlockState(), Block.UPDATE_ALL);
+				level().setBlock(t.pos().above(), era().luz().defaultBlockState(), Block.UPDATE_ALL);
 				morador.gastar(madeira.cerca(), 1);
 				morador.gastar(Items.TORCH, 1);
 				level().playSound(null, t.pos(), SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);

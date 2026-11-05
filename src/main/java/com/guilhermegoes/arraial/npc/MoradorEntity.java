@@ -92,6 +92,73 @@ public class MoradorEntity extends PathfinderMob {
 	private @Nullable MoradorEntity escoltado;
 	public static final int DIAS_ATE_IR_EMBORA = 3;
 
+	// ---- Family (see vila/Familias)
+	private static final List<String> SOBRENOMES = List.of("Silva", "Souza", "Oliveira", "Ferreira", "Alves", "Lima", "Gomes", "Ribeiro",
+			"Carvalho", "Rocha", "Barbosa", "Cavalcanti", "Albuquerque", "Bezerra", "Nogueira", "Santana", "Macedo", "Teixeira");
+	private String sobrenome = "";
+	private java.util.@Nullable UUID conjuge;
+	private java.util.@Nullable UUID pai;
+	private java.util.@Nullable UUID mae;
+	private boolean crianca;
+	private long nascimento;
+	/** Children grow up after this many days. */
+	public static final int DIAS_INFANCIA = 3;
+
+	public String sobrenome() {
+		if (sobrenome.isEmpty()) {
+			sobrenome = SOBRENOMES.get(getRandom().nextInt(SOBRENOMES.size()));
+		}
+		return sobrenome;
+	}
+
+	public void setSobrenome(String s) {
+		sobrenome = s;
+	}
+
+	public java.util.@Nullable UUID conjuge() {
+		return conjuge;
+	}
+
+	public void setConjuge(java.util.@Nullable UUID c) {
+		conjuge = c;
+	}
+
+	public boolean filhoDe(java.util.UUID p) {
+		return p.equals(pai) || p.equals(mae);
+	}
+
+	public java.util.@Nullable UUID pai() {
+		return pai;
+	}
+
+	public java.util.@Nullable UUID mae() {
+		return mae;
+	}
+
+	public boolean crianca() {
+		return crianca;
+	}
+
+	public long nascimento() {
+		return nascimento;
+	}
+
+	/** Born in the arraial: small, no trade, until they grow up. */
+	public void nascer(java.util.UUID pai, java.util.UUID mae, String sobrenome, long dia) {
+		this.pai = pai;
+		this.mae = mae;
+		this.sobrenome = sobrenome;
+		this.crianca = true;
+		this.nascimento = dia;
+		this.diaChegada = dia;
+		getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE).setBaseValue(0.55);
+	}
+
+	public void crescer() {
+		crianca = false;
+		getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE).setBaseValue(1.0);
+	}
+
 	/** Personal life: personality, needs, friendships, a dream, missions (see {@link Pessoa}). */
 	private final Pessoa pessoa = new Pessoa();
 
@@ -163,6 +230,7 @@ public class MoradorEntity extends PathfinderMob {
 			m.setProfissao(profissao);
 			m.nome = "";
 			m.pessoa.gerar(m.getRandom());
+			m.sobrenome();
 			m.nome();
 		}
 		return m;
@@ -485,6 +553,10 @@ public class MoradorEntity extends PathfinderMob {
 		super.customServerAiStep(level);
 		if (tickCount % 600 == 0 && vila != null) {
 			pessoa.passar(level, this);
+			if (crianca && com.guilhermegoes.arraial.vila.Vilas.dia(level) - nascimento >= DIAS_INFANCIA) {
+				crescer();
+				Cronica.anotar(level, vila, Component.translatable("arraial.cronica.cresceu", nome(), sobrenome()));
+			}
 		}
 		if (viagemFase == 3) {
 			// Away with the troop: stays put, out of sight, until the day he comes back.
@@ -602,7 +674,7 @@ public class MoradorEntity extends PathfinderMob {
 			posto = null;
 			setProfissao(Profissao.NENHUMA);
 		}
-		if (p == Profissao.NENHUMA && vila != null && gabinete == null) {
+		if (p == Profissao.NENHUMA && vila != null && gabinete == null && !crianca) {
 			level.getPoiManager()
 					.take(ModPois::ePosto, (h, pos) -> true, vila, Vilas.RAIO)
 					.ifPresent(pos -> {
@@ -801,6 +873,10 @@ public class MoradorEntity extends PathfinderMob {
 			return InteractionResult.SUCCESS;
 		}
 		if (stack.is(ModItems.CONTRATO_PEDREIRO)) {
+			if (crianca) {
+				player.sendOverlayMessage(Component.translatable("arraial.familia.crianca_nao", nome()));
+				return InteractionResult.SUCCESS;
+			}
 			if (profissao() == Profissao.PEDREIRO) {
 				player.sendOverlayMessage(Component.translatable("arraial.morador.ja_e", nome(), titulo()));
 				return InteractionResult.SUCCESS;
@@ -878,6 +954,7 @@ public class MoradorEntity extends PathfinderMob {
 				getLookControl().setLookAt(player);
 				dizer(Falas.paraJogador(server, this, player.getName().getString()), 100);
 				pessoa.ficha(this, player).forEach(player::sendSystemMessage);
+				player.sendSystemMessage(com.guilhermegoes.arraial.vila.Familias.ficha(server, this));
 				pessoa.conversouComJogador(server, this, player);
 				pessoa.oferecer(server, this, player);
 			}
@@ -914,6 +991,18 @@ public class MoradorEntity extends PathfinderMob {
 		output.putBoolean("Escoltada", escoltada);
 		output.putInt("Visual", visual());
 		pessoa.gravar(output);
+		output.putString("Sobrenome", sobrenome);
+		if (conjuge != null) {
+			output.store("Conjuge", net.minecraft.core.UUIDUtil.CODEC, conjuge);
+		}
+		if (pai != null) {
+			output.store("Pai", net.minecraft.core.UUIDUtil.CODEC, pai);
+		}
+		if (mae != null) {
+			output.store("Mae", net.minecraft.core.UUIDUtil.CODEC, mae);
+		}
+		output.putBoolean("Crianca", crianca);
+		output.putLong("Nascimento", nascimento);
 		output.putBoolean("Feminino", feminino());
 		output.store("Carga", CARGA_CODEC, Map.copyOf(carga));
 		if (obra != null) {
@@ -940,6 +1029,12 @@ public class MoradorEntity extends PathfinderMob {
 		super.readAdditionalSaveData(input);
 		entityData.set(PROFISSAO, input.getIntOr("Profissao", 0));
 		pessoa.ler(input);
+		sobrenome = input.getStringOr("Sobrenome", "");
+		conjuge = input.read("Conjuge", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+		pai = input.read("Pai", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+		mae = input.read("Mae", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+		crianca = input.getBooleanOr("Crianca", false);
+		nascimento = input.getLongOr("Nascimento", 0L);
 		if (pessoa.tracos.isEmpty()) {
 			pessoa.gerar(getRandom()); // moradores from before personal life
 		}

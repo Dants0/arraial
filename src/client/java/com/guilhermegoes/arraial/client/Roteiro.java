@@ -49,6 +49,12 @@ public final class Roteiro {
 			if (mc.player == null || mc.level == null || indice >= PASSOS.size()) {
 				return;
 			}
+			if (mc.player.isDeadOrDying()) {
+				log("jogador morreu: renascendo");
+				mc.player.respawn();
+				contador = 0;
+				return;
+			}
 			if (++contador < PASSOS.get(indice).espera()) {
 				return;
 			}
@@ -98,7 +104,8 @@ public final class Roteiro {
 	}
 
 	private static void montar() {
-		passo(200, () -> {
+		passo(10, () -> cmd("gamemode creative", "kill @e[type=minecraft:vindicator]", "kill @e[type=minecraft:pillager]"));
+		passo(190, () -> {
 			log("no mundo; preparando");
 			mc().getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
 			cmd("gamemode creative", "time set 6000", "weather clear", "effect clear @s", "kill @e[type=minecraft:vindicator]", "kill @e[type=minecraft:pillager]", "tp @s 0.5 121 -7.5 0 15");
@@ -189,10 +196,134 @@ public final class Roteiro {
 			});
 		});
 		passo(260, () -> foto("14_festa"));
+		passo(10, () -> cmd("arraial festa fim", "time set 6000"));
+
+		// ---- Politics: the urna (empty hand: the council; paper: a proposal), then the vote.
+		passo(20, () -> cmd("tp @s 0.5 121 -7.5 0 30", "setblock 0 120 -5 arraial:urna", "clear @s",
+				"item replace entity @s weapon.mainhand with minecraft:paper 4"));
+		passo(20, () -> clicarBloco(new BlockPos(0, 120, -5)));
+		passo(20, () -> {
+			cmd("item replace entity @s weapon.mainhand with minecraft:air");
+		});
+		passo(10, () -> clicarBloco(new BlockPos(0, 120, -5)));
+		passo(30, () -> foto("15_conselho"));
+		passo(10, () -> cmd("execute positioned 0 120 0 run arraial conselho votar"));
+		passo(30, () -> foto("16_votacao"));
+
+		// ---- A social mission: a morador asks for 3 apples; we bring them.
+		passo(10, () -> servidor((srv, sp) -> {
+			var m = moradorPerto(srv, sp, false);
+			if (m == null) {
+				log("missao: nenhum morador");
+				return;
+			}
+			m.pessoa().pedirFavorTeste(sp.getUUID(), com.guilhermegoes.arraial.vila.Vilas.dia(srv.overworld()));
+			m.setNoAi(true);
+			sp.teleportTo(m.getX() + 2, m.getY(), m.getZ() + 2);
+			olhar(sp, m);
+			alvo = m.getId();
+			log("missao: " + m.nome() + " pediu 3 macas");
+		}));
+		passo(20, () -> cmd("item replace entity @s weapon.mainhand with minecraft:apple 3"));
+		passo(20, () -> clicarEntidade());
+		passo(20, () -> log("missao: macas na mao depois de entregar = " + mc().player.getMainHandItem().getCount()));
+		passo(10, () -> cmd("item replace entity @s weapon.mainhand with minecraft:air"));
+		passo(10, () -> clicarEntidade());
+		passo(30, () -> foto("17_ficha_morador"));
+		passo(5, () -> servidor((srv, sp) -> {
+			if (srv.overworld().getEntity(alvo) instanceof net.minecraft.world.entity.Mob mob) {
+				mob.setNoAi(false);
+			}
+		}));
+
+		// ---- Families: a wedding and a birth; look at the child.
+		passo(10, () -> cmd("execute positioned 0 120 0 run arraial casamento", "execute positioned 0 120 0 run arraial nascimento"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var m = moradorPerto(srv, sp, true);
+			if (m == null) {
+				log("familia: nenhuma crianca");
+				return;
+			}
+			log("familia: nasceu " + m.nome() + " " + m.sobrenome() + " escala=" + m.getScale());
+			sp.teleportTo(m.getX() + 2.5, m.getY() + 1, m.getZ() + 2.5);
+			olhar(sp, m);
+			alvo = m.getId();
+		}));
+		passo(30, () -> foto("18_crianca"));
+		passo(5, () -> clicarEntidade());
+		passo(30, () -> foto("19_ficha_crianca"));
+
+		// ---- Territory: a Marco beyond the border, the border on screen, the Escrivaninha.
+		passo(10, () -> cmd("tp @s 56.5 121 0.5 -90 40", "item replace entity @s weapon.mainhand with arraial:marco_fronteira"));
+		passo(10, () -> servidor((srv, sp) -> chao = new BlockPos(58, sp.level().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, 58, 0) - 1, 0)));
+		passo(20, () -> clicarBloco(chao));
+		passo(30, () -> foto("20_marco"));
+		passo(10, () -> cmd("tp @s 140.5 121 0.5 -90 0"));
+		passo(40, () -> foto("21_terra_de_ninguem"));
+		passo(10, () -> cmd("tp @s 40.5 121 0.5 90 0"));
+		passo(30, () -> foto("22_volta_ao_territorio"));
+		passo(10, () -> cmd("tp @s 0.5 121 -7.5 0 30", "setblock 2 120 -5 arraial:escrivaninha",
+				"item replace entity @s weapon.mainhand with minecraft:air"));
+		passo(20, () -> clicarBloco(new BlockPos(2, 120, -5)));
+		passo(10, () -> cmd("item replace entity @s weapon.mainhand with minecraft:paper"));
+		passo(20, () -> clicarBloco(new BlockPos(2, 120, -5)));
+		passo(30, () -> foto("23_escrivaninha"));
+
+		// ---- Eras: new houses in colonial style, seen from above through the three eras.
+		passo(10, () -> cmd("tp @s 0.5 121 -7.5 0 30", "execute positioned 0 120 0 run arraial era colonial",
+				"execute positioned 0 120 0 run arraial obra_pronta casebre", "execute positioned 0 120 0 run arraial obra_pronta casebre",
+				"execute positioned 0 120 0 run arraial obra_pronta rancho", "execute positioned 0 120 0 run arraial obra_pronta casebre"));
+		passo(40, () -> cmd("setblock 22 140 22 minecraft:glass", "tp @s 22.5 141 22.5 135 40"));
+		passo(60, () -> foto("24_era_colonial"));
+		passo(10, () -> cmd("execute positioned 0 120 0 run arraial era imperial"));
+		passo(60, () -> foto("25_era_imperial"));
+		passo(10, () -> cmd("execute positioned 0 120 0 run arraial era republicana"));
+		passo(60, () -> foto("26_era_republicana"));
 		passo(20, () -> {
 			log("fim do roteiro");
 			mc().stop();
 		});
+	}
+
+	// ---------------------------------------------------------------- helpers for the scenes
+
+	private static int alvo = -1;
+	private static BlockPos chao = BlockPos.ZERO;
+
+	/** Right-clicks the top of a block with whatever is in hand (as the player would). */
+	private static void clicarBloco(BlockPos p) {
+		mc().gameMode.useItemOn(mc().player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(p).add(0, 0.5, 0), Direction.UP, p, false));
+	}
+
+	/** Right-clicks the entity chosen by the last scene. */
+	private static void clicarEntidade() {
+		var e = mc().level.getEntity(alvo);
+		if (e == null) {
+			log("clicar: entidade sumiu");
+			return;
+		}
+		mc().gameMode.interact(mc().player, e, new net.minecraft.world.phys.EntityHitResult(e), InteractionHand.MAIN_HAND);
+	}
+
+	private static void servidor(java.util.function.BiConsumer<net.minecraft.server.MinecraftServer, net.minecraft.server.level.ServerPlayer> f) {
+		var srv = mc().getSingleplayerServer();
+		java.util.UUID id = mc().player.getUUID();
+		srv.execute(() -> f.accept(srv, srv.getPlayerList().getPlayer(id)));
+	}
+
+	private static com.guilhermegoes.arraial.npc.@org.jspecify.annotations.Nullable MoradorEntity moradorPerto(net.minecraft.server.MinecraftServer srv,
+			net.minecraft.server.level.ServerPlayer sp, boolean crianca) {
+		return srv.overworld().getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, sp.getBoundingBox().inflate(60),
+				m -> m.crianca() == crianca && m.vila() != null && m.profissao() != com.guilhermegoes.arraial.npc.Profissao.MASCATE).stream()
+				.min(java.util.Comparator.comparingDouble(m -> m.distanceToSqr(sp))).orElse(null);
+	}
+
+	/** Turns the player to face an entity, from where they stand. */
+	private static void olhar(net.minecraft.server.level.ServerPlayer sp, net.minecraft.world.entity.Entity e) {
+		double dx = e.getX() - sp.getX(), dz = e.getZ() - sp.getZ(), dy = e.getEyeY() - sp.getEyeY();
+		float yaw = (float) (Math.toDegrees(Math.atan2(dz, dx)) - 90);
+		float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
+		sp.teleportTo(sp.level(), sp.getX(), sp.getY(), sp.getZ(), java.util.Set.of(), yaw, pitch, true);
 	}
 
 	private Roteiro() {

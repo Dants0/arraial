@@ -122,13 +122,27 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] Base do jogador (última cama) abandonada 8+ dias fora de território pode ser tomada por bandidos; retomar ao limpar
 - [x] `/arraial abandonar`, `/arraial ocupar`, `/arraial base`
 
-## Próximos (pedidos de 2026-11-05)
-- [ ] Crafts de tudo (jogável em sobrevivência) e compatibilidade com JEI
-- [ ] Itens novos do mod: ferramentas, armaduras, miscelânea; por craft, saques, loot e conquistas
+## 17. Itens, JEI e Blockbench
+- [x] Crafts de tudo + JEI (páginas de informação); facão, peixeira, foice, couro do vaqueiro, cantil, saco de saque, comenda; 23 conquistas
+- [x] Modelos 3D como projetos Blockbench (tools/blockbench) + exportador (tools/de_blockbench.js) + plugin do Blockbench
+
+## 18. Famílias e sucessão
+- [x] Sobrenome; casamento entre amigos (afinidade ≥ 30) com fogos; filhos (crianças menores que crescem em 3 dias)
+- [x] Sucessão no coronelismo: filho mais velho ou cônjuge do último chefe; parentes votam em parentes
+- [x] , 
+## 19. Eras e modernização
+- [x] Colonial → Imperial (Vila + olaria + 40 réis) → Republicana (Vila próspera + Capela + Cartório + 80 réis)
+- [x] Reforma das construções (taipa→tijolo→cal; telhado de telha; pedra lavrada; lampião) e das ruas (terra→calçamento→paralelepípedo), com material do armazém
+- [x] Engenheiro faz rua e poste no estilo da era; Capela (Imperial) e Chafariz (Republicana)
+- [x] , 
+## 20. Teste automático no cliente
+- [x] Roteiro (ARRAIAL_ROTEIRO=1 runClient) com fotos e verificações: itens, vaqueiro, foice, cantil, saque, festa, política, missão, família, território, eras
+
+## Próximos
+- [ ] Teste em jogo pelo usuário (T)
 
 ## Depois
 - [ ] Teste em jogo de tudo acima (T)
 
-- [ ] Famílias e sucessão; blocos coloniais
-- [ ] Eras/modernização
+- [ ] Blocos coloniais próprios (telha, taipa, azulejo)
 - [ ] Tratados e embargo (diplomacia completa); tela de diplomacia

@@ -214,7 +214,7 @@ public final class Festa {
 		}
 		a.setChanged();
 		Prefeitura.avisar(level, a, Component.translatable("arraial.festa.comecou." + f.tipo.id(), a.nomeCompleto(),
-				Calendario.padroeiro(a.nome())).withStyle(ChatFormatting.LIGHT_PURPLE));
+				Calendario.padroeiro(a.nome()), f.tipo.nome(a)).withStyle(ChatFormatting.LIGHT_PURPLE));
 	}
 
 	/**

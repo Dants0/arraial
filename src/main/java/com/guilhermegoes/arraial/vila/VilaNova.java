@@ -189,6 +189,19 @@ public final class VilaNova {
 		if (quem != null) quem.sendSystemMessage(Component.translatable("arraial.vila.avistou", arraial.nomeCompleto()).withStyle(ChatFormatting.AQUA));
 	}
 
+	/** /arraial obra_pronta: a finished building of {@code id} at the first free spot of the arraial. */
+	public static boolean construirPronto(ServerLevel level, BlockPos vila, String id) {
+		return Catalogo.porId(id).map(projeto -> {
+			Optional<Terreno.Lugar> lugar = Terreno.procurar(level, vila, projeto);
+			if (lugar.isPresent() && Terreno.marcar(level, lugar.get(), projeto, Prioridade.NORMAL)
+					&& level.getBlockEntity(lugar.get().marco()) instanceof CanteiroBlockEntity c) {
+				erguer(level, c);
+				return true;
+			}
+			return false;
+		}).orElse(false);
+	}
+
 	/** Builds the whole plan at once (no pedreiro needed for the founders' houses). */
 	private static void erguer(ServerLevel level, CanteiroBlockEntity c) {
 		PlanoDeObra plano = c.plano(level).orElse(null);

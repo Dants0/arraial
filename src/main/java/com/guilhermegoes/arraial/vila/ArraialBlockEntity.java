@@ -68,6 +68,12 @@ public class ArraialBlockEntity extends BlockEntity {
 	int tesouro = 20;
 	/** Current stage (Povoado, Arraial, Vila...), see {@link Estagio}. */
 	Estagio estagio = Estagio.POVOADO;
+	/** How the arraial builds (see {@link Era}). */
+	Era era = Era.COLONIAL;
+
+	public Era era() {
+		return era;
+	}
 	/** Local prices at the feira, in réis, smoothed day by day (see {@link Feira}). */
 	final java.util.Map<String, Double> precos = new java.util.HashMap<>();
 	/** Reputation of each player with this arraial (-100..100). */
@@ -250,6 +256,8 @@ public class ArraialBlockEntity extends BlockEntity {
 	long ultimoDiario;
 	/** A prefeito voted out; not eligible in the next election. */
 	java.util.@org.jspecify.annotations.Nullable UUID deposto;
+	/** The last chief (prefeito or coronel), whose heir takes over under a coronel. */
+	java.util.@org.jspecify.annotations.Nullable UUID ultimoChefe;
 
 	private void diario(ServerLevel level, List<MoradorEntity> moradores) {
 		long hoje = Vilas.dia(level);
@@ -269,11 +277,13 @@ public class ArraialBlockEntity extends BlockEntity {
 			Prefeitura.depor(level, this);
 		}
 		Estagio.avaliar(level, this, moradores.size());
+		Era.diario(level, this);
 		Feira.atualizarPrecos(level, this, moradores.size());
 		Reparos.verificar(level, this);
 		Caravana.diario(level, this, moradores);
 		Diplomacia.diario(level, this, moradores);
 		Comercio.diario(level, this, moradores);
+		Familias.diario(level, this, moradores);
 	}
 
 	/** A newcomer walks into town: spawned on the surface a few blocks from the Cruzeiro. */
@@ -366,10 +376,12 @@ public class ArraialBlockEntity extends BlockEntity {
 		abandonada = input.getBooleanOr("Abandonada", false);
 		diaRuina = input.getLongOr("DiaRuina", 0L);
 		deposto = input.read("Deposto", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+		ultimoChefe = input.read("UltimoChefe", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 		legitimidade = input.getIntOr("Legitimidade", 60);
 		diasLegitimidadeBaixa = input.getIntOr("DiasLegitimidadeBaixa", 0);
 		tesouro = input.getIntOr("Tesouro", 20);
 		estagio = Estagio.de(input.getIntOr("Estagio", 0));
+		era = Era.de(input.getIntOr("Era", 0));
 		ultimoTick = input.getLongOr("UltimoTick", 0L);
 		precos.clear();
 		input.read("Precos", com.mojang.serialization.Codec.unboundedMap(com.mojang.serialization.Codec.STRING, com.mojang.serialization.Codec.DOUBLE)).ifPresent(precos::putAll);
@@ -402,10 +414,14 @@ public class ArraialBlockEntity extends BlockEntity {
 		if (deposto != null) {
 			output.store("Deposto", net.minecraft.core.UUIDUtil.CODEC, deposto);
 		}
+		if (ultimoChefe != null) {
+			output.store("UltimoChefe", net.minecraft.core.UUIDUtil.CODEC, ultimoChefe);
+		}
 		output.putInt("Legitimidade", legitimidade);
 		output.putInt("DiasLegitimidadeBaixa", diasLegitimidadeBaixa);
 		output.putInt("Tesouro", tesouro);
 		output.putInt("Estagio", estagio.ordinal());
+		output.putInt("Era", era.ordinal());
 		output.putLong("UltimoTick", ultimoTick);
 		output.store("Precos", com.mojang.serialization.Codec.unboundedMap(com.mojang.serialization.Codec.STRING, com.mojang.serialization.Codec.DOUBLE), java.util.Map.copyOf(precos));
 		output.store("Reputacao", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT), java.util.Map.copyOf(reputacao));

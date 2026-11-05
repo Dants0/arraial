@@ -58,6 +58,12 @@ public final class Satisfacao {
 		if (Prefeitura.obras(level, vila, "prefeitura") > 0) {
 			alvo += 5;
 		}
+		if (Prefeitura.obras(level, vila, "capela") > 0) {
+			alvo += Cultura.costume(level, a, "devotos") ? 8 : 4;
+		}
+		if (Prefeitura.obras(level, vila, "chafariz") > 0) {
+			alvo += 4;
+		}
 		alvo -= a.politica.imposto() * 4; // taxes weigh on everyone
 		// How the people feel in their own lives (rest, company, dreams).
 		if (!moradores.isEmpty()) {
