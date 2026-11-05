@@ -162,4 +162,9 @@ Item 'remedio' (Pal 'k=#9A7448 K=#6E5030 g=#5E8C4A G=#8AB86A v=#C98A3A V=#E8B06A
   '', '......kk', '......KK', '......vv', '.....vVVv', '....vVvvvv', '...vVvgGvvv', '...vVgGgvvv',
   '...vppppppv', '...vpppppdv', '...vvgvvvvv', '...vvvvvvdv', '....dvvvvd', '.....dddd')
 
+Item 'guia' (Pal 'c=#6B3A22 C=#8A4E2E d=#4A2614 p=#EDE4CC P=#D9CCA8 o=#D9A63A') @(
+  '', '..dddddddddd', '..dCCCCCCCCCd', '..dCcccocccCdp', '..dCcccocccCdp', '..dCcoooooCCdp',
+  '..dCcccocccCdp', '..dCcccocccCdp', '..dCcccocccCdp', '..dCcccccccCdp', '..dCcccccccCdp',
+  '..dCCCCCCCCCdp', '..ddddddddddPp', '...pppppppppP')
+
 "texturas geradas em $Raiz"

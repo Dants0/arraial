@@ -1,0 +1,569 @@
+{
+	"meta": {
+		"format_version": "4.10",
+		"model_format": "java_block",
+		"box_uv": false
+	},
+	"name": "varal_caca",
+	"parent": "minecraft:block/block",
+	"ambientocclusion": true,
+	"front_gui_light": false,
+	"visible_box": [
+		1,
+		1,
+		0
+	],
+	"variable_placeholders": "",
+	"variable_placeholder_buttons": [],
+	"unhandled_root_fields": {},
+	"resolution": {
+		"width": 16,
+		"height": 16
+	},
+	"elements": [
+		{
+			"name": "poste_oeste",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				1,
+				0,
+				7
+			],
+			"to": [
+				3,
+				15,
+				9
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						2,
+						15
+					],
+					"texture": 0
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						2,
+						15
+					],
+					"texture": 0
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						2,
+						15
+					],
+					"texture": 0
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						2,
+						15
+					],
+					"texture": 0
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					],
+					"texture": 0
+				}
+			},
+			"type": "cube",
+			"uuid": "bf89dfd7-8a6b-497f-9d40-9c0927d7a42c"
+		},
+		{
+			"name": "poste_leste",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				13,
+				0,
+				7
+			],
+			"to": [
+				15,
+				15,
+				9
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						2,
+						15
+					],
+					"texture": 0
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						2,
+						15
+					],
+					"texture": 0
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						2,
+						15
+					],
+					"texture": 0
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						2,
+						15
+					],
+					"texture": 0
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					],
+					"texture": 0
+				}
+			},
+			"type": "cube",
+			"uuid": "73e4842d-f725-4aa5-a17c-81b53e936b6e"
+		},
+		{
+			"name": "travessa",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				0,
+				13,
+				7.5
+			],
+			"to": [
+				16,
+				14.5,
+				8.5
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						16,
+						1.5
+					],
+					"texture": 0
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						16,
+						1.5
+					],
+					"texture": 0
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						16,
+						1
+					],
+					"texture": 0
+				},
+				"down": {
+					"uv": [
+						0,
+						0,
+						16,
+						1
+					],
+					"texture": 0
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						1,
+						1.5
+					],
+					"texture": 0
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						1,
+						1.5
+					],
+					"texture": 0
+				}
+			},
+			"type": "cube",
+			"uuid": "b850b4c6-3139-4ede-984f-6dbdcb369661"
+		},
+		{
+			"name": "couro",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				4,
+				3,
+				8
+			],
+			"to": [
+				12,
+				13,
+				8.5
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						4,
+						3,
+						12,
+						13
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						4,
+						3,
+						12,
+						13
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						3,
+						1,
+						13
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						3,
+						1,
+						13
+					],
+					"texture": 1
+				}
+			},
+			"type": "cube",
+			"uuid": "46c0ceef-76fe-45b6-8317-7a860a261a4a"
+		},
+		{
+			"name": "pele",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				3.5,
+				6,
+				7.4
+			],
+			"to": [
+				9.5,
+				13,
+				7.5
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": 2
+				},
+				"south": {
+					"uv": [
+						16,
+						0,
+						0,
+						16
+					],
+					"texture": 2
+				}
+			},
+			"type": "cube",
+			"uuid": "8fc499f6-b12d-47bb-847f-c58596aba243"
+		},
+		{
+			"name": "pena",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				10,
+				8,
+				7.4
+			],
+			"to": [
+				13,
+				13,
+				7.5
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": 3
+				},
+				"south": {
+					"uv": [
+						16,
+						0,
+						0,
+						16
+					],
+					"texture": 3
+				}
+			},
+			"type": "cube",
+			"uuid": "f740c2cb-da48-4047-ada2-eec653a1ecd5"
+		}
+	],
+	"outliner": [
+		"bf89dfd7-8a6b-497f-9d40-9c0927d7a42c",
+		"73e4842d-f725-4aa5-a17c-81b53e936b6e",
+		"b850b4c6-3139-4ede-984f-6dbdcb369661",
+		"46c0ceef-76fe-45b6-8317-7a860a261a4a",
+		"8fc499f6-b12d-47bb-847f-c58596aba243",
+		"f740c2cb-da48-4047-ada2-eec653a1ecd5"
+	],
+	"textures": [
+		{
+			"path": "assets/minecraft/textures/block/spruce_log.png",
+			"name": "spruce_log.png",
+			"folder": "block",
+			"namespace": "minecraft",
+			"id": "0",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": true,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "66a21167-54a5-454a-a380-e4c45dd69158",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAElBMVEU7JxNVOh9NMxcxHgsuHAouFginnvcOAAAAaElEQVR42gXBwQ3DIBREwSd2/91SKGAl8J1QAYpSgNN/M5lBqVTbRr16tWXqW11a5rbsWpPhcrdC1lAfCmfNkyicJx+mg358PGfgzfHIA81l5UHNddW1eDHvXhyuFU0B2dzShuw1xPYfHrgLgTont60AAAAASUVORK5CYII="
+		},
+		{
+			"path": "D:\\MinecraftMods\\arraial\\src\\main\\resources\\assets\\arraial\\textures\\block\\couro.png",
+			"name": "couro.png",
+			"folder": "block",
+			"namespace": "arraial",
+			"id": "1",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "347348a2-1104-4f38-832f-95558eceaa0e",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACASURBVDhPY6jy0/kPwrMyLMA0LhxnJY8hBsIM6AIgTIphDCeXZYMZ5NJwF+ByIjLG5jKsXiDFMAZsppJiGIoLyDEMqxdAmFjDGLCZio7xGYbiAnIMw+kFYg0DG4BuKjrGZxiGC0g1DG9SBhmGTRxGgwwDuwDdVGwYl8swvECqYQCB2AIG1Mq9lAAAAABJRU5ErkJggg=="
+		},
+		{
+			"path": "assets/minecraft/textures/item/rabbit_hide.png",
+			"name": "rabbit_hide.png",
+			"folder": "item",
+			"namespace": "minecraft",
+			"id": "2",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "6f182de3-3328-413e-bede-c5e2eb90f0f4",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEUAAADHnme0i1uogFSCYEFOOicIyDQdAAAAAXRSTlMAQObYZgAAAFJJREFUeNptjUkKwDAMA63t/18uCTSxS4XRYWCsWrF3p95YXpXqZMEOKDXDZTJlX4ECrRyAFd4ZEyDGCkGmBsAE+hgCAWW+aE7kQPEhSWpf6icPu2UBXtuWX1UAAAAASUVORK5CYII="
+		},
+		{
+			"path": "assets/minecraft/textures/item/feather.png",
+			"name": "feather.png",
+			"folder": "item",
+			"namespace": "minecraft",
+			"id": "3",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "a752fa6a-a8e1-4c37-9ada-7898bf4fa9bc",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAATklEQVR42rXRsQ2AUAwD0ew/QMbJEh7oUdH9gISE24tzheu/xOtBPOLGjtGIvW82HIw+46giWk6CIDuugtUetxvn/uj9eWttbrxljA+jXU9CdVLa6TttAAAAAElFTkSuQmCC"
+		}
+	]
+}

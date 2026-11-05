@@ -185,7 +185,7 @@ public final class Crise {
 		int seca = roca && !level.isRaining() ? 3 : 0;
 		int enchente = roca && level.isRaining() ? 3 : 0;
 		int praga = roca ? 2 : 0;
-		int salteadores = moradores >= 8 ? 3 : 2;
+		int salteadores = (moradores >= 8 ? 3 : 2) + Diplomacia.peso(level, arraial.getBlockPos());
 		int epidemia = moradores >= 6 ? 1 : 0;
 		int incendio = !level.isRaining() ? 1 : 0;
 		int total = seca + enchente + praga + salteadores + epidemia + incendio;
@@ -231,6 +231,7 @@ public final class Crise {
 		if (tipo == Tipo.ENCHENTE) {
 			alagar(level, arraial);
 		}
+		Diplomacia.socorro(level, arraial);
 		if (tipo == Tipo.EPIDEMIA) {
 			adoecer(level, arraial);
 		}

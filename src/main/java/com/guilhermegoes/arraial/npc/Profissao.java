@@ -23,7 +23,11 @@ public enum Profissao {
 	FARINHEIRO("farinheiro"),
 	FEIRANTE("feirante"),
 	TROPEIRO("tropeiro"),
-	BOTICARIO("boticario");
+	BOTICARIO("boticario"),
+	PESCADOR("pescador"),
+	CACADOR("cacador"),
+	ENGENHEIRO("engenheiro"),
+	RELACOES("relacoes");
 
 	private final String id;
 
@@ -54,6 +58,10 @@ public enum Profissao {
 			case FEIRANTE -> ModBlocks.BANCA_FEIRA;
 			case TROPEIRO -> ModBlocks.CANGALHA;
 			case BOTICARIO -> ModBlocks.BALCAO_BOTICA;
+			case PESCADOR -> ModBlocks.COVO;
+			case CACADOR -> ModBlocks.VARAL_CACA;
+			case ENGENHEIRO -> ModBlocks.PRANCHETA;
+			case RELACOES -> ModBlocks.ESCRIVANINHA;
 			default -> null;
 		};
 	}

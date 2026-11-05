@@ -53,7 +53,11 @@ public final class Prefeitura {
 			Map.entry(Profissao.FARINHEIRO, "casa_de_farinha"),
 			Map.entry(Profissao.FEIRANTE, "feira"),
 			Map.entry(Profissao.TROPEIRO, "rancho_tropeiro"),
-			Map.entry(Profissao.BOTICARIO, "botica"));
+			Map.entry(Profissao.BOTICARIO, "botica"),
+			Map.entry(Profissao.PESCADOR, "pesqueiro"),
+			Map.entry(Profissao.CACADOR, "rancho_cacador"),
+			Map.entry(Profissao.ENGENHEIRO, "oficina_engenheiro"),
+			Map.entry(Profissao.RELACOES, "cartorio"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -208,6 +212,18 @@ public final class Prefeitura {
 		boolean epidemia = arraial.crise.tipo() == Crise.Tipo.EPIDEMIA;
 		if ((estagio.pelo(Estagio.VILA) || epidemia) && postos(level, vila, ModPois.BALCAO_BOTICA) == 0) {
 			desejos.add(epidemia ? 0 : desejos.size(), "botica");
+		}
+		if (n >= 6 && postos(level, vila, ModPois.COVO) == 0 && temAgua(level, vila)) {
+			desejos.add("pesqueiro");
+		}
+		if (n >= 7 && postos(level, vila, ModPois.VARAL_CACA) == 0) {
+			desejos.add("rancho_cacador");
+		}
+		if (n >= 8 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.PRANCHETA) == 0) {
+			desejos.add("oficina_engenheiro");
+		}
+		if (n >= 8 && (estagio.pelo(Estagio.VILA) || Registro.todas().size() > 1) && postos(level, vila, ModPois.ESCRIVANINHA) == 0) {
+			desejos.add("cartorio");
 		}
 		if (estagio.pelo(Estagio.VILA) && postos(level, vila, ModPois.CANGALHA) == 0) {
 			desejos.add("rancho_tropeiro");
@@ -364,6 +380,19 @@ public final class Prefeitura {
 			m.setProfissao(Profissao.NENHUMA);
 			Cronica.anotar(level, arraial.getBlockPos(), Component.translatable("arraial.cronica.remanejou", prefeito.nome(), m.nome(), antigo));
 		}
+	}
+
+	/** Open water somewhere in the arraial (a few sampled spots), for a pesqueiro. */
+	private static boolean temAgua(ServerLevel level, BlockPos vila) {
+		for (int dx = -Vilas.RAIO + 8; dx <= Vilas.RAIO - 8; dx += 8) {
+			for (int dz = -Vilas.RAIO + 8; dz <= Vilas.RAIO - 8; dz += 8) {
+				BlockPos p = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, vila.offset(dx, 0, dz)).below();
+				if (level.isLoaded(p) && level.getFluidState(p).is(net.minecraft.tags.FluidTags.WATER)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/** Finished (or started) buildings of a given project inside the arraial. */

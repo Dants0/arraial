@@ -127,7 +127,9 @@ public final class Caravana {
 		}
 		double dist = Math.sqrt(d.posicao().distSqr(a.getBlockPos()));
 		long duracao = (long) Math.max(DIA / 2, Math.min(3 * DIA, dist / 400.0 * DIA));
-		Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.tropa_partiu", t.nome(), d.nome));
+		if (t.profissao() == Profissao.TROPEIRO) {
+			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.tropa_partiu", t.nome(), d.nome));
+		}
 		BlockPos casa = t.posto() != null ? t.posto() : a.getBlockPos();
 		t.teleportTo(casa.getX() + 0.5, casa.getY() + 1, casa.getZ() + 0.5);
 		t.setViagem(3, t.viagemDestino(), level.getGameTime() + duracao);

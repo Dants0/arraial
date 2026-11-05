@@ -1,0 +1,6 @@
+{"variants": {
+	"facing=north": {"model": "arraial:block/varal_caca"},
+	"facing=east": {"model": "arraial:block/varal_caca", "y": 90},
+	"facing=south": {"model": "arraial:block/varal_caca", "y": 180},
+	"facing=west": {"model": "arraial:block/varal_caca", "y": 270}
+}}

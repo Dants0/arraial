@@ -56,6 +56,8 @@ public final class ModItems {
 			.component(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.HEAD).build()));
 	/** Garrafada: the boticário's herbal remedy; cures a sick morador (epidemia). */
 	public static final Item REMEDIO = register("remedio", Item::new, new Item.Properties().stacksTo(16));
+	/** Guia do Arraial: right-click to open a book explaining the trades, the villages, safety and crises. */
+	public static final Item GUIA = register("guia", com.guilhermegoes.arraial.vila.GuiaItem::new, new Item.Properties().stacksTo(1));
 	/** Réis: the arraial's money, used at the feira. */
 	public static final Item REIS = register("reis", Item::new, new Item.Properties());
 

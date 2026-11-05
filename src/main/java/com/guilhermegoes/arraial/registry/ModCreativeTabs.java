@@ -43,6 +43,11 @@ public final class ModCreativeTabs {
 						output.accept(ModItems.CHAPEU_COURO);
 						output.accept(ModItems.REIS);
 						output.accept(ModItems.REMEDIO);
+						output.accept(ModBlocks.COVO);
+						output.accept(ModBlocks.VARAL_CACA);
+						output.accept(ModBlocks.PRANCHETA);
+						output.accept(ModBlocks.ESCRIVANINHA);
+						output.accept(ModItems.GUIA);
 					})
 					.build());
 

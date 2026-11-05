@@ -1,0 +1,31 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"tora": "minecraft:block/spruce_log",
+		"couro": "arraial:block/couro",
+		"pele": "minecraft:item/rabbit_hide",
+		"pena": "minecraft:item/feather",
+		"particle": "minecraft:block/spruce_log"
+	},
+	"elements": [
+		{"name": "poste_oeste", "from": [1, 0, 7], "to": [3, 15, 9], "faces": {
+			"north": {"uv": [0, 0, 2, 15], "texture": "#tora"}, "south": {"uv": [0, 0, 2, 15], "texture": "#tora"},
+			"east": {"uv": [0, 0, 2, 15], "texture": "#tora"}, "west": {"uv": [0, 0, 2, 15], "texture": "#tora"},
+			"up": {"uv": [0, 0, 2, 2], "texture": "#tora"}}},
+		{"name": "poste_leste", "from": [13, 0, 7], "to": [15, 15, 9], "faces": {
+			"north": {"uv": [0, 0, 2, 15], "texture": "#tora"}, "south": {"uv": [0, 0, 2, 15], "texture": "#tora"},
+			"east": {"uv": [0, 0, 2, 15], "texture": "#tora"}, "west": {"uv": [0, 0, 2, 15], "texture": "#tora"},
+			"up": {"uv": [0, 0, 2, 2], "texture": "#tora"}}},
+		{"name": "travessa", "from": [0, 13, 7.5], "to": [16, 14.5, 8.5], "faces": {
+			"north": {"uv": [0, 0, 16, 1.5], "texture": "#tora"}, "south": {"uv": [0, 0, 16, 1.5], "texture": "#tora"},
+			"up": {"uv": [0, 0, 16, 1], "texture": "#tora"}, "down": {"uv": [0, 0, 16, 1], "texture": "#tora"},
+			"east": {"uv": [0, 0, 1, 1.5], "texture": "#tora"}, "west": {"uv": [0, 0, 1, 1.5], "texture": "#tora"}}},
+		{"name": "couro", "from": [4, 3, 8], "to": [12, 13, 8.5], "faces": {
+			"north": {"uv": [4, 3, 12, 13], "texture": "#couro"}, "south": {"uv": [4, 3, 12, 13], "texture": "#couro"},
+			"east": {"uv": [0, 3, 1, 13], "texture": "#couro"}, "west": {"uv": [0, 3, 1, 13], "texture": "#couro"}}},
+		{"name": "pele", "from": [3.5, 6, 7.4], "to": [9.5, 13, 7.5], "faces": {
+			"north": {"uv": [0, 0, 16, 16], "texture": "#pele"}, "south": {"uv": [16, 0, 0, 16], "texture": "#pele"}}},
+		{"name": "pena", "from": [10, 8, 7.4], "to": [13, 13, 7.5], "faces": {
+			"north": {"uv": [0, 0, 16, 16], "texture": "#pena"}, "south": {"uv": [16, 0, 0, 16], "texture": "#pena"}}}
+	]
+}

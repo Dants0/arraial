@@ -69,6 +69,26 @@ public final class ModBlocks {
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("bancada_canteiro").mapColor(MapColor.STONE).strength(2.5F)
 					.requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
+	/** Workstation of the pescador: a covo, the woven fish trap. */
+	public static final Block COVO = register("covo",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("covo").mapColor(MapColor.COLOR_YELLOW).strength(1.0F)
+					.sound(SoundType.BAMBOO_WOOD).noOcclusion()));
+
+	/** Workstation of the caçador: a rack with hides drying. */
+	public static final Block VARAL_CACA = register("varal_caca",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("varal_caca").mapColor(MapColor.COLOR_BROWN).strength(1.0F)
+					.sound(SoundType.WOOD).noOcclusion()));
+
+	/** Workstation of the engenheiro: the drafting board with the arraial's plans. */
+	public static final Block PRANCHETA = register("prancheta",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("prancheta").mapColor(MapColor.WOOD).strength(1.5F)
+					.sound(SoundType.WOOD).noOcclusion()));
+
+	/** Workstation of relações públicas: a writing desk for letters to the neighbours. */
+	public static final Block ESCRIVANINHA = register("escrivaninha",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("escrivaninha").mapColor(MapColor.WOOD).strength(1.5F)
+					.sound(SoundType.WOOD).noOcclusion()));
+
 	/** Lampião: an oil lamp of tin and glass, standing or hanging, with a flickering flame. */
 	public static final Block LAMPIAO = register("lampiao",
 			new net.minecraft.world.level.block.LanternBlock(props("lampiao").mapColor(MapColor.METAL).forceSolidOn().strength(2.0F)

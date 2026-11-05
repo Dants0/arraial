@@ -146,6 +146,10 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(3, new PrefeitoGoal(this));
 		goalSelector.addGoal(3, new TropeiroGoal(this));
 		goalSelector.addGoal(3, new FeiranteGoal(this));
+		goalSelector.addGoal(3, new PescadorGoal(this));
+		goalSelector.addGoal(3, new CacadorGoal(this));
+		goalSelector.addGoal(3, new EngenheiroGoal(this));
+		goalSelector.addGoal(3, new EmissarioGoal(this));
 		goalSelector.addGoal(3, new OpenDoorGoal(this, true));
 		goalSelector.addGoal(4, new SoldadoGoal(this));
 		targetSelector.addGoal(1, new SoldadoGoal.Revidar(this));
@@ -423,7 +427,11 @@ public class MoradorEntity extends PathfinderMob {
 			getNavigation().stop();
 			setDeltaMovement(0, getDeltaMovement().y, 0);
 			if (level.getGameTime() >= viagemVolta) {
-				com.guilhermegoes.arraial.vila.Caravana.voltar(level, this);
+				if (profissao() == Profissao.RELACOES) {
+					com.guilhermegoes.arraial.vila.Diplomacia.voltar(level, this);
+				} else {
+					com.guilhermegoes.arraial.vila.Caravana.voltar(level, this);
+				}
 			}
 			return;
 		}

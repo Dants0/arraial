@@ -157,7 +157,11 @@ public final class PlanoDeObra {
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BANCA_FEIRA, new Custo(Items.OAK_PLANKS, 5)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.CANGALHA, new Custo(Items.OAK_PLANKS, 3)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BALCAO_BOTICA, new Custo(Items.OAK_PLANKS, 5)),
-			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.LAMPIAO, new Custo(Items.TORCH, 1)));
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.LAMPIAO, new Custo(Items.TORCH, 1)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.COVO, new Custo(Items.STICK, 4)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.VARAL_CACA, new Custo(Items.STICK, 5)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.PRANCHETA, new Custo(Items.OAK_PLANKS, 4)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.ESCRIVANINHA, new Custo(Items.OAK_PLANKS, 5)));
 
 	/** Index in {@link com.guilhermegoes.arraial.trabalho.Receitas#MADEIRAS} of the wood the arraial near {@code pos} uses most. */
 	static int madeiraDaVila(ServerLevel level, BlockPos pos) {

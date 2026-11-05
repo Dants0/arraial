@@ -1,0 +1,39 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"madeira": "minecraft:block/dark_oak_planks",
+		"tampo": "minecraft:block/stripped_spruce_log",
+		"papel": "minecraft:block/white_wool",
+		"tinta": "minecraft:block/black_wool",
+		"livro": "minecraft:block/lectern_top",
+		"particle": "minecraft:block/dark_oak_planks"
+	},
+	"elements": [
+		{"name": "gaveteiro", "from": [1, 0, 3], "to": [6, 10, 13], "faces": {
+			"north": {"uv": [1, 6, 6, 16], "texture": "#madeira"}, "south": {"uv": [1, 6, 6, 16], "texture": "#madeira"},
+			"east": {"uv": [3, 6, 13, 16], "texture": "#madeira"}, "west": {"uv": [3, 6, 13, 16], "texture": "#madeira"},
+			"down": {"uv": [1, 3, 6, 13], "texture": "#madeira", "cullface": "down"}}},
+		{"name": "pe_1", "from": [13, 0, 3], "to": [15, 10, 5], "faces": {
+			"north": {"uv": [0, 0, 2, 10], "texture": "#madeira"}, "south": {"uv": [0, 0, 2, 10], "texture": "#madeira"},
+			"east": {"uv": [0, 0, 2, 10], "texture": "#madeira"}, "west": {"uv": [0, 0, 2, 10], "texture": "#madeira"}}},
+		{"name": "pe_2", "from": [13, 0, 11], "to": [15, 10, 13], "faces": {
+			"north": {"uv": [0, 0, 2, 10], "texture": "#madeira"}, "south": {"uv": [0, 0, 2, 10], "texture": "#madeira"},
+			"east": {"uv": [0, 0, 2, 10], "texture": "#madeira"}, "west": {"uv": [0, 0, 2, 10], "texture": "#madeira"}}},
+		{"name": "tampo", "from": [0, 10, 2], "to": [16, 11, 14], "faces": {
+			"north": {"uv": [0, 0, 16, 1], "texture": "#tampo"}, "south": {"uv": [0, 0, 16, 1], "texture": "#tampo"},
+			"east": {"uv": [2, 0, 14, 1], "texture": "#tampo"}, "west": {"uv": [2, 0, 14, 1], "texture": "#tampo"},
+			"up": {"uv": [0, 2, 16, 14], "texture": "#tampo"}, "down": {"uv": [0, 2, 16, 14], "texture": "#tampo"}}},
+		{"name": "carta", "from": [3, 11, 5], "to": [9, 11.1, 10], "rotation": {"angle": 22.5, "axis": "y", "origin": [6, 11, 7]}, "faces": {
+			"up": {"uv": [3, 5, 9, 10], "texture": "#papel"}}},
+		{"name": "livro", "from": [10, 11, 6], "to": [14, 12, 11], "faces": {
+			"north": {"uv": [0, 0, 4, 1], "texture": "#livro"}, "south": {"uv": [0, 0, 4, 1], "texture": "#livro"},
+			"east": {"uv": [0, 0, 5, 1], "texture": "#livro"}, "west": {"uv": [0, 0, 5, 1], "texture": "#livro"},
+			"up": {"uv": [2, 2, 14, 14], "texture": "#livro"}}},
+		{"name": "tinteiro", "from": [7, 11, 11], "to": [9, 13, 13], "faces": {
+			"north": {"uv": [0, 0, 2, 2], "texture": "#tinta"}, "south": {"uv": [0, 0, 2, 2], "texture": "#tinta"},
+			"east": {"uv": [0, 0, 2, 2], "texture": "#tinta"}, "west": {"uv": [0, 0, 2, 2], "texture": "#tinta"},
+			"up": {"uv": [0, 0, 2, 2], "texture": "#tinta"}}},
+		{"name": "pena", "from": [8, 12, 12], "to": [8, 17, 13], "rotation": {"angle": 22.5, "axis": "z", "origin": [8, 12, 12]}, "faces": {
+			"east": {"uv": [0, 0, 1, 5], "texture": "#papel"}, "west": {"uv": [0, 0, 1, 5], "texture": "#papel"}}}
+	]
+}

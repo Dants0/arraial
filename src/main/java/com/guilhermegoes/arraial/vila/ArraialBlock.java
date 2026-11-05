@@ -81,6 +81,13 @@ public class ArraialBlock extends Block implements EntityBlock {
 		if (by instanceof Player p) {
 			p.sendSystemMessage(Component.translatable("arraial.vila.fundado", arraial.nomeCompleto()).withStyle(ChatFormatting.GOLD));
 			p.sendSystemMessage(Component.translatable("arraial.vila.dica").withStyle(ChatFormatting.GRAY));
+			// A founder gets the guide, once.
+			if (!p.getInventory().contains(s -> s.is(com.guilhermegoes.arraial.registry.ModItems.GUIA))) {
+				ItemStack guia = new ItemStack(com.guilhermegoes.arraial.registry.ModItems.GUIA);
+				if (!p.getInventory().add(guia)) {
+					Block.popResource(level, pos, guia);
+				}
+			}
 		}
 	}
 
@@ -160,9 +167,10 @@ public class ArraialBlock extends Block implements EntityBlock {
 			for (java.util.Map.Entry<String, Registro.Info> e : Registro.todas().entrySet()) {
 				if (!e.getKey().equals(meu)) {
 					int rep = eu.reputacaoCom(e.getKey());
+					Component relacao = Component.translatable(rep >= Diplomacia.ALIADO ? "arraial.vila.aliado" : rep <= Diplomacia.INIMIGO ? "arraial.vila.inimigo" : "arraial.vila.neutro");
 					player.sendSystemMessage(Component.translatable("arraial.vila.vizinha", e.getValue().nome,
-							(int) Math.sqrt(e.getValue().posicao().distSqr(arraial.getBlockPos())), rep)
-							.withStyle(rep < 0 ? ChatFormatting.RED : ChatFormatting.DARK_AQUA));
+							(int) Math.sqrt(e.getValue().posicao().distSqr(arraial.getBlockPos())), rep).append(" · ").append(relacao)
+							.withStyle(rep <= Diplomacia.INIMIGO ? ChatFormatting.RED : rep >= Diplomacia.ALIADO ? ChatFormatting.GREEN : ChatFormatting.DARK_AQUA));
 				}
 			}
 		}

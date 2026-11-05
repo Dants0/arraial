@@ -69,6 +69,27 @@ public final class ComandoArraial {
 						c.getSource().sendFailure(Component.translatable("arraial.comando.sem_tropeiro"));
 						return 0;
 					}))
+					// Relações públicas sets out on a mission now, or comes back now.
+					.then(Commands.literal("missao").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						if (a == null) {
+							return 0;
+						}
+						ServerLevel level = c.getSource().getLevel();
+						for (var m : a.moradores(level)) {
+							if (m.profissao() == com.guilhermegoes.arraial.npc.Profissao.RELACOES) {
+								if (m.viajando()) {
+									m.setViagem(3, m.viagemDestino(), level.getGameTime());
+								} else if (m.viagemFase() == 0) {
+									Diplomacia.forcar(level, a, m);
+								}
+								c.getSource().sendSuccess(() -> Component.translatable("arraial.comando.tropa", m.nome()), true);
+								return 1;
+							}
+						}
+						c.getSource().sendFailure(Component.translatable("arraial.comando.sem_relacoes"));
+						return 0;
+					}))
 					.then(Commands.literal("tesouro").then(Commands.argument("reis", com.mojang.brigadier.arguments.IntegerArgumentType.integer())
 							.executes(c -> {
 								ArraialBlockEntity a = arraial(c.getSource());

@@ -1,0 +1,1 @@
+{"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["PPP", "S S"], "key": {"P": "minecraft:paper", "S": "#minecraft:wooden_slabs"}, "result": {"id": "arraial:prancheta"}}

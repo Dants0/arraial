@@ -1,0 +1,30 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"palha": "minecraft:block/stripped_bamboo_block",
+		"aro": "minecraft:block/bamboo_block",
+		"boca": "minecraft:block/dark_oak_planks",
+		"peixe": "minecraft:item/cod",
+		"particle": "minecraft:block/stripped_bamboo_block"
+	},
+	"elements": [
+		{"name": "corpo", "from": [3, 0, 2], "to": [13, 8, 14], "faces": {
+			"north": {"uv": [3, 8, 13, 16], "texture": "#palha"}, "south": {"uv": [3, 8, 13, 16], "texture": "#palha"},
+			"east": {"uv": [2, 8, 14, 16], "texture": "#palha"}, "west": {"uv": [2, 8, 14, 16], "texture": "#palha"},
+			"up": {"uv": [3, 2, 13, 14], "texture": "#palha"}, "down": {"uv": [3, 2, 13, 14], "texture": "#palha", "cullface": "down"}}},
+		{"name": "aro_frente", "from": [2.5, 1, 1.5], "to": [13.5, 2, 2.5], "faces": {
+			"north": {"uv": [0, 0, 11, 1], "texture": "#aro"}, "south": {"uv": [0, 0, 11, 1], "texture": "#aro"},
+			"up": {"uv": [0, 0, 11, 1], "texture": "#aro"}, "east": {"uv": [0, 0, 1, 1], "texture": "#aro"}, "west": {"uv": [0, 0, 1, 1], "texture": "#aro"}}},
+		{"name": "aro_tras", "from": [2.5, 5, 13.5], "to": [13.5, 6, 14.5], "faces": {
+			"north": {"uv": [0, 0, 11, 1], "texture": "#aro"}, "south": {"uv": [0, 0, 11, 1], "texture": "#aro"},
+			"up": {"uv": [0, 0, 11, 1], "texture": "#aro"}, "east": {"uv": [0, 0, 1, 1], "texture": "#aro"}, "west": {"uv": [0, 0, 1, 1], "texture": "#aro"}}},
+		{"name": "boca", "from": [5, 2, 1.9], "to": [11, 6, 2], "faces": {
+			"north": {"uv": [5, 5, 11, 9], "texture": "#boca"}}},
+		{"name": "tampa", "from": [5, 8, 5], "to": [11, 10, 11], "faces": {
+			"north": {"uv": [5, 0, 11, 2], "texture": "#aro"}, "south": {"uv": [5, 0, 11, 2], "texture": "#aro"},
+			"east": {"uv": [5, 0, 11, 2], "texture": "#aro"}, "west": {"uv": [5, 0, 11, 2], "texture": "#aro"},
+			"up": {"uv": [5, 5, 11, 11], "texture": "#aro"}}},
+		{"name": "peixe", "from": [3, 8, 8], "to": [13, 14, 8], "rotation": {"angle": 22.5, "axis": "y", "origin": [8, 8, 8]}, "faces": {
+			"north": {"uv": [16, 0, 0, 16], "texture": "#peixe"}, "south": {"uv": [0, 0, 16, 16], "texture": "#peixe"}}}
+	]
+}

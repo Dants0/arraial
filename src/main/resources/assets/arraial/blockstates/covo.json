@@ -1,0 +1,6 @@
+{"variants": {
+	"facing=north": {"model": "arraial:block/covo"},
+	"facing=east": {"model": "arraial:block/covo", "y": 90},
+	"facing=south": {"model": "arraial:block/covo", "y": 180},
+	"facing=west": {"model": "arraial:block/covo", "y": 270}
+}}

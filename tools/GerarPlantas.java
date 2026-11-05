@@ -191,6 +191,43 @@ public class GerarPlantas {
 				new String[] {" eMw ", " e.w ", " e.w ", " e.w ", " eMw "},
 				new String[] {"  s  ", "  s  ", "  s  ", "  s  ", "  s  "}));
 
+		// ---- Pescador, caçador, engenheiro, relações públicas.
+		Map<Character, String> oficios = new HashMap<>(novas);
+		oficios.put('V', "arraial:covo[facing=south]");
+		oficios.put('H', "arraial:varal_caca[facing=south]");
+		// Pesqueiro: a little open shed with the covo and a lampião.
+		escrever(out.resolve("pesqueiro.nbt"), oficios, List.of(
+				new String[] {"PPPPP", "PPPPP", "PPPPP", "PPPPP"},
+				new String[] {"L...L", ".l...", "..V..", "L...L"},
+				new String[] {"L...L", ".....", ".....", "L...L"},
+				new String[] {"sssss", "sssss", "sssss", "sssss"}));
+		// Rancho de caçador: posts and a roof over the hide rack.
+		escrever(out.resolve("rancho_cacador.nbt"), oficios, List.of(
+				new String[] {"PPPPP", "PPPPP", "PPPPP", "PPPPP"},
+				new String[] {"L...L", ".....", "..H..", "LfffL"},
+				new String[] {"L...L", ".....", ".....", "L...L"},
+				new String[] {"sssss", "sssss", "sssss", "sssss"}));
+		Map<Character, String> casas = new HashMap<>(botica);
+		casas.put('Q', "arraial:prancheta[facing=south]");
+		casas.put('E', "arraial:escrivaninha[facing=south]");
+		// Oficina do engenheiro and Cartório (relações públicas): small taipa houses.
+		escrever(out.resolve("oficina_engenheiro.nbt"), casas, List.of(
+				new String[] {"CCCCC", "CPPPC", "CPPPC", "CPPPC", "CCCCC"},
+				new String[] {"LMdML", "M...M", "M...M", "M.Q.M", "LMMML"},
+				new String[] {"LMDML", "M...M", ".....", "M...M", "LM.ML"},
+				new String[] {"LMMML", "M...M", "M...M", "M.t.M", "LMMML"},
+				new String[] {"eMMMw", "e...w", "e...w", "e...w", "eMMMw"},
+				new String[] {" eMw ", " e.w ", " e.w ", " e.w ", " eMw "},
+				new String[] {"  s  ", "  s  ", "  s  ", "  s  ", "  s  "}));
+		escrever(out.resolve("cartorio.nbt"), casas, List.of(
+				new String[] {"CCCCC", "CPPPC", "CPPPC", "CPPPC", "CCCCC"},
+				new String[] {"LMdML", "M...M", "M...M", "M.E.M", "LMMML"},
+				new String[] {"LMDML", "M...M", ".....", "M...M", "LM.ML"},
+				new String[] {"LMMML", "M...M", "M...M", "M.t.M", "LMMML"},
+				new String[] {"eMMMw", "e...w", "e...w", "e...w", "eMMMw"},
+				new String[] {" eMw ", " e.w ", " e.w ", " e.w ", " eMw "},
+				new String[] {"  s  ", "  s  ", "  s  ", "  s  ", "  s  "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

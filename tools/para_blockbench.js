@@ -18,6 +18,7 @@ fs.mkdirSync(saida, { recursive: true });
 const MODELOS = [
 	'block/forno_farinha', 'block/banca_feira', 'block/cangalha', 'block/balcao_botica',
 	'block/lampiao', 'block/lampiao_pendurado', 'item/chapeu_couro',
+	'block/covo', 'block/varal_caca', 'block/prancheta', 'block/escrivaninha',
 ];
 
 function png(ref) {

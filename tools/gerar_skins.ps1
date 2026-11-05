@@ -211,6 +211,10 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
     'feirante'    { $o.camisa = '#B0563A'; $o.calca = '#4A4F3A'; $o.manga = 6 }
     'tropeiro'    { $o.camisa = '#8A6B45'; $o.calca = '#4A3B2C'; $o.vestido = $false; $o.manga = 9; $o.sapato = '#3A2A1C' }
     'boticario'   { $o.camisa = '#E8E2D2'; $o.calca = '#2F2F35'; $o.vestido = $false; $o.manga = 10; $o.punho = '#2F2F35' }
+    'pescador'    { $o.camisa = '#4F6E8A'; $o.calca = '#6B5A44'; $o.vestido = $false; $o.manga = 4; $o.arregacada = $true }
+    'cacador'     { $o.camisa = '#5A6B3A'; $o.calca = '#4A3B2C'; $o.vestido = $false; $o.manga = 9 }
+    'engenheiro'  { $o.camisa = '#E8E2D2'; $o.calca = '#3A3F4A'; $o.vestido = $false; $o.manga = 10; $o.punho = '#3A3F4A' }
+    'relacoes'    { $o.camisa = '#6A2E3A'; $o.calca = '#2A2A30'; $o.manga = 10; $o.punho = '#C9A13A' }
   }
   Cabeca $b $o
   Roupa $b $o
@@ -228,6 +232,10 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
     'feirante'    { ChapeuPalha $b }
     'tropeiro'    { ChapeuCouro $b; Suspensorio $b; Perneira $b }
     'boticario'   { Avental $b '#F2F0EA' 7; Gorro $b '#3B3B44' }
+    'pescador'    { ChapeuPalha $b }
+    'cacador'     { ChapeuCouro $b; Perneira $b }
+    'engenheiro'  { Gorro $b '#2F3A55'; Suspensorio $b }
+    'relacoes'    { }
   }
   $nome = '{0}_{1}_{2}.png' -f $oficio, $(if ($fem) { 'f' } else { 'm' }), $v
   $b.Save((Join-Path $Saida $nome), [System.Drawing.Imaging.ImageFormat]::Png)
@@ -235,7 +243,7 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
 }
 
 New-Item -ItemType Directory -Force $Saida | Out-Null
-$oficios = @('morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro', 'farinheiro', 'feirante', 'tropeiro', 'boticario')
+$oficios = @('morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro', 'farinheiro', 'feirante', 'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes')
 $n = 0
 foreach ($of in $oficios) { foreach ($fem in @($false, $true)) { for ($v = 0; $v -lt 4; $v++) { Skin $of $fem $v; $n++ } } }
 "skins geradas: $n"

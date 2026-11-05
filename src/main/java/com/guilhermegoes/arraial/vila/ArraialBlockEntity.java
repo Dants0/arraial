@@ -229,6 +229,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		Feira.atualizarPrecos(level, this, moradores.size());
 		Reparos.verificar(level, this);
 		Caravana.diario(level, this, moradores);
+		Diplomacia.diario(level, this, moradores);
 	}
 
 	/** A newcomer walks into town: spawned on the surface a few blocks from the Cruzeiro. */

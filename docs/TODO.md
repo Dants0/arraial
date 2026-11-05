@@ -49,6 +49,15 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] Muito insatisfeitos vão embora; muito satisfeitos atraem gente mais rápido
 - [x] Legitimidade do prefeito; abaixo de 25 por 2 dias → nova eleição
 
+## 8. Pedidos de 2026-11-05 (tarde)
+- [x] Cavouqueiro e barreiro usam escada no próprio buraco (não ficam presos)
+- [x] Morador com fome come assim que chega comida; rotinas toleram /time set
+- [x] Pescador (Covo): pesca na água perto do posto
+- [x] Caçador (Varal de Caça): caça bicho do mato; nunca curral, preso na corda, manso, cavalo, com nome ou filhote; deixa 3 de cada espécie
+- [x] Engenheiro (Prancheta): ruas de terra batida até o Cruzeiro, pontes de tábua sobre água, postes de luz
+- [x] Relações Públicas (Escrivaninha): missões aos vizinhos; aliados mandam comida nas crises, inimigos mandam salteadores
+- [x] Guia do Arraial (livro de 18 páginas; o fundador ganha um)
+
 ## Próximos
 - [ ] Teste em jogo de tudo acima (T)
 - [ ] Festas e calendário (São João, feira grande, padroeiro)
