@@ -108,7 +108,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "c8b3ad8f-0a70-4253-9e13-5081a900166c"
+			"uuid": "b5844257-d035-4830-9faa-37effda1c4fb"
 		},
 		{
 			"name": "anel",
@@ -197,7 +197,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "ea4b8c93-fa0b-4242-85ac-9b6f115ba11e"
+			"uuid": "b9a8741f-ba14-4a5f-ac6a-385d7c8313e6"
 		},
 		{
 			"name": "lamina",
@@ -286,7 +286,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "65849a9d-aba4-4f87-97b7-9de1983e0873"
+			"uuid": "80b63616-50b0-4bda-a98b-869600cbac5a"
 		},
 		{
 			"name": "fio",
@@ -375,7 +375,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "0fdd8c71-3901-413c-b0ef-46a6ce86acf9"
+			"uuid": "3f4e83df-5841-4853-b77f-e6c387ba44d6"
 		},
 		{
 			"name": "ponta",
@@ -464,15 +464,15 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "b695606c-21a4-4d55-bd1c-d0488008a855"
+			"uuid": "0a18e719-3eca-4a08-a67f-38ee2692d1aa"
 		}
 	],
 	"outliner": [
-		"c8b3ad8f-0a70-4253-9e13-5081a900166c",
-		"ea4b8c93-fa0b-4242-85ac-9b6f115ba11e",
-		"65849a9d-aba4-4f87-97b7-9de1983e0873",
-		"0fdd8c71-3901-413c-b0ef-46a6ce86acf9",
-		"b695606c-21a4-4d55-bd1c-d0488008a855"
+		"b5844257-d035-4830-9faa-37effda1c4fb",
+		"b9a8741f-ba14-4a5f-ac6a-385d7c8313e6",
+		"80b63616-50b0-4bda-a98b-869600cbac5a",
+		"3f4e83df-5841-4853-b77f-e6c387ba44d6",
+		"0a18e719-3eca-4a08-a67f-38ee2692d1aa"
 	],
 	"textures": [
 		{
@@ -499,7 +499,7 @@
 			"visible": true,
 			"internal": true,
 			"saved": false,
-			"uuid": "586d698f-83ae-4b35-a872-f8d43d8143dc",
+			"uuid": "8b5d9a8d-6f75-4a32-b4ee-da236dbcd022",
 			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACrSURBVDhPfdEhDsIwFIfx3mAWTaZQaI7AlfBILAaHmsViMQTHETAzu8NIm7zm9eu/FV+2NK+/tFs4X65rr9fn2y3EoenxTMPxyeLQb15kEiBkQAvKgEWIAKEKIMQNhBLQQhRAqAAUZF+bgFVcQUEeUFAYN8Pa63bad0vAYbctsjUD3vdjyt79mgQ85IcVlIEWpAAPVQAhdWxfdQVCBAhVACFuIJR/IwGLAKE/5Q6cxLA1oZ0AAAAASUVORK5CYII="
 		}
 	],

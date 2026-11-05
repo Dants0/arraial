@@ -27,14 +27,14 @@ const NA_MAO = {
 	fixed: { rotation: [0, 180, 0] },
 };
 const OBJETO = {
-	thirdperson_righthand: { rotation: [0, 0, 0], translation: [0, 2.5, 1], scale: [0.55, 0.55, 0.55] },
-	thirdperson_lefthand: { rotation: [0, 0, 0], translation: [0, 2.5, 1], scale: [0.55, 0.55, 0.55] },
-	firstperson_righthand: { rotation: [0, -90, 25], translation: [1.13, 3.2, 1.13], scale: [0.68, 0.68, 0.68] },
-	firstperson_lefthand: { rotation: [0, 90, -25], translation: [1.13, 3.2, 1.13], scale: [0.68, 0.68, 0.68] },
-	ground: { translation: [0, 2, 0], scale: [0.5, 0.5, 0.5] },
-	gui: { rotation: [20, -30, 0], scale: [0.95, 0.95, 0.95] },
+	thirdperson_righthand: { rotation: [0, 30, 0], translation: [0, 2, 1.5], scale: [0.4, 0.4, 0.4] },
+	thirdperson_lefthand: { rotation: [0, 30, 0], translation: [0, 2, 1.5], scale: [0.4, 0.4, 0.4] },
+	firstperson_righthand: { rotation: [0, -30, 0], translation: [1.5, 3.5, 0], scale: [0.4, 0.4, 0.4] },
+	firstperson_lefthand: { rotation: [0, -30, 0], translation: [1.5, 3.5, 0], scale: [0.4, 0.4, 0.4] },
+	ground: { translation: [0, 2, 0], scale: [0.4, 0.4, 0.4] },
+	gui: { rotation: [20, -30, 0], scale: [0.9, 0.9, 0.9] },
 	head: { rotation: [0, 180, 0], translation: [0, 13, 7] },
-	fixed: { rotation: [0, 180, 0] },
+	fixed: { rotation: [0, 180, 0], scale: [0.8, 0.8, 0.8] },
 };
 
 // name, from, to, swatch [, rotation around z]

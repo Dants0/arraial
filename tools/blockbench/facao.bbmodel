@@ -108,7 +108,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "b57062e4-62fd-43f1-8fce-067c2998a670"
+			"uuid": "1adc47f7-7538-4bc5-921a-49d5763183fb"
 		},
 		{
 			"name": "cabo",
@@ -197,7 +197,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "91967939-7fb7-48bd-b7e5-156e79a31090"
+			"uuid": "966e311a-fd22-47ab-aca3-00e00f976f0e"
 		},
 		{
 			"name": "guarda",
@@ -286,7 +286,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "7411b2ae-1b1a-4185-ba13-2870eabde098"
+			"uuid": "729ac03f-bc16-417b-a640-d586f2c5145e"
 		},
 		{
 			"name": "lamina",
@@ -375,7 +375,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "fad23f1b-cae0-4f92-a507-1f77c8ce090c"
+			"uuid": "6255ccfa-7888-4e40-86fe-f4c1ed5200be"
 		},
 		{
 			"name": "fio",
@@ -464,7 +464,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "9e6d1567-b996-4d8f-9f1a-69ab56a68a3b"
+			"uuid": "46e57af8-1077-44f5-89aa-553a8f81ef06"
 		},
 		{
 			"name": "ponta",
@@ -553,16 +553,16 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "026e2541-421c-4045-933b-bbd4f51cf940"
+			"uuid": "f63c73d4-d12d-4c86-a74b-bf20ddbc5064"
 		}
 	],
 	"outliner": [
-		"b57062e4-62fd-43f1-8fce-067c2998a670",
-		"91967939-7fb7-48bd-b7e5-156e79a31090",
-		"7411b2ae-1b1a-4185-ba13-2870eabde098",
-		"fad23f1b-cae0-4f92-a507-1f77c8ce090c",
-		"9e6d1567-b996-4d8f-9f1a-69ab56a68a3b",
-		"026e2541-421c-4045-933b-bbd4f51cf940"
+		"1adc47f7-7538-4bc5-921a-49d5763183fb",
+		"966e311a-fd22-47ab-aca3-00e00f976f0e",
+		"729ac03f-bc16-417b-a640-d586f2c5145e",
+		"6255ccfa-7888-4e40-86fe-f4c1ed5200be",
+		"46e57af8-1077-44f5-89aa-553a8f81ef06",
+		"f63c73d4-d12d-4c86-a74b-bf20ddbc5064"
 	],
 	"textures": [
 		{
@@ -589,7 +589,7 @@
 			"visible": true,
 			"internal": true,
 			"saved": false,
-			"uuid": "3b047531-0c02-4fc5-af6f-9857874784b2",
+			"uuid": "d08131c7-e86f-4c76-aa23-4e157341c907",
 			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACsSURBVDhPfdGxDcIwEEZhT5EBaGCGFLAHI7ADJV0kJMq01PQpKZmAiiqLBNnSWefn3y6eElnnT3YSrrf71mt5f7qFODQ/X2k4Plkc+v5WmQQIGdCCMmARIkCoAghxA6EEtBAFECoABdnXJmAVV1CQBxQUjvth6zVdDt0ScB53RbZmwPI4pezdr0nAQ35YQRloQQrwUAUQUsf2VVcgRIBQBRDiBkL5NxKwCBD6A7+rjICKQV+8AAAAAElFTkSuQmCC"
 		}
 	],

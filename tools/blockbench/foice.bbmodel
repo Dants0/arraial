@@ -108,7 +108,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "e0985f73-4c95-4344-acba-1898ba639d58"
+			"uuid": "1e429767-b6a3-40a2-b0ce-656f234caa77"
 		},
 		{
 			"name": "anel",
@@ -197,7 +197,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "735e7912-0b4d-4e67-a48e-52af944b4f88"
+			"uuid": "3004f037-be85-4200-9b98-94cc9bd5898b"
 		},
 		{
 			"name": "lamina_base",
@@ -286,7 +286,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "1e4290a7-bb5b-43c1-a492-3d6f5d93db5b"
+			"uuid": "b7b5a597-0fd7-4ea9-8864-c29104bb5dca"
 		},
 		{
 			"name": "lamina_costas",
@@ -375,7 +375,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "f2804b70-f4ea-4945-874e-373854009a03"
+			"uuid": "235c892e-2188-4247-994e-18a6a0370798"
 		},
 		{
 			"name": "lamina_curva",
@@ -464,7 +464,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "c96054f5-ee7d-4dc1-bff6-3c437bf36bfc"
+			"uuid": "c9d45e06-df92-4fc5-a903-ba396b074442"
 		},
 		{
 			"name": "lamina_topo",
@@ -553,7 +553,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "dcad7630-1ea1-4c5a-ac11-ca65e6d2d749"
+			"uuid": "3f73a319-7eab-4884-bd95-6d12e5c29e6c"
 		},
 		{
 			"name": "fio",
@@ -642,7 +642,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "0c8c487e-3093-4421-b9cd-e6f995314829"
+			"uuid": "e25bcfce-afb4-460d-bf9c-99ce2878ad31"
 		},
 		{
 			"name": "ponta",
@@ -731,18 +731,18 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "d58f84b2-d014-4f83-9274-41050a88fa71"
+			"uuid": "b8ccd4ba-74e5-4247-b5d6-a5ff3ed929a7"
 		}
 	],
 	"outliner": [
-		"e0985f73-4c95-4344-acba-1898ba639d58",
-		"735e7912-0b4d-4e67-a48e-52af944b4f88",
-		"1e4290a7-bb5b-43c1-a492-3d6f5d93db5b",
-		"f2804b70-f4ea-4945-874e-373854009a03",
-		"c96054f5-ee7d-4dc1-bff6-3c437bf36bfc",
-		"dcad7630-1ea1-4c5a-ac11-ca65e6d2d749",
-		"0c8c487e-3093-4421-b9cd-e6f995314829",
-		"d58f84b2-d014-4f83-9274-41050a88fa71"
+		"1e429767-b6a3-40a2-b0ce-656f234caa77",
+		"3004f037-be85-4200-9b98-94cc9bd5898b",
+		"b7b5a597-0fd7-4ea9-8864-c29104bb5dca",
+		"235c892e-2188-4247-994e-18a6a0370798",
+		"c9d45e06-df92-4fc5-a903-ba396b074442",
+		"3f73a319-7eab-4884-bd95-6d12e5c29e6c",
+		"e25bcfce-afb4-460d-bf9c-99ce2878ad31",
+		"b8ccd4ba-74e5-4247-b5d6-a5ff3ed929a7"
 	],
 	"textures": [
 		{
@@ -769,7 +769,7 @@
 			"visible": true,
 			"internal": true,
 			"saved": false,
-			"uuid": "e61de1d5-5e48-47b4-9aea-fbaeea73bcd0",
+			"uuid": "02e0bde0-1e7c-4582-b825-bc6c04067300",
 			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACqSURBVDhPfdGxDcIwEEZhT5MFIqGMgFIwA6IkHQtQIqViDEpKVqCjYp1EtnTW+fm3i6dE1vmTnYTL9bb1er0/3UIcuj+eaTg+WRz6/v4yCRAyoAVlwCJEgFAFEOIGQgloIQogVAAKsq9NwCquoCAPKCgsx2HrNY6HbglYz1ORrRkwz6eUvfs1CXjIDysoAy1IAR6qAELq2L7qCoQIEKoAQtxAKP9GAhYBQjt702DrpJm9swAAAABJRU5ErkJggg=="
 		}
 	],

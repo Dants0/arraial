@@ -8,5 +8,6 @@ public class ArraialClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(ModEntities.MORADOR, MoradorRenderer::new);
+		Roteiro.init();
 	}
 }

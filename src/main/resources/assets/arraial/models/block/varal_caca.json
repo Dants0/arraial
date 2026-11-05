@@ -3,8 +3,8 @@
 	"textures": {
 		"tora": "minecraft:block/spruce_log",
 		"couro": "arraial:block/couro",
-		"pele": "minecraft:item/rabbit_hide",
-		"pena": "minecraft:item/feather",
+		"pele": "arraial:block/pele",
+		"pena": "arraial:block/pena",
 		"particle": "minecraft:block/spruce_log"
 	},
 	"elements": [

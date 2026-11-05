@@ -108,7 +108,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "43680bfd-5b24-4cbb-bb21-4d86d2ec55c5"
+			"uuid": "ffd9cb85-53c5-4905-abb0-d477c82115cf"
 		},
 		{
 			"name": "fita_verde",
@@ -197,7 +197,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "3c730a5b-a04f-4f11-84ad-b6d856cc74a4"
+			"uuid": "d5cb5ff2-907a-491a-ad0f-aa26fc45c14d"
 		},
 		{
 			"name": "fita_amarela",
@@ -286,7 +286,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "72cbb99a-8b80-42e6-a2ac-0b5b19b069f3"
+			"uuid": "4245d7a7-c95a-46e3-8c98-dcd5a7333610"
 		},
 		{
 			"name": "disco_largo",
@@ -375,7 +375,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "512f010d-c8a1-4544-a1fb-390a772a66e5"
+			"uuid": "7a423c74-d818-4322-88d7-cee52aa16854"
 		},
 		{
 			"name": "disco_alto",
@@ -464,7 +464,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "34185461-171e-403d-9a91-e3c0254eadf2"
+			"uuid": "8f7f0c09-bf6b-46ef-9949-8bfe3a0de8ec"
 		},
 		{
 			"name": "argola",
@@ -553,7 +553,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "514c532a-856c-4e32-a3ee-0ca47dc839a0"
+			"uuid": "3bb6a977-1e0f-41ee-8ef2-a8dcf24cd9c1"
 		},
 		{
 			"name": "centro",
@@ -642,17 +642,17 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "5cdab413-609f-40fb-b25b-c298b4184d85"
+			"uuid": "fc5cee9f-63fe-4052-89ae-010985c55015"
 		}
 	],
 	"outliner": [
-		"43680bfd-5b24-4cbb-bb21-4d86d2ec55c5",
-		"3c730a5b-a04f-4f11-84ad-b6d856cc74a4",
-		"72cbb99a-8b80-42e6-a2ac-0b5b19b069f3",
-		"512f010d-c8a1-4544-a1fb-390a772a66e5",
-		"34185461-171e-403d-9a91-e3c0254eadf2",
-		"514c532a-856c-4e32-a3ee-0ca47dc839a0",
-		"5cdab413-609f-40fb-b25b-c298b4184d85"
+		"ffd9cb85-53c5-4905-abb0-d477c82115cf",
+		"d5cb5ff2-907a-491a-ad0f-aa26fc45c14d",
+		"4245d7a7-c95a-46e3-8c98-dcd5a7333610",
+		"7a423c74-d818-4322-88d7-cee52aa16854",
+		"8f7f0c09-bf6b-46ef-9949-8bfe3a0de8ec",
+		"3bb6a977-1e0f-41ee-8ef2-a8dcf24cd9c1",
+		"fc5cee9f-63fe-4052-89ae-010985c55015"
 	],
 	"textures": [
 		{
@@ -679,7 +679,7 @@
 			"visible": true,
 			"internal": true,
 			"saved": false,
-			"uuid": "d773c614-478c-4f19-a5ee-aade4eeeb8fa",
+			"uuid": "70de5d94-aeaa-48c3-b025-b9050e58ec11",
 			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACpSURBVDhPfdGxDcMgEIVhxkhluU5hUWcCz5LKczBFRnDJCB7BZUZwkR5LhEPHuwfFLyF0fALbxfBIo75xHeby0O7/w7u3xTX9zo1GAQMVoAdVQDIQAAgZACE8gFAGeggDEGoACpWvjYDUPIFCCmCQm97PNOr4zMMysIRXk+wJcB0+J2u9RwEN6WEGVaAHMUBDBkCIXVtnnoAQAggZACE8gFD9jQhICCB0A2zwkUd463+cAAAAAElFTkSuQmCC"
 		}
 	],
@@ -687,69 +687,69 @@
 		"thirdperson_righthand": {
 			"rotation": [
 				0,
-				0,
+				30,
 				0
 			],
 			"translation": [
 				0,
-				2.5,
-				1
+				2,
+				1.5
 			],
 			"scale": [
-				0.55,
-				0.55,
-				0.55
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"thirdperson_lefthand": {
 			"rotation": [
 				0,
-				0,
+				30,
 				0
 			],
 			"translation": [
 				0,
-				2.5,
-				1
+				2,
+				1.5
 			],
 			"scale": [
-				0.55,
-				0.55,
-				0.55
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"firstperson_righthand": {
 			"rotation": [
 				0,
-				-90,
-				25
+				-30,
+				0
 			],
 			"translation": [
-				1.13,
-				3.2,
-				1.13
+				1.5,
+				3.5,
+				0
 			],
 			"scale": [
-				0.68,
-				0.68,
-				0.68
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"firstperson_lefthand": {
 			"rotation": [
 				0,
-				90,
-				-25
+				-30,
+				0
 			],
 			"translation": [
-				1.13,
-				3.2,
-				1.13
+				1.5,
+				3.5,
+				0
 			],
 			"scale": [
-				0.68,
-				0.68,
-				0.68
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"ground": {
@@ -759,9 +759,9 @@
 				0
 			],
 			"scale": [
-				0.5,
-				0.5,
-				0.5
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"gui": {
@@ -771,9 +771,9 @@
 				0
 			],
 			"scale": [
-				0.95,
-				0.95,
-				0.95
+				0.9,
+				0.9,
+				0.9
 			]
 		},
 		"head": {
@@ -793,6 +793,11 @@
 				0,
 				180,
 				0
+			],
+			"scale": [
+				0.8,
+				0.8,
+				0.8
 			]
 		}
 	}

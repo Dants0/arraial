@@ -35,7 +35,7 @@ public class ArmazemBlockEntity extends BaseContainerBlockEntity {
 	@Override
 	public void setRemoved() {
 		super.setRemoved();
-		if (level != null) {
+		if (level != null && !level.isClientSide()) { // client and integrated server share these static sets
 			Vilas.removerArmazem(level, worldPosition);
 		}
 	}

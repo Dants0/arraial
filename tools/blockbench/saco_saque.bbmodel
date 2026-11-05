@@ -108,7 +108,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "937a8b7b-f20d-4216-b468-8672b8295f68"
+			"uuid": "32dc22be-4df4-454d-be1a-64b7f522dc41"
 		},
 		{
 			"name": "ombro",
@@ -197,7 +197,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "54ffc496-bf58-41fc-afad-d22cf3b79412"
+			"uuid": "1c483611-ae21-4ff1-b0e9-00dae1d6256e"
 		},
 		{
 			"name": "gargalo",
@@ -286,7 +286,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "5e2d5e48-761f-42de-880e-d237a355b38c"
+			"uuid": "4791d477-8f17-461a-a6ea-b1c2a79f8651"
 		},
 		{
 			"name": "corda",
@@ -375,7 +375,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "e2deef49-0505-46d6-ba5e-98c388d7ecd2"
+			"uuid": "88382a4e-eb08-40bf-96da-d3aeb15b09de"
 		},
 		{
 			"name": "topete",
@@ -464,7 +464,7 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "e63a758e-d41c-4346-8f00-83232c139812"
+			"uuid": "6ffe7cdd-88a9-4fff-a87d-c044a1fd59e5"
 		},
 		{
 			"name": "moeda",
@@ -553,16 +553,16 @@
 				}
 			},
 			"type": "cube",
-			"uuid": "f9844ca8-c21e-4941-916b-0cbc79105793"
+			"uuid": "ab1898bb-5432-4807-baf4-1c25b6e8a7a7"
 		}
 	],
 	"outliner": [
-		"937a8b7b-f20d-4216-b468-8672b8295f68",
-		"54ffc496-bf58-41fc-afad-d22cf3b79412",
-		"5e2d5e48-761f-42de-880e-d237a355b38c",
-		"e2deef49-0505-46d6-ba5e-98c388d7ecd2",
-		"e63a758e-d41c-4346-8f00-83232c139812",
-		"f9844ca8-c21e-4941-916b-0cbc79105793"
+		"32dc22be-4df4-454d-be1a-64b7f522dc41",
+		"1c483611-ae21-4ff1-b0e9-00dae1d6256e",
+		"4791d477-8f17-461a-a6ea-b1c2a79f8651",
+		"88382a4e-eb08-40bf-96da-d3aeb15b09de",
+		"6ffe7cdd-88a9-4fff-a87d-c044a1fd59e5",
+		"ab1898bb-5432-4807-baf4-1c25b6e8a7a7"
 	],
 	"textures": [
 		{
@@ -589,7 +589,7 @@
 			"visible": true,
 			"internal": true,
 			"saved": false,
-			"uuid": "cc943407-689e-498d-acac-640756b4d292",
+			"uuid": "b311cf9a-920f-43ba-93ea-980eaba2b527",
 			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACmSURBVDhPfdGxDYQwDEDRjMIcVDcDE1BTUVMwB6KiQozACIxwNw2nRHLkfDspvkCR85RA2NfhbbWMn2YhDt37lIbjk8Uhoho3ACEBalAGJEIECBmAEDcQSkAN8QBCBeBB8rUJSMUVPEgDHhSubX6bLV2zBHyfo0jWBPidfUre9ZoLaEgPe1AGapAHaMgAhLxj68wVCBEgZAADYQOh/BsJZKhydFn/A9DSnJXRdYXmAAAAAElFTkSuQmCC"
 		}
 	],
@@ -597,69 +597,69 @@
 		"thirdperson_righthand": {
 			"rotation": [
 				0,
-				0,
+				30,
 				0
 			],
 			"translation": [
 				0,
-				2.5,
-				1
+				2,
+				1.5
 			],
 			"scale": [
-				0.55,
-				0.55,
-				0.55
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"thirdperson_lefthand": {
 			"rotation": [
 				0,
-				0,
+				30,
 				0
 			],
 			"translation": [
 				0,
-				2.5,
-				1
+				2,
+				1.5
 			],
 			"scale": [
-				0.55,
-				0.55,
-				0.55
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"firstperson_righthand": {
 			"rotation": [
 				0,
-				-90,
-				25
+				-30,
+				0
 			],
 			"translation": [
-				1.13,
-				3.2,
-				1.13
+				1.5,
+				3.5,
+				0
 			],
 			"scale": [
-				0.68,
-				0.68,
-				0.68
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"firstperson_lefthand": {
 			"rotation": [
 				0,
-				90,
-				-25
+				-30,
+				0
 			],
 			"translation": [
-				1.13,
-				3.2,
-				1.13
+				1.5,
+				3.5,
+				0
 			],
 			"scale": [
-				0.68,
-				0.68,
-				0.68
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"ground": {
@@ -669,9 +669,9 @@
 				0
 			],
 			"scale": [
-				0.5,
-				0.5,
-				0.5
+				0.4,
+				0.4,
+				0.4
 			]
 		},
 		"gui": {
@@ -681,9 +681,9 @@
 				0
 			],
 			"scale": [
-				0.95,
-				0.95,
-				0.95
+				0.9,
+				0.9,
+				0.9
 			]
 		},
 		"head": {
@@ -703,6 +703,11 @@
 				0,
 				180,
 				0
+			],
+			"scale": [
+				0.8,
+				0.8,
+				0.8
 			]
 		}
 	}
