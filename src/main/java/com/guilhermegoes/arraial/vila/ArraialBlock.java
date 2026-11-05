@@ -147,6 +147,15 @@ public class ArraialBlock extends Block implements EntityBlock {
 		// Stage, mood and money.
 		Estagio estagio = arraial.estagio();
 		player.sendSystemMessage(Component.translatable("arraial.vila.estagio", estagio.nome()).withStyle(ChatFormatting.AQUA));
+		// The calendar and the next festa.
+		MutableComponent cal = Component.literal("📅 ").append(Calendario.hoje(level));
+		Calendario.Proxima prox = Calendario.proxima(level, arraial);
+		if (prox != null) {
+			cal.append(" · ").append(prox.dias() == 0
+					? Component.translatable("arraial.calendario.festa_hoje", prox.tipo().nome(arraial))
+					: Component.translatable("arraial.calendario.proxima_festa", prox.tipo().nome(arraial), prox.dias()));
+		}
+		player.sendSystemMessage(cal.withStyle(ChatFormatting.LIGHT_PURPLE));
 		if (estagio.ordinal() < Estagio.values().length - 1) {
 			Estagio proximo = Estagio.values()[estagio.ordinal() + 1];
 			List<Component> falta = proximo.falta(level, arraial, moradores.size());

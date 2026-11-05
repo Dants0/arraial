@@ -171,6 +171,12 @@ public class CavarGoal extends OficioGoal {
 		return posto == null ? null : posto.relative(frente(), 2);
 	}
 
+	/** Not pulled away (festa, a chat) while down in the pit: he climbs out first. */
+	@Override
+	public boolean isInterruptable() {
+		return !noBuraco();
+	}
+
 	/** Down in his own pit. */
 	private boolean noBuraco() {
 		BlockPos posto = morador.posto();

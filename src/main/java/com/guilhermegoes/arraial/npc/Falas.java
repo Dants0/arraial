@@ -21,12 +21,13 @@ public final class Falas {
 			Map.entry("fome", 3), Map.entry("sem_casa", 2), Map.entry("prefeito", 2), Map.entry("prefeito.pedido", 1),
 			Map.entry("noite", 2), Map.entry("chuva", 2), Map.entry("generico", 5), Map.entry("presente", 2),
 			Map.entry("crise.seca", 2), Map.entry("crise.enchente", 2), Map.entry("crise.praga", 2), Map.entry("crise.salteadores", 2),
-			Map.entry("crise.epidemia", 2), Map.entry("crise.incendio", 2), Map.entry("doente", 2));
+			Map.entry("crise.epidemia", 2), Map.entry("crise.incendio", 2), Map.entry("doente", 2),
+			Map.entry("festa.sao_joao", 2), Map.entry("festa.padroeiro", 2), Map.entry("festa.feira_grande", 2), Map.entry("festa_chegando", 2));
 	/** Conversation topics (each variant has an opening ".a" and a reply ".b"). */
 	private static final Map<String, Integer> CONVERSAS = Map.ofEntries(
 			Map.entry("generico", 6), Map.entry("chuva", 2), Map.entry("fome", 2), Map.entry("obra", 2), Map.entry("oficio", 1),
 			Map.entry("crise.seca", 1), Map.entry("crise.enchente", 1), Map.entry("crise.praga", 1), Map.entry("crise.salteadores", 1),
-			Map.entry("crise.epidemia", 1), Map.entry("crise.incendio", 1), Map.entry("feira", 1), Map.entry("prefeito", 1));
+			Map.entry("crise.epidemia", 1), Map.entry("crise.incendio", 1), Map.entry("feira", 1), Map.entry("prefeito", 1), Map.entry("festa", 2));
 	private static final int VARIANTES_OFICIO = 2;
 
 	private static Component linha(RandomSource r, String chave, Object... args) {
@@ -51,6 +52,16 @@ public final class Falas {
 		}
 		if (crise != null && r.nextFloat() < 0.6F) {
 			return linha(r, "crise." + crise.id(), jogador);
+		}
+		com.guilhermegoes.arraial.vila.Festa.Tipo festa = a == null ? null : a.festa().agora();
+		if (festa != null && r.nextFloat() < 0.7F) {
+			return linha(r, "festa." + festa.id(), com.guilhermegoes.arraial.vila.Calendario.padroeiro(a.nome()), jogador);
+		}
+		if (a != null && r.nextFloat() < 0.35F) {
+			var prox = com.guilhermegoes.arraial.vila.Calendario.proxima(level, a);
+			if (prox != null && prox.dias() >= 1 && prox.dias() <= 3) {
+				return linha(r, "festa_chegando", prox.tipo().nome(a), prox.dias());
+			}
 		}
 		if (m.casa() == null && r.nextFloat() < 0.5F) {
 			return linha(r, "sem_casa");
@@ -111,6 +122,15 @@ public final class Falas {
 		if (vila != null && vila.temFeira(level)) {
 			temas.add("feira");
 		}
+		Component festa = null;
+		if (vila != null) {
+			var prox = com.guilhermegoes.arraial.vila.Calendario.proxima(level, vila);
+			if (prox != null && prox.dias() <= 3) {
+				festa = prox.tipo().nome(vila);
+				temas.add("festa");
+				temas.add("festa");
+			}
+		}
 		temas.add("generico");
 		temas.add("generico");
 		String tema = temas.get(r.nextInt(temas.size()));
@@ -120,7 +140,7 @@ public final class Falas {
 		if (tema.equals("oficio")) {
 			return List.of(Component.translatable(base + ".a", nomeB, b.titulo()), oficio(r, b));
 		}
-		Object extra = obra != null ? obra : "";
+		Object extra = tema.equals("festa") && festa != null ? festa : obra != null ? obra : "";
 		return List.of(Component.translatable(base + ".a", nomeB, extra), Component.translatable(base + ".b", nomeA, extra));
 	}
 

@@ -48,6 +48,9 @@ public final class ModCreativeTabs {
 						output.accept(ModBlocks.PRANCHETA);
 						output.accept(ModBlocks.ESCRIVANINHA);
 						output.accept(ModItems.GUIA);
+						output.accept(ModItems.QUENTAO);
+						output.accept(ModItems.PE_DE_MOLEQUE);
+						output.accept(ModBlocks.BANDEIRINHAS);
 					})
 					.build());
 

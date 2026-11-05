@@ -51,6 +51,15 @@ public final class ModItems {
 					Consumables.defaultDrink().onConsume(new ApplyStatusEffectsConsumeEffect(
 							new MobEffectInstance(MobEffects.SPEED, 20 * 45, 0))).build())
 			.usingConvertsTo(CUIA));
+	/** Quentão: the hot spiced drink of the festas juninas, in a cuia; warms you up (regeneration). */
+	public static final Item QUENTAO = register("quentao", Item::new, new Item.Properties().stacksTo(1)
+			.food(new FoodProperties.Builder().nutrition(3).saturationModifier(0.4F).alwaysEdible().build(),
+					Consumables.defaultDrink().onConsume(new ApplyStatusEffectsConsumeEffect(
+							new MobEffectInstance(MobEffects.REGENERATION, 20 * 12, 0))).build())
+			.usingConvertsTo(CUIA));
+	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
+	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
+			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));
 	/** Chapéu de couro: the sertanejo leather hat, worn on the head (3D model). */
 	public static final Item CHAPEU_COURO = register("chapeu_couro", Item::new, new Item.Properties().stacksTo(1)
 			.component(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.HEAD).build()));

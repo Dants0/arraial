@@ -167,4 +167,15 @@ Item 'guia' (Pal 'c=#6B3A22 C=#8A4E2E d=#4A2614 p=#EDE4CC P=#D9CCA8 o=#D9A63A') 
   '..dCcccocccCdp', '..dCcccocccCdp', '..dCcccocccCdp', '..dCcccccccCdp', '..dCcccccccCdp',
   '..dCCCCCCCCCdp', '..ddddddddddPp', '...pppppppppP')
 
+# Festas: quentao in a cuia (with a cinnamon stick), pe-de-moleque, the string of little flags.
+Item 'quentao' (Pal 'r=#5E4526 c=#8A6A3A h=#A9874E d=#4A361E q=#7A1E1E Q=#A8402A k=#C08A4A') @(
+  '', '', '.........k', '........k', '.......k', '..rrrrrkrrrrrr', '..rqQqqkqQqqqr', '..hccccccccccr', '...hcccccccccr', '...hccccccccr',
+  '....hcccccccr', '.....hcccccr', '......rrrrr')
+Item 'pe_de_moleque' (Pal 'H=#9A5A28 m=#7A4218 d=#4E2A0E a=#E0B878 A=#C89A58') @(
+  '', '', '', '', '...HHHHHHHHHH', '..HmaHmAHamHmd', '..mAmmamHmAmad', '..mmaHmmAmmamd', '..maHmAmmamAmd',
+  '..mmmamHmmaHmd', '..dddddddddddd')
+Item 'bandeirinhas' (Pal 's=#E8E0C8 r=#D23A2A y=#F0C030 b=#2A6AD2 g=#3A9A3A') @(
+  '', 'ssssssssssssssss', 'rrrr.yyyy.bbbb.g', 'rrrr.yyyy.bbbb.g', 'rrrr.yyyy.bbbb.g', '.rr...yy...bb...', '.rr...yy...bb...',
+  '', '', 'ssssssssssssssss', 'gg.rrrr.yyyy.bbb', 'gg.rrrr.yyyy.bbb', 'gg.rrrr.yyyy.bbb', 'g....rr...yy...b', 'g....rr...yy...b') 'block'
+
 "texturas geradas em $Raiz"

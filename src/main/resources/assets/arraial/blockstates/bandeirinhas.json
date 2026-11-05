@@ -1,0 +1,6 @@
+{"variants": {
+	"facing=north": {"model": "arraial:block/bandeirinhas"},
+	"facing=east": {"model": "arraial:block/bandeirinhas", "y": 90},
+	"facing=south": {"model": "arraial:block/bandeirinhas", "y": 180},
+	"facing=west": {"model": "arraial:block/bandeirinhas", "y": 270}
+}}

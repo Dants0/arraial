@@ -182,8 +182,10 @@ public final class Crise {
 			return;
 		}
 		boolean roca = temRoca(level, arraial.getBlockPos());
-		int seca = roca && !level.isRaining() ? 3 : 0;
-		int enchente = roca && level.isRaining() ? 3 : 0;
+		// The season tips the scales: droughts in the tempo da seca, floods in the tempo das águas.
+		boolean tempoSeco = Calendario.tempoDaSeca(hoje);
+		int seca = roca && !level.isRaining() ? (tempoSeco ? 4 : 1) : 0;
+		int enchente = roca && level.isRaining() ? (tempoSeco ? 1 : 4) : 0;
 		int praga = roca ? 2 : 0;
 		int salteadores = (moradores >= 8 ? 3 : 2) + Diplomacia.peso(level, arraial.getBlockPos());
 		int epidemia = moradores >= 6 ? 1 : 0;

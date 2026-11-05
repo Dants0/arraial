@@ -1,0 +1,11 @@
+{
+	"ambientocclusion": false,
+	"textures": {"flags": "arraial:block/bandeirinhas", "particle": "arraial:block/bandeirinhas"},
+	"elements": [
+		{"name": "bandeirinhas", "from": [0, 0, 8], "to": [16, 16, 8], "shade": false,
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#flags"},
+				"south": {"uv": [16, 0, 0, 16], "texture": "#flags"}
+			}}
+	]
+}

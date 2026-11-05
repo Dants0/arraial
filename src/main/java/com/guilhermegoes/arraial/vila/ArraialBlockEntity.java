@@ -35,6 +35,12 @@ public class ArraialBlockEntity extends BlockEntity {
 	Component pedido = Component.empty();
 	/** The crisis the arraial is going through, if any (see {@link Crise}). */
 	final Crise crise = new Crise();
+	/** The festa of the day, if any (see {@link Festa}). */
+	final Festa festa = new Festa();
+
+	public Festa festa() {
+		return festa;
+	}
 	/** Population at the last count (for the per-second crisis tick). */
 	int populacao;
 
@@ -177,6 +183,7 @@ public class ArraialBlockEntity extends BlockEntity {
 			return;
 		}
 		Crise.tick(server, arraial, arraial.populacao);
+		Festa.tick(server, arraial, arraial.populacao);
 		if (server.getGameTime() % 100 != 0) {
 			return;
 		}
@@ -263,6 +270,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		ultimoDespacho = input.getLongOr("UltimoDespacho", 0L);
 		pedido = input.read("Pedido", net.minecraft.network.chat.ComponentSerialization.CODEC).orElse(Component.empty());
 		crise.ler(input);
+		festa.ler(input);
 		satisfacao = input.getIntOr("Satisfacao", 60);
 		ultimoDiario = input.getLongOr("UltimoDiario", 0L);
 		autonoma = input.getBooleanOr("Autonoma", false);
@@ -290,6 +298,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.putLong("UltimoDespacho", ultimoDespacho);
 		output.store("Pedido", net.minecraft.network.chat.ComponentSerialization.CODEC, pedido);
 		crise.gravar(output);
+		festa.gravar(output);
 		output.putInt("Satisfacao", satisfacao);
 		output.putLong("UltimoDiario", ultimoDiario);
 		output.putBoolean("Autonoma", autonoma);

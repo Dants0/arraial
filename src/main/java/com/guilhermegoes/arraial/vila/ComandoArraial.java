@@ -36,9 +36,30 @@ public final class ComandoArraial {
 				c.getSource().sendSuccess(() -> Component.translatable("arraial.comando.crise_fim", a.nomeCompleto()), true);
 				return 1;
 			}));
+			LiteralArgumentBuilder<CommandSourceStack> festa = Commands.literal("festa");
+			for (Festa.Tipo t : Festa.Tipo.values()) {
+				festa.then(Commands.literal(t.id()).executes(c -> {
+					ArraialBlockEntity a = arraial(c.getSource());
+					if (a == null) {
+						return 0;
+					}
+					Festa.forcar(c.getSource().getLevel(), a, t);
+					c.getSource().sendSuccess(() -> Component.translatable("arraial.comando.festa", t.nome(a), a.nomeCompleto()), true);
+					return 1;
+				}));
+			}
+			festa.then(Commands.literal("fim").executes(c -> {
+				ArraialBlockEntity a = arraial(c.getSource());
+				if (a == null) {
+					return 0;
+				}
+				Festa.encerrar(c.getSource().getLevel(), a);
+				return 1;
+			}));
 			dispatcher.register(Commands.literal("arraial")
 					.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 					.then(crise)
+					.then(festa)
 					// A povoado right here, ignoring the distance rules (for testing and videos).
 					.then(Commands.literal("vila_nova").executes(c -> {
 						var p = c.getSource().getPlayerOrException();

@@ -215,7 +215,8 @@ public final class Feira {
 
 	/** Friends of the arraial pay less (and get more): up to 20% either way with reputation. */
 	private static double desconto(ArraialBlockEntity a, Player p) {
-		return 1.0 - a.reputacao(p.getUUID()) / 500.0;
+		double festa = a.festa().agora() == Festa.Tipo.FEIRA_GRANDE ? 0.85 : 1.0; // the feira grande: bargains
+		return (1.0 - a.reputacao(p.getUUID()) / 500.0) * festa;
 	}
 
 	private Feira() {

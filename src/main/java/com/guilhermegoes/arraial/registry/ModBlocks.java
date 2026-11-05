@@ -119,6 +119,11 @@ public final class ModBlocks {
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("balcao_botica").mapColor(MapColor.WOOD).strength(1.5F)
 					.sound(SoundType.WOOD).noOcclusion()));
 
+	/** Bandeirinhas: the string of little flags of the festas juninas (decoration). */
+	public static final Block BANDEIRINHAS = register("bandeirinhas",
+			new com.guilhermegoes.arraial.vila.BandeirinhasBlock(props("bandeirinhas").mapColor(MapColor.COLOR_RED).noCollision().instabreak()
+					.sound(SoundType.WOOL).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED)));
+
 	private static BlockBehaviour.Properties props(String name) {
 		return BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Arraial.id(name)));
 	}
