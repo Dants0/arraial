@@ -214,6 +214,9 @@ public class ArraialBlockEntity extends BlockEntity {
 
 	private void diario(ServerLevel level, List<MoradorEntity> moradores) {
 		long hoje = Vilas.dia(level);
+		if (hoje < ultimoDiario) {
+			ultimoDiario = hoje - 1; // clock set back
+		}
 		if (hoje <= ultimoDiario || !level.isBrightOutside()) {
 			return;
 		}

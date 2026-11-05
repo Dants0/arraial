@@ -63,6 +63,9 @@ public final class Prefeitura {
 		}
 		gabinete(level, arraial, prefeito);
 		long hoje = Vilas.dia(level);
+		if (hoje < arraial.ultimoDespacho) {
+			arraial.ultimoDespacho = hoje - 1; // clock set back
+		}
 		if (hoje <= arraial.ultimoDespacho || !level.isBrightOutside()) {
 			return;
 		}

@@ -569,7 +569,19 @@ public class MoradorEntity extends PathfinderMob {
 			ultimoDia = hoje;
 			return;
 		}
-		if (hoje <= ultimoDia || vila == null) {
+		if (hoje < ultimoDia) {
+			ultimoDia = hoje; // the clock was set back (/time set): start counting from today
+		}
+		if (vila == null) {
+			return;
+		}
+		if (hoje == ultimoDia) {
+			// Already counted today; but someone hungry eats as soon as food reaches the armazém.
+			if (diasSemComer > 0 && Vilas.retirar(Vilas.armazens(level, vila), s -> s.has(DataComponents.FOOD), 1).size() > 0) {
+				diasSemComer = 0;
+				Cronica.anotar(level, vila, Component.translatable("arraial.cronica.matou_fome", nome()));
+				setStatus(Component.empty());
+			}
 			return;
 		}
 		ultimoDia = hoje;

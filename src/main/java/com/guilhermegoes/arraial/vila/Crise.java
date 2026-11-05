@@ -170,6 +170,9 @@ public final class Crise {
 			return;
 		}
 		long hoje = Vilas.dia(level);
+		if (hoje < c.ultimoSorteio) {
+			c.ultimoSorteio = hoje - 1; // clock set back
+		}
 		if (!level.isBrightOutside() || hoje <= c.ultimoSorteio) {
 			return;
 		}
