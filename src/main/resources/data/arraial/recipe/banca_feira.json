@@ -1,0 +1,1 @@
+{"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["WWW", "F F", "PPP"], "key": {"W": "#minecraft:wool", "F": "#minecraft:fences", "P": "#minecraft:planks"}, "result": {"id": "arraial:banca_feira"}}

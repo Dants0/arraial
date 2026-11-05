@@ -155,6 +155,42 @@ public class GerarPlantas {
 				new String[] {"  eMw  ", "  e.w  ", "  e.w  ", "  e.w  ", "  e.w  ", "  eMw  "},
 				new String[] {"   s   ", "   s   ", "   s   ", "   s   ", "   s   ", "   s   "}));
 
+		// ---- Fase "vale muito": casa de farinha, feira, rancho de tropeiro, botica.
+		Map<Character, String> novas = new HashMap<>(madeira);
+		novas.put('F', "arraial:forno_farinha[facing=south]");
+		novas.put('K', "arraial:banca_feira[facing=south]");
+		novas.put('G', "arraial:cangalha[facing=south]");
+		novas.put('l', "arraial:lampiao[hanging=false,waterlogged=false]");
+		novas.put('p', "minecraft:dirt_path");
+		// Casa de farinha: an open shed of logs around the farinheiro's oven, lit by a lampião.
+		escrever(out.resolve("casa_de_farinha.nbt"), novas, List.of(
+				new String[] {"PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP"},
+				new String[] {"L.....L", ".l.....", "...F...", ".......", "LPPPPPL"},
+				new String[] {"L.....L", ".......", ".......", ".......", "LPPPPPL"},
+				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssssss"}));
+		// Feira: a market stall on beaten earth, four posts with lampiões.
+		escrever(out.resolve("feira.nbt"), novas, List.of(
+				new String[] {"ppppp", "ppppp", "ppppp", "ppppp", "ppppp"},
+				new String[] {"f...f", ".....", "..K..", ".....", "f...f"},
+				new String[] {"l...l", ".....", ".....", ".....", "l...l"}));
+		// Rancho de tropeiro: the troop's shelter, with the cangalha and a hitching rail.
+		escrever(out.resolve("rancho_tropeiro.nbt"), novas, List.of(
+				new String[] {"PPPPP", "PPPPP", "PPPPP", "PPPPP"},
+				new String[] {"L...L", ".l...", "..G..", "LfffL"},
+				new String[] {"L...L", ".....", ".....", "L...L"},
+				new String[] {"sssss", "sssss", "sssss", "sssss"}));
+		// Botica: a small taipa house with the boticário's counter of remedies.
+		Map<Character, String> botica = new HashMap<>(casebre);
+		botica.put('O', "arraial:balcao_botica[facing=south]");
+		escrever(out.resolve("botica.nbt"), botica, List.of(
+				new String[] {"CCCCC", "CPPPC", "CPPPC", "CPPPC", "CCCCC"},
+				new String[] {"LMdML", "M...M", "M...M", "M.O.M", "LMMML"},
+				new String[] {"LMDML", "M...M", ".....", "M...M", "LM.ML"},
+				new String[] {"LMMML", "M...M", "M...M", "M.t.M", "LMMML"},
+				new String[] {"eMMMw", "e...w", "e...w", "e...w", "eMMMw"},
+				new String[] {" eMw ", " e.w ", " e.w ", " e.w ", " eMw "},
+				new String[] {"  s  ", "  s  ", "  s  ", "  s  ", "  s  "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

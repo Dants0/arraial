@@ -1,0 +1,696 @@
+{
+	"meta": {
+		"format_version": "4.10",
+		"model_format": "java_block",
+		"box_uv": false
+	},
+	"name": "forno_farinha",
+	"parent": "minecraft:block/block",
+	"ambientocclusion": true,
+	"front_gui_light": false,
+	"visible_box": [
+		1,
+		1,
+		0
+	],
+	"variable_placeholders": "",
+	"variable_placeholder_buttons": [],
+	"unhandled_root_fields": {},
+	"resolution": {
+		"width": 16,
+		"height": 16
+	},
+	"elements": [
+		{
+			"name": "fornalha",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				0,
+				0,
+				0
+			],
+			"to": [
+				16,
+				11,
+				16
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						5,
+						16,
+						16
+					],
+					"texture": 0
+				},
+				"south": {
+					"uv": [
+						0,
+						5,
+						16,
+						16
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						5,
+						16,
+						16
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						5,
+						16,
+						16
+					],
+					"texture": 1
+				},
+				"down": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": 1,
+					"cullface": "down"
+				}
+			},
+			"type": "cube",
+			"uuid": "e6c3a1f6-522b-4a1a-9034-bcf973709cad"
+		},
+		{
+			"name": "chapa",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				0,
+				11,
+				0
+			],
+			"to": [
+				16,
+				12,
+				16
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						4,
+						16,
+						5
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						0,
+						4,
+						16,
+						5
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						4,
+						16,
+						5
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						4,
+						16,
+						5
+					],
+					"texture": 1
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": 2
+				}
+			},
+			"type": "cube",
+			"uuid": "5717f055-8394-4eff-8090-d874b80bee38"
+		},
+		{
+			"name": "borda_n",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				2,
+				12,
+				2
+			],
+			"to": [
+				14,
+				13.5,
+				3
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						12,
+						1.5
+					],
+					"texture": 3
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						12,
+						1.5
+					],
+					"texture": 3
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						12,
+						1
+					],
+					"texture": 3
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						1,
+						1.5
+					],
+					"texture": 3
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						1,
+						1.5
+					],
+					"texture": 3
+				}
+			},
+			"type": "cube",
+			"uuid": "786024a8-5a67-4015-ae31-54fed57c83b5"
+		},
+		{
+			"name": "borda_s",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				2,
+				12,
+				13
+			],
+			"to": [
+				14,
+				13.5,
+				14
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						12,
+						1.5
+					],
+					"texture": 3
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						12,
+						1.5
+					],
+					"texture": 3
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						12,
+						1
+					],
+					"texture": 3
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						1,
+						1.5
+					],
+					"texture": 3
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						1,
+						1.5
+					],
+					"texture": 3
+				}
+			},
+			"type": "cube",
+			"uuid": "bfd5401c-5315-46bc-897d-a9d4945f8680"
+		},
+		{
+			"name": "borda_o",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				2,
+				12,
+				3
+			],
+			"to": [
+				3,
+				13.5,
+				13
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"east": {
+					"uv": [
+						0,
+						0,
+						10,
+						1.5
+					],
+					"texture": 3
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						10,
+						1.5
+					],
+					"texture": 3
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						1,
+						10
+					],
+					"texture": 3
+				}
+			},
+			"type": "cube",
+			"uuid": "0cfbcca2-7014-4675-915c-889788b7e069"
+		},
+		{
+			"name": "borda_l",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				13,
+				12,
+				3
+			],
+			"to": [
+				14,
+				13.5,
+				13
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"east": {
+					"uv": [
+						0,
+						0,
+						10,
+						1.5
+					],
+					"texture": 3
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						10,
+						1.5
+					],
+					"texture": 3
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						1,
+						10
+					],
+					"texture": 3
+				}
+			},
+			"type": "cube",
+			"uuid": "9c1801a9-0844-4524-a4e9-f739f644209b"
+		},
+		{
+			"name": "rodo",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				7.5,
+				12,
+				6
+			],
+			"to": [
+				8.5,
+				13,
+				15
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				22.5,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				12,
+				6
+			],
+			"faces": {
+				"east": {
+					"uv": [
+						0,
+						0,
+						9,
+						1
+					],
+					"texture": 4
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						9,
+						1
+					],
+					"texture": 4
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						1,
+						9
+					],
+					"texture": 4
+				},
+				"down": {
+					"uv": [
+						0,
+						0,
+						1,
+						9
+					],
+					"texture": 4
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						1,
+						1
+					],
+					"texture": 4
+				}
+			},
+			"type": "cube",
+			"uuid": "b11baba5-456c-4e43-8205-7810da5e3643"
+		}
+	],
+	"outliner": [
+		"e6c3a1f6-522b-4a1a-9034-bcf973709cad",
+		"5717f055-8394-4eff-8090-d874b80bee38",
+		"786024a8-5a67-4015-ae31-54fed57c83b5",
+		"bfd5401c-5315-46bc-897d-a9d4945f8680",
+		"0cfbcca2-7014-4675-915c-889788b7e069",
+		"9c1801a9-0844-4524-a4e9-f739f644209b",
+		"b11baba5-456c-4e43-8205-7810da5e3643"
+	],
+	"textures": [
+		{
+			"path": "D:\\MinecraftMods\\arraial\\src\\main\\resources\\assets\\arraial\\textures\\block\\forno_farinha_boca.png",
+			"name": "forno_farinha_boca.png",
+			"folder": "block",
+			"namespace": "arraial",
+			"id": "0",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "2f2cb652-8e7f-4fb6-803f-44f6593f8056",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAwCAYAAAAYX/pXAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEoSURBVEhL7ZS7DcJAEERdAyEBBbgCYkSMqIOAAqiBbkgohyaIQWtp0d7znNdwDglG9u1nPHPybnc9HV6O83H7eVdQ+S4ryPKdBVtQKCCsgDHm2wko6Vu0X6Iq6NcrCUlASWwiWF8oYHENUXE7wZT8+34zihlmWbDmx6WXJMUlKgJvft52BYk/CwJaiM0OJ/Fn1YJqVkRVC8YYz4TKtxNEP7+gfZwZZAFjzC9rwQL8SpaXBPx1HZKAkthEsF7OQoaoeJJATeKIoCZfjbO/pxbUOEfC4hIVASfSzh6LFgYCWpga6f8+0GgfZwZZwBjzy1qwAL+S5SUBh8chCSiJTQTr5SxkiIrbCTL5aqlULXB5cKFQwXCJsTk2cKFUCaIcb7IGNcazLHy7D94VlxYX7CKQZwAAAABJRU5ErkJggg=="
+		},
+		{
+			"path": "assets/minecraft/textures/block/mud_bricks.png",
+			"name": "mud_bricks.png",
+			"folder": "block",
+			"namespace": "minecraft",
+			"id": "1",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": true,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "3ab53c13-f523-4187-95bd-74443718e62e",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAFVBMVEWrhmGdeFyVcVCMZ09+XUhpUUZeSEFahZ/ZAAAAbklEQVR42gXBsRHCQAxFwSehgCE5fTkigqEWKqAEV+4OdEcBmF32pPakouXZKvN1aC7mCNRCTEeZzK+FDUeNQoZp24gSy6UJ257UJ6MeLaPdx7HMntY+debvoKKwLhh+qpSmES9UlLbLm6vfudkfI20dWp/LjToAAAAASUVORK5CYII="
+		},
+		{
+			"path": "D:\\MinecraftMods\\arraial\\src\\main\\resources\\assets\\arraial\\textures\\block\\tacho.png",
+			"name": "tacho.png",
+			"folder": "block",
+			"namespace": "arraial",
+			"id": "2",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "28ec0b90-c307-4ca6-91ea-e42d3753f822",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACmSURBVDhPY+iKsvmf56rzH0TDMDofmxiMz4AsGGcmQRRG1gM3ACSxo9j+/81JUXgxSA2yIWADkDW/f3YGL0Y3BG4AsuYbZ1aAMbpmmBhILV4DsGlCdwVeA7BpQpZDMQAUHegGoGN0A2EGgPRiuABdMTaDCHoBXQO67QQNwKYR3RAMA/ClA2QDQWow0gG6Ifgw1pSIbAgxGFkP2ABcOQ2fGNbcSA4GAKSbnkUaMaQYAAAAAElFTkSuQmCC"
+		},
+		{
+			"path": "assets/minecraft/textures/block/copper_block.png",
+			"name": "copper_block.png",
+			"folder": "block",
+			"namespace": "minecraft",
+			"id": "3",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "183c3e4c-1354-4851-99cb-9cef428e7bf0",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEXIdFbCa0yyYkenWkCaUDiQSTHjgmzWe1s3kGrsAAAAb0lEQVR42k3OQQ4DQQwCwQbb+P8/jmZHyYYLKnGBJJvdnCwqAhJsdldyE+KvYzeR+5hn9xDB7oJUZQ153SUPYfPaQ/4sM+Sxr2G4dpUk2CbXvk6TY1u695oorq/NELstH69bQ+rnRWq2q3t6qp7uD8OpAyPRbObpAAAAAElFTkSuQmCC"
+		},
+		{
+			"path": "assets/minecraft/textures/block/stripped_oak_log.png",
+			"name": "stripped_oak_log.png",
+			"folder": "block",
+			"namespace": "minecraft",
+			"id": "4",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "5caf5f09-fb33-4814-b794-0c31988251dc",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAb1BMVEXBombCoWa/n2O/nmK/nmHAnWK+nV+9nF+8m126l1q5lVi2k1izk1i2klW0kVizkFewjlWujlKtjVetjVKsi1KniU+jg0mjgkmjgUqigUmigEuggEidgEebfEeafEWZfEObekWYe0WYekSTdUSRdUHJhwd1AAAAqElEQVR42g3DS07DMBQAwPFzfk0EZcENuP/J2BSVNH8bRpr81dXW/cp5kIcppqCH1F5OujF2PlLVKD1jpHBjUsDJHCfMN4WmfvuMcd2W+aSe5fBGGKmUwthnr6CvGv/PHm3sr6wme3tWHvmIblvbyJjMtG2knlsqTV8u0RL70wJ60zmsVxje7Y60mQzDvUSXL0lqPJpt4ArjFjSHBuvPGHWZFw78ejz5A6qfR5OHsZUOAAAAAElFTkSuQmCC"
+		}
+	]
+}

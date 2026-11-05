@@ -118,7 +118,16 @@ public class RoceiroGoal extends OficioGoal {
 					andarAte(a.getBlockPos());
 					return;
 				}
-				for (ItemStack s : Vilas.retirar(armazens(), st -> semente(st.getItem()) != null, SEMENTES_NA_MAO)) {
+				// Mandioca feeds the most people; but keep some wheat coming for the bread and the pastor's animals.
+				boolean querManiva = Vilas.contar(armazens(), Items.WHEAT) >= 16
+						&& Vilas.contar(armazens(), com.guilhermegoes.arraial.registry.ModItems.MANIVA) > 0;
+				java.util.function.Predicate<ItemStack> qual = querManiva
+						? st -> st.is(com.guilhermegoes.arraial.registry.ModItems.MANIVA)
+						: st -> semente(st.getItem()) != null && !st.is(com.guilhermegoes.arraial.registry.ModItems.MANIVA);
+				if (Vilas.contar(armazens(), qual) == 0) {
+					qual = st -> semente(st.getItem()) != null;
+				}
+				for (ItemStack s : Vilas.retirar(armazens(), qual, SEMENTES_NA_MAO)) {
 					morador.guardar(s.getItem(), s.getCount());
 				}
 				bater();

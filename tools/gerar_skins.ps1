@@ -207,6 +207,10 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
     'pastor'      { $o.camisa = $CRU; $o.calca = '#5A4A38'; $o.vestido = $false; $o.manga = 9 }
     'barreiro'    { $o.camisa = '#9A7B5A'; $o.calca = '#5A4A38'; $o.vestido = $false; $o.manga = 2; $o.arregacada = $true; $o.sapato = '#6B4E34' }
     'cavouqueiro' { $o.camisa = '#7D7A72'; $o.calca = '#45423D'; $o.vestido = $false; $o.manga = 7 }
+    'farinheiro'  { $o.camisa = $CRU; $o.calca = '#7A6A55'; $o.vestido = $false; $o.manga = 4 }
+    'feirante'    { $o.camisa = '#B0563A'; $o.calca = '#4A4F3A'; $o.manga = 6 }
+    'tropeiro'    { $o.camisa = '#8A6B45'; $o.calca = '#4A3B2C'; $o.vestido = $false; $o.manga = 9; $o.sapato = '#3A2A1C' }
+    'boticario'   { $o.camisa = '#E8E2D2'; $o.calca = '#2F2F35'; $o.vestido = $false; $o.manga = 10; $o.punho = '#2F2F35' }
   }
   Cabeca $b $o
   Roupa $b $o
@@ -220,6 +224,10 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
     'pastor'      { ChapeuCouro $b; Gibao $b; Perneira $b }
     'barreiro'    { Lenco $b '#D2C6AA'; Barro $b 6 }
     'cavouqueiro' { Gorro $b '#5B5A55' }
+    'farinheiro'  { Lenco $b '#EDE6D2'; Avental $b '#EFE9DA' 6 }
+    'feirante'    { ChapeuPalha $b }
+    'tropeiro'    { ChapeuCouro $b; Suspensorio $b; Perneira $b }
+    'boticario'   { Avental $b '#F2F0EA' 7; Gorro $b '#3B3B44' }
   }
   $nome = '{0}_{1}_{2}.png' -f $oficio, $(if ($fem) { 'f' } else { 'm' }), $v
   $b.Save((Join-Path $Saida $nome), [System.Drawing.Imaging.ImageFormat]::Png)
@@ -227,7 +235,7 @@ function Skin([string]$oficio, [bool]$fem, [int]$v) {
 }
 
 New-Item -ItemType Directory -Force $Saida | Out-Null
-$oficios = @('morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro')
+$oficios = @('morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro', 'farinheiro', 'feirante', 'tropeiro', 'boticario')
 $n = 0
 foreach ($of in $oficios) { foreach ($fem in @($false, $true)) { for ($v = 0; $v -lt 4; $v++) { Skin $of $fem $v; $n++ } } }
 "skins geradas: $n"

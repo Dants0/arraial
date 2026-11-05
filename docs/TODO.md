@@ -7,17 +7,17 @@ Legenda: `[x]` feito e compilado · `[ ]` a fazer · (T) testado em jogo pelo us
 - [x] `ARCHITECTURE.md`, `DECISIONS.md`, `ROADMAP.md`, `TODO.md`
 
 ## 1. Mandioca e Casa de Farinha
-- [ ] Bloco de cultivo mandioca (4 estágios) + item maniva/mandioca
-- [ ] Itens farinha de mandioca e beiju (comida), texturas
-- [ ] Ofício farinheiro com posto "tipiti/forno de farinha" e receitas
-- [ ] Roceiro planta mandioca; mandioca pode ser achada no mato (grama)
-- [ ] Planta "casa_de_farinha" no catálogo; prefeito pede quando há mandioca
-- [ ] Skin do farinheiro
+- [x] Bloco de cultivo mandioca (4 estágios) + item maniva/mandioca
+- [x] Itens farinha de mandioca e beiju (comida), texturas
+- [x] Ofício farinheiro com posto "tipiti/forno de farinha" e receitas
+- [x] Roceiro planta mandioca; mandioca pode ser achada no mato (grama)
+- [x] Planta "casa_de_farinha" no catálogo; prefeito pede quando há mandioca
+- [x] Skin do farinheiro
 
 ## 2. Itens Blockbench e diálogos
-- [ ] Modelos `.bbmodel` em `tools/blockbench` + JSON exportado
-- [ ] Cuia (beber, animação de uso), rapadura, paçoca, chapéu de couro, lampião
-- [ ] Textura animada (lampião) via `.mcmeta`
+- [x] Modelos `.bbmodel` em `tools/blockbench` + JSON exportado
+- [x] Cuia (beber, animação de uso), rapadura, paçoca, chapéu de couro, lampião
+- [x] Textura animada (lampião) via `.mcmeta`
 - [ ] Conversa jogador → morador por contexto (ofício, fome, casa, crise, prefeito)
 - [ ] Moradores conversam entre si quando se encontram (falas no chat próximo)
 

@@ -1,0 +1,38 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"boca": "arraial:block/forno_farinha_boca",
+		"barro": "minecraft:block/mud_bricks",
+		"tacho": "arraial:block/tacho",
+		"cobre": "minecraft:block/copper_block",
+		"pa": "minecraft:block/stripped_oak_log",
+		"particle": "minecraft:block/mud_bricks"
+	},
+	"elements": [
+		{"name": "fornalha", "from": [0, 0, 0], "to": [16, 11, 16], "faces": {
+			"north": {"uv": [0, 5, 16, 16], "texture": "#boca"},
+			"south": {"uv": [0, 5, 16, 16], "texture": "#barro"},
+			"east": {"uv": [0, 5, 16, 16], "texture": "#barro"},
+			"west": {"uv": [0, 5, 16, 16], "texture": "#barro"},
+			"down": {"uv": [0, 0, 16, 16], "texture": "#barro", "cullface": "down"}}},
+		{"name": "chapa", "from": [0, 11, 0], "to": [16, 12, 16], "faces": {
+			"north": {"uv": [0, 4, 16, 5], "texture": "#barro"},
+			"south": {"uv": [0, 4, 16, 5], "texture": "#barro"},
+			"east": {"uv": [0, 4, 16, 5], "texture": "#barro"},
+			"west": {"uv": [0, 4, 16, 5], "texture": "#barro"},
+			"up": {"uv": [0, 0, 16, 16], "texture": "#tacho"}}},
+		{"name": "borda_n", "from": [2, 12, 2], "to": [14, 13.5, 3], "faces": {
+			"north": {"uv": [0, 0, 12, 1.5], "texture": "#cobre"}, "south": {"uv": [0, 0, 12, 1.5], "texture": "#cobre"},
+			"up": {"uv": [0, 0, 12, 1], "texture": "#cobre"}, "east": {"uv": [0, 0, 1, 1.5], "texture": "#cobre"}, "west": {"uv": [0, 0, 1, 1.5], "texture": "#cobre"}}},
+		{"name": "borda_s", "from": [2, 12, 13], "to": [14, 13.5, 14], "faces": {
+			"north": {"uv": [0, 0, 12, 1.5], "texture": "#cobre"}, "south": {"uv": [0, 0, 12, 1.5], "texture": "#cobre"},
+			"up": {"uv": [0, 0, 12, 1], "texture": "#cobre"}, "east": {"uv": [0, 0, 1, 1.5], "texture": "#cobre"}, "west": {"uv": [0, 0, 1, 1.5], "texture": "#cobre"}}},
+		{"name": "borda_o", "from": [2, 12, 3], "to": [3, 13.5, 13], "faces": {
+			"east": {"uv": [0, 0, 10, 1.5], "texture": "#cobre"}, "west": {"uv": [0, 0, 10, 1.5], "texture": "#cobre"}, "up": {"uv": [0, 0, 1, 10], "texture": "#cobre"}}},
+		{"name": "borda_l", "from": [13, 12, 3], "to": [14, 13.5, 13], "faces": {
+			"east": {"uv": [0, 0, 10, 1.5], "texture": "#cobre"}, "west": {"uv": [0, 0, 10, 1.5], "texture": "#cobre"}, "up": {"uv": [0, 0, 1, 10], "texture": "#cobre"}}},
+		{"name": "rodo", "from": [7.5, 12, 6], "to": [8.5, 13, 15], "rotation": {"angle": 22.5, "axis": "x", "origin": [8, 12, 6]}, "faces": {
+			"east": {"uv": [0, 0, 9, 1], "texture": "#pa"}, "west": {"uv": [0, 0, 9, 1], "texture": "#pa"},
+			"up": {"uv": [0, 0, 1, 9], "texture": "#pa"}, "down": {"uv": [0, 0, 1, 9], "texture": "#pa"}, "south": {"uv": [0, 0, 1, 1], "texture": "#pa"}}}
+	]
+}

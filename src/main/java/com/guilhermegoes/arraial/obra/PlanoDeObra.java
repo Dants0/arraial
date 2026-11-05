@@ -152,7 +152,12 @@ public final class PlanoDeObra {
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.GAMELA, new Custo(Items.OAK_PLANKS, 3)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BANCADA_CANTEIRO, new Custo(Items.OAK_LOG, 2)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.FORNO_OLARIA, new Custo(Items.COBBLESTONE, 8)),
-			Map.entry(net.minecraft.world.level.block.Blocks.LECTERN, new Custo(Items.OAK_PLANKS, 4)));
+			Map.entry(net.minecraft.world.level.block.Blocks.LECTERN, new Custo(Items.OAK_PLANKS, 4)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.FORNO_FARINHA, new Custo(Items.MUD_BRICKS, 4)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BANCA_FEIRA, new Custo(Items.OAK_PLANKS, 5)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.CANGALHA, new Custo(Items.OAK_PLANKS, 3)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BALCAO_BOTICA, new Custo(Items.OAK_PLANKS, 5)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.LAMPIAO, new Custo(Items.TORCH, 1)));
 
 	/** Index in {@link com.guilhermegoes.arraial.trabalho.Receitas#MADEIRAS} of the wood the arraial near {@code pos} uses most. */
 	static int madeiraDaVila(ServerLevel level, BlockPos pos) {

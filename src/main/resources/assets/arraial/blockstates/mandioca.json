@@ -1,0 +1,6 @@
+{"variants": {
+	"age=0": {"model": "arraial:block/mandioca_estagio0"}, "age=1": {"model": "arraial:block/mandioca_estagio0"},
+	"age=2": {"model": "arraial:block/mandioca_estagio1"}, "age=3": {"model": "arraial:block/mandioca_estagio1"},
+	"age=4": {"model": "arraial:block/mandioca_estagio2"}, "age=5": {"model": "arraial:block/mandioca_estagio2"},
+	"age=6": {"model": "arraial:block/mandioca_estagio2"}, "age=7": {"model": "arraial:block/mandioca_estagio3"}
+}}

@@ -42,14 +42,18 @@ public final class Prefeitura {
 	/** At most this many buildings going up at once; the second one only when it is urgent. */
 	private static final int MAX_OBRAS = 2;
 
-	private static final Map<Profissao, String> OFICINA = Map.of(
-			Profissao.LENHADOR, "serraria",
-			Profissao.ROCEIRO, "roca",
-			Profissao.OLEIRO, "olaria",
-			Profissao.PASTOR, "curral",
-			Profissao.BARREIRO, "barreira",
-			Profissao.CAVOUQUEIRO, "pedreira",
-			Profissao.SOLDADO, "guarita");
+	private static final Map<Profissao, String> OFICINA = Map.ofEntries(
+			Map.entry(Profissao.LENHADOR, "serraria"),
+			Map.entry(Profissao.ROCEIRO, "roca"),
+			Map.entry(Profissao.OLEIRO, "olaria"),
+			Map.entry(Profissao.PASTOR, "curral"),
+			Map.entry(Profissao.BARREIRO, "barreira"),
+			Map.entry(Profissao.CAVOUQUEIRO, "pedreira"),
+			Map.entry(Profissao.SOLDADO, "guarita"),
+			Map.entry(Profissao.FARINHEIRO, "casa_de_farinha"),
+			Map.entry(Profissao.FEIRANTE, "feira"),
+			Map.entry(Profissao.TROPEIRO, "rancho_tropeiro"),
+			Map.entry(Profissao.BOTICARIO, "botica"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -174,6 +178,9 @@ public final class Prefeitura {
 		}
 		if (n >= 3 && obras(level, vila, "poco") == 0) {
 			desejos.add("poco");
+		}
+		if (n >= 5 && postos(level, vila, ModPois.FORNO_FARINHA) == 0) {
+			desejos.add("casa_de_farinha");
 		}
 		if (n >= 8 && obras(level, vila, "prefeitura") == 0) {
 			desejos.add("prefeitura");

@@ -1,0 +1,470 @@
+{
+	"meta": {
+		"format_version": "4.10",
+		"model_format": "java_block",
+		"box_uv": false
+	},
+	"name": "lampiao",
+	"parent": "minecraft:block/block",
+	"ambientocclusion": true,
+	"front_gui_light": false,
+	"visible_box": [
+		1,
+		1,
+		0
+	],
+	"variable_placeholders": "",
+	"variable_placeholder_buttons": [],
+	"unhandled_root_fields": {},
+	"resolution": {
+		"width": 16,
+		"height": 16
+	},
+	"elements": [
+		{
+			"name": "base",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				5,
+				0,
+				5
+			],
+			"to": [
+				11,
+				1,
+				11
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						6,
+						1
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						6,
+						1
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						6,
+						1
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						6,
+						1
+					],
+					"texture": 1
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						6,
+						6
+					],
+					"texture": 1
+				},
+				"down": {
+					"uv": [
+						0,
+						0,
+						6,
+						6
+					],
+					"texture": 1
+				}
+			},
+			"type": "cube",
+			"uuid": "dd77587c-c1c7-43ff-88fb-a6df1a43c50e"
+		},
+		{
+			"name": "vidro",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				5.5,
+				1,
+				5.5
+			],
+			"to": [
+				10.5,
+				8,
+				10.5
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": 0
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": 0
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": 0
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						16,
+						16
+					],
+					"texture": 0
+				}
+			},
+			"type": "cube",
+			"uuid": "1b6d42c3-341f-460d-a41a-db7273918230"
+		},
+		{
+			"name": "tampa",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				5,
+				8,
+				5
+			],
+			"to": [
+				11,
+				9,
+				11
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						6,
+						1
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						6,
+						1
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						6,
+						1
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						6,
+						1
+					],
+					"texture": 1
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						6,
+						6
+					],
+					"texture": 1
+				},
+				"down": {
+					"uv": [
+						0,
+						0,
+						6,
+						6
+					],
+					"texture": 1
+				}
+			},
+			"type": "cube",
+			"uuid": "c317d8c7-86e7-42d4-bfc1-0700d6fde2f2"
+		},
+		{
+			"name": "chamine",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				7,
+				9,
+				7
+			],
+			"to": [
+				9,
+				11,
+				9
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					],
+					"texture": 1
+				},
+				"up": {
+					"uv": [
+						0,
+						0,
+						2,
+						2
+					],
+					"texture": 1
+				}
+			},
+			"type": "cube",
+			"uuid": "40c1e981-0714-430d-b7fe-7f0d4e93c719"
+		},
+		{
+			"name": "alca",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				6.5,
+				11,
+				8
+			],
+			"to": [
+				9.5,
+				13,
+				8
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						3,
+						2
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						3,
+						2
+					],
+					"texture": 1
+				}
+			},
+			"type": "cube",
+			"uuid": "d7dfaba2-43ef-48c8-822f-8f04699d00dc"
+		}
+	],
+	"outliner": [
+		"dd77587c-c1c7-43ff-88fb-a6df1a43c50e",
+		"1b6d42c3-341f-460d-a41a-db7273918230",
+		"c317d8c7-86e7-42d4-bfc1-0700d6fde2f2",
+		"40c1e981-0714-430d-b7fe-7f0d4e93c719",
+		"d7dfaba2-43ef-48c8-822f-8f04699d00dc"
+	],
+	"textures": [
+		{
+			"path": "D:\\MinecraftMods\\arraial\\src\\main\\resources\\assets\\arraial\\textures\\block\\lampiao.png",
+			"name": "lampiao.png",
+			"folder": "block",
+			"namespace": "arraial",
+			"id": "0",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "ec9b17c4-9cf9-4554-88da-d976551f4b7d",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAABACAYAAAATffeWAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEESURBVFhH7dTBDcIwDAXQTlQxTw+Mw4F1WAI2YAQGQFxbBclR8ontn6SteuDwQUrkhxVhD+N4mnsyhI9pOjclA163qSrbA5/nNQbvXEAK5/ddRVwgFEv2B1KkVEwBj8v4LQ7feEcBguBZFWDlgEBLItCTdQBsjU0G4CN52QfQRpkCcCfgPQVYI709kCJYTAPWTqAAQfCsCtByQKAlEejJOgC2xiYD8JG8UEDpL0wDMs4aYgK4C0qICqTF6SgjogKCIEB3gF2Uft0FQqxdQAGC4FkVYOWAQEsi0JN1AGyNTQbgI3nZHtBmgAJwmLCYArrH2VomLpAipWIK+O8DPz9ASyLQkwWte+5wdNFHyAAAAABJRU5ErkJggg=="
+		},
+		{
+			"path": "D:\\MinecraftMods\\arraial\\src\\main\\resources\\assets\\arraial\\textures\\block\\lampiao_metal.png",
+			"name": "lampiao_metal.png",
+			"folder": "block",
+			"namespace": "arraial",
+			"id": "1",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": true,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "28820b07-be78-4685-855d-66647ea19837",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAySURBVDhPY9DTM/hPCWYAEVFRcWRhFAO6uiZgKMCFYWqp6wJy8KgBowZgGDCwSZkSDACW2vPwHZnJBQAAAABJRU5ErkJggg=="
+		}
+	]
+}

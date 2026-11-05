@@ -1,0 +1,599 @@
+{
+	"meta": {
+		"format_version": "4.10",
+		"model_format": "java_block",
+		"box_uv": false
+	},
+	"name": "chapeu_couro",
+	"parent": "",
+	"ambientocclusion": true,
+	"front_gui_light": false,
+	"visible_box": [
+		1,
+		1,
+		0
+	],
+	"variable_placeholders": "",
+	"variable_placeholder_buttons": [],
+	"unhandled_root_fields": {},
+	"resolution": {
+		"width": 16,
+		"height": 16
+	},
+	"elements": [
+		{
+			"name": "aba",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				0,
+				0,
+				1
+			],
+			"to": [
+				16,
+				1,
+				15
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						0,
+						16,
+						1
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						0,
+						0,
+						16,
+						1
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						14,
+						1
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						14,
+						1
+					],
+					"texture": 1
+				},
+				"up": {
+					"uv": [
+						0,
+						1,
+						16,
+						15
+					],
+					"texture": 1
+				},
+				"down": {
+					"uv": [
+						0,
+						1,
+						16,
+						15
+					],
+					"texture": 1
+				}
+			},
+			"type": "cube",
+			"uuid": "5ce22759-1ba4-4864-a3bc-e59b806d0523"
+		},
+		{
+			"name": "aba_quebrada",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				2,
+				1,
+				0
+			],
+			"to": [
+				14,
+				5,
+				1
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				-22.5,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				1,
+				1
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						2,
+						0,
+						14,
+						4
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						2,
+						0,
+						14,
+						4
+					],
+					"texture": 1
+				},
+				"up": {
+					"uv": [
+						2,
+						0,
+						14,
+						1
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						0,
+						1,
+						4
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						0,
+						1,
+						4
+					],
+					"texture": 1
+				}
+			},
+			"type": "cube",
+			"uuid": "f6b02798-1c7c-4443-84cc-f4611936cdaa"
+		},
+		{
+			"name": "copa",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				4,
+				1,
+				4
+			],
+			"to": [
+				12,
+				6,
+				12
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						4,
+						1,
+						12,
+						6
+					],
+					"texture": 0
+				},
+				"south": {
+					"uv": [
+						4,
+						1,
+						12,
+						6
+					],
+					"texture": 0
+				},
+				"east": {
+					"uv": [
+						4,
+						1,
+						12,
+						6
+					],
+					"texture": 0
+				},
+				"west": {
+					"uv": [
+						4,
+						1,
+						12,
+						6
+					],
+					"texture": 0
+				},
+				"up": {
+					"uv": [
+						4,
+						4,
+						12,
+						12
+					],
+					"texture": 0
+				}
+			},
+			"type": "cube",
+			"uuid": "1119c7e5-9c0d-48f4-8395-407916fad895"
+		},
+		{
+			"name": "topo",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				5,
+				6,
+				5
+			],
+			"to": [
+				11,
+				7,
+				11
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						5,
+						0,
+						11,
+						1
+					],
+					"texture": 0
+				},
+				"south": {
+					"uv": [
+						5,
+						0,
+						11,
+						1
+					],
+					"texture": 0
+				},
+				"east": {
+					"uv": [
+						5,
+						0,
+						11,
+						1
+					],
+					"texture": 0
+				},
+				"west": {
+					"uv": [
+						5,
+						0,
+						11,
+						1
+					],
+					"texture": 0
+				},
+				"up": {
+					"uv": [
+						5,
+						5,
+						11,
+						11
+					],
+					"texture": 0
+				}
+			},
+			"type": "cube",
+			"uuid": "0d843ef8-a182-4e1b-9b81-586a93350ca1"
+		},
+		{
+			"name": "fita",
+			"box_uv": false,
+			"rescale": false,
+			"locked": false,
+			"light_emission": 0,
+			"render_order": "default",
+			"allow_mirror_modeling": true,
+			"from": [
+				3.9,
+				1.5,
+				3.9
+			],
+			"to": [
+				12.1,
+				2.5,
+				12.1
+			],
+			"autouv": 0,
+			"color": 0,
+			"rotation": [
+				0,
+				0,
+				0
+			],
+			"origin": [
+				8,
+				8,
+				8
+			],
+			"faces": {
+				"north": {
+					"uv": [
+						0,
+						2,
+						8,
+						3
+					],
+					"texture": 1
+				},
+				"south": {
+					"uv": [
+						0,
+						2,
+						8,
+						3
+					],
+					"texture": 1
+				},
+				"east": {
+					"uv": [
+						0,
+						2,
+						8,
+						3
+					],
+					"texture": 1
+				},
+				"west": {
+					"uv": [
+						0,
+						2,
+						8,
+						3
+					],
+					"texture": 1
+				}
+			},
+			"type": "cube",
+			"uuid": "87b7bf75-9f71-40ad-8698-1fc885b96f79"
+		}
+	],
+	"outliner": [
+		"5ce22759-1ba4-4864-a3bc-e59b806d0523",
+		"f6b02798-1c7c-4443-84cc-f4611936cdaa",
+		"1119c7e5-9c0d-48f4-8395-407916fad895",
+		"0d843ef8-a182-4e1b-9b81-586a93350ca1",
+		"87b7bf75-9f71-40ad-8698-1fc885b96f79"
+	],
+	"textures": [
+		{
+			"path": "D:\\MinecraftMods\\arraial\\src\\main\\resources\\assets\\arraial\\textures\\block\\chapeu_couro.png",
+			"name": "chapeu_couro.png",
+			"folder": "block",
+			"namespace": "arraial",
+			"id": "0",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": true,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "2ff6296a-c73b-4cc5-94b2-22178b9afee4",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACFSURBVDhPldLNCYAwDAXgTOEIHj04g2cncAPBURzDXZxKaSASm//DI20OH69QOJbx0XJus9jxrNOAE+jgxcPgvnY8tNkwfs9M6EVKthkCXsUIEw2qmAB4MhgCvarFwkSDKiYAngz2AVZFioWpDSqYCvBE2O8rR7Nh/V5tYL2Xh5pBVDHCXujD5xThuHyfAAAAAElFTkSuQmCC"
+		},
+		{
+			"path": "D:\\MinecraftMods\\arraial\\src\\main\\resources\\assets\\arraial\\textures\\block\\couro.png",
+			"name": "couro.png",
+			"folder": "block",
+			"namespace": "arraial",
+			"id": "1",
+			"group": "",
+			"width": 16,
+			"height": 16,
+			"uv_width": 16,
+			"uv_height": 16,
+			"particle": false,
+			"use_as_default": false,
+			"layers_enabled": false,
+			"sync_to_project": "",
+			"render_mode": "default",
+			"render_sides": "auto",
+			"frame_time": 1,
+			"frame_order_type": "loop",
+			"frame_order": "",
+			"frame_interpolate": false,
+			"visible": true,
+			"internal": true,
+			"saved": false,
+			"uuid": "133a451c-6ac4-4483-a3a8-df3ffc7ab21a",
+			"source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACASURBVDhPY6jy0/kPwrMyLMA0LhxnJY8hBsIM6AIgTIphDCeXZYMZ5NJwF+ByIjLG5jKsXiDFMAZsppJiGIoLyDEMqxdAmFjDGLCZio7xGYbiAnIMw+kFYg0DG4BuKjrGZxiGC0g1DG9SBhmGTRxGgwwDuwDdVGwYl8swvECqYQCB2AIG1Mq9lAAAAABJRU5ErkJggg=="
+		}
+	],
+	"display": {
+		"gui": {
+			"rotation": [
+				25,
+				45,
+				0
+			],
+			"translation": [
+				0,
+				3,
+				0
+			],
+			"scale": [
+				0.7,
+				0.7,
+				0.7
+			]
+		},
+		"ground": {
+			"translation": [
+				0,
+				3,
+				0
+			],
+			"scale": [
+				0.4,
+				0.4,
+				0.4
+			]
+		},
+		"fixed": {
+			"translation": [
+				0,
+				3,
+				0
+			],
+			"scale": [
+				0.6,
+				0.6,
+				0.6
+			]
+		},
+		"head": {
+			"rotation": [
+				0,
+				180,
+				0
+			],
+			"translation": [
+				0,
+				14.5,
+				0
+			],
+			"scale": [
+				1.05,
+				1.05,
+				1.05
+			]
+		},
+		"thirdperson_righthand": {
+			"rotation": [
+				75,
+				45,
+				0
+			],
+			"translation": [
+				0,
+				3,
+				2
+			],
+			"scale": [
+				0.4,
+				0.4,
+				0.4
+			]
+		},
+		"firstperson_righthand": {
+			"rotation": [
+				0,
+				45,
+				0
+			],
+			"translation": [
+				0,
+				4,
+				0
+			],
+			"scale": [
+				0.45,
+				0.45,
+				0.45
+			]
+		},
+		"firstperson_lefthand": {
+			"rotation": [
+				0,
+				225,
+				0
+			],
+			"translation": [
+				0,
+				4,
+				0
+			],
+			"scale": [
+				0.45,
+				0.45,
+				0.45
+			]
+		}
+	}
+}

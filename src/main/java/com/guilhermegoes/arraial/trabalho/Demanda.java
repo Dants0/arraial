@@ -101,6 +101,12 @@ public final class Demanda {
 			// Gross need = what is there + what is missing, so that need - stock = the shortfall.
 			bruto.merge(Items.BREAD, querComida + inv.getOrDefault(Items.BREAD, 0), Integer::sum);
 			urgencia.merge(Items.BREAD, comida < n ? URGENCIA_FOME : URGENCIA_PAO, Math::max);
+			// With a casa de farinha, farinha is the staple (cassava feeds far more people than wheat).
+			if (moradores.stream().anyMatch(m -> m.profissao() == Profissao.FARINHEIRO)) {
+				Item farinha = com.guilhermegoes.arraial.registry.ModItems.FARINHA;
+				bruto.merge(farinha, querComida + inv.getOrDefault(farinha, 0), Integer::sum);
+				urgencia.merge(farinha, (comida < n ? URGENCIA_FOME : URGENCIA_PAO) + 1, Math::max);
+			}
 		}
 
 		// 3. The prefeito's minimum stock.

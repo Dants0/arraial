@@ -1,0 +1,6 @@
+{"variants": {
+	"facing=north": {"model": "arraial:block/forno_farinha"},
+	"facing=east": {"model": "arraial:block/forno_farinha", "y": 90},
+	"facing=south": {"model": "arraial:block/forno_farinha", "y": 180},
+	"facing=west": {"model": "arraial:block/forno_farinha", "y": 270}
+}}

@@ -27,6 +27,21 @@ public final class ModCreativeTabs {
 						output.accept(ModBlocks.BANCADA_CANTEIRO);
 						output.accept(ModItems.LIVRO_DE_PROJETOS);
 						output.accept(ModItems.CONTRATO_PEDREIRO);
+						output.accept(ModBlocks.FORNO_FARINHA);
+						output.accept(ModBlocks.BANCA_FEIRA);
+						output.accept(ModBlocks.CANGALHA);
+						output.accept(ModBlocks.BALCAO_BOTICA);
+						output.accept(ModBlocks.LAMPIAO);
+						output.accept(ModItems.MANIVA);
+						output.accept(ModItems.MANDIOCA);
+						output.accept(ModItems.FARINHA);
+						output.accept(ModItems.BEIJU);
+						output.accept(ModItems.PACOCA);
+						output.accept(ModItems.RAPADURA);
+						output.accept(ModItems.CUIA);
+						output.accept(ModItems.CUIA_GARAPA);
+						output.accept(ModItems.CHAPEU_COURO);
+						output.accept(ModItems.REIS);
 					})
 					.build());
 

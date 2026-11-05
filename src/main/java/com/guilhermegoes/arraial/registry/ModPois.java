@@ -15,8 +15,13 @@ public final class ModPois {
 	public static final PoiType COCHO = PoiHelper.register(Arraial.id("cocho"), 1, 1, ModBlocks.COCHO);
 	public static final PoiType GAMELA = PoiHelper.register(Arraial.id("gamela"), 1, 1, ModBlocks.GAMELA);
 	public static final PoiType BANCADA_CANTEIRO = PoiHelper.register(Arraial.id("bancada_canteiro"), 1, 1, ModBlocks.BANCADA_CANTEIRO);
+	public static final PoiType FORNO_FARINHA = PoiHelper.register(Arraial.id("forno_farinha"), 1, 1, ModBlocks.FORNO_FARINHA);
+	public static final PoiType BANCA_FEIRA = PoiHelper.register(Arraial.id("banca_feira"), 1, 1, ModBlocks.BANCA_FEIRA);
+	public static final PoiType CANGALHA = PoiHelper.register(Arraial.id("cangalha"), 1, 1, ModBlocks.CANGALHA);
+	public static final PoiType BALCAO_BOTICA = PoiHelper.register(Arraial.id("balcao_botica"), 1, 1, ModBlocks.BALCAO_BOTICA);
 
-	private static final Set<PoiType> POSTOS = Set.of(CEPO, BALAIO, FORNO_OLARIA, POSTO_GUARDA, COCHO, GAMELA, BANCADA_CANTEIRO);
+	private static final Set<PoiType> POSTOS = Set.of(CEPO, BALAIO, FORNO_OLARIA, POSTO_GUARDA, COCHO, GAMELA, BANCADA_CANTEIRO,
+			FORNO_FARINHA, BANCA_FEIRA, CANGALHA, BALCAO_BOTICA);
 
 	public static boolean ePosto(Holder<PoiType> tipo) {
 		return POSTOS.contains(tipo.value());
@@ -32,6 +37,10 @@ public final class ModPois {
 			case PASTOR -> COCHO;
 			case BARREIRO -> GAMELA;
 			case CAVOUQUEIRO -> BANCADA_CANTEIRO;
+			case FARINHEIRO -> FORNO_FARINHA;
+			case FEIRANTE -> BANCA_FEIRA;
+			case TROPEIRO -> CANGALHA;
+			case BOTICARIO -> BALCAO_BOTICA;
 			default -> null;
 		};
 	}

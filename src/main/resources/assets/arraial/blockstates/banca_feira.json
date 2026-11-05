@@ -1,0 +1,6 @@
+{"variants": {
+	"facing=north": {"model": "arraial:block/banca_feira"},
+	"facing=east": {"model": "arraial:block/banca_feira", "y": 90},
+	"facing=south": {"model": "arraial:block/banca_feira", "y": 180},
+	"facing=west": {"model": "arraial:block/banca_feira", "y": 270}
+}}

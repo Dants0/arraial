@@ -1,0 +1,40 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"tabua": "minecraft:block/oak_planks",
+		"tora": "minecraft:block/oak_log",
+		"toldo": "arraial:block/toldo",
+		"abobora": "minecraft:block/pumpkin_side",
+		"melancia": "minecraft:block/melon_side",
+		"feno": "minecraft:block/hay_block_side",
+		"particle": "minecraft:block/oak_planks"
+	},
+	"elements": [
+		{"name": "balcao", "from": [1, 0, 3], "to": [15, 9, 13], "faces": {
+			"north": {"uv": [1, 7, 15, 16], "texture": "#tabua"}, "south": {"uv": [1, 7, 15, 16], "texture": "#tabua"},
+			"east": {"uv": [3, 7, 13, 16], "texture": "#tabua"}, "west": {"uv": [3, 7, 13, 16], "texture": "#tabua"},
+			"up": {"uv": [1, 3, 15, 13], "texture": "#tabua"}, "down": {"uv": [1, 3, 15, 13], "texture": "#tabua", "cullface": "down"}}},
+		{"name": "poste_oeste", "from": [1, 9, 12], "to": [2, 15, 13], "faces": {
+			"north": {"uv": [0, 0, 1, 6], "texture": "#tora"}, "south": {"uv": [0, 0, 1, 6], "texture": "#tora"},
+			"east": {"uv": [0, 0, 1, 6], "texture": "#tora"}, "west": {"uv": [0, 0, 1, 6], "texture": "#tora"}}},
+		{"name": "poste_leste", "from": [14, 9, 12], "to": [15, 15, 13], "faces": {
+			"north": {"uv": [0, 0, 1, 6], "texture": "#tora"}, "south": {"uv": [0, 0, 1, 6], "texture": "#tora"},
+			"east": {"uv": [0, 0, 1, 6], "texture": "#tora"}, "west": {"uv": [0, 0, 1, 6], "texture": "#tora"}}},
+		{"name": "toldo", "from": [0, 15, 1], "to": [16, 16, 14], "rotation": {"angle": -22.5, "axis": "x", "origin": [8, 15, 13]}, "faces": {
+			"up": {"uv": [0, 0, 16, 13], "texture": "#toldo"}, "down": {"uv": [0, 0, 16, 13], "texture": "#toldo"},
+			"north": {"uv": [0, 15, 16, 16], "texture": "#toldo"}, "south": {"uv": [0, 15, 16, 16], "texture": "#toldo"},
+			"east": {"uv": [0, 15, 13, 16], "texture": "#toldo"}, "west": {"uv": [0, 15, 13, 16], "texture": "#toldo"}}},
+		{"name": "abobora", "from": [2.5, 9, 5], "to": [6.5, 12, 9], "faces": {
+			"north": {"uv": [0, 0, 16, 12], "texture": "#abobora"}, "south": {"uv": [0, 0, 16, 12], "texture": "#abobora"},
+			"east": {"uv": [0, 0, 16, 12], "texture": "#abobora"}, "west": {"uv": [0, 0, 16, 12], "texture": "#abobora"},
+			"up": {"uv": [0, 0, 16, 16], "texture": "#abobora"}}},
+		{"name": "melancia", "from": [9, 9, 6], "to": [13, 12, 10], "faces": {
+			"north": {"uv": [0, 0, 16, 12], "texture": "#melancia"}, "south": {"uv": [0, 0, 16, 12], "texture": "#melancia"},
+			"east": {"uv": [0, 0, 16, 12], "texture": "#melancia"}, "west": {"uv": [0, 0, 16, 12], "texture": "#melancia"},
+			"up": {"uv": [0, 0, 16, 16], "texture": "#melancia"}}},
+		{"name": "feixe", "from": [6.5, 9, 9], "to": [9, 11, 12], "faces": {
+			"north": {"uv": [0, 0, 16, 8], "texture": "#feno"}, "south": {"uv": [0, 0, 16, 8], "texture": "#feno"},
+			"east": {"uv": [0, 0, 16, 8], "texture": "#feno"}, "west": {"uv": [0, 0, 16, 8], "texture": "#feno"},
+			"up": {"uv": [0, 0, 16, 16], "texture": "#feno"}}}
+	]
+}

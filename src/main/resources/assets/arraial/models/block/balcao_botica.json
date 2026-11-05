@@ -1,0 +1,35 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"madeira": "minecraft:block/dark_oak_planks",
+		"tampo": "minecraft:block/stripped_dark_oak_log",
+		"frascos": "arraial:block/frascos",
+		"particle": "minecraft:block/dark_oak_planks"
+	},
+	"elements": [
+		{"name": "balcao", "from": [0, 0, 2], "to": [16, 9, 14], "faces": {
+			"north": {"uv": [0, 7, 16, 16], "texture": "#madeira"}, "south": {"uv": [0, 7, 16, 16], "texture": "#madeira"},
+			"east": {"uv": [2, 7, 14, 16], "texture": "#madeira"}, "west": {"uv": [2, 7, 14, 16], "texture": "#madeira"},
+			"down": {"uv": [0, 2, 16, 14], "texture": "#madeira", "cullface": "down"}}},
+		{"name": "tampo", "from": [0, 9, 1.5], "to": [16, 10, 14.5], "faces": {
+			"north": {"uv": [0, 0, 16, 1], "texture": "#tampo"}, "south": {"uv": [0, 0, 16, 1], "texture": "#tampo"},
+			"east": {"uv": [0, 0, 13, 1], "texture": "#tampo"}, "west": {"uv": [0, 0, 13, 1], "texture": "#tampo"},
+			"up": {"uv": [0, 1.5, 16, 14.5], "texture": "#tampo"}, "down": {"uv": [0, 1.5, 16, 14.5], "texture": "#tampo"}}},
+		{"name": "frasco_1", "from": [2, 10, 6], "to": [5, 15, 9], "faces": {
+			"north": {"uv": [0, 0, 4, 9], "texture": "#frascos"}, "south": {"uv": [0, 0, 4, 9], "texture": "#frascos"},
+			"east": {"uv": [0, 0, 4, 9], "texture": "#frascos"}, "west": {"uv": [0, 0, 4, 9], "texture": "#frascos"},
+			"up": {"uv": [1, 0, 3, 2], "texture": "#frascos"}}},
+		{"name": "frasco_2", "from": [6.5, 10, 7], "to": [9.5, 14, 10], "faces": {
+			"north": {"uv": [5, 0, 9, 9], "texture": "#frascos"}, "south": {"uv": [5, 0, 9, 9], "texture": "#frascos"},
+			"east": {"uv": [5, 0, 9, 9], "texture": "#frascos"}, "west": {"uv": [5, 0, 9, 9], "texture": "#frascos"},
+			"up": {"uv": [6, 0, 8, 2], "texture": "#frascos"}}},
+		{"name": "frasco_3", "from": [11, 10, 5.5], "to": [14, 15.5, 8.5], "faces": {
+			"north": {"uv": [11, 0, 15, 9], "texture": "#frascos"}, "south": {"uv": [11, 0, 15, 9], "texture": "#frascos"},
+			"east": {"uv": [11, 0, 15, 9], "texture": "#frascos"}, "west": {"uv": [11, 0, 15, 9], "texture": "#frascos"},
+			"up": {"uv": [12, 0, 14, 2], "texture": "#frascos"}}},
+		{"name": "pilao", "from": [10, 10, 10], "to": [13, 12, 13], "faces": {
+			"north": {"uv": [0, 0, 3, 2], "texture": "#tampo"}, "south": {"uv": [0, 0, 3, 2], "texture": "#tampo"},
+			"east": {"uv": [0, 0, 3, 2], "texture": "#tampo"}, "west": {"uv": [0, 0, 3, 2], "texture": "#tampo"},
+			"up": {"uv": [0, 0, 3, 3], "texture": "#madeira"}}}
+	]
+}

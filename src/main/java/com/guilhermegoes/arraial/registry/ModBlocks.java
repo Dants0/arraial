@@ -69,6 +69,36 @@ public final class ModBlocks {
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("bancada_canteiro").mapColor(MapColor.STONE).strength(2.5F)
 					.requiresCorrectToolForDrops().sound(SoundType.STONE)));
 
+	/** Lampião: an oil lamp of tin and glass, standing or hanging, with a flickering flame. */
+	public static final Block LAMPIAO = register("lampiao",
+			new net.minecraft.world.level.block.LanternBlock(props("lampiao").mapColor(MapColor.METAL).forceSolidOn().strength(2.0F)
+					.sound(SoundType.LANTERN).lightLevel(s -> 15).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED)));
+
+	/** Mandioca crop; its item is the maniva (registered in ModItems), so no block item here. */
+	public static final Block MANDIOCA = registerSemItem("mandioca",
+			new com.guilhermegoes.arraial.trabalho.MandiocaBlock(props("mandioca").mapColor(MapColor.PLANT).noCollision().randomTicks()
+					.instabreak().sound(SoundType.CROP).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED)));
+
+	/** Workstation of the farinheiro: the clay oven with its big copper pan where the farinha is toasted. */
+	public static final Block FORNO_FARINHA = register("forno_farinha",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("forno_farinha").mapColor(MapColor.TERRACOTTA_ORANGE).strength(2.0F)
+					.sound(SoundType.MUD_BRICKS).noOcclusion()));
+
+	/** Workstation of the feirante: a market stall with an awning. */
+	public static final Block BANCA_FEIRA = register("banca_feira",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("banca_feira").mapColor(MapColor.WOOD).strength(1.5F)
+					.sound(SoundType.WOOD).noOcclusion()));
+
+	/** Workstation of the tropeiro: the cangalha, the pack saddle of the mule troop. */
+	public static final Block CANGALHA = register("cangalha",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("cangalha").mapColor(MapColor.COLOR_BROWN).strength(1.0F)
+					.sound(SoundType.WOOD).noOcclusion()));
+
+	/** Workstation of the boticário: the counter with jars of remedies. */
+	public static final Block BALCAO_BOTICA = register("balcao_botica",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("balcao_botica").mapColor(MapColor.WOOD).strength(1.5F)
+					.sound(SoundType.WOOD).noOcclusion()));
+
 	private static BlockBehaviour.Properties props(String name) {
 		return BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Arraial.id(name)));
 	}
@@ -79,6 +109,10 @@ public final class ModBlocks {
 		Registry.register(BuiltInRegistries.ITEM, itemKey,
 				new BlockItem(block, new Item.Properties().setId(itemKey).useBlockDescriptionPrefix()));
 		return block;
+	}
+
+	private static Block registerSemItem(String name, Block block) {
+		return Registry.register(BuiltInRegistries.BLOCK, Arraial.id(name), block);
 	}
 
 	public static void init() {

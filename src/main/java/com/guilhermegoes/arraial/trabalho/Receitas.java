@@ -71,6 +71,11 @@ public final class Receitas {
 		add(Profissao.CAVOUQUEIRO, Items.COBBLESTONE_WALL, 6, Map.of(Items.COBBLESTONE, 6));
 		add(Profissao.CAVOUQUEIRO, Items.FURNACE, 1, Map.of(Items.COBBLESTONE, 8));
 
+		// Farinheiro: the casa de farinha. Grated, pressed and toasted, one root gives two portions of farinha.
+		add(Profissao.FARINHEIRO, com.guilhermegoes.arraial.registry.ModItems.FARINHA, 2, Map.of(com.guilhermegoes.arraial.registry.ModItems.MANDIOCA, 1));
+		add(Profissao.FARINHEIRO, com.guilhermegoes.arraial.registry.ModItems.BEIJU, 2, Map.of(com.guilhermegoes.arraial.registry.ModItems.MANDIOCA, 1));
+		add(Profissao.FARINHEIRO, com.guilhermegoes.arraial.registry.ModItems.PACOCA, 2, Map.of(com.guilhermegoes.arraial.registry.ModItems.FARINHA, 2, Items.COOKED_BEEF, 1));
+
 		// Roceiro: bread for the arraial's table.
 		add(Profissao.ROCEIRO, Items.BREAD, 1, Map.of(Items.WHEAT, 3));
 	}
