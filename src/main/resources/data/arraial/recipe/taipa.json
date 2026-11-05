@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": "minecraft:clay_ball",
+    "S": "minecraft:stick",
+    "D": "minecraft:dirt"
+  },
+  "pattern": [
+    "CSC",
+    "SDS",
+    "CSC"
+  ],
+  "result": {
+    "count": 8,
+    "id": "arraial:taipa"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "arraial:block/telha_laje"
+    },
+    "type=double": {
+      "model": "arraial:block/telha"
+    },
+    "type=top": {
+      "model": "arraial:block/telha_laje_top"
+    }
+  }
+}

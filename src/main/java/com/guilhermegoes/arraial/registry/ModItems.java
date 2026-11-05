@@ -105,6 +105,8 @@ public final class ModItems {
 							.onConsume(new net.minecraft.world.item.consume_effects.RemoveStatusEffectsConsumeEffect(MobEffects.POISON)).build())
 			.usingConvertsTo(CANTIL));
 	/** Saco de saque: what a bandit carried; open it. */
+	/** Mapa da Região: opens the map of the arraiais around (lands, roads, wars, ruins). */
+	public static final Item MAPA_REGIAO = register("mapa_regiao", com.guilhermegoes.arraial.item.MapaRegiaoItem::new, new Item.Properties().stacksTo(1));
 	public static final Item SACO_SAQUE = register("saco_saque", com.guilhermegoes.arraial.item.SacoDeSaqueItem::new, new Item.Properties().stacksTo(16));
 	/** Comenda do Arraial: the honour of a child of the land, or of whoever cleared a hideout. */
 	public static final Item COMENDA = register("comenda", Item::new, new Item.Properties().stacksTo(1)

@@ -93,6 +93,7 @@ public final class Simulacao {
 		info.camas = (int) a.camas(level);
 		info.satisfacao = a.satisfacao;
 		info.especialidade = Economia.especialidade(info.oficios).id();
+		info.era = a.era().id();
 		info.abandonada = a.abandonada;
 		Cultura.garantir(level, a, info);
 		if (!a.abandonada) {

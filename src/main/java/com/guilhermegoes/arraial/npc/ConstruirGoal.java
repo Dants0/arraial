@@ -271,10 +271,13 @@ public class ConstruirGoal extends Goal {
 			if (!etapa.state().getCollisionShape(level, pos).isEmpty()) {
 				afastar(level, pos);
 			}
+			// Built in the style of the arraial's era (taipa, brick, lime...).
+			com.guilhermegoes.arraial.vila.ArraialBlockEntity vila = pedreiro.arraial();
+			BlockState novo = vila == null ? etapa.state() : vila.era().estilo(etapa.state());
 			// UPDATE_CLIENTS only: two-part blocks (doors) must not pop off before their other half is placed.
-			level.setBlock(pos, etapa.state(), Block.UPDATE_CLIENTS);
+			level.setBlock(pos, novo, Block.UPDATE_CLIENTS);
 			conectar(level, pos);
-			level.playSound(null, pos, etapa.state().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 0.9F);
+			level.playSound(null, pos, novo.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 0.9F);
 		}
 		pedreiro.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
 	}

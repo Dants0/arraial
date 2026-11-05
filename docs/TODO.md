@@ -138,7 +138,15 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] Comandos de teste: /arraial era (colonial, imperial, republicana), /arraial obra_pronta (projeto)
 
 ## 20. Teste automático no cliente
-- [x] Roteiro (ARRAIAL_ROTEIRO=1 runClient) com fotos e verificações: itens, vaqueiro, foice, cantil, saque, festa, política, missão, família, território, eras
+- [x] Roteiro (ARRAIAL_ROTEIRO=1 runClient) com fotos e verificações: itens, vaqueiro, foice, cantil, saque, festa, política, missão, família, território, chancelaria (tratado, embargo), mapa, eras com blocos coloniais
+
+## 21. Blocos coloniais, diplomacia e mapa
+- [x] Blocos: taipa, telha (bloco, escada, laje), parede caiada (cal), azulejo; texturas em tools/gerar_blocos_coloniais.ps1; receitas e corte
+- [x] Eras usam os blocos: Colonial ergue de taipa; Imperial tijolo e telhado de telha; Republicana cal com barra de azulejo; pedreiros constroem já no estilo da era
+- [x] Chancelaria (tela da Escrivaninha): mapa da região, vizinhos, propor paz/comércio/aliança/fronteira, exigir tributo, romper tratado, declarar e suspender embargo (1 papel, 1 proposta por dia)
+- [x] Embargo: fecha a estrada (sem mercadores, tropeiros, contratos; preços sobem), rompe comércio e aliança; vilas autônomas em disputa também embargam
+- [x] Mapa da Região (item): biomas, terras com a cor da bandeira, terra disputada, estradas por estado, ruínas, bandidos, jogador e base
+- [x] Nomes de arraial sem repetição (lista maior)
 
 ## Próximos
 - [ ] Teste em jogo pelo usuário (T)
@@ -146,5 +154,3 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 ## Depois
 - [ ] Teste em jogo de tudo acima (T)
 
-- [ ] Blocos coloniais próprios (telha, taipa, azulejo)
-- [ ] Tratados e embargo (diplomacia completa); tela de diplomacia

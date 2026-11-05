@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "M": "minecraft:bone_meal",
+    "C": "minecraft:clay_ball"
+  },
+  "pattern": [
+    "MC",
+    "CM"
+  ],
+  "result": {
+    "count": 2,
+    "id": "arraial:cal"
+  }
+}

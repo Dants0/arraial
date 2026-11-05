@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
  * so the book reads in the player's language.
  */
 public class GuiaItem extends Item {
-	public static final int PAGINAS = 23;
+	public static final int PAGINAS = 24;
 
 	public GuiaItem(Properties properties) {
 		super(properties);

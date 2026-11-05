@@ -80,11 +80,17 @@ public final class Economia {
 	/** Closed: at war, or robbed too often lately. */
 	public static boolean bloqueada(String a, String b, long hoje) {
 		Registro.Info ia = Registro.get(a);
-		if (ia != null && ia.reputacaoCom(b) <= Diplomacia.INIMIGO) {
+		if (ia != null && ia.reputacaoCom(b) <= Diplomacia.INIMIGO || embargo(a, b)) {
 			return true;
 		}
 		Registro.Rota r = ia == null ? null : ia.rotas.get(b);
 		return r != null && hoje < r.bloqueadaAte;
+	}
+
+	/** Either side has an embargo on the other. */
+	public static boolean embargo(String a, String b) {
+		Registro.Info ia = Registro.get(a), ib = Registro.get(b);
+		return ia != null && ia.embargos.contains(b) || ib != null && ib.embargos.contains(a);
 	}
 
 	public static boolean emGuerra(String a, String b) {

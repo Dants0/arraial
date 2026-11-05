@@ -26,7 +26,12 @@ public final class Vilas {
 			"Arraial de Santa Luzia", "Arraial do Bom Jesus", "Arraial de São Bento", "Arraial da Boa Vista",
 			"Arraial de Água Limpa", "Arraial do Rio Verde", "Arraial da Pedra Branca", "Arraial de São Gonçalo",
 			"Arraial de Nossa Senhora da Conceição", "Arraial do Tijuco", "Arraial das Flores", "Arraial do Campo Alegre",
-			"Arraial de Santo Antônio", "Arraial da Serra Azul", "Arraial do Ribeirão", "Arraial de São Miguel");
+			"Arraial de Santo Antônio", "Arraial da Serra Azul", "Arraial do Ribeirão", "Arraial de São Miguel",
+			"Arraial de Sant'Ana", "Arraial do Rosário", "Arraial de São José", "Arraial do Carmo", "Arraial de Itapecerica",
+			"Arraial do Pilar", "Arraial de São João del-Rei", "Arraial das Mercês", "Arraial do Cajueiro", "Arraial da Lagoa Santa",
+			"Arraial do Brejo Grande", "Arraial de Bonfim", "Arraial da Penha", "Arraial do Sumidouro", "Arraial de Piracicaba",
+			"Arraial do Morro Velho", "Arraial de Paracatu", "Arraial dos Remédios", "Arraial da Cachoeira", "Arraial do Juazeiro",
+			"Arraial de Itabira", "Arraial do Curral del-Rei", "Arraial da Barra", "Arraial de São Vicente");
 
 	private static final Map<ResourceKey<Level>, Set<BlockPos>> ATIVAS = new ConcurrentHashMap<>();
 
@@ -190,8 +195,25 @@ public final class Vilas {
 		return level.getOverworldClockTime() / 24000L + 1;
 	}
 
+	/** A name no arraial in the world uses yet (compared without the stage: "Vila do Tijuco" uses "do Tijuco"). */
 	static String nomeAleatorio(RandomSource random) {
-		return NOMES.get(random.nextInt(NOMES.size()));
+		java.util.Set<String> usados = new java.util.HashSet<>();
+		for (Registro.Info v : Registro.todas().values()) {
+			usados.add(lugar(v.nome));
+		}
+		List<String> livres = NOMES.stream().filter(n -> !usados.contains(lugar(n))).toList();
+		if (!livres.isEmpty()) {
+			return livres.get(random.nextInt(livres.size()));
+		}
+		String n = NOMES.get(random.nextInt(NOMES.size()));
+		String novo = n + " de Cima";
+		return usados.contains(lugar(novo)) ? novo + " " + (2 + random.nextInt(98)) : novo;
+	}
+
+	/** The place part of a name ("Povoado do Tijuco" -> "do Tijuco"). */
+	private static String lugar(String nome) {
+		int i = nome.indexOf(" d");
+		return i < 0 ? nome : nome.substring(i + 1);
 	}
 
 	private Vilas() {

@@ -79,7 +79,7 @@ public final class Ruinas {
 			}
 			List<PlanoDeObra.Etapa> inteiras = new ArrayList<>();
 			for (PlanoDeObra.Etapa e : etapas) {
-				if (level.getBlockState(e.pos()).is(e.state().getBlock())) {
+				if (Era.equivale(e.state().getBlock(), level.getBlockState(e.pos()).getBlock())) {
 					inteiras.add(e);
 				}
 			}

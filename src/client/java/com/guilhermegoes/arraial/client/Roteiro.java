@@ -104,7 +104,10 @@ public final class Roteiro {
 	}
 
 	private static void montar() {
-		passo(10, () -> cmd("gamemode creative", "kill @e[type=minecraft:vindicator]", "kill @e[type=minecraft:pillager]"));
+		passo(10, () -> {
+			mc().options.pauseOnLostFocus = false; // the test window may not have focus: no pause menu over the photos
+			cmd("gamemode creative", "kill @e[type=minecraft:vindicator]", "kill @e[type=minecraft:pillager]");
+		});
 		passo(190, () -> {
 			log("no mundo; preparando");
 			mc().getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
@@ -264,10 +267,74 @@ public final class Roteiro {
 		passo(30, () -> foto("22_volta_ao_territorio"));
 		passo(10, () -> cmd("tp @s 0.5 121 -7.5 0 30", "setblock 2 120 -5 arraial:escrivaninha",
 				"item replace entity @s weapon.mainhand with minecraft:air"));
+		// The Escrivaninha opens the Chancery: map, neighbours, a treaty, an embargo and lifting it.
+		passo(10, () -> cmd("give @s minecraft:paper 4"));
 		passo(20, () -> clicarBloco(new BlockPos(2, 120, -5)));
-		passo(10, () -> cmd("item replace entity @s weapon.mainhand with minecraft:paper"));
-		passo(20, () -> clicarBloco(new BlockPos(2, 120, -5)));
-		passo(30, () -> foto("23_escrivaninha"));
+		passo(40, () -> {
+			if (mc().gui.screen() instanceof TelaArraial t) {
+				var d = t.dados();
+				log("chancelaria: mesa=" + d.mesa + " vilas=" + d.vilas.size() + " meu=" + (d.meu >= 0 ? d.vilas.get(d.meu).nome : "-")
+						+ " terras=" + d.terras.size() + " rotas=" + d.rotas.size() + " grade=" + d.w + "x" + d.h + "@" + d.celula + " papel=" + d.papel);
+				vizinho = d.vilas.stream().filter(v -> d.meu < 0 || !v.id.equals(d.vilas.get(d.meu).id)).filter(v -> !v.abandonada)
+						.map(v -> v.nome).findFirst().orElse("");
+				log("chancelaria: vizinho escolhido = " + vizinho);
+			} else {
+				log("chancelaria: a tela NAO abriu (" + mc().gui.screen() + ")");
+			}
+		});
+		passo(10, () -> foto("23_chancelaria"));
+		passo(10, () -> {
+			if (mc().gui.screen() instanceof TelaArraial t) {
+				for (String acao : new String[] {"comercio", "alianca", "paz", "fronteira", "tributo"}) {
+					if (t.testar(vizinho, acao)) {
+						log("chancelaria: propus " + acao + " a " + vizinho);
+						return;
+					}
+				}
+				log("chancelaria: nenhuma proposta possivel a " + vizinho);
+			}
+		});
+		passo(40, () -> {
+			if (mc().gui.screen() instanceof TelaArraial t) {
+				log("chancelaria: resposta = " + t.dados().mensagem.getString());
+			}
+		});
+		passo(10, () -> foto("23b_proposta"));
+		passo(10, () -> {
+			if (mc().gui.screen() instanceof TelaArraial t) {
+				log("chancelaria: embargo apertado = " + t.testar(vizinho, "embargo"));
+			}
+		});
+		passo(40, () -> {
+			if (mc().gui.screen() instanceof TelaArraial t) {
+				var d = t.dados();
+				var v = d.vilas.stream().filter(x -> x.nome.equals(vizinho)).findFirst().orElse(null);
+				String meu = d.meu >= 0 ? d.vilas.get(d.meu).id : "";
+				log("chancelaria: embargamos=" + (v != null && v.embargamos) + " estrada fechada no servidor="
+						+ (v != null && com.guilhermegoes.arraial.vila.Economia.bloqueada(meu, v.id, 0)) + " msg=" + d.mensagem.getString());
+			}
+		});
+		passo(10, () -> foto("23c_embargo"));
+		passo(10, () -> {
+			if (mc().gui.screen() instanceof TelaArraial t) {
+				t.testar(vizinho, "embargo");
+			}
+		});
+		passo(40, () -> {
+			if (mc().gui.screen() instanceof TelaArraial t) {
+				var v = t.dados().vilas.stream().filter(x -> x.nome.equals(vizinho)).findFirst().orElse(null);
+				log("chancelaria: embargo suspenso = " + (v != null && !v.embargamos) + " msg=" + t.dados().mensagem.getString());
+			}
+			mc().gui.setScreen(null);
+		});
+		// The Mapa da Região from anywhere (a long way out, on the road).
+		passo(10, () -> cmd("tp @s 90.5 121 40.5 0 0", "item replace entity @s weapon.mainhand with arraial:mapa_regiao"));
+		passo(30, () -> mc().gameMode.useItem(mc().player, InteractionHand.MAIN_HAND));
+		passo(40, () -> {
+			log("mapa: tela aberta = " + (mc().gui.screen() instanceof TelaArraial t ? "sim, mesa=" + t.dados().mesa + " vilas=" + t.dados().vilas.size() : "nao"));
+		});
+		passo(10, () -> foto("23d_mapa"));
+		passo(10, () -> mc().gui.setScreen(null));
 
 		// ---- Eras: new houses in colonial style, seen from above through the three eras.
 		passo(10, () -> cmd("tp @s 0.5 121 -7.5 0 30", "execute positioned 0 120 0 run arraial era colonial",
@@ -275,10 +342,20 @@ public final class Roteiro {
 				"execute positioned 0 120 0 run arraial obra_pronta rancho", "execute positioned 0 120 0 run arraial obra_pronta casebre"));
 		passo(40, () -> cmd("setblock 22 140 22 minecraft:glass", "tp @s 22.5 141 22.5 135 40"));
 		passo(60, () -> foto("24_era_colonial"));
+		passo(5, () -> contarBlocos("colonial"));
 		passo(10, () -> cmd("execute positioned 0 120 0 run arraial era imperial"));
 		passo(60, () -> foto("25_era_imperial"));
+		passo(5, () -> contarBlocos("imperial"));
 		passo(10, () -> cmd("execute positioned 0 120 0 run arraial era republicana"));
 		passo(60, () -> foto("26_era_republicana"));
+		passo(5, () -> contarBlocos("republicana"));
+		// The colonial blocks side by side.
+		passo(10, () -> cmd("fill 28 139 30 37 139 32 minecraft:grass_block", "setblock 29 140 31 arraial:taipa", "setblock 30 140 31 arraial:telha",
+				"setblock 31 140 31 arraial:telha_escada[facing=north]", "setblock 32 140 31 arraial:telha_laje", "setblock 33 140 31 arraial:cal",
+				"setblock 34 140 31 arraial:azulejo", "setblock 35 140 31 arraial:azulejo", "setblock 35 141 31 arraial:cal",
+				"setblock 34 141 31 arraial:cal", "setblock 34 142 31 arraial:telha_escada[facing=north]", "setblock 35 142 31 arraial:telha_escada[facing=north]",
+				"setblock 32 140 27 minecraft:glass", "tp @s 32.5 141 27.5 0 15"));
+		passo(60, () -> foto("27_blocos_coloniais"));
 		passo(20, () -> {
 			log("fim do roteiro");
 			mc().stop();
@@ -289,6 +366,23 @@ public final class Roteiro {
 
 	private static int alvo = -1;
 	private static BlockPos chao = BlockPos.ZERO;
+	private static String vizinho = "";
+
+	/** Logs how many of each era block stand around the test village. */
+	private static void contarBlocos(String era) {
+		servidor((srv, sp) -> {
+			java.util.Map<String, Integer> n = new java.util.TreeMap<>();
+			for (BlockPos p : BlockPos.betweenClosed(-48, 110, -48, 48, 140, 48)) {
+				var b = sp.level().getBlockState(p).getBlock();
+				String id = BuiltInRegistries.BLOCK.getKey(b).toString();
+				if (id.startsWith("arraial:t") || id.equals("arraial:cal") || id.equals("arraial:azulejo") || id.equals("minecraft:mud_bricks")
+						|| id.equals("minecraft:bricks") || id.contains("brick_stairs")) {
+					n.merge(id, 1, Integer::sum);
+				}
+			}
+			log("blocos na era " + era + ": " + n);
+		});
+	}
 
 	/** Right-clicks the top of a block with whatever is in hand (as the player would). */
 	private static void clicarBloco(BlockPos p) {

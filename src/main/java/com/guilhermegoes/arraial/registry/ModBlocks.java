@@ -134,6 +134,34 @@ public final class ModBlocks {
 			new com.guilhermegoes.arraial.vila.BandeirinhasBlock(props("bandeirinhas").mapColor(MapColor.COLOR_RED).noCollision().instabreak()
 					.sound(SoundType.WOOL).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.POPPED)));
 
+	// ---------------------------------------------------------------- colonial building blocks (see vila.Era)
+
+	/** Taipa: wattle and daub, clay packed on a lattice of sticks; the colonial wall. */
+	public static final Block TAIPA = register("taipa",
+			new Block(props("taipa").mapColor(MapColor.DIRT).strength(1.2F).sound(SoundType.MUD_BRICKS)));
+
+	/** Telha: curved clay roof tiles (the Imperial roof). */
+	public static final Block TELHA = register("telha",
+			new Block(props("telha").mapColor(MapColor.TERRACOTTA_ORANGE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()
+					.sound(SoundType.DECORATED_POT)));
+
+	public static final Block TELHA_ESCADA = register("telha_escada",
+			new net.minecraft.world.level.block.StairBlock(TELHA.defaultBlockState(), props("telha_escada")
+					.mapColor(MapColor.TERRACOTTA_ORANGE).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.DECORATED_POT)));
+
+	public static final Block TELHA_LAJE = register("telha_laje",
+			new net.minecraft.world.level.block.SlabBlock(props("telha_laje").mapColor(MapColor.TERRACOTTA_ORANGE).strength(1.5F, 6.0F)
+					.requiresCorrectToolForDrops().sound(SoundType.DECORATED_POT)));
+
+	/** Parede caiada: whitewashed lime plaster (the Republican wall). */
+	public static final Block CAL = register("cal",
+			new Block(props("cal").mapColor(MapColor.SNOW).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
+
+	/** Azulejo: blue and white glazed tiles, on the lower part of Republican façades. */
+	public static final Block AZULEJO = register("azulejo",
+			new Block(props("azulejo").mapColor(MapColor.COLOR_BLUE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()
+					.sound(SoundType.DECORATED_POT)));
+
 	private static BlockBehaviour.Properties props(String name) {
 		return BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Arraial.id(name)));
 	}

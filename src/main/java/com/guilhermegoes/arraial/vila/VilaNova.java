@@ -208,8 +208,10 @@ public final class VilaNova {
 		if (plano == null) {
 			return;
 		}
+		BlockPos v = Vilas.maisProxima(level, c.getBlockPos());
+		Era era = v != null && level.getBlockEntity(v) instanceof ArraialBlockEntity a ? a.era() : Era.COLONIAL;
 		for (PlanoDeObra.Etapa e : plano.etapas()) {
-			level.setBlock(e.pos(), e.state(), Block.UPDATE_CLIENTS);
+			level.setBlock(e.pos(), era.estilo(e.state()), Block.UPDATE_CLIENTS);
 		}
 		for (PlanoDeObra.Etapa e : plano.etapas()) {
 			c.avancar();

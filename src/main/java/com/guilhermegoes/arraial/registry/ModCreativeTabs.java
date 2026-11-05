@@ -63,6 +63,13 @@ public final class ModCreativeTabs {
 						output.accept(ModItems.CANTIL_CHEIO);
 						output.accept(ModItems.SACO_SAQUE);
 						output.accept(ModItems.COMENDA);
+						output.accept(ModItems.MAPA_REGIAO);
+						output.accept(ModBlocks.TAIPA);
+						output.accept(ModBlocks.TELHA);
+						output.accept(ModBlocks.TELHA_ESCADA);
+						output.accept(ModBlocks.TELHA_LAJE);
+						output.accept(ModBlocks.CAL);
+						output.accept(ModBlocks.AZULEJO);
 					})
 					.build());
 

@@ -2,6 +2,7 @@ package com.guilhermegoes.arraial.vila;
 
 import com.guilhermegoes.arraial.obra.CanteiroBlockEntity;
 import com.guilhermegoes.arraial.obra.PlanoDeObra;
+import com.guilhermegoes.arraial.registry.ModBlocks;
 import com.guilhermegoes.arraial.registry.ModPois;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,20 +61,12 @@ public enum Era {
 
 	/** The block a planned (colonial) block becomes in this era; the same block if unchanged. */
 	public Block troca(Block b) {
+		boolean parede = b == Blocks.MUD_BRICKS || b == Blocks.PACKED_MUD || b == ModBlocks.TAIPA;
 		if (this == COLONIAL) {
-			return b;
+			return parede ? ModBlocks.TAIPA : b;
 		}
-		if (b == Blocks.MUD_BRICKS || b == Blocks.PACKED_MUD) {
-			return this == IMPERIAL ? Blocks.BRICKS : Blocks.DYED_TERRACOTTA.white();
-		}
-		if (b == Blocks.BRICKS && this == REPUBLICANA) {
-			return Blocks.DYED_TERRACOTTA.white();
-		}
-		if (b == Blocks.MUD_BRICK_STAIRS) {
-			return Blocks.BRICK_STAIRS;
-		}
-		if (b == Blocks.MUD_BRICK_SLAB) {
-			return Blocks.BRICK_SLAB;
+		if (parede || b == Blocks.BRICKS && this == REPUBLICANA) {
+			return this == IMPERIAL ? Blocks.BRICKS : ModBlocks.CAL;
 		}
 		if (b == Blocks.COBBLESTONE && this == REPUBLICANA) {
 			return Blocks.STONE_BRICKS;
@@ -81,23 +74,48 @@ public enum Era {
 		if (b == Blocks.TORCH) {
 			return Blocks.LANTERN;
 		}
-		// Roofs of wood become clay tiles.
+		// Roofs (wood, mud brick or brick) become clay tiles.
 		String id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(b).getPath();
-		if (id.endsWith("_stairs") && !id.contains("brick") && !id.contains("stone")) {
-			return Blocks.BRICK_STAIRS;
+		if (id.endsWith("_stairs") && !id.contains("stone")) {
+			return ModBlocks.TELHA_ESCADA;
 		}
-		if (id.endsWith("_slab") && !id.contains("brick") && !id.contains("stone")) {
-			return Blocks.BRICK_SLAB;
+		if (id.endsWith("_slab") && !id.contains("stone")) {
+			return ModBlocks.TELHA_LAJE;
 		}
 		return b;
 	}
 
+	/** What should stand where the plan has {@code plano}; {@code barra}: the lowest course of the walls (azulejo in the Republic). */
+	public Block alvo(Block plano, boolean barra) {
+		Block b = troca(plano);
+		return barra && this == REPUBLICANA && b == ModBlocks.CAL ? ModBlocks.AZULEJO : b;
+	}
+
+	/** The block in the world is the planned one in the style of some era (not something a player put there). */
+	public static boolean equivale(Block plano, Block atual) {
+		if (atual == plano) {
+			return true;
+		}
+		for (Era e : values()) {
+			if (e.alvo(plano, false) == atual || e.alvo(plano, true) == atual) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** A planned state in this era's style (keeps facing, half, shape...). */
+	public BlockState estilo(BlockState plano) {
+		Block b = troca(plano.getBlock());
+		return b == plano.getBlock() ? plano : b.withPropertiesOf(plano);
+	}
+
 	/** The item the new block costs from the armazém (null: free, e.g. a lantern from the torch). */
 	static Item custo(Block novo) {
-		if (novo == Blocks.BRICKS || novo == Blocks.BRICK_STAIRS || novo == Blocks.BRICK_SLAB) {
+		if (novo == Blocks.BRICKS || novo == ModBlocks.TELHA_ESCADA || novo == ModBlocks.TELHA_LAJE) {
 			return Items.BRICK;
 		}
-		if (novo == Blocks.DYED_TERRACOTTA.white()) {
+		if (novo == ModBlocks.CAL || novo == ModBlocks.AZULEJO) {
 			return Items.CLAY_BALL;
 		}
 		if (novo == Blocks.STONE_BRICKS) {
@@ -192,9 +210,6 @@ public enum Era {
 	 */
 	public static int reformar(ServerLevel level, ArraialBlockEntity a, int predios, int ruas, boolean gratis) {
 		Era era = a.era;
-		if (era == COLONIAL) {
-			return 0;
-		}
 		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, a.getBlockPos());
 		Map<Item, Integer> inv = Vilas.inventario(armazens);
 		int mudou = 0, reformados = 0;
@@ -207,12 +222,23 @@ public enum Era {
 				continue;
 			}
 			List<PlanoDeObra.Etapa> etapas = c.plano(level).map(PlanoDeObra::etapas).orElse(List.of());
+			// The lowest course of the walls (the azulejo barra of Republican façades).
+			int barra = Integer.MAX_VALUE;
+			for (PlanoDeObra.Etapa e : etapas) {
+				if (!e.limpeza() && REPUBLICANA.troca(e.state().getBlock()) == ModBlocks.CAL) {
+					barra = Math.min(barra, e.pos().getY());
+				}
+			}
 			int aqui = 0;
 			for (PlanoDeObra.Etapa e : etapas) {
-				BlockState atual = level.getBlockState(e.pos());
-				Block novo = era.troca(atual.getBlock());
-				if (novo == atual.getBlock() || !atual.is(e.state().getBlock()) && era.troca(e.state().getBlock()) != novo) {
+				if (e.limpeza()) {
 					continue;
+				}
+				BlockState atual = level.getBlockState(e.pos());
+				Block plano = e.state().getBlock();
+				Block novo = era.alvo(plano, e.pos().getY() == barra);
+				if (novo == atual.getBlock() || atual.isAir() || !equivale(plano, atual.getBlock())) {
+					continue; // already in style, missing (Reparos' job), or changed by a player
 				}
 				Item custo = custo(novo);
 				if (!gratis && custo != null) {
@@ -237,7 +263,7 @@ public enum Era {
 		// Streets and lamp posts around the Cruzeiro.
 		int r = Vilas.RAIO, feitas = 0;
 		BlockPos c = a.getBlockPos();
-		for (int dx = -r; dx <= r && feitas < ruas; dx++) {
+		for (int dx = -r; dx <= r && feitas < ruas && era != COLONIAL; dx++) {
 			for (int dz = -r; dz <= r && feitas < ruas; dz++) {
 				BlockPos topo = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, c.offset(dx, 0, dz)).below();
 				BlockState s = level.getBlockState(topo);

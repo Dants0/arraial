@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "arraial:telha",
+  "result": {
+    "count": 1,
+    "id": "arraial:telha_escada"
+  }
+}

@@ -220,6 +220,6 @@ public final class PlanoDeObra {
 		if (etapa.limpeza()) {
 			return atual.isAir() || !atual.getFluidState().isEmpty();
 		}
-		return atual.is(etapa.state().getBlock());
+		return com.guilhermegoes.arraial.vila.Era.equivale(etapa.state().getBlock(), atual.getBlock());
 	}
 }

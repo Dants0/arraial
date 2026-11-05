@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": "arraial:cal",
+    "A": "minecraft:blue_dye"
+  },
+  "pattern": [
+    " C ",
+    "CAC",
+    " C "
+  ],
+  "result": {
+    "count": 4,
+    "id": "arraial:azulejo"
+  }
+}

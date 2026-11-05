@@ -75,6 +75,8 @@ public final class Registro {
 		public Map<String, Long> guerras = new HashMap<>();
 		public Map<String, Tratado> tratados = new HashMap<>();
 		public long ultimaProposta;
+		/** Neighbours this arraial refuses to trade with (an embargo: closed road, no merchants or contracts). */
+		public java.util.List<String> embargos = new java.util.ArrayList<>();
 		// ---- Ruins (see Ruinas)
 		public int diasAbandonada;
 		public int ruinaPendente;
@@ -89,6 +91,8 @@ public final class Registro {
 		public String cor1 = "";
 		public String cor2 = "";
 		public String bioma = "";
+		/** The era (see Era), copied from the arraial when it is loaded. */
+		public String era = "";
 		public java.util.List<String> costumes = new java.util.ArrayList<>();
 		public java.util.List<String> tradicoes = new java.util.ArrayList<>();
 		public boolean bandeiraHasteada;

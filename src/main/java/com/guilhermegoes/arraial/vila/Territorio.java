@@ -16,8 +16,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import org.jspecify.annotations.Nullable;
 
@@ -221,6 +219,11 @@ public final class Territorio {
 		if (tratado(a, b, hoje) != null) {
 			delta -= 3;
 		}
+		boolean embargo = va.embargos.contains(b) || vb.embargos.contains(a);
+		if (embargo) {
+			delta += 1;
+			Registro.mudarReputacao(a, b, -1);
+		}
 		t = Math.max(0, Math.min(100, t + delta));
 		va.tensao.put(b, t);
 		vb.tensao.put(a, t);
@@ -242,6 +245,8 @@ public final class Territorio {
 			}
 		}
 
+		embargos(level, a, va, b, vb, t, hoje, r);
+
 		// War.
 		rep = va.reputacaoCom(b);
 		boolean guerra = va.guerras.containsKey(b);
@@ -261,6 +266,29 @@ public final class Territorio {
 			if (hoje - va.guerras.get(b) >= 3 && r.nextFloat() < 0.3F) {
 				int fa = forca(va), fb = forca(vb);
 				paz(level, fa >= fb ? a : b, fa >= fb ? b : a, hoje, comum);
+			}
+		}
+	}
+
+	/**
+	 * Autonomous arraiais use embargoes too: in a dispute the stronger side may cut trade; when tempers
+	 * cool, they lift it. (The player's own arraial only embargoes or lifts by the player's hand.)
+	 */
+	private static void embargos(ServerLevel level, String a, Registro.Info va, String b, Registro.Info vb, int t, long hoje, RandomSource r) {
+		boolean disputa = va.disputas.contains(b);
+		for (int lado = 0; lado < 2; lado++) {
+			String eu = lado == 0 ? a : b, outro = lado == 0 ? b : a;
+			Registro.Info ve = lado == 0 ? va : vb, vo = lado == 0 ? vb : va;
+			if (!ve.autonoma) {
+				continue;
+			}
+			if (!ve.embargos.contains(outro) && disputa && forca(ve) >= forca(vo) && r.nextFloat() < 0.08F) {
+				Component msg = embargar(level, ve.posicao(), eu, ve, outro, vo, false);
+				Mundo.historia(eu, hoje, "arraial.historia.embargamos", vo.nome);
+				avisarCarregadas(level, eu, outro, msg);
+			} else if (ve.embargos.contains(outro) && t < 20 && r.nextFloat() < 0.15F) {
+				Component msg = embargar(level, ve.posicao(), eu, ve, outro, vo, false);
+				avisarCarregadas(level, eu, outro, msg);
 			}
 		}
 	}
@@ -331,9 +359,12 @@ public final class Territorio {
 		vb.disputas.remove(a);
 		va.tensao.put(b, 10);
 		vb.tensao.put(a, 10);
+		va.embargos.remove(b);
+		vb.embargos.remove(a);
 		int rep = va.reputacaoCom(b);
 		int alvo = switch (tipo) {
 			case "paz" -> Math.max(rep, -20);
+			case "tributo" -> rep - 5;
 			case "alianca" -> Math.max(rep, Diplomacia.ALIADO);
 			default -> Math.max(rep, 0);
 		};
@@ -432,85 +463,110 @@ public final class Territorio {
 		Registro.todas().values().forEach(v -> v.marcos.remove(k));
 	}
 
-	// ================================================================ diplomacy at the Escrivaninha
+	// ================================================================ diplomacy (the Escrivaninha's screen, see Chancelaria)
 
-	private static final Map<UUID, Integer> ESCOLHA = new HashMap<>();
-
-	public static void usar(ServerLevel level, BlockPos pos, Player p, ItemStack mao) {
-		BlockPos vila = Vilas.maisProxima(level, pos);
-		if (vila == null || !(level.getBlockEntity(vila) instanceof ArraialBlockEntity a)) {
-			p.sendOverlayMessage(Component.translatable("arraial.feira.sem_vila"));
-			return;
-		}
-		String meu = Economia.id(level, vila);
-		Registro.Info eu = Registro.get(meu);
+	/**
+	 * The player's arraial proposes a treaty to a neighbour. The other side weighs relations, the
+	 * balance of strength, how long a war has gone on and the player's standing; it may say no.
+	 * Tribute is demanded rather than offered: only a much stronger arraial gets it, and a refusal
+	 * hurts.
+	 */
+	public static Component propor(ServerLevel level, ArraialBlockEntity a, Player p, String meu, Registro.Info eu, String outro,
+			Registro.Info o, String tipo) {
 		long hoje = Vilas.dia(level);
-		List<String> vizinhos = new ArrayList<>();
-		Registro.todas().forEach((k, v) -> {
-			if (!k.equals(meu) && !v.abandonada && v.dimensao.equals(level.dimension().identifier().toString())
-					&& v.posicao().distSqr(vila) < (double) Economia.ALCANCE * Economia.ALCANCE) {
-				vizinhos.add(k);
+		BlockPos vila = a.getBlockPos();
+		int rep = eu.reputacaoCom(outro);
+		double razao = forca(eu) / (double) Math.max(1, forca(o));
+		double chance = 0.3 + rep / 150.0 + (razao - 1) * 0.3 + a.reputacao(p.getUUID()) / 200.0;
+		switch (tipo) {
+			case "paz" -> chance += (hoje - eu.guerras.getOrDefault(outro, hoje)) * 0.05;
+			case "alianca" -> chance -= 0.2;
+			case "tributo" -> chance = 0.05 + (razao - 1.5) * 0.4 + Math.min(0, rep) / 200.0;
+			default -> {
 			}
-		});
-		if (eu == null || vizinhos.isEmpty()) {
-			p.sendSystemMessage(Component.translatable("arraial.territorio.sem_vizinhos").withStyle(ChatFormatting.GRAY));
-			return;
 		}
-		int escolha = Math.floorMod(ESCOLHA.getOrDefault(p.getUUID(), 0), vizinhos.size());
-		if (mao.isEmpty() && p.isShiftKeyDown()) {
-			escolha = (escolha + 1) % vizinhos.size();
-			ESCOLHA.put(p.getUUID(), escolha);
-			p.sendOverlayMessage(Component.translatable("arraial.territorio.escolhido", Registro.get(vizinhos.get(escolha)).nome).withStyle(ChatFormatting.YELLOW));
-			return;
+		if (Cultura.costume(o, "desconfiados")) {
+			chance -= 0.1;
+		} else if (Cultura.costume(o, "hospitaleiros") || Cultura.costume(o, "comerciantes") && tipo.equals("comercio")) {
+			chance += 0.1;
 		}
-		String outro = vizinhos.get(escolha);
-		Registro.Info o = Registro.get(outro);
-		if (mao.is(Items.PAPER)) {
-			if (eu.ultimaProposta == hoje) {
-				p.sendSystemMessage(Component.translatable("arraial.territorio.ja_hoje").withStyle(ChatFormatting.GRAY));
-				return;
-			}
-			eu.ultimaProposta = hoje;
-			mao.shrink(1);
-			int rep = eu.reputacaoCom(outro);
-			String tipo = eu.guerras.containsKey(outro) ? "paz" : eu.disputas.contains(outro) ? "fronteira" : rep >= 40 ? "alianca" : "comercio";
-			double chance = 0.3 + rep / 150.0 + (forca(eu) / (double) Math.max(1, forca(o)) - 1) * 0.3 + a.reputacao(p.getUUID()) / 200.0;
-			if (tipo.equals("paz")) {
-				chance += (hoje - eu.guerras.get(outro)) * 0.05;
-			}
-			if (tipo.equals("alianca")) {
-				chance -= 0.2;
-			}
-			Component nomeTratado = Component.translatable("arraial.tratado." + tipo);
-			if (level.getRandom().nextDouble() < chance) {
-				if (tipo.equals("fronteira")) {
-					dividir(level, meu, eu, outro, o);
-				}
-				assinar(meu, outro, tipo, hoje + (tipo.equals("alianca") ? 24 : 16), 0);
-				Component texto = Component.translatable("arraial.cronica.tratado", nomeTratado, o.nome, p.getName().getString());
-				Cronica.anotar(level, vila, texto);
-				Mundo.historia(outro, hoje, "arraial.historia.tratado", nomeTratado.getString(), eu.nome);
-				if (p instanceof ServerPlayer sp) {
-					Conquistas.dar(sp, "pacificador");
-				}
-				a.mudarReputacao(p.getUUID(), 5);
-				p.sendSystemMessage(Component.literal("🕊 ").append(texto).withStyle(ChatFormatting.GREEN));
-				level.playSound(null, pos, SoundEvents.VILLAGER_YES, SoundSource.BLOCKS, 1.0F, 1.0F);
+		Component nomeTratado = Component.translatable("arraial.tratado." + tipo);
+		if (level.getRandom().nextDouble() >= chance) {
+			if (tipo.equals("tributo")) {
+				// An insult: tempers rise.
+				Registro.mudarReputacao(meu, outro, -6);
+				eu.tensao.merge(outro, 15, (x, y) -> Math.min(100, x + y));
+				o.tensao.merge(meu, 15, (x, y) -> Math.min(100, x + y));
 			} else {
 				Registro.mudarReputacao(meu, outro, -2);
-				p.sendSystemMessage(Component.translatable("arraial.territorio.recusou", o.nome, nomeTratado).withStyle(ChatFormatting.RED));
-				level.playSound(null, pos, SoundEvents.VILLAGER_NO, SoundSource.BLOCKS, 1.0F, 1.0F);
 			}
-			return;
+			level.playSound(null, p.blockPosition(), SoundEvents.VILLAGER_NO, SoundSource.BLOCKS, 1.0F, 1.0F);
+			return Component.translatable("arraial.territorio.recusou", o.nome, nomeTratado).withStyle(ChatFormatting.RED);
 		}
-		// The neighbours at a glance.
-		p.sendSystemMessage(Component.literal("✉ ").append(Component.translatable("arraial.territorio.titulo", a.nomeCompleto(), forca(eu)))
-				.withStyle(ChatFormatting.GOLD));
-		for (int i = 0; i < vizinhos.size(); i++) {
-			String k = vizinhos.get(i);
-			p.sendSystemMessage(linhaVizinho(meu, eu, k, Registro.get(k), hoje, i == escolha));
+		int tributo = 0;
+		if (tipo.equals("fronteira")) {
+			dividir(level, meu, eu, outro, o);
+		} else if (tipo.equals("tributo")) {
+			tributo = 1 + o.populacao / 4;
 		}
-		p.sendSystemMessage(Component.translatable("arraial.territorio.dica").withStyle(ChatFormatting.GRAY));
+		assinar(meu, outro, tipo, hoje + (tipo.equals("alianca") ? 24 : tipo.equals("tributo") ? 12 : 16), tributo);
+		Component texto = Component.translatable("arraial.cronica.tratado", nomeTratado, o.nome, p.getName().getString());
+		Cronica.anotar(level, vila, texto);
+		Mundo.historia(outro, hoje, "arraial.historia.tratado", nomeTratado.getString(), eu.nome);
+		if (p instanceof ServerPlayer sp) {
+			Conquistas.dar(sp, "pacificador");
+		}
+		a.mudarReputacao(p.getUUID(), tipo.equals("tributo") ? 2 : 5);
+		level.playSound(null, p.blockPosition(), SoundEvents.VILLAGER_YES, SoundSource.BLOCKS, 1.0F, 1.0F);
+		return Component.literal("🕊 ").append(texto).withStyle(ChatFormatting.GREEN);
+	}
+
+	/** Breaks the treaty with a neighbour: they will not forget it. */
+	public static Component romper(ServerLevel level, BlockPos vila, String meu, Registro.Info eu, String outro, Registro.Info o) {
+		long hoje = Vilas.dia(level);
+		Registro.Tratado t = tratado(meu, outro, hoje);
+		if (t == null) {
+			return Component.translatable("arraial.diplomacia.sem_tratado", o.nome).withStyle(ChatFormatting.GRAY);
+		}
+		Component nome = Component.translatable("arraial.tratado." + t.tipo);
+		eu.tratados.remove(outro);
+		o.tratados.remove(meu);
+		Registro.mudarReputacao(meu, outro, -15);
+		eu.tensao.merge(outro, 20, (x, y) -> Math.min(100, x + y));
+		o.tensao.merge(meu, 20, (x, y) -> Math.min(100, x + y));
+		Component texto = Component.translatable("arraial.cronica.rompeu", nome, o.nome);
+		Cronica.anotar(level, vila, texto);
+		Mundo.historia(outro, hoje, "arraial.historia.rompeu", nome.getString(), eu.nome);
+		return Component.literal("✂ ").append(texto).withStyle(ChatFormatting.GOLD);
+	}
+
+	/** Starts or lifts an embargo: no merchants, tropeiros or contracts between the two (prices feel it). */
+	public static Component embargar(ServerLevel level, BlockPos vila, String meu, Registro.Info eu, String outro, Registro.Info o, boolean anunciar) {
+		long hoje = Vilas.dia(level);
+		Component texto;
+		if (eu.embargos.remove(outro)) {
+			Registro.mudarReputacao(meu, outro, 3);
+			texto = Component.translatable("arraial.cronica.embargo_fim", eu.nome, o.nome);
+			Mundo.historia(outro, hoje, "arraial.historia.embargo_fim", eu.nome);
+		} else {
+			eu.embargos.add(outro);
+			Registro.Tratado t = tratado(meu, outro, hoje);
+			if (t != null && (t.tipo.equals("comercio") || t.tipo.equals("alianca"))) {
+				eu.tratados.remove(outro); // an embargo ends any trade between them
+				o.tratados.remove(meu);
+			}
+			eu.contratos.removeIf(c -> c.fornecedor.equals(outro));
+			o.contratos.removeIf(c -> c.fornecedor.equals(meu));
+			Registro.mudarReputacao(meu, outro, -8);
+			eu.tensao.merge(outro, 10, (x, y) -> Math.min(100, x + y));
+			o.tensao.merge(meu, 10, (x, y) -> Math.min(100, x + y));
+			texto = Component.translatable("arraial.cronica.embargo", eu.nome, o.nome);
+			Mundo.historia(outro, hoje, "arraial.historia.embargo", eu.nome);
+		}
+		if (anunciar) {
+			Cronica.anotar(level, vila, texto);
+		}
+		return Component.literal("⛔ ").append(texto).withStyle(ChatFormatting.GOLD);
 	}
 
 	public static MutableComponent linhaVizinho(String meu, Registro.Info eu, String k, Registro.Info o, long hoje, boolean escolhido) {
