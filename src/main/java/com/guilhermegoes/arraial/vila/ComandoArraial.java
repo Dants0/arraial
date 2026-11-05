@@ -60,12 +60,24 @@ public final class ComandoArraial {
 					.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 					.then(crise)
 					.then(festa)
+					// The region at a glance: every arraial, its specialty, people, state and roads.
+					.then(Commands.literal("mundo").executes(c -> {
+						MundoComando.listar(c.getSource());
+						return 1;
+					}))
+					// Lives N days in every unloaded arraial right now (testing the living world).
+					.then(Commands.literal("avancar").then(Commands.argument("dias", com.mojang.brigadier.arguments.IntegerArgumentType.integer(1, 100))
+							.executes(c -> {
+								int dias = com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "dias");
+								MundoComando.avancar(c.getSource(), dias);
+								return 1;
+							})))
 					// A povoado right here, ignoring the distance rules (for testing and videos).
 					.then(Commands.literal("vila_nova").executes(c -> {
-						var p = c.getSource().getPlayerOrException();
+						var p = c.getSource().getPlayer();
 						ServerLevel level = c.getSource().getLevel();
-						BlockPos centro = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-								p.blockPosition().relative(p.getDirection(), 24));
+						BlockPos onde = p != null ? p.blockPosition().relative(p.getDirection(), 24) : BlockPos.containing(c.getSource().getPosition());
+						BlockPos centro = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, onde);
 						VilaNova.fundar(level, centro, p);
 						return 1;
 					}))

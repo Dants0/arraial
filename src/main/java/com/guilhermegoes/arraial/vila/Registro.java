@@ -43,6 +43,28 @@ public final class Registro {
 		public Map<String, Integer> pendentes = new HashMap<>();
 		public int tesouroPendente;
 		public long dia;
+		/** Trades (profession id → how many), for the simulation while unloaded. */
+		public Map<String, Integer> oficios = new HashMap<>();
+		public int camas;
+		public int satisfacao = 60;
+		/** What the economy lives on ({@link Economia.Especialidade} id). */
+		public String especialidade = "";
+		/** Hungry days in a row while unloaded. */
+		public int fome;
+		/** Moradores who arrived (+) or left (-) while unloaded; settled when it loads. */
+		public int saldoMoradores;
+		/** Nobody lives here any more. */
+		public boolean abandonada;
+		/** The last day simulated while unloaded (see {@link Mundo}). */
+		public long diaSimulado;
+		/** A crisis while unloaded, and the day it ends. */
+		public String criseLonge = "";
+		public long criseLongeFim;
+		/** Roads to other arraiais (their id → state of the road). */
+		public Map<String, Rota> rotas = new HashMap<>();
+		/** Things that happened while nobody was looking (copied into the Crônica on load). */
+		public java.util.List<Evento> historia = new java.util.ArrayList<>();
+		public java.util.List<Evento> historiaPendente = new java.util.ArrayList<>();
 
 		public BlockPos posicao() {
 			return BlockPos.of(pos);
@@ -50,6 +72,36 @@ public final class Registro {
 
 		public int reputacaoCom(String outro) {
 			return reputacao.getOrDefault(outro, 0);
+		}
+	}
+
+	/** A road between two arraiais: how often it was used, robbed, and whether it is closed. */
+	public static final class Rota {
+		public int viagens;
+		public int roubos;
+		public long ultimoRoubo;
+		public long bloqueadaAte;
+	}
+
+	/** An event of the regional history: a lang key and its arguments. */
+	public static final class Evento {
+		public long dia;
+		public String chave = "";
+		public java.util.List<String> args = new java.util.ArrayList<>();
+
+		public Evento() {
+		}
+
+		public Evento(long dia, String chave, String... args) {
+			this.dia = dia;
+			this.chave = chave;
+			this.args = new java.util.ArrayList<>(java.util.List.of(args));
+		}
+
+		public net.minecraft.network.chat.Component texto() {
+			// Arguments that are lang keys themselves ("arraial.historia.motivo.fome") are translated too.
+			return net.minecraft.network.chat.Component.translatable(chave, args.stream()
+					.map(a -> a.startsWith("arraial.") ? (Object) net.minecraft.network.chat.Component.translatable(a) : a).toArray());
 		}
 	}
 

@@ -31,3 +31,18 @@ Estado atual e próximas fases, alinhado ao [GDD](GDD.md) (seção 17). Detalhe 
 - Eras/modernização das construções.
 - Arquétipos regionais (Recôncavo, ribeirinho, sulista) e comunidades com pesquisa (D-011).
 - Diplomacia completa (tratados, embargo), política interna e conflitos limitados.
+
+## Pedidos de 2026-11-05 (noite): o grande plano "mundo vivo"
+
+Ordem de implementação (cada fase compila, é testada no servidor e vira commit):
+
+| Fase | Sistema | Estado |
+|---|---|---|
+| A | **Calendário e festas** — 12 meses de 2 dias, tempo da seca/águas, São João (fogueira + quadrilha), padroeiro (procissão), Feira Grande; quentão, pé-de-moleque, bandeirinhas | ✅ feito |
+| B | **Mundo vivo + economia regional** — vilas descarregadas vivem por dia (produção por ofício e estação, consumo, fome, crises, migração, crescimento, decadência, abandono e repovoamento); mercadores entre vilas; rotas com roubo e bloqueio; guerra fecha rotas; preço regional (vizinho com fartura barateia, rota fechada encarece); especialidade econômica; vilas vizinhas nascem perto da vila do jogador; `/arraial mundo` e `/arraial avancar` | ✅ feito |
+| C | **Política** — conselho com representantes dos ofícios, grupos de interesse, propostas (impostos, obras, segurança) votadas; jogador apoia/propõe e pode ser rejeitado; popularidade, corrupção e investigação, protestos, liderança hereditária ou eleita | a fazer |
+| D | **Comércio avançado** — mascate visível (NPC mercador visita a vila), caravanas com inventário real e escolta pelo jogador, contratos de fornecimento assinados na banca, custo de transporte por estrada construída | a fazer |
+| E | **Território** — fronteiras por chunk, reivindicações, disputas por recursos com causa econômica/histórica, tratados e tributos, postos avançados, escaramuças e paz | a fazer |
+| F | **Cultura** — tradições por bioma e economia, bandeira e símbolo de cada vila, festivais próprios, cerimônias, intercâmbio cultural, reconhecimento cultural do jogador | a fazer |
+| G | **Vida pessoal** — necessidades (comida, descanso, convívio), personalidade e preferências, lazer, amizades e rivalidades, objetivos individuais, pequenas missões sociais | a fazer |
+| H | **Ruínas e ocupação** — vila abandonada vira ruína (deterioração), bandidos ocupam construções abandonadas (esconderijo), jogador pode restaurar; base abandonada do jogador também | a fazer |

@@ -34,6 +34,7 @@ public class Arraial implements ModInitializer {
 		com.guilhermegoes.arraial.trabalho.Mato.init();
 		com.guilhermegoes.arraial.vila.Registro.init();
 		com.guilhermegoes.arraial.vila.VilaNova.init();
+		com.guilhermegoes.arraial.vila.Mundo.init();
 		LOGGER.info("Arraial: o pedreiro chegou.");
 	}
 }

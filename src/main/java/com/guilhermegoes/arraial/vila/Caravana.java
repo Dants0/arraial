@@ -75,6 +75,9 @@ public final class Caravana {
 			if (rep < -30) {
 				continue; // not welcome there
 			}
+			if (Economia.bloqueada(meu, e.getKey(), Vilas.dia(level))) {
+				continue; // the road is closed (robbers or war)
+			}
 			double n = rep * 10 - Math.sqrt(v.posicao().distSqr(pos)) / 50 + (v.crise.isEmpty() ? 0 : 200);
 			if (n > nota) {
 				nota = n;
@@ -149,11 +152,13 @@ public final class Caravana {
 		t.esvaziarCarga();
 		String meuId = id(level, vila);
 		long soldados = a.moradores(level).stream().filter(m -> m.profissao() == Profissao.SOLDADO).count();
-		float risco = Math.max(0.03F, 0.15F - 0.04F * soldados);
+		long hoje = Vilas.dia(level);
+		float risco = Math.max(0.03F, Economia.risco(meuId, destinoId, hoje) + 0.08F - 0.04F * soldados);
 		if (d == null) {
 			levou.forEach(t::guardar);
 		} else if (level.getRandom().nextFloat() < risco) {
 			// Caravana assaltada: the load is lost on the road.
+			Economia.roubo(meuId, destinoId, hoje);
 			Component texto = Component.translatable("arraial.cronica.tropa_assaltada", t.nome(), d.nome);
 			Cronica.anotar(level, vila, texto);
 			Prefeitura.avisar(level, a, texto.copy().withStyle(ChatFormatting.RED));
@@ -173,6 +178,7 @@ public final class Caravana {
 			Registro.mudarReputacao(meuId, destinoId, 15);
 			Cronica.anotar(level, vila, Component.translatable("arraial.cronica.tropa_ajuda", t.nome(), d.nome));
 		} else {
+			Economia.viagem(meuId, destinoId);
 			negociar(level, a, t, meuId, destinoId, d, levou);
 		}
 		BlockPos borda = borda(level, vila, destinoId);
@@ -231,7 +237,7 @@ public final class Caravana {
 	 * Goods (negative = taken) and money for the other arraial: straight into its armazém and
 	 * coffers when it is loaded, otherwise kept in the registry until it wakes up.
 	 */
-	private static void entregar(ServerLevel level, String id, Registro.Info d, Map<Item, Integer> itens, int dinheiro) {
+	static void entregar(ServerLevel level, String id, Registro.Info d, Map<Item, Integer> itens, int dinheiro) {
 		BlockPos pos = d.posicao();
 		boolean carregada = d.dimensao.equals(level.dimension().identifier().toString()) && level.isLoaded(pos)
 				&& level.getBlockEntity(pos) instanceof ArraialBlockEntity;
@@ -246,7 +252,7 @@ public final class Caravana {
 			});
 			outra.mudarTesouro(dinheiro);
 		} else {
-			itens.forEach((i, n) -> d.pendentes.merge(Feira.id(i), n, Integer::sum));
+			itens.forEach((i, n) -> Mundo.somar(d, Feira.id(i), n));
 			d.tesouroPendente += dinheiro;
 			d.tesouro = Math.max(0, d.tesouro + dinheiro);
 		}

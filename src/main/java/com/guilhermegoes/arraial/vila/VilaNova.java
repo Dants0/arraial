@@ -33,7 +33,11 @@ import net.minecraft.world.level.levelgen.Heightmap;
  * (elects a prefeito, orders buildings, grows) and joins the world's trade.
  */
 public final class VilaNova {
-	private static final int MAX_AUTONOMAS = 4;
+	private static final int MAX_AUTONOMAS = 10;
+	/** Neighbours: at least this far from any arraial, within {@link #VIZINHA_MAX} of the player's. */
+	private static final int VIZINHA_MIN = 150;
+	private static final int VIZINHA_MAX = 420;
+	private static final int VIZINHAS = 2;
 	private static final int LONGE = 350;
 	private static final int INTERVALO = 6000;
 	private static final List<String> COMECO = List.of("casebre", "rancho", "roca", "serraria", "poco");
@@ -58,15 +62,10 @@ public final class VilaNova {
 		if (autonomas >= MAX_AUTONOMAS) {
 			return;
 		}
-		for (Registro.Info i : Registro.todas().values()) {
-			if (i.dimensao.equals(dim) && i.posicao().distSqr(p.blockPosition()) < (double) LONGE * LONGE) {
-				return;
-			}
-		}
-		for (BlockPos v : Vilas.ativas(level)) {
-			if (v.distSqr(p.blockPosition()) < (double) LONGE * LONGE) {
-				return;
-			}
+		// Far from everything (a new region), or a neighbour for an arraial that has too few.
+		double perto = distanciaMinima(level, dim, p.blockPosition());
+		if (perto < LONGE && !(perto >= VIZINHA_MIN && precisaVizinha(level, dim, p.blockPosition()))) {
+			return;
 		}
 		RandomSource r = level.getRandom();
 		for (int tentativa = 0; tentativa < 6; tentativa++) {
@@ -74,11 +73,46 @@ public final class VilaNova {
 			int dist = 56 + r.nextInt(28);
 			BlockPos alvo = p.blockPosition().offset((int) (Math.cos(a) * dist), 0, (int) (Math.sin(a) * dist));
 			BlockPos centro = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, alvo);
+			if (distanciaMinima(level, dim, centro) < VIZINHA_MIN) {
+				continue;
+			}
 			if (plano(level, centro)) {
 				fundar(level, centro, p);
 				return;
 			}
 		}
+	}
+
+	/** Distance to the nearest arraial, loaded or not. */
+	private static double distanciaMinima(ServerLevel level, String dim, BlockPos pos) {
+		double min = Double.MAX_VALUE;
+		for (Registro.Info i : Registro.todas().values()) {
+			if (i.dimensao.equals(dim)) {
+				min = Math.min(min, Math.sqrt(i.posicao().distSqr(pos)));
+			}
+		}
+		for (BlockPos v : Vilas.ativas(level)) {
+			min = Math.min(min, Math.sqrt(v.distSqr(pos)));
+		}
+		return min;
+	}
+
+	/**
+	 * A player's arraial (founded by a player) near {@code pos} with fewer than {@link #VIZINHAS}
+	 * neighbours: the world sends it one, so trade, diplomacy and rivalry have someone to happen with.
+	 */
+	private static boolean precisaVizinha(ServerLevel level, String dim, BlockPos pos) {
+		for (Registro.Info i : Registro.todas().values()) {
+			if (!i.dimensao.equals(dim) || i.autonoma || i.abandonada || i.posicao().distSqr(pos) > (double) VIZINHA_MAX * VIZINHA_MAX) {
+				continue;
+			}
+			long vizinhas = Registro.todas().values().stream().filter(o -> o != i && o.dimensao.equals(dim)
+					&& o.posicao().distSqr(i.posicao()) < (double) VIZINHA_MAX * VIZINHA_MAX).count();
+			if (vizinhas < VIZINHAS) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** Loaded, dry and flat enough around {@code centro}. */
@@ -103,7 +137,7 @@ public final class VilaNova {
 	}
 
 	/** Lays out a new povoado at {@code centro} and brings its first moradores. */
-	public static void fundar(ServerLevel level, BlockPos centro, ServerPlayer quem) {
+	public static void fundar(ServerLevel level, BlockPos centro, @org.jspecify.annotations.Nullable ServerPlayer quem) {
 		level.setBlock(centro, ModBlocks.CRUZEIRO.defaultBlockState(), Block.UPDATE_ALL);
 		if (!(level.getBlockEntity(centro) instanceof ArraialBlockEntity arraial)) {
 			return;
@@ -148,7 +182,7 @@ public final class VilaNova {
 			}
 		}
 		Cronica.anotar(level, centro, Component.translatable("arraial.cronica.autonoma"));
-		quem.sendSystemMessage(Component.translatable("arraial.vila.avistou", arraial.nomeCompleto()).withStyle(ChatFormatting.AQUA));
+		if (quem != null) quem.sendSystemMessage(Component.translatable("arraial.vila.avistou", arraial.nomeCompleto()).withStyle(ChatFormatting.AQUA));
 	}
 
 	/** Builds the whole plan at once (no pedreiro needed for the founders' houses). */

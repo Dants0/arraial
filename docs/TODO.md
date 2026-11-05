@@ -58,9 +58,25 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] Relações Públicas (Escrivaninha): missões aos vizinhos; aliados mandam comida nas crises, inimigos mandam salteadores
 - [x] Guia do Arraial (livro de 18 páginas; o fundador ganha um)
 
-## Próximos
+## 9. Calendário e festas
+- [x] Calendário: 12 meses de 2 dias; tempo da seca (abr–out) e das águas; estação pesa nas crises
+- [x] São João: fogueira perto do Cruzeiro, quadrilha em roda, fogos ao entardecer
+- [x] Padroeiro (santo do nome do arraial, mês próprio): procissão e fogos
+- [x] Feira Grande (1º de março e setembro, com banca): 15% de desconto, rende réis
+- [x] Quentão, pé-de-moleque, bandeirinhas; festa farta/enfeitada rende mais satisfação
+- [x] `/arraial festa <tipo|fim>`
+
+## 10. Mundo vivo e economia regional
+- [x] Simulação diária das vilas descarregadas (produção, consumo, fome, crises, renda)
+- [x] Migração para o melhor vizinho; crescimento; decadência; abandono; repovoamento pelo jogador
+- [x] Mercadores entre vilas; roubos; rota fechada por roubos ou guerra
+- [x] Preço regional (vizinho com fartura barateia, rota fechada encarece)
+- [x] Especialidade econômica; vilas vizinhas nascem perto da vila do jogador
+- [x] História regional entra na Crônica quando a vila carrega; `/arraial mundo`, `/arraial avancar <dias>`
+
+## Próximos (ver ROADMAP, fases C–H)
 - [ ] Teste em jogo de tudo acima (T)
-- [ ] Festas e calendário (São João, feira grande, padroeiro)
+- [ ] C Política · D Comércio avançado · E Território · F Cultura · G Vida pessoal · H Ruínas e ocupação
 - [ ] Famílias e sucessão; blocos coloniais
 - [ ] Eras/modernização
 - [ ] Tratados e embargo (diplomacia completa); tela de diplomacia

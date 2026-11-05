@@ -82,11 +82,14 @@ public final class Feira {
 		Map<Item, Integer> inv = Vilas.inventario(armazens);
 		Demanda.Resultado demanda = Demanda.calcular(level, a.getBlockPos());
 		int n = Math.max(4, moradores);
+		String meu = Registro.id(level.dimension().identifier().toString(), a.getBlockPos());
+		long hoje = Vilas.dia(level);
 		for (Mercadoria m : TABELA) {
 			int estoque = inv.getOrDefault(m.item(), 0);
 			int falta = demanda.falta().getOrDefault(m.item(), 0);
 			double fator = Math.max(0.5, Math.min(3.0, (falta + n) / (double) (estoque + n)));
-			double alvo = m.base() * fator;
+			// Neighbours with plenty bring the price down; closed roads and war push it up.
+			double alvo = Economia.regional(meu, a.getBlockPos(), id(m.item()), m.base() * fator, m.base(), hoje);
 			double antes = a.precos.getOrDefault(id(m.item()), m.base());
 			a.precos.put(id(m.item()), Math.round((antes * 0.6 + alvo * 0.4) * 10) / 10.0);
 		}

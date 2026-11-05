@@ -173,12 +173,16 @@ public class ArraialBlock extends Block implements EntityBlock {
 		String meu = Registro.id(level.dimension().identifier().toString(), arraial.getBlockPos());
 		Registro.Info eu = Registro.get(meu);
 		if (eu != null) {
+			player.sendSystemMessage(Component.translatable("arraial.vila.especialidade", Economia.Especialidade.de(eu.especialidade).nome())
+					.withStyle(ChatFormatting.DARK_AQUA));
 			for (java.util.Map.Entry<String, Registro.Info> e : Registro.todas().entrySet()) {
 				if (!e.getKey().equals(meu)) {
 					int rep = eu.reputacaoCom(e.getKey());
 					Component relacao = Component.translatable(rep >= Diplomacia.ALIADO ? "arraial.vila.aliado" : rep <= Diplomacia.INIMIGO ? "arraial.vila.inimigo" : "arraial.vila.neutro");
 					player.sendSystemMessage(Component.translatable("arraial.vila.vizinha", e.getValue().nome,
 							(int) Math.sqrt(e.getValue().posicao().distSqr(arraial.getBlockPos())), rep).append(" · ").append(relacao)
+							.append(Economia.bloqueada(meu, e.getKey(), Vilas.dia(level)) ? Component.translatable(Economia.emGuerra(meu, e.getKey()) ? "arraial.vila.em_guerra" : "arraial.vila.rota_fechada") : Component.empty())
+							.append(e.getValue().abandonada ? Component.translatable("arraial.vila.abandonada_viz") : Component.empty())
 							.withStyle(rep <= Diplomacia.INIMIGO ? ChatFormatting.RED : rep >= Diplomacia.ALIADO ? ChatFormatting.GREEN : ChatFormatting.DARK_AQUA));
 				}
 			}

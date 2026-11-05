@@ -45,26 +45,23 @@ public final class Simulacao {
 			a.setChanged();
 		}
 
-		// The days we missed.
-		long agora = level.getGameTime();
-		if (a.ultimoTick > 0 && agora - a.ultimoTick > DIA && !armazens.isEmpty()) {
-			int dias = (int) Math.min(MAX_DIAS, (agora - a.ultimoTick) / DIA);
-			int roceiros = conta(moradores, Profissao.ROCEIRO), farinheiros = conta(moradores, Profissao.FARINHEIRO);
-			int pastores = conta(moradores, Profissao.PASTOR), lenhadores = conta(moradores, Profissao.LENHADOR);
-			int comida = dias * (roceiros * 2 + farinheiros * 4 + pastores);
-			int comeram = dias * moradores.size();
-			int saldo = comida - comeram;
-			if (saldo > 0) {
-				Vilas.depositar(armazens, farinheiros > 0 ? ModItems.FARINHA : Items.BREAD, saldo);
-			} else if (saldo < 0) {
-				Vilas.retirar(armazens, s -> s.has(DataComponents.FOOD), -saldo);
-			}
-			if (lenhadores > 0) {
-				Item tora = Estoque.madeiraDaVila(Vilas.inventario(armazens)).tora();
-				Vilas.depositar(armazens, tora, dias * lenhadores * 8);
-			}
-			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.longe", dias, comida, comeram));
+		// People who came or went while we slept (see Mundo), the history, and abandonment.
+		if (info.abandonada && !a.abandonada) {
+			a.abandonar(level, moradores);
+			moradores = List.of();
 		}
+		if (info.saldoMoradores > 0) {
+			for (int i = 0; i < Math.min(6, info.saldoMoradores); i++) {
+				a.receberMigrante(level, "", "");
+			}
+		} else if (info.saldoMoradores < 0) {
+			moradores.stream().filter(m -> !m.prefeito()).limit(-info.saldoMoradores).toList().forEach(m -> m.irEmboraDaVila(level));
+		}
+		info.saldoMoradores = 0;
+		for (Registro.Evento e : info.historiaPendente) {
+			a.anotar(new Cronica.Entrada(e.dia, e.texto()));
+		}
+		info.historiaPendente.clear();
 
 		// Fresh snapshot for the world.
 		info.pos = a.getBlockPos().asLong();
@@ -82,6 +79,20 @@ public final class Simulacao {
 		}
 		info.precos.clear();
 		info.precos.putAll(a.precos);
+		info.oficios.clear();
+		for (MoradorEntity m : moradores) {
+			if (m.profissao() != Profissao.NENHUMA) {
+				info.oficios.merge(m.profissao().id(), 1, Integer::sum);
+			}
+		}
+		info.camas = (int) a.camas(level);
+		info.satisfacao = a.satisfacao;
+		info.especialidade = Economia.especialidade(info.oficios).id();
+		info.abandonada = a.abandonada;
+		if (!a.abandonada) {
+			info.fome = 0;
+			info.criseLonge = "";
+		}
 	}
 
 	private static int conta(List<MoradorEntity> moradores, Profissao p) {

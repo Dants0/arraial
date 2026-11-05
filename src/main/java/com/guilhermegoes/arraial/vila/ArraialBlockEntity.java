@@ -63,6 +63,12 @@ public class ArraialBlockEntity extends BlockEntity {
 	final java.util.Map<java.util.UUID, Integer> reputacao = new java.util.HashMap<>();
 	/** Founded by the world (VilaNova), not by a player. */
 	boolean autonoma;
+	/** Nobody lives here any more (see {@link Mundo}); it waits for someone to bring it back. */
+	boolean abandonada;
+
+	public boolean abandonada() {
+		return abandonada;
+	}
 
 	/** Last game time this Cruzeiro ticked (to catch up after being unloaded). */
 	long ultimoTick;
@@ -195,6 +201,9 @@ public class ArraialBlockEntity extends BlockEntity {
 		arraial.ultimoTick = server.getGameTime();
 		arraial.diario(server, moradores);
 		Prefeitura.cuidar(server, arraial, moradores);
+		if (arraial.abandonada && !arraial.repovoar(server)) {
+			return;
+		}
 		long camasLivres = arraial.camas(server) - moradores.size();
 		// Free work also draws people in, even with nowhere to sleep (they arrive homeless,
 		// which pushes the player to build houses), but only while there are few homeless.
@@ -240,14 +249,14 @@ public class ArraialBlockEntity extends BlockEntity {
 	}
 
 	/** A newcomer walks into town: spawned on the surface a few blocks from the Cruzeiro. */
-	private void receberMorador(ServerLevel level) {
+	private @org.jspecify.annotations.Nullable MoradorEntity receberMorador(ServerLevel level) {
 		double angulo = level.getRandom().nextDouble() * Math.PI * 2;
 		int dist = 6 + level.getRandom().nextInt(6);
 		BlockPos alvo = worldPosition.offset((int) (Math.cos(angulo) * dist), 0, (int) (Math.sin(angulo) * dist));
 		BlockPos chao = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, alvo);
 		MoradorEntity novo = MoradorEntity.criar(level, chao, Profissao.NENHUMA);
 		if (novo == null) {
-			return;
+			return null;
 		}
 		novo.definirVila(worldPosition);
 		anotar(new Cronica.Entrada(Vilas.dia(level), Component.translatable("arraial.cronica.chegada", novo.nome())));
@@ -257,6 +266,47 @@ public class ArraialBlockEntity extends BlockEntity {
 				p.sendSystemMessage(aviso);
 			}
 		}
+		return novo;
+	}
+
+	/** Someone who left another arraial (hunger, unhappiness) settles here. */
+	void receberMigrante(ServerLevel level, String origem, String motivo) {
+		MoradorEntity m = receberMorador(level);
+		if (m != null && !origem.isEmpty()) {
+			Component texto = Component.translatable("arraial.cronica.migrante", m.nome(), origem, Component.translatable(motivo));
+			anotar(new Cronica.Entrada(Vilas.dia(level), texto));
+			Prefeitura.avisar(level, this, texto.copy().withStyle(ChatFormatting.AQUA));
+		}
+	}
+
+	/** Everybody is gone: the moradores leave and the arraial waits, empty. */
+	void abandonar(ServerLevel level, List<MoradorEntity> moradores) {
+		moradores.forEach(m -> m.discard());
+		abandonada = true;
+		prefeito = null;
+		anotar(new Cronica.Entrada(Vilas.dia(level), Component.translatable("arraial.cronica.abandonada")));
+		setChanged();
+	}
+
+	/** A player came back to an abandoned arraial with food in the armazém: people return. */
+	boolean repovoar(ServerLevel level) {
+		boolean alguem = level.players().stream().anyMatch(p -> p.blockPosition().closerThan(worldPosition, 32));
+		int comida = Vilas.contar(Vilas.armazens(level, worldPosition), s -> s.has(net.minecraft.core.component.DataComponents.FOOD));
+		if (!alguem || comida < 8 || camas(level) == 0) {
+			return false;
+		}
+		abandonada = false;
+		Registro.Info info = Registro.get(Registro.id(level.dimension().identifier().toString(), worldPosition));
+		if (info != null) {
+			info.abandonada = false;
+			info.fome = 0;
+		}
+		Component texto = Component.translatable("arraial.cronica.repovoado", nomeCompleto());
+		anotar(new Cronica.Entrada(Vilas.dia(level), texto));
+		Prefeitura.avisar(level, this, texto.copy().withStyle(ChatFormatting.GREEN));
+		proximaChegada = level.getGameTime();
+		setChanged();
+		return true;
 	}
 
 	@Override
@@ -274,6 +324,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		satisfacao = input.getIntOr("Satisfacao", 60);
 		ultimoDiario = input.getLongOr("UltimoDiario", 0L);
 		autonoma = input.getBooleanOr("Autonoma", false);
+		abandonada = input.getBooleanOr("Abandonada", false);
 		deposto = input.read("Deposto", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 		legitimidade = input.getIntOr("Legitimidade", 60);
 		diasLegitimidadeBaixa = input.getIntOr("DiasLegitimidadeBaixa", 0);
@@ -302,6 +353,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.putInt("Satisfacao", satisfacao);
 		output.putLong("UltimoDiario", ultimoDiario);
 		output.putBoolean("Autonoma", autonoma);
+		output.putBoolean("Abandonada", abandonada);
 		if (deposto != null) {
 			output.store("Deposto", net.minecraft.core.UUIDUtil.CODEC, deposto);
 		}
