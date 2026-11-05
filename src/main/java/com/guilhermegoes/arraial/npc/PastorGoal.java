@@ -29,7 +29,7 @@ import org.jspecify.annotations.Nullable;
  * wheat for a pair of sheep at the fair. Wool, meat, leather and eggs go to the armazém.
  */
 public class PastorGoal extends OficioGoal {
-	private enum Fase { TOSQUIAR, BUSCAR_RACAO, ALIMENTAR, ABATER, ENTREGAR }
+	private enum Fase { TOSQUIAR, BUSCAR_RACAO, ALIMENTAR, ABATER, ENTREGAR, EXPEDICAO, TRAZER }
 
 	private static final int RAIO = 12;
 	/** Below this many of a kind he breeds them; above {@link #MAX_REBANHO} he culls. */
@@ -39,6 +39,10 @@ public class PastorGoal extends OficioGoal {
 	/** What two sheep cost at the fair, in wheat. */
 	private static final int PRECO_OVELHAS = 10;
 	private static final List<Class<? extends Animal>> ESPECIES = List.of(Sheep.class, Cow.class, Pig.class, Chicken.class);
+	/** How far into the countryside he looks for animals, how many he leads at once, and for how long. */
+	private static final int RAIO_EXPEDICAO = 64;
+	private static final int MAX_GUIADOS = 2;
+	private static final int TEMPO_EXPEDICAO = 3600;
 	private static final List<Item> RACOES = List.of(Items.WHEAT, Items.CARROT, Items.POTATO, Items.BEETROOT, Items.WHEAT_SEEDS);
 
 	private Fase fase = Fase.TOSQUIAR;
@@ -46,6 +50,10 @@ public class PastorGoal extends OficioGoal {
 	private @Nullable Animal par;
 	private @Nullable Item racao;
 	private long ultimaCompra = -10;
+	private final List<Animal> guiados = new ArrayList<>();
+	private long ultimaBusca = -100000;
+	private int duracao;
+	private @Nullable MoradorEntity escolta;
 	private int travado;
 	private int espera;
 
@@ -109,7 +117,18 @@ public class PastorGoal extends OficioGoal {
 			}
 		}
 
-		// 4. No animals at all: buy a pair of sheep with wheat (at most every few days).
+		// 4. A small herd: go out (with a soldier, if there is one) and bring animals in from the wild.
+		if (total < MIN_REBANHO && level.getGameTime() - ultimaBusca > 1200) {
+			ultimaBusca = level.getGameTime();
+			Animal achado = procurarNoMato(level, cocho, morador.position(), RAIO_EXPEDICAO);
+			if (achado != null) {
+				alvo = achado;
+				fase = Fase.EXPEDICAO;
+				return true;
+			}
+		}
+
+		// 5. No animals at all and none in the wild: buy a pair of sheep with wheat (at most every few days).
 		if (total == 0 && Vilas.dia(level) - ultimaCompra >= 3 && Vilas.contar(armazens(), Items.WHEAT) >= PRECO_OVELHAS) {
 			comprarOvelhas(level, cocho);
 			return false;
@@ -128,6 +147,9 @@ public class PastorGoal extends OficioGoal {
 		if (!podeTrabalhar()) {
 			return false;
 		}
+		if (fase == Fase.EXPEDICAO || fase == Fase.TRAZER) {
+			return duracao < TEMPO_EXPEDICAO && (fase == Fase.TRAZER ? !guiados.isEmpty() : alvo != null && alvo.isAlive());
+		}
 		return fase == Fase.ENTREGAR || fase == Fase.BUSCAR_RACAO || (alvo != null && alvo.isAlive());
 	}
 
@@ -135,12 +157,28 @@ public class PastorGoal extends OficioGoal {
 	public void start() {
 		espera = 0;
 		travado = 0;
+		duracao = 0;
+		if (fase == Fase.EXPEDICAO) {
+			morador.setExpedicao(true);
+			escolta = chamarEscolta();
+			morador.segurar(new ItemStack(Items.LEAD));
+			return;
+		}
 		morador.segurar(new ItemStack(fase == Fase.TOSQUIAR ? Items.SHEARS : fase == Fase.ABATER ? Items.IRON_AXE : Items.WHEAT));
 	}
 
 	@Override
 	public void stop() {
 		super.stop();
+		// Interrupted (dusk, hunger, a fight): let go of whatever is still on the lead.
+		for (Animal a : guiados) {
+			if (a.getLeashHolder() == morador) {
+				a.removeLeash();
+			}
+		}
+		guiados.clear();
+		morador.setExpedicao(false);
+		escolta = null;
 		alvo = null;
 		par = null;
 	}
@@ -220,6 +258,47 @@ public class PastorGoal extends OficioGoal {
 				recolherItens(onde, 2.5);
 				alvo = null;
 			}
+			case EXPEDICAO -> {
+				duracao++;
+				if (alvo == null || !alvo.isAlive() || alvo.isLeashed()) {
+					proximoBicho(level);
+					return;
+				}
+				morador.setStatus(Component.translatable("arraial.pastor.expedicao"));
+				if (!chegar(alvo)) {
+					return;
+				}
+				if (morador.distanceTo(alvo) <= 4.0) {
+					alvo.setLeashedTo(morador, true);
+					guiados.add(alvo);
+					level.playSound(null, alvo, SoundEvents.LEAD_TIED, SoundSource.NEUTRAL, 1.0F, 1.0F);
+				}
+				proximoBicho(level);
+			}
+			case TRAZER -> {
+				duracao++;
+				guiados.removeIf(a -> !a.isAlive() || a.getLeashHolder() != morador);
+				BlockPos cocho = morador.posto();
+				if (guiados.isEmpty() || cocho == null) {
+					return; // nothing left on the lead: the goal ends
+				}
+				morador.setStatus(Component.translatable("arraial.pastor.trazendo", guiados.size()));
+				if (!perto(cocho, 3.0)) {
+					andarAte(cocho);
+					return;
+				}
+				// Inside the curral: let them go, and he can go out again in a little while.
+				int n = guiados.size();
+				for (Animal a : guiados) {
+					a.removeLeash();
+				}
+				guiados.clear();
+				bater();
+				ultimaBusca = level.getGameTime() - 600;
+				Cronica.anotar(level, morador.vila(), escolta != null
+						? Component.translatable("arraial.cronica.trouxe_escolta", morador.nome(), n, escolta.nome())
+						: Component.translatable("arraial.cronica.trouxe", morador.nome(), n));
+			}
 			case ENTREGAR -> {
 				var a = armazemMaisProximo();
 				if (a == null) {
@@ -250,6 +329,60 @@ public class PastorGoal extends OficioGoal {
 		travado = 0;
 		espera = 10;
 		return true;
+	}
+
+	/** Next animal to put on the lead (one near the last), or head home with what he has. */
+	private void proximoBicho(ServerLevel level) {
+		BlockPos cocho = morador.posto();
+		Animal outro = guiados.size() < MAX_GUIADOS && cocho != null ? procurarNoMato(level, cocho, morador.position(), 16) : null;
+		if (outro != null) {
+			alvo = outro;
+			return;
+		}
+		alvo = null;
+		fase = Fase.TRAZER;
+	}
+
+	/** The nearest loose farm animal within {@code raio} of {@code de}, outside the curral. */
+	private @Nullable Animal procurarNoMato(ServerLevel level, BlockPos cocho, Vec3 de, int raio) {
+		Animal melhor = null;
+		double d = Double.MAX_VALUE;
+		double fora = (RAIO + 2) * (RAIO + 2);
+		AABB area = new AABB(de, de).inflate(raio, 16, raio);
+		for (Class<? extends Animal> especie : ESPECIES) {
+			for (Animal a : level.getEntitiesOfClass(especie, area, a -> a.isAlive() && !a.isLeashed()
+					&& a.distanceToSqr(Vec3.atCenterOf(cocho)) > fora
+					&& a.distanceToSqr(Vec3.atCenterOf(cocho)) < (double) RAIO_EXPEDICAO * RAIO_EXPEDICAO)) {
+				double x = a.distanceToSqr(de);
+				if (x < d) {
+					d = x;
+					melhor = a;
+				}
+			}
+		}
+		return melhor;
+	}
+
+	/** Asks the nearest free soldado of the arraial to come along. */
+	private @Nullable MoradorEntity chamarEscolta() {
+		BlockPos vila = morador.vila();
+		if (vila == null) {
+			return null;
+		}
+		MoradorEntity melhor = null;
+		double d = Double.MAX_VALUE;
+		for (MoradorEntity s : level().getEntitiesOfClass(MoradorEntity.class, new AABB(vila).inflate(Vilas.RAIO),
+				m -> m.profissao() == Profissao.SOLDADO && vila.equals(m.vila()) && m.escoltado() == null && m.getTarget() == null)) {
+			double x = s.distanceToSqr(morador);
+			if (x < d) {
+				d = x;
+				melhor = s;
+			}
+		}
+		if (melhor != null) {
+			melhor.setEscoltado(morador);
+		}
+		return melhor;
 	}
 
 	private void comprarOvelhas(ServerLevel level, BlockPos cocho) {

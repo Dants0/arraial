@@ -22,18 +22,18 @@ public final class Receitas {
 	}
 
 	/** One wood family: log, planks and the carpentry made from them. */
-	public record Madeira(Item tora, Item tabua, Item porta, Item cerca, Item laje, Item escada) {
+	public record Madeira(Item tora, Item tabua, Item porta, Item cerca, Item laje, Item escada, Item portao) {
 	}
 
 	public static final List<Madeira> MADEIRAS = List.of(
-			new Madeira(Items.OAK_LOG, Items.OAK_PLANKS, Items.OAK_DOOR, Items.OAK_FENCE, Items.OAK_SLAB, Items.OAK_STAIRS),
-			new Madeira(Items.SPRUCE_LOG, Items.SPRUCE_PLANKS, Items.SPRUCE_DOOR, Items.SPRUCE_FENCE, Items.SPRUCE_SLAB, Items.SPRUCE_STAIRS),
-			new Madeira(Items.BIRCH_LOG, Items.BIRCH_PLANKS, Items.BIRCH_DOOR, Items.BIRCH_FENCE, Items.BIRCH_SLAB, Items.BIRCH_STAIRS),
-			new Madeira(Items.JUNGLE_LOG, Items.JUNGLE_PLANKS, Items.JUNGLE_DOOR, Items.JUNGLE_FENCE, Items.JUNGLE_SLAB, Items.JUNGLE_STAIRS),
-			new Madeira(Items.ACACIA_LOG, Items.ACACIA_PLANKS, Items.ACACIA_DOOR, Items.ACACIA_FENCE, Items.ACACIA_SLAB, Items.ACACIA_STAIRS),
-			new Madeira(Items.DARK_OAK_LOG, Items.DARK_OAK_PLANKS, Items.DARK_OAK_DOOR, Items.DARK_OAK_FENCE, Items.DARK_OAK_SLAB, Items.DARK_OAK_STAIRS),
-			new Madeira(Items.CHERRY_LOG, Items.CHERRY_PLANKS, Items.CHERRY_DOOR, Items.CHERRY_FENCE, Items.CHERRY_SLAB, Items.CHERRY_STAIRS),
-			new Madeira(Items.MANGROVE_LOG, Items.MANGROVE_PLANKS, Items.MANGROVE_DOOR, Items.MANGROVE_FENCE, Items.MANGROVE_SLAB, Items.MANGROVE_STAIRS));
+			new Madeira(Items.OAK_LOG, Items.OAK_PLANKS, Items.OAK_DOOR, Items.OAK_FENCE, Items.OAK_SLAB, Items.OAK_STAIRS, Items.OAK_FENCE_GATE),
+			new Madeira(Items.SPRUCE_LOG, Items.SPRUCE_PLANKS, Items.SPRUCE_DOOR, Items.SPRUCE_FENCE, Items.SPRUCE_SLAB, Items.SPRUCE_STAIRS, Items.SPRUCE_FENCE_GATE),
+			new Madeira(Items.BIRCH_LOG, Items.BIRCH_PLANKS, Items.BIRCH_DOOR, Items.BIRCH_FENCE, Items.BIRCH_SLAB, Items.BIRCH_STAIRS, Items.BIRCH_FENCE_GATE),
+			new Madeira(Items.JUNGLE_LOG, Items.JUNGLE_PLANKS, Items.JUNGLE_DOOR, Items.JUNGLE_FENCE, Items.JUNGLE_SLAB, Items.JUNGLE_STAIRS, Items.JUNGLE_FENCE_GATE),
+			new Madeira(Items.ACACIA_LOG, Items.ACACIA_PLANKS, Items.ACACIA_DOOR, Items.ACACIA_FENCE, Items.ACACIA_SLAB, Items.ACACIA_STAIRS, Items.ACACIA_FENCE_GATE),
+			new Madeira(Items.DARK_OAK_LOG, Items.DARK_OAK_PLANKS, Items.DARK_OAK_DOOR, Items.DARK_OAK_FENCE, Items.DARK_OAK_SLAB, Items.DARK_OAK_STAIRS, Items.DARK_OAK_FENCE_GATE),
+			new Madeira(Items.CHERRY_LOG, Items.CHERRY_PLANKS, Items.CHERRY_DOOR, Items.CHERRY_FENCE, Items.CHERRY_SLAB, Items.CHERRY_STAIRS, Items.CHERRY_FENCE_GATE),
+			new Madeira(Items.MANGROVE_LOG, Items.MANGROVE_PLANKS, Items.MANGROVE_DOOR, Items.MANGROVE_FENCE, Items.MANGROVE_SLAB, Items.MANGROVE_STAIRS, Items.MANGROVE_FENCE_GATE));
 
 	private static final List<Receita> TODAS = new ArrayList<>();
 
@@ -45,11 +45,14 @@ public final class Receitas {
 			add(Profissao.LENHADOR, m.cerca(), 3, Map.of(m.tabua(), 4, Items.STICK, 2));
 			add(Profissao.LENHADOR, m.laje(), 6, Map.of(m.tabua(), 3));
 			add(Profissao.LENHADOR, m.escada(), 4, Map.of(m.tabua(), 6));
+			add(Profissao.LENHADOR, m.portao(), 1, Map.of(m.tabua(), 2, Items.STICK, 4));
 			add(Profissao.LENHADOR, Items.STICK, 4, Map.of(m.tabua(), 2));
 			add(Profissao.LENHADOR, Items.CHARCOAL, 1, Map.of(m.tora(), 2));
 			add(Profissao.LENHADOR, Items.CHEST, 1, Map.of(m.tabua(), 8));
-			// Pastor: beds for the houses (the red is dyed with urucum, so it costs nothing extra).
-			add(Profissao.PASTOR, Items.BED.red(), 1, Map.of(Items.WOOL.white(), 3, m.tabua(), 3));
+			// Any wool will do for the red bed: it is dyed with urucum anyway.
+			for (Item la : lans()) {
+				add(Profissao.PASTOR, Items.BED.red(), 1, Map.of(la, 3, m.tabua(), 3));
+			}
 			add(Profissao.PASTOR, Items.BED.white(), 1, Map.of(Items.WOOL.white(), 3, m.tabua(), 3));
 		}
 		add(Profissao.LENHADOR, Items.TORCH, 4, Map.of(Items.STICK, 1, Items.CHARCOAL, 1));
@@ -59,7 +62,7 @@ public final class Receitas {
 		add(Profissao.OLEIRO, Items.BRICKS, 1, Map.of(Items.BRICK, 4));
 		add(Profissao.OLEIRO, Items.BRICK_STAIRS, 4, Map.of(Items.BRICKS, 6));
 		add(Profissao.OLEIRO, Items.BRICK_SLAB, 6, Map.of(Items.BRICKS, 3));
-		add(Profissao.OLEIRO, Items.MUD_BRICKS, 1, Map.of(Items.DIRT, 1, Items.WHEAT, 1));
+		add(Profissao.OLEIRO, Items.MUD_BRICKS, 1, Map.of(Items.DIRT, 1)); // taipa: earth and water, no food wasted
 		add(Profissao.OLEIRO, Items.FLOWER_POT, 1, Map.of(Items.BRICK, 3));
 
 		// Cavouqueiro: dressed stone.
@@ -70,6 +73,12 @@ public final class Receitas {
 
 		// Roceiro: bread for the arraial's table.
 		add(Profissao.ROCEIRO, Items.BREAD, 1, Map.of(Items.WHEAT, 3));
+	}
+
+	private static List<Item> lans() {
+		List<Item> l = new ArrayList<>();
+		Items.WOOL.forEach(l::add);
+		return l;
 	}
 
 	private static void add(Profissao quem, Item saida, int qtd, Map<Item, Integer> entrada) {

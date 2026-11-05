@@ -85,6 +85,11 @@ public class MoradorEntity extends PathfinderMob {
 	private long ultimoDia = 0;
 	private long diaChegada = 0;
 	private boolean prefeito = false;
+	/** Fence gates this morador opened and must close behind him (not saved). */
+	private final java.util.Map<BlockPos, Long> portoes = new java.util.HashMap<>();
+	/** Pastor: out in the countryside fetching animals. Soldado: the pastor he escorts. Not saved. */
+	private boolean expedicao = false;
+	private @Nullable MoradorEntity escoltado;
 	public static final int DIAS_ATE_IR_EMBORA = 3;
 
 	public MoradorEntity(EntityType<? extends MoradorEntity> type, Level level) {
@@ -130,6 +135,7 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(1, new DormirGoal(this));
 		goalSelector.addGoal(2, new ConstruirGoal(this));
 		goalSelector.addGoal(2, new ArtesaoGoal(this));
+		goalSelector.addGoal(2, new SoldadoGoal.Escoltar(this));
 		goalSelector.addGoal(3, new LenhadorGoal(this));
 		goalSelector.addGoal(3, new RoceiroGoal(this));
 		goalSelector.addGoal(3, new PastorGoal(this));
@@ -178,6 +184,26 @@ public class MoradorEntity extends PathfinderMob {
 	}
 
 	/** Set by the arraial after an election. */
+	void abriuPortao(BlockPos pos, long quando) {
+		portoes.put(pos.immutable(), quando);
+	}
+
+	public boolean expedicao() {
+		return expedicao;
+	}
+
+	public void setExpedicao(boolean sim) {
+		expedicao = sim;
+	}
+
+	public @Nullable MoradorEntity escoltado() {
+		return escoltado != null && escoltado.isAlive() && escoltado.expedicao() ? escoltado : null;
+	}
+
+	public void setEscoltado(@Nullable MoradorEntity pastor) {
+		escoltado = pastor;
+	}
+
 	public void setPrefeito(boolean sim) {
 		if (prefeito != sim) {
 			prefeito = sim;
@@ -254,6 +280,15 @@ public class MoradorEntity extends PathfinderMob {
 	@Override
 	protected void customServerAiStep(ServerLevel level) {
 		super.customServerAiStep(level);
+		if (!portoes.isEmpty() && tickCount % 10 == 0) {
+			portoes.entrySet().removeIf(e -> {
+				if (level.getGameTime() - e.getValue() < 30 || !Porteira.podeFechar(level, e.getKey(), this)) {
+					return false;
+				}
+				Porteira.fechar(level, e.getKey());
+				return true;
+			});
+		}
 		if ((tickCount + getId()) % 40 == 0) {
 			cuidarDaVida(level);
 		}

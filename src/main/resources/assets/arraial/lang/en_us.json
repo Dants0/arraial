@@ -174,5 +174,12 @@
 	"arraial.canteiro.prioridade_dica": " (sneak + right-click with an empty hand to change)",
 	"arraial.canteiro.prioridade_mudou": "Site priority: %s",
 	"arraial.pedreiro.reservado": "%s is reserved for a more urgent site",
-	"arraial.vila.metas": "📦 Mayor's reserve stock:"
+	"arraial.vila.metas": "📦 Mayor's reserve stock:",
+
+	"arraial.pastor.expedicao": "looking for animals in the wild",
+	"arraial.pastor.trazendo": "bringing %s animal(s) to the corral",
+	"arraial.soldado.escoltando": "escorting %s",
+	"arraial.cronica.trouxe": "%s brought %s animal(s) from the wild to the corral.",
+	"arraial.cronica.trouxe_escolta": "%s brought %s animal(s) from the wild to the corral, escorted by %s.",
+	"arraial.cronica.remanejou": "%s told %s to leave the %s trade and find other work."
 }

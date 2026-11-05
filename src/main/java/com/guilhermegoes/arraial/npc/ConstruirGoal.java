@@ -33,6 +33,8 @@ import org.jspecify.annotations.Nullable;
  */
 public class ConstruirGoal extends Goal {
 	private static final int RAIO_BUSCA = 32;
+	/** At most this many pedreiros share a site while others wait for hands. */
+	private static final int MAX_POR_OBRA = 2;
 	/** How many upcoming steps he loads materials for on each chest trip. */
 	private static final int ETAPAS_POR_VIAGEM = 32;
 	private static final double ALCANCE = 4.5;
@@ -267,12 +269,37 @@ public class ConstruirGoal extends Goal {
 			}
 			// UPDATE_CLIENTS only: two-part blocks (doors) must not pop off before their other half is placed.
 			level.setBlock(pos, etapa.state(), Block.UPDATE_CLIENTS);
+			conectar(level, pos);
 			level.playSound(null, pos, etapa.state().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 0.9F);
 		}
 		pedreiro.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT);
 	}
 
+	/**
+	 * Fences, walls, panes, gates and stairs join up with their neighbours, like when a player
+	 * places them (the blueprint stores them unconnected). Doors and beds are left alone: their
+	 * other half may not be placed yet.
+	 */
+	private static void conectar(ServerLevel level, BlockPos pos) {
+		BlockState s = level.getBlockState(pos);
+		if (!(s.is(net.minecraft.tags.BlockTags.FENCES) || s.is(net.minecraft.tags.BlockTags.WALLS)
+				|| s.getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock
+				|| s.getBlock() instanceof net.minecraft.world.level.block.IronBarsBlock
+				|| s.getBlock() instanceof net.minecraft.world.level.block.StairBlock)) {
+			return;
+		}
+		BlockState ajustado = Block.updateFromNeighbourShapes(s, level, pos);
+		if (ajustado != s) {
+			level.setBlock(pos, ajustado, Block.UPDATE_CLIENTS);
+		}
+		ajustado.updateNeighbourShapes(level, pos, Block.UPDATE_CLIENTS);
+	}
+
 	private void concluir(ServerLevel level, CanteiroBlockEntity canteiro) {
+		if (canteiro.concluida()) {
+			pedreiro.setObra(null); // a colleague placed the last block and already announced it
+			return;
+		}
 		canteiro.concluir();
 		pedreiro.segurar(ItemStack.EMPTY);
 		Component nomeObra = canteiro.projeto().get().nome();
@@ -316,6 +343,12 @@ public class ConstruirGoal extends Goal {
 		// (materials at hand); if every site is waiting for materials, the most urgent one.
 		if (pedreiro.vila() != null) {
 			List<CanteiroBlockEntity> obras = CanteiroBlockEntity.daVila(level, pedreiro.vila());
+			// Spread out: first a site with room for one more pair of hands.
+			for (CanteiroBlockEntity c : obras) {
+				if (podeAvancar(level, c) && ocupacao(level, c) < MAX_POR_OBRA) {
+					return c.getBlockPos();
+				}
+			}
 			for (CanteiroBlockEntity c : obras) {
 				if (podeAvancar(level, c)) {
 					return c.getBlockPos();
@@ -339,6 +372,13 @@ public class ConstruirGoal extends Goal {
 			}
 		}
 		return melhor;
+	}
+
+	/** Other pedreiros working on {@code c}. */
+	private int ocupacao(ServerLevel level, CanteiroBlockEntity c) {
+		BlockPos pos = c.getBlockPos();
+		return level.getEntitiesOfClass(MoradorEntity.class, new net.minecraft.world.phys.AABB(pos).inflate(Vilas.RAIO * 2),
+				m -> m != pedreiro && pos.equals(m.obra())).size();
 	}
 
 	/** True when the site's next step needs nothing, or its material is in the site chest or free in the armazém. */

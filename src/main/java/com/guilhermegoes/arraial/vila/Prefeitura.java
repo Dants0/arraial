@@ -62,6 +62,7 @@ public final class Prefeitura {
 		}
 		arraial.ultimoDespacho = hoje;
 		arraial.setChanged();
+		ajustarPedreiros(level, arraial, prefeito, moradores);
 		despachar(level, arraial, prefeito, moradores);
 	}
 
@@ -244,8 +245,8 @@ public final class Prefeitura {
 
 	/** Makes sure some pedreiro will take the job: an unemployed morador is hired if needed. */
 	private static void contratarPedreiro(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, List<MoradorEntity> moradores) {
-		// One pedreiro per building going up.
-		int obras = Math.max(1, CanteiroBlockEntity.daVila(level, arraial.getBlockPos()).size());
+		// One pedreiro per building going up (within the limit for the population).
+		int obras = limitePedreiros(level, arraial, moradores.size());
 		long pedreiros = moradores.stream().filter(m -> m.profissao() == Profissao.PEDREIRO).count();
 		if (pedreiros >= obras) {
 			return;
@@ -255,6 +256,30 @@ public final class Prefeitura {
 			Cronica.anotar(level, arraial.getBlockPos(),
 					Component.translatable("arraial.cronica.contratou", prefeito.nome(), m.nome(), m.titulo()));
 		});
+	}
+
+	/** How many pedreiros the arraial should have: one per site, at most a quarter of the people. */
+	private static int limitePedreiros(ServerLevel level, ArraialBlockEntity arraial, int moradores) {
+		int obras = CanteiroBlockEntity.daVila(level, arraial.getBlockPos()).size();
+		return Math.max(1, Math.min(obras, Math.max(1, moradores / 4)));
+	}
+
+	/**
+	 * Too many pedreiros and too few hands elsewhere: while there are free workstations, the
+	 * prefeito sends the extra pedreiros (those without a site first) to find another trade.
+	 */
+	private static void ajustarPedreiros(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, List<MoradorEntity> moradores) {
+		int limite = limitePedreiros(level, arraial, moradores.size());
+		List<MoradorEntity> pedreiros = new ArrayList<>(moradores.stream().filter(m -> m.profissao() == Profissao.PEDREIRO).toList());
+		long livres = arraial.postosLivres(level);
+		pedreiros.sort(Comparator.comparing((MoradorEntity m) -> m.obra() != null).thenComparing(m -> m == prefeito));
+		for (int i = 0; i < pedreiros.size() - limite && livres > 0; i++, livres--) {
+			MoradorEntity m = pedreiros.get(i);
+			Component antigo = m.titulo();
+			m.setObra(null);
+			m.setProfissao(Profissao.NENHUMA);
+			Cronica.anotar(level, arraial.getBlockPos(), Component.translatable("arraial.cronica.remanejou", prefeito.nome(), m.nome(), antigo));
+		}
 	}
 
 	/** Finished (or started) buildings of a given project inside the arraial. */

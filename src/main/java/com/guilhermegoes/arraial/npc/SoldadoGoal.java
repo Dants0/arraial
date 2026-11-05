@@ -86,6 +86,54 @@ public class SoldadoGoal extends Goal {
 		return level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, alvo);
 	}
 
+	/** Walks beside a pastor who went out to fetch animals, and guards him there. */
+	public static class Escoltar extends Goal {
+		private final MoradorEntity soldado;
+		private int recalcular;
+
+		public Escoltar(MoradorEntity soldado) {
+			this.soldado = soldado;
+			setFlags(EnumSet.of(Goal.Flag.MOVE));
+		}
+
+		@Override
+		public boolean canUse() {
+			return soldado.profissao() == Profissao.SOLDADO && soldado.escoltado() != null && soldado.getTarget() == null;
+		}
+
+		@Override
+		public void start() {
+			MoradorEntity p = soldado.escoltado();
+			if (p != null) {
+				soldado.setStatus(Component.translatable("arraial.soldado.escoltando", p.nome()));
+			}
+			recalcular = 0;
+		}
+
+		@Override
+		public void tick() {
+			MoradorEntity p = soldado.escoltado();
+			if (p == null) {
+				return;
+			}
+			soldado.getLookControl().setLookAt(p);
+			if (soldado.distanceTo(p) > 4.0 && --recalcular <= 0) {
+				recalcular = 10;
+				soldado.getNavigation().moveTo(p, 1.05);
+			} else if (soldado.distanceTo(p) <= 3.0) {
+				soldado.getNavigation().stop();
+			}
+		}
+
+		@Override
+		public void stop() {
+			soldado.getNavigation().stop();
+			if (soldado.escoltado() == null) {
+				soldado.setEscoltado(null);
+			}
+		}
+	}
+
 	/** Only soldados go for the throat. */
 	public static class Atacar extends MeleeAttackGoal {
 		private final MoradorEntity soldado;
@@ -117,7 +165,7 @@ public class SoldadoGoal extends Goal {
 		private final MoradorEntity soldado;
 
 		public Cacar(MoradorEntity soldado) {
-			super(soldado, Monster.class, 5, true, false, (alvo, level) -> dentroDaVila(soldado, alvo) && !(alvo instanceof Creeper));
+			super(soldado, Monster.class, 5, true, false, (alvo, level) -> (dentroDaVila(soldado, alvo) || pertoDoEscoltado(soldado, alvo)) && !(alvo instanceof Creeper));
 			this.soldado = soldado;
 		}
 
@@ -140,6 +188,11 @@ public class SoldadoGoal extends Goal {
 		public boolean canUse() {
 			return soldado.profissao() == Profissao.SOLDADO && super.canUse();
 		}
+	}
+
+	static boolean pertoDoEscoltado(MoradorEntity soldado, LivingEntity alvo) {
+		MoradorEntity p = soldado.escoltado();
+		return p != null && alvo.distanceToSqr(p) < 16 * 16;
 	}
 
 	static boolean dentroDaVila(MoradorEntity soldado, LivingEntity alvo) {

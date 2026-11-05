@@ -174,5 +174,12 @@
 	"arraial.canteiro.prioridade_dica": " (agachado, clique com a mão vazia para mudar)",
 	"arraial.canteiro.prioridade_mudou": "Prioridade da obra: %s",
 	"arraial.pedreiro.reservado": "%s reservado p/ obra mais urgente",
-	"arraial.vila.metas": "📦 Reserva do prefeito:"
+	"arraial.vila.metas": "📦 Reserva do prefeito:",
+
+	"arraial.pastor.expedicao": "buscando bichos no mato",
+	"arraial.pastor.trazendo": "trazendo %s bicho(s) pro curral",
+	"arraial.soldado.escoltando": "escoltando %s",
+	"arraial.cronica.trouxe": "%s trouxe %s bicho(s) do mato para o curral.",
+	"arraial.cronica.trouxe_escolta": "%s trouxe %s bicho(s) do mato para o curral, com a escolta de %s.",
+	"arraial.cronica.remanejou": "%s mandou %s deixar o ofício de %s e procurar outro trabalho."
 }

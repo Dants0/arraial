@@ -85,7 +85,30 @@ public abstract class OficioGoal extends Goal {
 	protected void andarAte(BlockPos pos) {
 		if (--recalcular <= 0 || morador.getNavigation().isDone()) {
 			recalcular = 20;
-			morador.getNavigation().moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 1, 0.9);
+			var nav = morador.getNavigation();
+			net.minecraft.world.level.pathfinder.Path caminho = nav.createPath(pos, 1);
+			if (caminho != null && !caminho.canReach()) {
+				// Fenced in (a curral)? Go through the nearest gate: walk to it, open it, carry on.
+				BlockPos portao = Porteira.procurar(level(), pos, morador.blockPosition());
+				if (portao == null) {
+					portao = Porteira.procurar(level(), morador.blockPosition(), morador.blockPosition()); // fenced in, going out
+				}
+				if (portao != null) {
+					if (perto(portao, 2.2)) {
+						Porteira.abrir(level(), portao, morador);
+						caminho = nav.createPath(pos, 1);
+						recalcular = 5;
+					} else {
+						caminho = nav.createPath(portao, 1);
+						recalcular = 10;
+					}
+				}
+			}
+			if (caminho != null) {
+				nav.moveTo(caminho, 0.9);
+			} else {
+				nav.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 1, 0.9);
+			}
 		}
 	}
 
