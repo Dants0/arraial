@@ -4,7 +4,7 @@
 
 <p align="center"><b>Vilas coloniais brasileiras que se constroem e se governam sozinhas.</b><br>
 <i>Brazilian colonial villages that build and run themselves.</i><br>
-Fabric · Minecraft 26.3 · <a href="https://github.com/Dants0/arraial/issues">Bugs e sugestões</a> · <a href="#english">English below</a></p>
+Fabric · Minecraft 26.3 · <a href="https://dantas-dev.com/pt/blog">Devblog</a> · <a href="https://github.com/Dants0/arraial/issues">Bugs e sugestões</a> · <a href="#english">English below</a></p>
 
 ![Eras](docs/imagens/26_era_republicana.png)
 
@@ -27,6 +27,9 @@ Funde um arraial com o **Cruzeiro**, contrate um pedreiro e veja o povoado cresc
 - **Itens:** facão, peixeira, foice, couro de vaqueiro, cantil, comidas típicas (farinha, beiju, paçoca, rapadura, pé-de-moleque, quentão) e blocos coloniais.
 - **Guia do Arraial:** manual de 49 páginas dentro do jogo, com sumário clicável.
 - Compatível com o **JEI** (opcional): receitas e páginas de informação.
+
+### Devblog
+A criação do Arraial (sistemas, testes, bastidores) está sendo documentada no devblog: **[dantas-dev.com/pt/blog](https://dantas-dev.com/pt/blog)**.
 
 ### Como começar
 1. Faça um **Cruzeiro** (5 toras de carvalho escuro em cruz) e coloque num lugar plano. Você ganha o Guia.
@@ -68,6 +71,9 @@ Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement 
 - **In-game guide:** a 49-page manual with clickable contents.
 - Optional **JEI** support.
 
+### Devblog
+The making of Arraial (systems, tests, behind the scenes) is documented on the devblog (in Portuguese): **[dantas-dev.com/pt/blog](https://dantas-dev.com/pt/blog)**.
+
 ### Install
 - Fabric Loader 0.20.1+, **Fabric API** and Java 25.
 - Optional: JEI.
@@ -82,7 +88,7 @@ The source is public to read and contribute to, but **all rights are reserved**:
 You may play it, use it on servers, include it in modpacks (downloaded from an official page), make videos and streams (monetized too) and contribute.
 You may not, without permission: reupload it elsewhere, sell it, or publish modified versions.
 
-Páginas oficiais / Official pages: [GitHub](https://github.com/Dants0/arraial) (Modrinth e CurseForge em breve / coming soon).
+Páginas oficiais / Official pages: [GitHub](https://github.com/Dants0/arraial), [Devblog](https://dantas-dev.com/pt/blog) (Modrinth e CurseForge em breve / coming soon).
 
 Contribuições / Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
