@@ -6,6 +6,7 @@ Textos prontos para colar no Modrinth e no CurseForge (o CurseForge aceita o mes
 | Campo | Valor |
 |---|---|
 | Nome | Arraial |
+| IDs | Modrinth `Deu15Ni5` · CurseForge `1786254` |
 | Slug / URL | `arraial` |
 | Resumo (até 256 caracteres) | Brazilian colonial villages that build and govern themselves: 16 trades, markets, festas, crises, politics, territory, diplomacy, families and three eras of architecture. / Vilas coloniais brasileiras que se governam sozinhas. |
 | Loader | Fabric |
