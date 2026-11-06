@@ -73,5 +73,16 @@ Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement 
 - Optional: JEI.
 - Required on both server and client.
 
+## Licença / License
+O código é público para leitura e contribuição, mas **todos os direitos são reservados**: veja a [LICENSE](LICENSE).
+Pode: jogar, usar em servidores, incluir em modpacks (baixando da página oficial), fazer vídeos e lives (inclusive monetizados) e contribuir.
+Não pode sem permissão: republicar o mod em outros sites, vender, ou publicar versões modificadas.
+
+The source is public to read and contribute to, but **all rights are reserved**: see the [LICENSE](LICENSE).
+You may play it, use it on servers, include it in modpacks (downloaded from an official page), make videos and streams (monetized too) and contribute.
+You may not, without permission: reupload it elsewhere, sell it, or publish modified versions.
+
+Contribuições / Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ---
-© 2026 Guilherme Goes. Todos os direitos reservados / All rights reserved.
+© 2026 Guilherme Goes. Arraial não é um produto oficial do Minecraft nem é associado à Mojang ou à Microsoft. / Not an official Minecraft product; not associated with Mojang or Microsoft.

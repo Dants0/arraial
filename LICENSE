@@ -1,4 +1,115 @@
+Arraial License, version 1.0
 Copyright (c) 2026 Guilherme Goes. All rights reserved.
 
-This mod and its source code, textures and structures may not be copied,
-redistributed or modified without the author's permission.
+This license covers the Arraial mod: its source code, compiled files, textures, skins,
+models, structures, sounds, texts and translations, the name "Arraial" as the name of
+this mod, and its icon and logo (together, "the Mod").
+
+The source code is published so that people can read it, learn from it and help improve
+it. Publishing the source does not make the Mod free to copy or redistribute.
+
+1. YOU MAY
+   a) Download the Mod from its official pages and use it, for free, in single player,
+      on LAN, and on public or private servers, including servers that earn money,
+      provided the Mod itself is not sold and no part of it is put behind a payment.
+   b) Read and study the source code, and build it for your own personal use.
+   c) Include the Mod in modpacks, provided the modpack downloads the Mod from an
+      official page (for example, a Modrinth modpack that references the Modrinth file,
+      or a CurseForge modpack, where the platform allows it) and the Mod is not
+      repackaged, renamed or altered.
+   d) Make videos, streams, screenshots, reviews, guides and wiki pages about the Mod,
+      and earn money from them. A link to an official page is appreciated.
+   e) Propose changes (issues, pull requests) in the official repository, under
+      section 4.
+
+2. YOU MAY NOT, without written permission from the author
+   a) Redistribute the Mod, its files or its source code, modified or not, on any
+      website, mirror, launcher, file host or archive other than the official pages.
+   b) Sell the Mod, charge for access to it or to any of its features, or include it
+      in a paid product.
+   c) Publish modified versions, forks, ports or derivative works of the Mod, or reuse
+      its code, textures, skins, models or structures in other projects.
+   d) Use the name "Arraial", the icon or the logo for another project, or in a way
+      that suggests endorsement by the author.
+   e) Remove or change this license or the copyright notices.
+
+3. OFFICIAL PAGES
+   The Mod's official pages are its project pages on Modrinth and CurseForge and its
+   repository on GitHub, as listed in the README of the official repository.
+
+4. CONTRIBUTIONS
+   By submitting a contribution (code, art, translation or any other material) to the
+   official repository, you confirm that it is your own work and you grant the author
+   a perpetual, worldwide, irrevocable, royalty-free license to use, modify, publish,
+   relicense and distribute it as part of the Mod or otherwise. You will be credited.
+
+5. NO WARRANTY
+   The Mod is provided "as is", without warranty of any kind. The author is not liable
+   for any damage, data loss or other problem arising from its use. Back up your worlds.
+
+6. MINECRAFT
+   Arraial is not an official Minecraft product and is not approved by or associated
+   with Mojang or Microsoft. Use of the Mod is also subject to the Minecraft EULA and
+   Usage Guidelines.
+
+For any permission not granted here, contact the author through the official repository.
+
+---------------------------------------------------------------------------------------
+
+Licença do Arraial, versão 1.0 (tradução; em caso de dúvida vale o texto em inglês acima)
+Copyright (c) 2026 Guilherme Goes. Todos os direitos reservados.
+
+Esta licença cobre o mod Arraial: código-fonte, arquivos compilados, texturas, skins,
+modelos, estruturas, sons, textos e traduções, o nome "Arraial" como nome deste mod, e
+seu ícone e logotipo (juntos, "o Mod").
+
+O código-fonte é publicado para que as pessoas possam lê-lo, aprender com ele e ajudar a
+melhorá-lo. Publicar o código não torna o Mod livre para copiar ou redistribuir.
+
+1. VOCÊ PODE
+   a) Baixar o Mod das páginas oficiais e usá-lo, de graça, no modo de um jogador, em
+      rede local e em servidores públicos ou privados, inclusive servidores que ganhem
+      dinheiro, desde que o Mod em si não seja vendido nem nenhuma parte dele fique atrás
+      de pagamento.
+   b) Ler e estudar o código-fonte e compilá-lo para uso pessoal.
+   c) Incluir o Mod em modpacks, desde que o modpack baixe o Mod de uma página oficial
+      (por exemplo, um modpack do Modrinth que aponte para o arquivo no Modrinth, ou um
+      modpack do CurseForge, onde a plataforma permitir) e o Mod não seja reempacotado,
+      renomeado nem alterado.
+   d) Fazer vídeos, lives, capturas de tela, análises, guias e páginas de wiki sobre o
+      Mod, e ganhar dinheiro com eles. Um link para a página oficial é bem-vindo.
+   e) Propor mudanças (issues, pull requests) no repositório oficial, conforme a seção 4.
+
+2. VOCÊ NÃO PODE, sem permissão por escrito do autor
+   a) Redistribuir o Mod, seus arquivos ou seu código-fonte, modificados ou não, em
+      qualquer site, espelho, launcher, hospedagem de arquivos ou acervo que não sejam
+      as páginas oficiais.
+   b) Vender o Mod, cobrar pelo acesso a ele ou a qualquer função dele, ou incluí-lo num
+      produto pago.
+   c) Publicar versões modificadas, forks, ports ou obras derivadas do Mod, nem reutilizar
+      seu código, texturas, skins, modelos ou estruturas em outros projetos.
+   d) Usar o nome "Arraial", o ícone ou o logotipo em outro projeto, ou de forma que
+      sugira apoio do autor.
+   e) Remover ou alterar esta licença ou os avisos de direitos autorais.
+
+3. PÁGINAS OFICIAIS
+   As páginas oficiais do Mod são as páginas do projeto no Modrinth e no CurseForge e o
+   repositório no GitHub, listadas no README do repositório oficial.
+
+4. CONTRIBUIÇÕES
+   Ao enviar uma contribuição (código, arte, tradução ou qualquer outro material) ao
+   repositório oficial, você confirma que ela é de sua autoria e concede ao autor uma
+   licença perpétua, mundial, irrevogável e gratuita para usá-la, modificá-la,
+   publicá-la, relicenciá-la e distribuí-la como parte do Mod ou não. Você receberá
+   crédito.
+
+5. SEM GARANTIA
+   O Mod é fornecido "como está", sem garantia de nenhum tipo. O autor não responde por
+   danos, perda de dados ou outros problemas decorrentes do uso. Faça backup dos mundos.
+
+6. MINECRAFT
+   O Arraial não é um produto oficial do Minecraft e não é aprovado nem associado à
+   Mojang ou à Microsoft. O uso do Mod também está sujeito ao EULA e às Diretrizes de
+   Uso do Minecraft.
+
+Para qualquer permissão não concedida aqui, fale com o autor pelo repositório oficial.

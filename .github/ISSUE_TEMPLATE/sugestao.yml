@@ -1,0 +1,11 @@
+name: Sugestão / Suggestion
+description: Uma ideia para o Arraial / An idea for Arraial
+labels: [sugestão]
+body:
+  - type: textarea
+    id: ideia
+    attributes:
+      label: A ideia / The idea
+      description: O que você gostaria de ver e por quê / What you would like to see, and why
+    validations:
+      required: true

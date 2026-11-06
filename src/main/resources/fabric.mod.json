@@ -7,7 +7,7 @@
 	"authors": [
 		"Guilherme Goes"
 	],
-	"license": "All-Rights-Reserved",
+	"license": "LicenseRef-Arraial",
 	"icon": "assets/arraial/icon.png",
 	"environment": "*",
 	"entrypoints": {

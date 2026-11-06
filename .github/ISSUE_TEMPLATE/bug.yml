@@ -1,0 +1,29 @@
+name: Bug / Problema
+description: Algo quebrou ou não funciona como deveria / Something is broken
+labels: [bug]
+body:
+  - type: input
+    id: versoes
+    attributes:
+      label: Versões / Versions
+      description: Minecraft, Fabric Loader, Fabric API, Arraial (e outros mods / and other mods)
+      placeholder: "MC 26.3, Loader 0.20.1, Fabric API 0.165.0, Arraial 1.0.0-beta.1, Sodium, JEI"
+    validations:
+      required: true
+  - type: textarea
+    id: oque
+    attributes:
+      label: O que aconteceu? / What happened?
+      description: O que você fez, o que esperava e o que aconteceu / What you did, expected and got
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Log ou crash report
+      description: Cole o latest.log (pasta logs) ou o crash report, ou um link para eles (mclo.gs)
+      render: text
+  - type: textarea
+    id: imagens
+    attributes:
+      label: Capturas de tela / Screenshots
