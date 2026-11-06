@@ -7,6 +7,11 @@
 	"authors": [
 		"Guilherme Goes"
 	],
+	"contact": {
+		"homepage": "https://github.com/Dants0/arraial",
+		"sources": "https://github.com/Dants0/arraial",
+		"issues": "https://github.com/Dants0/arraial/issues"
+	},
 	"license": "LicenseRef-Arraial",
 	"icon": "assets/arraial/icon.png",
 	"environment": "*",
