@@ -72,7 +72,7 @@ Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement 
 - Optional **JEI** support.
 
 ### Devblog
-The making of Arraial (systems, tests, behind the scenes) is documented on the devblog (in Portuguese): **[dantas-dev.com/pt/blog](https://dantas-dev.com/pt/blog)**.
+The making of Arraial (systems, tests, behind the scenes) is documented on the devblog (in Portuguese and English): **[dantas-dev.com/pt/blog](https://dantas-dev.com/pt/blog)**, **[dantas-dev.com/en/blog](https://dantas-dev.com/en/blog)**
 
 ### Install
 - Fabric Loader 0.20.1+, **Fabric API** and Java 25.
