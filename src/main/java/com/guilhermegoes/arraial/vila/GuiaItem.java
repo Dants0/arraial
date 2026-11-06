@@ -45,11 +45,11 @@ public class GuiaItem extends Item {
 
 	public static ItemStack livro() {
 		List<Filterable<Component>> paginas = new ArrayList<>();
-		paginas.add(Filterable.passThrough(Component.translatable("arraial.guia.capa")));
+		paginas.add(Filterable.passThrough(pagina("capa")));
 		paginas.add(Filterable.passThrough(sumario()));
 		for (Capitulo c : CAPITULOS) {
 			for (String p : c.paginas()) {
-				paginas.add(Filterable.passThrough(Component.translatable("arraial.guia." + p)));
+				paginas.add(Filterable.passThrough(pagina(p)));
 			}
 		}
 		ItemStack livro = new ItemStack(Items.WRITTEN_BOOK);
@@ -58,14 +58,21 @@ public class GuiaItem extends Item {
 		return livro;
 	}
 
+	/** Dark ink on the paper, whatever a resource pack or another mod sets as the default text colour. */
+	private static final int TINTA = 0x1E1408;
+
+	private static Component pagina(String chave) {
+		return Component.translatable("arraial.guia." + chave).withColor(TINTA);
+	}
+
 	/** The table of contents: each chapter is a link to its first page. */
 	private static Component sumario() {
-		MutableComponent s = Component.empty().append(Component.translatable("arraial.guia.sumario").withStyle(ChatFormatting.BOLD)).append("\n");
+		MutableComponent s = Component.empty().withColor(TINTA).append(Component.translatable("arraial.guia.sumario").withStyle(ChatFormatting.BOLD)).append("\n");
 		int pagina = 3; // 1: cover, 2: contents
 		for (Capitulo c : CAPITULOS) {
 			final int alvo = pagina;
 			s.append("\n").append(Component.literal("› ").append(Component.translatable("arraial.guia.cap." + c.id()))
-					.append(Component.literal(" " + pagina).withStyle(ChatFormatting.GRAY))
+					.append(Component.literal(" " + pagina).withStyle(ChatFormatting.DARK_GRAY))
 					.withStyle(st -> st.withColor(ChatFormatting.DARK_BLUE).withUnderlined(true).withClickEvent(new ClickEvent.ChangePage(alvo))));
 			pagina += c.paginas().size();
 		}
