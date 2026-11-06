@@ -3,20 +3,31 @@
 	"id": "arraial",
 	"version": "${version}",
 	"name": "Arraial",
-	"description": "Moradores que constroem. Contrate um pedreiro, escolha um projeto e veja seu arraial crescer, do pau a pique à metrópole.",
-	"authors": ["Guilherme Goes"],
+	"description": "Brazilian colonial villages that build and run themselves. Found an arraial, hire a builder and watch it grow from a mud-hut Povoado to a Cidade: 16 trades, markets and réis, festas, crises, politics, territory and diplomacy, families, and three eras of architecture. / Vilas coloniais brasileiras que se constroem e se governam sozinhas.",
+	"authors": [
+		"Guilherme Goes"
+	],
 	"license": "All-Rights-Reserved",
 	"icon": "assets/arraial/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": ["com.guilhermegoes.arraial.Arraial"],
-		"client": ["com.guilhermegoes.arraial.client.ArraialClient"],
-		"jei_mod_plugin": ["com.guilhermegoes.arraial.client.ArraialJei"]
+		"main": [
+			"com.guilhermegoes.arraial.Arraial"
+		],
+		"client": [
+			"com.guilhermegoes.arraial.client.ArraialClient"
+		],
+		"jei_mod_plugin": [
+			"com.guilhermegoes.arraial.client.ArraialJei"
+		]
 	},
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~26.3",
 		"java": ">=25",
 		"fabric-api": "*"
+	},
+	"suggests": {
+		"jei": "*"
 	}
 }

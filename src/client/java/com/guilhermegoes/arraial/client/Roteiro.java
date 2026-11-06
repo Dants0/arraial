@@ -31,7 +31,7 @@ public final class Roteiro {
 	private static int contador;
 	private static boolean abriu;
 
-	static void init() {
+	public static void init() {
 		if (!"1".equals(System.getenv("ARRAIAL_ROTEIRO"))) {
 			return;
 		}

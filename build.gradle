@@ -66,6 +66,12 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_$projectName"}
 	}
+	// The automated in-game test script is for development only.
+	exclude 'com/guilhermegoes/arraial/client/Roteiro*'
+}
+
+sourcesJar {
+	exclude 'com/guilhermegoes/arraial/client/Roteiro*'
 }
 
 // configure the maven publication

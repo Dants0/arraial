@@ -1,5 +1,6 @@
 package com.guilhermegoes.arraial.client;
 
+import com.guilhermegoes.arraial.Arraial;
 import com.guilhermegoes.arraial.rede.Rede;
 import com.guilhermegoes.arraial.registry.ModEntities;
 import net.fabricmc.api.ClientModInitializer;
@@ -11,6 +12,13 @@ public class ArraialClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(ModEntities.MORADOR, MoradorRenderer::new);
 		ClientPlayNetworking.registerGlobalReceiver(Rede.AbrirTela.TYPE, (p, ctx) -> TelaArraial.receber(p.dados()));
-		Roteiro.init();
+		// The automated test script (dev only, left out of the published jar): loaded by name, only when asked for.
+		if ("1".equals(System.getenv("ARRAIAL_ROTEIRO"))) {
+			try {
+				Class.forName("com.guilhermegoes.arraial.client.Roteiro").getDeclaredMethod("init").invoke(null);
+			} catch (ReflectiveOperationException e) {
+				Arraial.LOGGER.warn("Roteiro de teste indisponivel", e);
+			}
+		}
 	}
 }

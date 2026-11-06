@@ -2,7 +2,7 @@
 # skins). Grids: one string per row, one char per pixel, '.' = transparent; rows shorter
 # than 16 are padded with '.'. Animated textures are vertical strips of 16x16 frames.
 # Usage: powershell -File tools/gerar_texturas.ps1 -Raiz src/main/resources/assets/arraial/textures
-param([string]$Raiz, [string]$Vanilla)
+param([string]$Raiz)
 Add-Type -AssemblyName System.Drawing
 
 function C([string]$hex) { [System.Drawing.ColorTranslator]::FromHtml($hex) }
@@ -202,27 +202,6 @@ Quadrantes 'cantil_cheio' @('#8B5A2B', '#6E451F', '#5E3A1A', '#4A2C12', '#B98A55
 Quadrantes 'saco_saque' @('#B89A6A', '#9A7E52', '#9A7E52', '#7A6040', '#D8C8A0', '#A89870', '#D9A63A', '#A87A20')
 Quadrantes 'comenda' @('#E0B030', '#B88A18', '#F4D870', '#E0B848', '#2E8A3A', '#1E6A2A', '#F0C830', '#C8A020')
 
-# The vaqueiro's leather: vanilla leather armour (layers and icons) dyed saddle brown.
-function Tingir([string]$origem, [string]$pasta, [string]$nome, [string]$cor) {
-  if (-not (Test-Path $origem)) { return }
-  $src = New-Object System.Drawing.Bitmap $origem
-  $b = New-Object System.Drawing.Bitmap $src.Width, $src.Height
-  $t = C $cor
-  for ($y = 0; $y -lt $src.Height; $y++) { for ($x = 0; $x -lt $src.Width; $x++) {
-    $p = $src.GetPixel($x, $y)
-    if ($p.A -gt 0) {
-      $b.SetPixel($x, $y, [System.Drawing.Color]::FromArgb($p.A, [int]($p.R * $t.R / 255), [int]($p.G * $t.G / 255), [int]($p.B * $t.B / 255)))
-    }
-  } }
-  $src.Dispose()
-  Salvar $b $pasta $nome
-}
-if ($Vanilla) {
-  Tingir "$Vanilla\entity\equipment\humanoid\leather.png" 'entity\equipment\humanoid' 'vaqueiro' '#A0683A'
-  Tingir "$Vanilla\entity\equipment\humanoid_leggings\leather.png" 'entity\equipment\humanoid_leggings' 'vaqueiro' '#8A5A30'
-  Tingir "$Vanilla\item\leather_chestplate.png" 'item' 'gibao' '#A0683A'
-  Tingir "$Vanilla\item\leather_leggings.png" 'item' 'perneira' '#8A5A30'
-  Tingir "$Vanilla\item\leather_boots.png" 'item' 'alpercatas' '#C08850'
-}
+# The vaqueiro's leather gear (worn layers and icons) is drawn by tools/gerar_couro.js.
 
 "texturas geradas em $Raiz"
