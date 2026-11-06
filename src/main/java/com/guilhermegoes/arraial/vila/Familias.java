@@ -114,6 +114,7 @@ public final class Familias {
 			}
 			bebe.definirVila(a.getBlockPos());
 			bebe.nascer(pai, mae, m.sobrenome(), Vilas.dia(level));
+			bebe.puxar(level.getRandom().nextBoolean() ? m : c);
 			Component texto = Component.translatable(bebe.feminino() ? "arraial.cronica.nasceu.f" : "arraial.cronica.nasceu.m",
 					bebe.nome(), bebe.sobrenome(), m.nome(), c.nome());
 			Cronica.anotar(level, a.getBlockPos(), texto);

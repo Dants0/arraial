@@ -51,7 +51,8 @@ import org.jspecify.annotations.Nullable;
  * a daily routine, and optionally a profession (e.g. pedreiro).
  */
 public class MoradorEntity extends PathfinderMob {
-	public static final int VISUAIS = 4;
+	/** Looks (skin tone, hair, face); the last one is an elder with grey hair. */
+	public static final int VISUAIS = 6;
 
 	private static final List<String> NOMES_M = List.of(
 			"Zé", "Tião", "Chico", "Bento", "Severino", "Raimundo", "Damião", "Joaquim",
@@ -152,6 +153,12 @@ public class MoradorEntity extends PathfinderMob {
 		this.nascimento = dia;
 		this.diaChegada = dia;
 		getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.SCALE).setBaseValue(0.55);
+	}
+
+	/** A newborn takes after one of the parents (but not the grey hair of an elder). */
+	public void puxar(MoradorEntity parente) {
+		int v = parente.visual();
+		entityData.set(VISUAL, v >= VISUAIS - 1 ? VISUAIS - 2 : v);
 	}
 
 	public void crescer() {

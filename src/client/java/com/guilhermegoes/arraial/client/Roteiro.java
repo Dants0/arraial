@@ -356,6 +356,29 @@ public final class Roteiro {
 				"setblock 34 141 31 arraial:cal", "setblock 34 142 31 arraial:telha_escada[facing=north]", "setblock 35 142 31 arraial:telha_escada[facing=north]",
 				"setblock 32 140 27 minecraft:glass", "tp @s 32.5 141 27.5 0 15"));
 		passo(60, () -> foto("27_blocos_coloniais"));
+		// The skins: every trade, men and women, in a row on a platform in the sky; front and back.
+		passo(10, () -> cmd("fill 36 149 36 62 149 56 minecraft:grass_block", "time set 6000", "weather clear"));
+		for (int grupo = 0; grupo < 4; grupo++) {
+			final int g = grupo;
+			passo(10, () -> {
+				List<String> c = new ArrayList<>();
+				c.add("kill @e[tag=vitrine]");
+				boolean fem = g >= 2;
+				for (int k = 0; k < 9; k++) {
+					int prof = (g % 2) * 9 + k;
+					c.add("summon arraial:morador " + (45 + k) + " 150 46 {NoAI:1b,Invulnerable:1b,Tags:[\"vitrine\"],Rotation:[0f,0f],Profissao:" + prof
+							+ ",Visual:" + ((prof + (fem ? 1 : 0)) % 6) + ",Feminino:" + (fem ? "1b" : "0b") + "}");
+				}
+				c.add("tp @s 49.5 150.2 53.5 180 4");
+				cmd(c.toArray(new String[0]));
+			});
+			passo(50, () -> foto("29_skins_" + (g < 2 ? "homens_" : "mulheres_") + (g % 2 + 1)));
+			if (g == 2) {
+				passo(10, () -> cmd("tp @s 49.5 150.2 39.5 0 4"));
+				passo(40, () -> foto("29_skins_mulheres_costas"));
+			}
+		}
+		passo(10, () -> cmd("kill @e[tag=vitrine]"));
 		// The Guia: every page must fit the book (114 px wide, 14 lines); photos of a few.
 		passo(10, () -> cmd("item replace entity @s weapon.mainhand with arraial:guia"));
 		passo(20, () -> mc().gameMode.useItem(mc().player, InteractionHand.MAIN_HAND));
