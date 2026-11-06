@@ -152,6 +152,13 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] 49 páginas: capa, sumário clicável, Primeiros dias (early), Crescendo (mid), Grandeza (late), Ofícios, Comércio, Itens e blocos, Dicas
 - [x] Roteiro mede todas as páginas em pt_br e en_us (cabem em 14 linhas) e fotografa algumas
 
+## Ideias da comunidade
+- [ ] **Agropecuária do Brasil** (viewer, 2026-11-06): fazendas e ciclos econômicos, por exemplo:
+  - fazenda como obra própria com fazendeiro e colonos, e terra lavrada fora do núcleo da vila;
+  - engenho de cana (moenda, açúcar, rapadura) na era Colonial; cafezal e terreiro de secagem na Imperial;
+  - gado de corte e de leite com o vaqueiro: charque, couro, queijo coalho; milho (pamonha, cuscuz), algodão (tecelagem);
+  - especialidade "agropecuária" na economia regional, com preços e contratos próprios.
+
 ## Próximos
 - [ ] Teste em jogo pelo usuário (T)
 
