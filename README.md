@@ -4,7 +4,7 @@
 
 <p align="center"><b>Vilas coloniais brasileiras que se constroem e se governam sozinhas.</b><br>
 <i>Brazilian colonial villages that build and run themselves.</i><br>
-Fabric · Minecraft 26.3 · <a href="https://dantas-dev.com/pt/blog">Devblog</a> · <a href="https://github.com/Dants0/arraial/issues">Bugs e sugestões</a> · <a href="#english">English below</a></p>
+Fabric · Minecraft 26.3 · <a href="https://www.curseforge.com/minecraft/mc-mods/arraial">CurseForge</a> · <a href="https://dantas-dev.com/pt/blog">Devblog</a> · <a href="https://github.com/Dants0/arraial/issues">Bugs e sugestões</a> · <a href="#english">English below</a></p>
 
 ![Eras](docs/imagens/26_era_republicana.png)
 
@@ -88,7 +88,7 @@ The source is public to read and contribute to, but **all rights are reserved**:
 You may play it, use it on servers, include it in modpacks (downloaded from an official page), make videos and streams (monetized too) and contribute.
 You may not, without permission: reupload it elsewhere, sell it, or publish modified versions.
 
-Páginas oficiais / Official pages: [GitHub](https://github.com/Dants0/arraial), [Devblog](https://dantas-dev.com/pt/blog) (Modrinth e CurseForge em breve / coming soon).
+Páginas oficiais / Official pages: [GitHub](https://github.com/Dants0/arraial), [Devblog](https://dantas-dev.com/pt/blog) · [CurseForge](https://www.curseforge.com/minecraft/mc-mods/arraial) · Modrinth (em análise / in review).
 
 Contribuições / Contributing: [CONTRIBUTING.md](CONTRIBUTING.md).
 
