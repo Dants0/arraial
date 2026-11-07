@@ -160,6 +160,7 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
   - especialidade "agropecuária" na economia regional, com preços e contratos próprios.
 - [ ] **Outras culturas coloniais** (CurseForge, SynthKnight, 2026-11-07): rioplatense, peruana, Nova Espanha; ou europeias renascentistas e barrocas. Encaixe sugerido: vilas vizinhas de outra cultura perto das fronteiras (Missões jesuíticas e pueblos espanhóis, como nos Sete Povos e no Tratado de Madri), com arquitetura, nomes, bandeira e diplomacia próprias.
 - [ ] **Compatibilidade com armaduras de outros mods** (CurseForge, 2026-11-07, citou Epic Knights): soldados vestem qualquer armadura que estiver no Armazém, inclusive de mods.
+- [ ] **Barroco brasileiro** (da conversa com SynthKnight, 2026-11-07): ciclo do ouro, igrejas barrocas com talha dourada e torres sineiras, casario mineiro (Ouro Preto), chafarizes de pedra-sabão, ofícios de entalhador e escultor; pode virar uma variante da era Imperial para vilas mineradoras ou uma obra especial (Matriz barroca).
 
 ## Próximos
 - [ ] Teste em jogo pelo usuário (T)
