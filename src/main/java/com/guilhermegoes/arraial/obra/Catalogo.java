@@ -45,6 +45,11 @@ public final class Catalogo {
 			new Projeto("rancho_cacador"),
 			new Projeto("oficina_engenheiro"),
 			new Projeto("cartorio"),
+			new Projeto("engenho"),
+			new Projeto("cafezal"),
+			new Projeto("oficina_entalhe"),
+			new Projeto("matriz"),
+			new Projeto("missao"),
 			new Projeto(Muralha.ID));
 
 	public static Optional<Projeto> porId(String id) {

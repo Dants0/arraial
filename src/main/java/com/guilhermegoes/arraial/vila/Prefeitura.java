@@ -57,7 +57,10 @@ public final class Prefeitura {
 			Map.entry(Profissao.PESCADOR, "pesqueiro"),
 			Map.entry(Profissao.CACADOR, "rancho_cacador"),
 			Map.entry(Profissao.ENGENHEIRO, "oficina_engenheiro"),
-			Map.entry(Profissao.RELACOES, "cartorio"));
+			Map.entry(Profissao.RELACOES, "cartorio"),
+			Map.entry(Profissao.MESTRE_ENGENHO, "engenho"),
+			Map.entry(Profissao.CAFEICULTOR, "cafezal"),
+			Map.entry(Profissao.ENTALHADOR, "oficina_entalhe"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -237,9 +240,31 @@ public final class Prefeitura {
 		if (n >= 6 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.POSTO_GUARDA) > 0 && obras(level, vila, Muralha.ID) == 0) {
 			desejos.add(Muralha.ID);
 		}
-		// The era's buildings: the Capela (Imperial), the Chafariz on the square (Republicana).
-		if (arraial.era.ordinal() >= Era.IMPERIAL.ordinal() && obras(level, vila, "capela") == 0) {
-			desejos.add("capela");
+		// The fazendas: an engenho by the water once the arraial is established; a cafezal in the Imperial era.
+		if (n >= 7 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.MOENDA) == 0 && temAgua(level, vila)) {
+			desejos.add("engenho");
+		}
+		if (n >= 8 && arraial.era.ordinal() >= Era.IMPERIAL.ordinal() && postos(level, vila, ModPois.TERREIRO) == 0) {
+			desejos.add("cafezal");
+		}
+		// The church: a Spanish mission builds its own from the start; a Portuguese arraial its Capela
+		// (Imperial) and later the Baroque Matriz, with a carver for the gilded talha.
+		if (arraial.hispano()) {
+			if (n >= 3 && obras(level, vila, "missao") == 0) {
+				desejos.add("missao");
+			}
+		} else {
+			if (arraial.era.ordinal() >= Era.IMPERIAL.ordinal() && obras(level, vila, "capela") == 0) {
+				desejos.add("capela");
+			}
+			boolean mineira = Era.estilo(level, arraial).mineiro();
+			boolean barroco = arraial.era.ordinal() >= Era.IMPERIAL.ordinal() && estagio.pelo(mineira ? Estagio.VILA : Estagio.VILA_PROSPERA);
+			if (barroco && obras(level, vila, "capela") > 0 && postos(level, vila, ModPois.BANCADA_ENTALHE) == 0) {
+				desejos.add("oficina_entalhe");
+			}
+			if (barroco && postos(level, vila, ModPois.BANCADA_ENTALHE) > 0 && obras(level, vila, "matriz") == 0) {
+				desejos.add("matriz");
+			}
 		}
 		if (arraial.era == Era.REPUBLICANA && obras(level, vila, "chafariz") == 0) {
 			desejos.add("chafariz");

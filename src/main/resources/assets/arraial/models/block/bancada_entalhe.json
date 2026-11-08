@@ -1,0 +1,202 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "tabua": "minecraft:block/spruce_planks",
+    "talha": "arraial:block/talha_dourada",
+    "particle": "minecraft:block/spruce_planks"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        3,
+        12,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tabua"
+        },
+        "south": {
+          "texture": "#tabua"
+        },
+        "east": {
+          "texture": "#tabua"
+        },
+        "west": {
+          "texture": "#tabua"
+        },
+        "up": {
+          "texture": "#tabua"
+        },
+        "down": {
+          "texture": "#tabua"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        12,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tabua"
+        },
+        "south": {
+          "texture": "#tabua"
+        },
+        "east": {
+          "texture": "#tabua"
+        },
+        "west": {
+          "texture": "#tabua"
+        },
+        "up": {
+          "texture": "#tabua"
+        },
+        "down": {
+          "texture": "#tabua"
+        }
+      }
+    },
+    {
+      "from": [
+        1,
+        0,
+        13
+      ],
+      "to": [
+        3,
+        12,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tabua"
+        },
+        "south": {
+          "texture": "#tabua"
+        },
+        "east": {
+          "texture": "#tabua"
+        },
+        "west": {
+          "texture": "#tabua"
+        },
+        "up": {
+          "texture": "#tabua"
+        },
+        "down": {
+          "texture": "#tabua"
+        }
+      }
+    },
+    {
+      "from": [
+        13,
+        0,
+        13
+      ],
+      "to": [
+        15,
+        12,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tabua"
+        },
+        "south": {
+          "texture": "#tabua"
+        },
+        "east": {
+          "texture": "#tabua"
+        },
+        "west": {
+          "texture": "#tabua"
+        },
+        "up": {
+          "texture": "#tabua"
+        },
+        "down": {
+          "texture": "#tabua"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        12,
+        0
+      ],
+      "to": [
+        16,
+        14,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tabua"
+        },
+        "south": {
+          "texture": "#tabua"
+        },
+        "east": {
+          "texture": "#tabua"
+        },
+        "west": {
+          "texture": "#tabua"
+        },
+        "up": {
+          "texture": "#tabua"
+        },
+        "down": {
+          "texture": "#tabua"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        14,
+        4
+      ],
+      "to": [
+        10,
+        20,
+        8
+      ],
+      "faces": {
+        "north": {
+          "texture": "#talha"
+        },
+        "south": {
+          "texture": "#talha"
+        },
+        "east": {
+          "texture": "#talha"
+        },
+        "west": {
+          "texture": "#talha"
+        },
+        "up": {
+          "texture": "#talha"
+        },
+        "down": {
+          "texture": "#talha"
+        }
+      }
+    }
+  ]
+}

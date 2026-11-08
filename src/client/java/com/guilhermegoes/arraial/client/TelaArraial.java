@@ -293,7 +293,7 @@ public class TelaArraial extends Screen {
 			MapaDados.Vila v = d.vilas.get(i);
 			int x = telaX(v.x), y = telaZ(v.z);
 			// The stage shows on the marker; the label keeps the place name ("Povoado de Santa Luzia" -> "Santa Luzia").
-			String rotulo = v.nome.replaceFirst("^(Povoado|Arraial|Vila próspera|Vila|Cidade) (de|do|da|dos|das) ", "");
+			String rotulo = v.nome.replaceFirst("^(Povoado|Arraial|Vila próspera|Vila|Cidade|Misión|Pueblo|Villa Real|Villa|Ciudad) (de|do|da|dos|das|del) ", "");
 			if (this.font.width(rotulo) > 110) {
 				rotulo = this.font.plainSubstrByWidth(rotulo, 104) + "…";
 			}
@@ -376,6 +376,9 @@ public class TelaArraial extends Screen {
 	private List<Component> ficha(MapaDados.Vila v, int i) {
 		List<Component> l = new ArrayList<>();
 		l.add(Component.literal(v.nome).withStyle(ChatFormatting.BOLD));
+		if ("hispano".equals(v.povo)) {
+			l.add(Component.translatable("arraial.mapa.missao").withStyle(ChatFormatting.GOLD));
+		}
 		if (v.abandonada) {
 			l.add(Component.translatable(v.bandidos ? "arraial.mapa.bandidos" : "arraial.mapa.ruina").withStyle(ChatFormatting.RED));
 			return l;
@@ -473,6 +476,9 @@ public class TelaArraial extends Screen {
 	private List<Component> detalhe(MapaDados.Vila v, int i) {
 		List<Component> l = new ArrayList<>();
 		l.add(Component.literal(v.nome).withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
+		if ("hispano".equals(v.povo)) {
+			l.add(Component.translatable("arraial.mapa.missao").withStyle(ChatFormatting.GOLD));
+		}
 		if (v.abandonada) {
 			l.add(Component.translatable(v.bandidos ? "arraial.mapa.bandidos" : "arraial.mapa.ruina").withStyle(ChatFormatting.RED));
 			return l;

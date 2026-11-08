@@ -1,0 +1,25 @@
+{
+  "parent": "arraial:era_imperial",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.matriz_barroca.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.matriz_barroca.description"
+    },
+    "icon": {
+      "id": "arraial:talha_dourada"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

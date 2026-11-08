@@ -97,7 +97,7 @@ public final class Terreno {
 					return false;
 				}
 				int topo = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
-				if (Math.abs(topo - chaoY) > 1 || !chao(level.getBlockState(new BlockPos(x, topo, z)))) {
+				if (Math.abs(topo - chaoY) > 2 || !chao(level.getBlockState(new BlockPos(x, topo, z)))) {
 					return false; // too steep, a hole, water, or something built
 				}
 			}
@@ -127,7 +127,7 @@ public final class Terreno {
 
 	/** Natural ground the pedreiro may dig into or build on. */
 	private static boolean chao(BlockState s) {
-		return s.is(BlockTags.DIRT) || s.is(BlockTags.SAND) || s.is(BlockTags.BASE_STONE_OVERWORLD) || s.is(Blocks.GRAVEL)
+		return s.is(BlockTags.SUBSTRATE_OVERWORLD) || s.is(BlockTags.SAND) || s.is(BlockTags.BASE_STONE_OVERWORLD) || s.is(Blocks.GRAVEL)
 				|| s.is(Blocks.SNOW_BLOCK) || s.is(Blocks.CLAY);
 	}
 

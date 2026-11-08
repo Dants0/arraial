@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arraial:block/bancada_entalhe"
+    },
+    "facing=east": {
+      "model": "arraial:block/bancada_entalhe",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arraial:block/bancada_entalhe",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arraial:block/bancada_entalhe",
+      "y": 270
+    }
+  }
+}

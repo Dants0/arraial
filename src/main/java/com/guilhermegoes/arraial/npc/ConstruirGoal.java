@@ -273,7 +273,7 @@ public class ConstruirGoal extends Goal {
 			}
 			// Built in the style of the arraial's era (taipa, brick, lime...).
 			com.guilhermegoes.arraial.vila.ArraialBlockEntity vila = pedreiro.arraial();
-			BlockState novo = vila == null ? etapa.state() : vila.era().estilo(etapa.state());
+			BlockState novo = vila == null ? etapa.state() : com.guilhermegoes.arraial.vila.Era.estilo(level, vila).aplicar(etapa.state());
 			// UPDATE_CLIENTS only: two-part blocks (doors) must not pop off before their other half is placed.
 			level.setBlock(pos, novo, Block.UPDATE_CLIENTS);
 			conectar(level, pos);
@@ -349,6 +349,9 @@ public class ConstruirGoal extends Goal {
 		canteiro.concluir();
 		pedreiro.segurar(ItemStack.EMPTY);
 		Component nomeObra = canteiro.projeto().get().nome();
+		if (canteiro.projeto().get().id().equals("matriz")) {
+			com.guilhermegoes.arraial.vila.Conquistas.darPerto(level, canteiro.getBlockPos(), 64, "matriz_barroca");
+		}
 		pedreiro.setStatus(Component.translatable("arraial.pedreiro.terminou", nomeObra));
 		Cronica.anotar(level, Vilas.maisProxima(level, canteiro.getBlockPos()),
 				Component.translatable("arraial.cronica.obra", pedreiro.nome(), nomeObra));

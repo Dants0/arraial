@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arraial:block/moenda"
+    },
+    "facing=east": {
+      "model": "arraial:block/moenda",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arraial:block/moenda",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arraial:block/moenda",
+      "y": 270
+    }
+  }
+}

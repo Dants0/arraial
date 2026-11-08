@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "ingredient": "minecraft:beef",
+  "result": {
+    "id": "arraial:charque"
+  },
+  "experience": 0.2,
+  "cookingtime": 1200
+}

@@ -133,6 +133,9 @@ public final class Territorio {
 			Registro.Info v = Registro.get(d.get(0));
 			msg = Component.literal("⚑ ").append(Component.translatable("arraial.territorio.de", v == null ? "?" : v.nome))
 					.withStyle(Cultura.cor(v));
+			if (v != null && "hispano".equals(v.povo)) {
+				Conquistas.dar(p, "missao");
+			}
 		} else {
 			Registro.Info a = Registro.get(d.get(0)), b = Registro.get(d.get(1));
 			msg = Component.literal("⚔ ").append(Component.translatable("arraial.territorio.disputada", a == null ? "?" : a.nome, b == null ? "?" : b.nome))
@@ -210,6 +213,12 @@ public final class Territorio {
 			delta += rep < -30 ? 2 : 1;
 			if (motivo.isEmpty()) {
 				motivo = "rixa";
+			}
+		}
+		if (!va.povo.equals(vb.povo) && dist < 500) {
+			delta += 1;
+			if (motivo.isEmpty()) {
+				motivo = "colonial";
 			}
 		}
 		Registro.Rota rota = va.rotas.get(b);

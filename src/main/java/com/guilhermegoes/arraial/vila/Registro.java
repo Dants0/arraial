@@ -93,6 +93,8 @@ public final class Registro {
 		public String bioma = "";
 		/** The era (see Era), copied from the arraial when it is loaded. */
 		public String era = "";
+		/** "" (Portuguese) or "hispano" (a Spanish mission). */
+		public String povo = "";
 		public java.util.List<String> costumes = new java.util.ArrayList<>();
 		public java.util.List<String> tradicoes = new java.util.ArrayList<>();
 		public boolean bandeiraHasteada;

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "ingredient": "arraial:cafe_cereja",
+  "result": {
+    "id": "arraial:cafe_torrado"
+  },
+  "experience": 0.2,
+  "cookingtime": 200
+}

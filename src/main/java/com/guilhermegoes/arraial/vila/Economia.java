@@ -27,7 +27,7 @@ public final class Economia {
 	private static final long DIAS_BLOQUEIO = 4;
 
 	public enum Especialidade {
-		AGRICOLA, MINERADORA, MADEIREIRA, PESQUEIRA, PASTORIL, ARTESANAL, MISTA;
+		AGRICOLA, MINERADORA, MADEIREIRA, PESQUEIRA, PASTORIL, ARTESANAL, AGROPECUARIA, MISTA;
 
 		public String id() {
 			return name().toLowerCase(java.util.Locale.ROOT);
@@ -54,8 +54,9 @@ public final class Economia {
 		int madeireira = n(oficios, "lenhador");
 		int pesqueira = n(oficios, "pescador");
 		int pastoril = n(oficios, "pastor") + n(oficios, "cacador");
-		int artesanal = n(oficios, "oleiro") + n(oficios, "boticario") + n(oficios, "feirante");
-		int[] v = {agricola, mineradora, madeireira, pesqueira, pastoril, artesanal};
+		int artesanal = n(oficios, "oleiro") + n(oficios, "boticario") + n(oficios, "feirante") + n(oficios, "entalhador");
+		int agropecuaria = 2 * (n(oficios, "mestre_engenho") + n(oficios, "cafeicultor"));
+		int[] v = {agricola, mineradora, madeireira, pesqueira, pastoril, artesanal, agropecuaria};
 		int melhor = -1, max = 1;
 		for (int i = 0; i < v.length; i++) {
 			if (v[i] > max) {

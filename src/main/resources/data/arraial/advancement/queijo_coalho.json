@@ -1,0 +1,30 @@
+{
+  "parent": "arraial:fundador",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "arraial:queijo_coalho"
+        }
+      }
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.queijo_coalho.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.queijo_coalho.description"
+    },
+    "icon": {
+      "id": "arraial:queijo_coalho"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

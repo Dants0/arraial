@@ -328,11 +328,11 @@ public class CavarGoal extends OficioGoal {
 			return false;
 		}
 		if (pedra) {
-			return s.is(BlockTags.BASE_STONE_OVERWORLD) || s.is(Blocks.COBBLESTONE) || s.is(BlockTags.DIRT) || s.is(Blocks.GRAVEL)
+			return s.is(BlockTags.BASE_STONE_OVERWORLD) || s.is(Blocks.COBBLESTONE) || s.is(BlockTags.SUBSTRATE_OVERWORLD) || s.is(Blocks.GRAVEL)
 					|| s.is(BlockTags.SAND) || s.is(net.minecraft.tags.BlockItemTags.COAL_ORES.block()) || s.is(BlockTags.IRON_ORES) || s.is(BlockTags.COPPER_ORES)
 					|| s.is(Blocks.CLAY);
 		}
-		return s.is(BlockTags.DIRT) || s.is(BlockTags.SAND) || s.is(Blocks.GRAVEL) || s.is(Blocks.CLAY) || s.is(Blocks.MUD);
+		return s.is(BlockTags.SUBSTRATE_OVERWORLD) || s.is(BlockTags.SAND) || s.is(Blocks.GRAVEL) || s.is(Blocks.CLAY) || s.is(Blocks.MUD);
 	}
 
 	/** Digging here would let water or lava in. */

@@ -152,15 +152,23 @@ Legenda: `[x]` feito, compilado e com boot do servidor · `[ ]` a fazer · (T) t
 - [x] 49 páginas: capa, sumário clicável, Primeiros dias (early), Crescendo (mid), Grandeza (late), Ofícios, Comércio, Itens e blocos, Dicas
 - [x] Roteiro mede todas as páginas em pt_br e en_us (cabem em 14 linhas) e fotografa algumas
 
+## 23. Fazendas, barroco, missões e armaduras (1.0.0-beta.2)
+- [x] Engenho (mestre de engenho, moenda: cana, açúcar, rapadura); cafezal (cafeicultor, terreiro, pé de café, café torrado, cafezinho); queijo coalho e charque (vaqueiro); especialidade agroexportadora
+- [x] Barroco: pedra-sabão, talha dourada, entalhador, oficina de entalhe, Igreja Matriz; vilas mineradoras com casas caiadas sobre pedra-sabão e faiscação de ouro
+- [x] Missões espanholas (30% das vilas autônomas): nomes, moradores com nomes espanhóis, bandeira com a cruz de Borgonha, adobe, igreja com espadanha, tensão de fronteira; /arraial vila_nova missao|luso
+- [x] Soldados vestem a melhor armadura e arma do Armazém, de qualquer mod
+- [x] Correção: grama não contava como chão no 26.3 (tag dirt mudou) e as obras não achavam lugar em terreno natural
+- [x] Roteiro: cenas novas (ARRAIAL_ROTEIRO_SO=novas), campo plano, vila numa planície natural para a galeria (sem a plataforma de teste)
+
 ## Ideias da comunidade
-- [ ] **Agropecuária do Brasil** (viewer, 2026-11-06): fazendas e ciclos econômicos, por exemplo:
+- [x] **Agropecuária do Brasil** (viewer, 2026-11-06): fazendas e ciclos econômicos, por exemplo:
   - fazenda como obra própria com fazendeiro e colonos, e terra lavrada fora do núcleo da vila;
   - engenho de cana (moenda, açúcar, rapadura) na era Colonial; cafezal e terreiro de secagem na Imperial;
   - gado de corte e de leite com o vaqueiro: charque, couro, queijo coalho; milho (pamonha, cuscuz), algodão (tecelagem);
   - especialidade "agropecuária" na economia regional, com preços e contratos próprios.
-- [ ] **Outras culturas coloniais** (CurseForge, SynthKnight, 2026-11-07): rioplatense, peruana, Nova Espanha; ou europeias renascentistas e barrocas. Encaixe sugerido: vilas vizinhas de outra cultura perto das fronteiras (Missões jesuíticas e pueblos espanhóis, como nos Sete Povos e no Tratado de Madri), com arquitetura, nomes, bandeira e diplomacia próprias.
-- [ ] **Compatibilidade com armaduras de outros mods** (CurseForge, 2026-11-07, citou Epic Knights): soldados vestem qualquer armadura que estiver no Armazém, inclusive de mods.
-- [ ] **Barroco brasileiro** (da conversa com SynthKnight, 2026-11-07): ciclo do ouro, igrejas barrocas com talha dourada e torres sineiras, casario mineiro (Ouro Preto), chafarizes de pedra-sabão, ofícios de entalhador e escultor; pode virar uma variante da era Imperial para vilas mineradoras ou uma obra especial (Matriz barroca).
+- [x] **Outras culturas coloniais** (CurseForge, SynthKnight, 2026-11-07): rioplatense, peruana, Nova Espanha; ou europeias renascentistas e barrocas. Encaixe sugerido: vilas vizinhas de outra cultura perto das fronteiras (Missões jesuíticas e pueblos espanhóis, como nos Sete Povos e no Tratado de Madri), com arquitetura, nomes, bandeira e diplomacia próprias.
+- [x] **Compatibilidade com armaduras de outros mods** (CurseForge, 2026-11-07, citou Epic Knights): soldados vestem qualquer armadura que estiver no Armazém, inclusive de mods.
+- [x] **Barroco brasileiro** (da conversa com SynthKnight, 2026-11-07): ciclo do ouro, igrejas barrocas com talha dourada e torres sineiras, casario mineiro (Ouro Preto), chafarizes de pedra-sabão, ofícios de entalhador e escultor; pode virar uma variante da era Imperial para vilas mineradoras ou uma obra especial (Matriz barroca).
 
 ## Próximos
 - [ ] Teste em jogo pelo usuário (T)

@@ -70,6 +70,17 @@ public final class ModCreativeTabs {
 						output.accept(ModBlocks.TELHA_LAJE);
 						output.accept(ModBlocks.CAL);
 						output.accept(ModBlocks.AZULEJO);
+						output.accept(ModBlocks.MOENDA);
+						output.accept(ModBlocks.TERREIRO);
+						output.accept(ModBlocks.BANCADA_ENTALHE);
+						output.accept(ModItems.CAFE_CEREJA);
+						output.accept(ModItems.CAFE_TORRADO);
+						output.accept(ModItems.CAFEZINHO);
+						output.accept(ModItems.QUEIJO_COALHO);
+						output.accept(ModItems.CHARQUE);
+						output.accept(ModBlocks.PEDRA_SABAO);
+						output.accept(ModBlocks.TALHA_DOURADA);
+						output.accept(ModBlocks.ADOBE);
 					})
 					.build());
 

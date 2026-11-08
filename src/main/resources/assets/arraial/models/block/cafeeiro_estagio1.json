@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "arraial:block/cafeeiro_estagio1"
+  },
+  "render_type": "cutout"
+}

@@ -82,6 +82,9 @@ public final class Receitas {
 			add(Profissao.BOTICARIO, com.guilhermegoes.arraial.registry.ModItems.REMEDIO, 1, Map.of(flor, 2));
 		}
 
+		// Entalhador: gilded talha for the Matriz (planks and gold leaf).
+		add(Profissao.ENTALHADOR, com.guilhermegoes.arraial.registry.ModBlocks.TALHA_DOURADA.asItem(), 2, Map.of(Items.OAK_PLANKS, 2, Items.GOLD_NUGGET, 1));
+
 		// Roceiro: bread for the arraial's table.
 		add(Profissao.ROCEIRO, Items.BREAD, 1, Map.of(Items.WHEAT, 3));
 	}

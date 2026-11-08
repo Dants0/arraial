@@ -173,7 +173,7 @@ public class LenhadorGoal extends OficioGoal {
 		}
 		level.destroyBlock(alvo, false, morador, 512);
 		// A stump on the ground gets its sapling right away (every one of a 2x2 trunk, too).
-		if (muda != null && level.getBlockState(alvo.below()).is(BlockTags.DIRT) && muda.defaultBlockState().canSurvive(level, alvo)) {
+		if (muda != null && level.getBlockState(alvo.below()).is(BlockTags.SUBSTRATE_OVERWORLD) && muda.defaultBlockState().canSurvive(level, alvo)) {
 			level.setBlockAndUpdate(alvo, muda.defaultBlockState());
 			morador.setStatus(Component.translatable("arraial.lenhador.replantou"));
 		}
@@ -317,7 +317,7 @@ public class LenhadorGoal extends OficioGoal {
 
 	/** Open grass or dirt under the sky, with room around it to grow into a tree. */
 	private static boolean podePlantar(ServerLevel level, BlockPos p) {
-		if (!level.getBlockState(p).isAir() || !level.getBlockState(p.below()).is(BlockTags.DIRT)
+		if (!level.getBlockState(p).isAir() || !level.getBlockState(p.below()).is(BlockTags.SUBSTRATE_OVERWORLD)
 				|| level.getBlockState(p.below()).is(Blocks.FARMLAND) || !level.canSeeSky(p)) {
 			return false;
 		}
@@ -345,7 +345,7 @@ public class LenhadorGoal extends OficioGoal {
 				for (int dy = -6; dy <= 8; dy++) {
 					p.set(centro.getX() + dx, centro.getY() + dy, centro.getZ() + dz);
 					if (!level.isLoaded(p) || !level.getBlockState(p).is(BlockTags.LOGS)
-							|| !level.getBlockState(p.below()).is(BlockTags.DIRT)) {
+							|| !level.getBlockState(p.below()).is(BlockTags.SUBSTRATE_OVERWORLD)) {
 						continue;
 					}
 					double d = p.distSqr(centro);

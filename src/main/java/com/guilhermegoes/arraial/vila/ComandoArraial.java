@@ -196,7 +196,19 @@ public final class ComandoArraial {
 						BlockPos centro = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, onde);
 						VilaNova.fundar(level, centro, p);
 						return 1;
-					}))
+					}).then(Commands.literal("missao").executes(c -> {
+						var p = c.getSource().getPlayer();
+						ServerLevel level = c.getSource().getLevel();
+						BlockPos onde = p != null ? p.blockPosition().relative(p.getDirection(), 24) : BlockPos.containing(c.getSource().getPosition());
+						VilaNova.fundar(level, level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, onde), p, true);
+						return 1;
+					})).then(Commands.literal("luso").executes(c -> {
+						var p = c.getSource().getPlayer();
+						ServerLevel level = c.getSource().getLevel();
+						BlockPos onde = p != null ? p.blockPosition().relative(p.getDirection(), 24) : BlockPos.containing(c.getSource().getPosition());
+						VilaNova.fundar(level, level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, onde), p, false);
+						return 1;
+					})))
 					// The tropeiro sets out now, or comes back now if he is away.
 					.then(Commands.literal("tropa").executes(c -> {
 						ArraialBlockEntity a = arraial(c.getSource());

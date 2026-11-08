@@ -74,6 +74,13 @@ public class ArraialBlockEntity extends BlockEntity {
 	public Era era() {
 		return era;
 	}
+
+	/** Who founded it: "" for Portuguese (the default), "hispano" for a Spanish mission (see VilaNova). */
+	String povo = "";
+
+	public boolean hispano() {
+		return "hispano".equals(povo);
+	}
 	/** Local prices at the feira, in réis, smoothed day by day (see {@link Feira}). */
 	final java.util.Map<String, Double> precos = new java.util.HashMap<>();
 	/** Reputation of each player with this arraial (-100..100). */
@@ -140,7 +147,7 @@ public class ArraialBlockEntity extends BlockEntity {
 	/** The name with the stage in front: "Vila de Santa Luzia". */
 	public String nomeCompleto() {
 		int i = nome.indexOf(' ');
-		return i < 0 ? nome : estagio.prefixo() + nome.substring(i);
+		return i < 0 ? nome : (hispano() ? estagio.prefixoHispano() : estagio.prefixo()) + nome.substring(i);
 	}
 
 	public java.util.@org.jspecify.annotations.Nullable UUID prefeito() {
@@ -199,7 +206,7 @@ public class ArraialBlockEntity extends BlockEntity {
 	/** Gives the arraial its name; called when the Cruzeiro is placed (or on first tick as a fallback). */
 	void fundar(ServerLevel level) {
 		if (nome.isEmpty()) {
-			nome = Vilas.nomeAleatorio(level.getRandom());
+			nome = Vilas.nomeAleatorio(level.getRandom(), hispano());
 			proximaChegada = level.getGameTime() + Vilas.INTERVALO_CHEGADA;
 			anotar(new Cronica.Entrada(Vilas.dia(level), Component.translatable("arraial.cronica.fundacao", nomeCompleto())));
 			setChanged();
@@ -284,6 +291,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		Diplomacia.diario(level, this, moradores);
 		Comercio.diario(level, this, moradores);
 		Familias.diario(level, this, moradores);
+		Agro.diario(level, this, moradores);
 	}
 
 	/** A newcomer walks into town: spawned on the surface a few blocks from the Cruzeiro. */
@@ -382,6 +390,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		tesouro = input.getIntOr("Tesouro", 20);
 		estagio = Estagio.de(input.getIntOr("Estagio", 0));
 		era = Era.de(input.getIntOr("Era", 0));
+		povo = input.getStringOr("Povo", "");
 		ultimoTick = input.getLongOr("UltimoTick", 0L);
 		precos.clear();
 		input.read("Precos", com.mojang.serialization.Codec.unboundedMap(com.mojang.serialization.Codec.STRING, com.mojang.serialization.Codec.DOUBLE)).ifPresent(precos::putAll);
@@ -422,6 +431,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.putInt("Tesouro", tesouro);
 		output.putInt("Estagio", estagio.ordinal());
 		output.putInt("Era", era.ordinal());
+		output.putString("Povo", povo);
 		output.putLong("UltimoTick", ultimoTick);
 		output.store("Precos", com.mojang.serialization.Codec.unboundedMap(com.mojang.serialization.Codec.STRING, com.mojang.serialization.Codec.DOUBLE), java.util.Map.copyOf(precos));
 		output.store("Reputacao", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT), java.util.Map.copyOf(reputacao));

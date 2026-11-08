@@ -476,6 +476,26 @@ function skin(oficio, fem, v) {
       casaca(s, '#6A2E3A', LATAO);
       if (!fem) cartola(s);
       break;
+    case 'mestre_engenho':
+      camisa(s, o, CRU, { manga: 4, arregacada: true, gola: 'redonda', botoes: false });
+      if (saia) vestido(s, o, CRU, '#7A5A3A', { manga: 4, avental: '#8A6B45' }); else { calca(s, o, '#6B5A44', { arregacada: true }); aventalFrente(s, '#8A6B45', 5); }
+      sujeira(s, '#E8DCC0', [BRACO_D, BRACO_E], 8, 0.8, 71);
+      chapeuPalha(s, '#8A3F2A');
+      break;
+    case 'cafeicultor':
+      camisa(s, o, '#F0EADC', { manga: 7 });
+      if (saia) vestido(s, o, '#F0EADC', '#5E6B45', { manga: 7 }); else calca(s, o, '#5A4A38', {});
+      talabarte(s, '#7A5A3A', false);
+      for (const [x, r] of [[2, 5], [3, 5], [2, 6], [3, 6]]) px(s, JAQUETA, 'frente', x, r, x === 2 && r === 5 ? '#B03A2A' : '#8A6B45');   // picking bag
+      chapeuPalha(s, '#3F7A3A');
+      break;
+    case 'entalhador':
+      camisa(s, o, '#E8E0D0', { manga: 6, arregacada: true });
+      if (saia) vestido(s, o, '#E8E0D0', '#3A3040', { manga: 6, avental: COURO }); else { calca(s, o, '#3A3040', {}); aventalFrente(s, COURO, 6); }
+      colete(s, '#2E2A36');
+      sujeira(s, '#E0B040', [JAQUETA], 6, 0.35, 81);
+      gorro(s, '#6A2E3A');
+      break;
     case 'mascate':
       camisa(s, o, '#C9862A', { manga: 8, punho: '#7A2E5A' });
       if (saia) vestido(s, o, '#C9862A', '#2F6A5A', { manga: 8 }); else calca(s, o, '#3F5A4A', { bota: true });
@@ -516,7 +536,7 @@ function previa(skins, cols, escala, arquivo) {
 
 // ------------------------------------------------------------------ main
 const OFICIOS = ['morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro', 'farinheiro', 'feirante',
-  'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes', 'mascate'];
+  'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes', 'mascate', 'mestre_engenho', 'cafeicultor', 'entalhador'];
 const saida = process.argv[2];
 fs.mkdirSync(saida, { recursive: true });
 let n = 0;

@@ -1,0 +1,30 @@
+{
+  "parent": "arraial:fundador",
+  "criteria": {
+    "feito": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": "arraial:cafezinho"
+        }
+      }
+    }
+  },
+  "display": {
+    "title": {
+      "translate": "advancements.arraial.cafezinho.title"
+    },
+    "description": {
+      "translate": "advancements.arraial.cafezinho.description"
+    },
+    "icon": {
+      "id": "arraial:cafezinho"
+    },
+    "frame": "task"
+  },
+  "requirements": [
+    [
+      "feito"
+    ]
+  ]
+}

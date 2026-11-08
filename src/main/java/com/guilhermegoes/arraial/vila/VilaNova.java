@@ -41,6 +41,10 @@ public final class VilaNova {
 	private static final int LONGE = 350;
 	private static final int INTERVALO = 6000;
 	private static final List<String> COMECO = List.of("casebre", "rancho", "roca", "serraria", "poco");
+	/** The mission's church comes first. */
+	private static final List<String> COMECO_MISSAO = List.of("missao", "casebre", "rancho", "roca", "poco");
+	/** Share of autonomous villages that are Spanish missions. */
+	static final float CHANCE_MISSAO = 0.3F;
 
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
@@ -138,11 +142,20 @@ public final class VilaNova {
 
 	/** Lays out a new povoado at {@code centro} and brings its first moradores. */
 	public static void fundar(ServerLevel level, BlockPos centro, @org.jspecify.annotations.Nullable ServerPlayer quem) {
+		fundar(level, centro, quem, null);
+	}
+
+	/** @param missao true: a Spanish mission; false: Portuguese; null: chance ({@link #CHANCE_MISSAO}). */
+	public static void fundar(ServerLevel level, BlockPos centro, @org.jspecify.annotations.Nullable ServerPlayer quem, @org.jspecify.annotations.Nullable Boolean missao) {
 		level.setBlock(centro, ModBlocks.CRUZEIRO.defaultBlockState(), Block.UPDATE_ALL);
 		if (!(level.getBlockEntity(centro) instanceof ArraialBlockEntity arraial)) {
 			return;
 		}
 		arraial.autonoma = true;
+		// Along the frontier, some of the neighbours are Spanish missions (Jesuit reductions and pueblos).
+		if (missao != null ? missao : level.getRandom().nextFloat() < CHANCE_MISSAO) {
+			arraial.povo = "hispano";
+		}
 		// Some povoados of the backlands are ruled by a coronel.
 		if (level.getRandom().nextFloat() < 0.35F) {
 			arraial.politica.regime = Politica.Regime.HEREDITARIO;
@@ -166,7 +179,7 @@ public final class VilaNova {
 		}
 
 		// The first buildings, already standing.
-		for (String id : COMECO) {
+		for (String id : arraial.hispano() ? COMECO_MISSAO : COMECO) {
 			Catalogo.porId(id).ifPresent(projeto -> {
 				Optional<Terreno.Lugar> lugar = Terreno.procurar(level, centro, projeto);
 				if (lugar.isPresent() && Terreno.marcar(level, lugar.get(), projeto, Prioridade.NORMAL)
@@ -209,9 +222,9 @@ public final class VilaNova {
 			return;
 		}
 		BlockPos v = Vilas.maisProxima(level, c.getBlockPos());
-		Era era = v != null && level.getBlockEntity(v) instanceof ArraialBlockEntity a ? a.era() : Era.COLONIAL;
+		Era.Estilo estilo = v != null && level.getBlockEntity(v) instanceof ArraialBlockEntity a ? Era.estilo(level, a) : Era.COLONIAL.comum();
 		for (PlanoDeObra.Etapa e : plano.etapas()) {
-			level.setBlock(e.pos(), era.estilo(e.state()), Block.UPDATE_CLIENTS);
+			level.setBlock(e.pos(), estilo.aplicar(e.state()), Block.UPDATE_CLIENTS);
 		}
 		for (PlanoDeObra.Etapa e : plano.etapas()) {
 			c.avancar();

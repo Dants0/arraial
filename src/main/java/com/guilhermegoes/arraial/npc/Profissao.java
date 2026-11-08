@@ -29,7 +29,13 @@ public enum Profissao {
 	ENGENHEIRO("engenheiro"),
 	RELACOES("relacoes"),
 	/** A travelling peddler from a neighbouring arraial (not a resident; see Comercio). */
-	MASCATE("mascate");
+	MASCATE("mascate"),
+	/** The engenho: cuts cane and grinds it at the moenda into sugar and rapadura. */
+	MESTRE_ENGENHO("mestre_engenho"),
+	/** The cafezal: picks the coffee and dries and roasts it on the terreiro. */
+	CAFEICULTOR("cafeicultor"),
+	/** The Baroque carver: gilded talha and soapstone for the Matriz. */
+	ENTALHADOR("entalhador");
 
 	private final String id;
 
@@ -64,6 +70,9 @@ public enum Profissao {
 			case CACADOR -> ModBlocks.VARAL_CACA;
 			case ENGENHEIRO -> ModBlocks.PRANCHETA;
 			case RELACOES -> ModBlocks.ESCRIVANINHA;
+			case MESTRE_ENGENHO -> ModBlocks.MOENDA;
+			case CAFEICULTOR -> ModBlocks.TERREIRO;
+			case ENTALHADOR -> ModBlocks.BANCADA_ENTALHE;
 			default -> null;
 		};
 	}

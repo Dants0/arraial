@@ -165,7 +165,15 @@ public final class Cultura {
 			};
 		};
 		// Customs: two, never hospitable and wary together.
+		if ("hispano".equals(v.povo)) {
+			v.cor1 = DyeColor.WHITE.getName();
+			v.cor2 = DyeColor.RED.getName();
+			v.simbolo = "borgonha";
+		}
 		v.costumes.clear();
+		if ("hispano".equals(v.povo)) {
+			v.costumes.add("devotos");
+		}
 		while (v.costumes.size() < 2) {
 			String c = COSTUMES.get(r.nextInt(COSTUMES.size()));
 			if (!v.costumes.contains(c) && !(c.equals("hospitaleiros") && v.costumes.contains("desconfiados"))
@@ -215,6 +223,7 @@ public final class Cultura {
 			case "ondas" -> BannerPatterns.CURLY_BORDER;
 			case "serra" -> BannerPatterns.TRIANGLES_BOTTOM;
 			case "sol" -> BannerPatterns.CIRCLE_MIDDLE;
+			case "borgonha" -> BannerPatterns.CROSS;
 			default -> BannerPatterns.STRAIGHT_CROSS;
 		};
 	}

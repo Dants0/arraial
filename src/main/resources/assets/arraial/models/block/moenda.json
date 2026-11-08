@@ -1,0 +1,172 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "pedra": "minecraft:block/smooth_stone",
+    "tora": "minecraft:block/stripped_oak_log",
+    "topo": "minecraft:block/stripped_oak_log_top",
+    "tabua": "minecraft:block/oak_planks",
+    "particle": "minecraft:block/oak_planks"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        3,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#pedra"
+        },
+        "south": {
+          "texture": "#pedra"
+        },
+        "east": {
+          "texture": "#pedra"
+        },
+        "west": {
+          "texture": "#pedra"
+        },
+        "up": {
+          "texture": "#pedra"
+        },
+        "down": {
+          "texture": "#pedra"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        3,
+        6
+      ],
+      "to": [
+        6,
+        13,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tora"
+        },
+        "south": {
+          "texture": "#tora"
+        },
+        "east": {
+          "texture": "#tora"
+        },
+        "west": {
+          "texture": "#tora"
+        },
+        "up": {
+          "texture": "#topo"
+        },
+        "down": {
+          "texture": "#topo"
+        }
+      }
+    },
+    {
+      "from": [
+        6,
+        3,
+        6
+      ],
+      "to": [
+        10,
+        13,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tora"
+        },
+        "south": {
+          "texture": "#tora"
+        },
+        "east": {
+          "texture": "#tora"
+        },
+        "west": {
+          "texture": "#tora"
+        },
+        "up": {
+          "texture": "#topo"
+        },
+        "down": {
+          "texture": "#topo"
+        }
+      }
+    },
+    {
+      "from": [
+        10,
+        3,
+        6
+      ],
+      "to": [
+        14,
+        13,
+        10
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tora"
+        },
+        "south": {
+          "texture": "#tora"
+        },
+        "east": {
+          "texture": "#tora"
+        },
+        "west": {
+          "texture": "#tora"
+        },
+        "up": {
+          "texture": "#topo"
+        },
+        "down": {
+          "texture": "#topo"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        13,
+        5
+      ],
+      "to": [
+        16,
+        16,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tabua"
+        },
+        "south": {
+          "texture": "#tabua"
+        },
+        "east": {
+          "texture": "#tabua"
+        },
+        "west": {
+          "texture": "#tabua"
+        },
+        "up": {
+          "texture": "#tabua"
+        },
+        "down": {
+          "texture": "#tabua"
+        }
+      }
+    }
+  ]
+}

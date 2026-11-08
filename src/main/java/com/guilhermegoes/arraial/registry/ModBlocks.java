@@ -162,6 +162,39 @@ public final class ModBlocks {
 			new Block(props("azulejo").mapColor(MapColor.COLOR_BLUE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()
 					.sound(SoundType.DECORATED_POT)));
 
+	// ---------------------------------------------------------------- the fazendas (agropecuária)
+
+	/** Cafeeiro: the coffee bush; its item is the coffee cherry (ModItems.CAFE_CEREJA). */
+	public static final Block CAFEEIRO = registerSemItem("cafeeiro",
+			new com.guilhermegoes.arraial.trabalho.CafeeiroBlock(props("cafeeiro").mapColor(MapColor.PLANT).noCollision().randomTicks()
+					.sound(SoundType.SWEET_BERRY_BUSH).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED)));
+
+	/** Moenda: the sugar mill of the engenho, workstation of the mestre de engenho. */
+	public static final Block MOENDA = register("moenda",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("moenda").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+
+	/** Terreiro de café: the drying yard, workstation of the cafeicultor. */
+	public static final Block TERREIRO = register("terreiro",
+			new com.guilhermegoes.arraial.trabalho.TerreiroBlock(props("terreiro").mapColor(MapColor.TERRACOTTA_BROWN).strength(1.5F).sound(SoundType.STONE).noOcclusion()));
+
+	// ---------------------------------------------------------------- the Baroque and the Spanish missions
+
+	/** Bancada de entalhe: the carver's bench, workstation of the entalhador. */
+	public static final Block BANCADA_ENTALHE = register("bancada_entalhe",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("bancada_entalhe").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+
+	/** Pedra-sabão: soapstone, the grey-green stone of the Baroque of Minas. */
+	public static final Block PEDRA_SABAO = register("pedra_sabao",
+			new Block(props("pedra_sabao").mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));
+
+	/** Talha dourada: gilded wood carving, the gold of the Baroque altars. */
+	public static final Block TALHA_DOURADA = register("talha_dourada",
+			new Block(props("talha_dourada").mapColor(MapColor.GOLD).strength(2.0F).sound(SoundType.WOOD)));
+
+	/** Adobe: sun-dried mud and straw bricks, the wall of the Spanish missions. */
+	public static final Block ADOBE = register("adobe",
+			new Block(props("adobe").mapColor(MapColor.TERRACOTTA_ORANGE).strength(1.2F).sound(SoundType.MUD_BRICKS)));
+
 	private static BlockBehaviour.Properties props(String name) {
 		return BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Arraial.id(name)));
 	}

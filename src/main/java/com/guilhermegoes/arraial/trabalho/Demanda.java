@@ -246,6 +246,8 @@ public final class Demanda {
 		}
 		Items.WOOL.forEach(i -> FONTES.put(i, Profissao.PASTOR));
 		FONTES.put(Items.APPLE, Profissao.LENHADOR);
+		FONTES.put(Items.SUGAR_CANE, Profissao.MESTRE_ENGENHO);
+		FONTES.put(com.guilhermegoes.arraial.registry.ModItems.CAFE_CEREJA, Profissao.CAFEICULTOR);
 	}
 
 	/** The trades present in the arraial. */

@@ -57,6 +57,24 @@ public final class ModItems {
 					Consumables.defaultDrink().onConsume(new ApplyStatusEffectsConsumeEffect(
 							new MobEffectInstance(MobEffects.REGENERATION, 20 * 12, 0))).build())
 			.usingConvertsTo(CUIA));
+	// ---- The fazendas: coffee, cheese and jerked beef
+	/** Coffee cherry: picked from the cafeeiro; planted on dirt it grows a new bush. */
+	public static final Item CAFE_CEREJA = register("cafe_cereja",
+			p -> new net.minecraft.world.item.BlockItem(ModBlocks.CAFEEIRO, p), new Item.Properties().useItemDescriptionPrefix());
+	/** Roasted coffee beans: the cafeicultor dries and roasts the cherries on the terreiro. */
+	public static final Item CAFE_TORRADO = register("cafe_torrado", Item::new, new Item.Properties());
+	/** Cafezinho in a cuia: strong and sweet; you work faster for a while. */
+	public static final Item CAFEZINHO = register("cafezinho", Item::new, new Item.Properties().stacksTo(1)
+			.food(new FoodProperties.Builder().nutrition(1).saturationModifier(0.2F).alwaysEdible().build(),
+					Consumables.defaultDrink().onConsume(new ApplyStatusEffectsConsumeEffect(
+							new MobEffectInstance(MobEffects.HASTE, 20 * 90, 0))).build())
+			.usingConvertsTo(CUIA));
+	/** Queijo coalho: the cheese of the backlands, from the curral's milk. */
+	public static final Item QUEIJO_COALHO = register("queijo_coalho", Item::new, new Item.Properties()
+			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.6F).build()));
+	/** Charque: salted, sun-dried beef; keeps on long journeys. */
+	public static final Item CHARQUE = register("charque", Item::new, new Item.Properties()
+			.food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.8F).build()));
 	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
 	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));

@@ -1,1 +1,22 @@
-{"values": ["arraial:canteiro", "arraial:cruzeiro", "arraial:armazem", "arraial:cepo", "arraial:balaio", "arraial:posto_guarda", "arraial:cocho", "arraial:banca_feira", "arraial:cangalha", "arraial:balcao_botica", "arraial:covo", "arraial:urna", "arraial:varal_caca", "arraial:prancheta", "arraial:escrivaninha"]}
+{
+  "values": [
+    "arraial:canteiro",
+    "arraial:cruzeiro",
+    "arraial:armazem",
+    "arraial:cepo",
+    "arraial:balaio",
+    "arraial:posto_guarda",
+    "arraial:cocho",
+    "arraial:banca_feira",
+    "arraial:cangalha",
+    "arraial:balcao_botica",
+    "arraial:covo",
+    "arraial:urna",
+    "arraial:varal_caca",
+    "arraial:prancheta",
+    "arraial:escrivaninha",
+    "arraial:moenda",
+    "arraial:bancada_entalhe",
+    "arraial:talha_dourada"
+  ]
+}

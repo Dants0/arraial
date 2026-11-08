@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "minecraft:gold_nugget",
+    "I": "minecraft:iron_ingot",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "GI",
+    "PP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:bancada_entalhe"
+  }
+}

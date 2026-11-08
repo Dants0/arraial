@@ -59,55 +59,107 @@ public enum Era {
 
 	// ---------------------------------------------------------------- what each era builds with
 
-	/** The block a planned (colonial) block becomes in this era; the same block if unchanged. */
+	/**
+	 * How an arraial builds: its era, its people and its trade.
+	 * <ul>
+	 * <li>Portuguese: taipa → brick and tiles (Imperial) → lime with an azulejo band (Republicana).</li>
+	 * <li>Spanish mission ({@code hispano}): adobe under clay tiles from the start → whitewashed.</li>
+	 * <li>Mining town ({@code mineiro}), the Baroque of Minas: from the Imperial era whitewashed walls on
+	 * a soapstone base, with soapstone paving.</li>
+	 * </ul>
+	 */
+	public record Estilo(Era era, boolean hispano, boolean mineiro) {
+		/** The block a planned (colonial) block becomes in this style; the same block if unchanged. */
+		public Block troca(Block b) {
+			boolean parede = b == Blocks.MUD_BRICKS || b == Blocks.PACKED_MUD || b == ModBlocks.TAIPA || b == ModBlocks.ADOBE;
+			boolean moderna = era != COLONIAL;
+			if (parede || b == Blocks.BRICKS && era == REPUBLICANA) {
+				if (!moderna) {
+					return hispano ? ModBlocks.ADOBE : ModBlocks.TAIPA;
+				}
+				return hispano || mineiro || era == REPUBLICANA ? ModBlocks.CAL : Blocks.BRICKS;
+			}
+			if (b == Blocks.COBBLESTONE && moderna) {
+				if (mineiro) {
+					return ModBlocks.PEDRA_SABAO;
+				}
+				if (era == REPUBLICANA) {
+					return Blocks.STONE_BRICKS;
+				}
+			}
+			if (b == Blocks.TORCH && moderna) {
+				return Blocks.LANTERN;
+			}
+			// Roofs (oak, mud brick or brick) become clay tiles; missions had tiles from the start.
+			if (moderna || hispano) {
+				if (b == Blocks.OAK_STAIRS || b == Blocks.BRICK_STAIRS || b == Blocks.MUD_BRICK_STAIRS) {
+					return ModBlocks.TELHA_ESCADA;
+				}
+				if (b == Blocks.OAK_SLAB || b == Blocks.BRICK_SLAB || b == Blocks.MUD_BRICK_SLAB) {
+					return ModBlocks.TELHA_LAJE;
+				}
+			}
+			return b;
+		}
+
+		/** What should stand where the plan has {@code plano}; {@code barra}: the lowest course of the walls. */
+		public Block alvo(Block plano, boolean barra) {
+			Block b = troca(plano);
+			if (!barra || b != ModBlocks.CAL || hispano) {
+				return b;
+			}
+			if (mineiro) {
+				return ModBlocks.PEDRA_SABAO;   // the soapstone base of the Baroque houses
+			}
+			return era == REPUBLICANA ? ModBlocks.AZULEJO : b;
+		}
+
+		/** A planned state in this style (keeps facing, half, shape...). */
+		public BlockState aplicar(BlockState plano) {
+			Block b = troca(plano.getBlock());
+			return b == plano.getBlock() ? plano : b.withPropertiesOf(plano);
+		}
+	}
+
+	/** The style of a Portuguese, non-mining arraial in this era. */
+	public Estilo comum() {
+		return new Estilo(this, false, false);
+	}
+
+	/** The style an arraial builds in now (its era, people and specialty). */
+	public static Estilo estilo(ServerLevel level, ArraialBlockEntity a) {
+		Registro.Info v = Registro.get(Registro.id(level.dimension().identifier().toString(), a.getBlockPos()));
+		boolean mineiro = v != null && Economia.Especialidade.de(v.especialidade) == Economia.Especialidade.MINERADORA;
+		return new Estilo(a.era, a.hispano(), mineiro);
+	}
+
 	public Block troca(Block b) {
-		boolean parede = b == Blocks.MUD_BRICKS || b == Blocks.PACKED_MUD || b == ModBlocks.TAIPA;
-		if (this == COLONIAL) {
-			return parede ? ModBlocks.TAIPA : b;
-		}
-		if (parede || b == Blocks.BRICKS && this == REPUBLICANA) {
-			return this == IMPERIAL ? Blocks.BRICKS : ModBlocks.CAL;
-		}
-		if (b == Blocks.COBBLESTONE && this == REPUBLICANA) {
-			return Blocks.STONE_BRICKS;
-		}
-		if (b == Blocks.TORCH) {
-			return Blocks.LANTERN;
-		}
-		// Roofs (wood, mud brick or brick) become clay tiles.
-		String id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(b).getPath();
-		if (id.endsWith("_stairs") && !id.contains("stone")) {
-			return ModBlocks.TELHA_ESCADA;
-		}
-		if (id.endsWith("_slab") && !id.contains("stone")) {
-			return ModBlocks.TELHA_LAJE;
-		}
-		return b;
+		return comum().troca(b);
 	}
 
-	/** What should stand where the plan has {@code plano}; {@code barra}: the lowest course of the walls (azulejo in the Republic). */
 	public Block alvo(Block plano, boolean barra) {
-		Block b = troca(plano);
-		return barra && this == REPUBLICANA && b == ModBlocks.CAL ? ModBlocks.AZULEJO : b;
+		return comum().alvo(plano, barra);
 	}
 
-	/** The block in the world is the planned one in the style of some era (not something a player put there). */
+	/** The block in the world is the planned one in some era's style (not something a player put there). */
 	public static boolean equivale(Block plano, Block atual) {
 		if (atual == plano) {
 			return true;
 		}
 		for (Era e : values()) {
-			if (e.alvo(plano, false) == atual || e.alvo(plano, true) == atual) {
-				return true;
+			for (int k = 0; k < 4; k++) {
+				Estilo s = new Estilo(e, (k & 1) != 0, (k & 2) != 0);
+				if (s.alvo(plano, false) == atual || s.alvo(plano, true) == atual) {
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
-	/** A planned state in this era's style (keeps facing, half, shape...). */
+	/** A planned state in this era's (Portuguese) style. */
 	public BlockState estilo(BlockState plano) {
-		Block b = troca(plano.getBlock());
-		return b == plano.getBlock() ? plano : b.withPropertiesOf(plano);
+		return comum().aplicar(plano);
 	}
 
 	/** The item the new block costs from the armazém (null: free, e.g. a lantern from the torch). */
@@ -118,7 +170,7 @@ public enum Era {
 		if (novo == ModBlocks.CAL || novo == ModBlocks.AZULEJO) {
 			return Items.CLAY_BALL;
 		}
-		if (novo == Blocks.STONE_BRICKS) {
+		if (novo == Blocks.STONE_BRICKS || novo == ModBlocks.PEDRA_SABAO) {
 			return Items.COBBLESTONE;
 		}
 		return null;
@@ -160,8 +212,8 @@ public enum Era {
 				if (!a.estagio.pelo(Estagio.VILA_PROSPERA)) {
 					f.add(Estagio.VILA_PROSPERA.nome());
 				}
-				if (Prefeitura.obras(level, v, "capela") == 0) {
-					f.add(Component.translatable("projeto.arraial.capela"));
+				if (Prefeitura.obras(level, v, "capela") + Prefeitura.obras(level, v, "matriz") + Prefeitura.obras(level, v, "missao") == 0) {
+					f.add(Component.translatable(a.hispano() ? "projeto.arraial.missao" : "projeto.arraial.capela"));
 				}
 				if (Vilas.postosDe(level, v, ModPois.ESCRIVANINHA) == 0) {
 					f.add(Component.translatable("projeto.arraial.cartorio"));
@@ -210,6 +262,7 @@ public enum Era {
 	 */
 	public static int reformar(ServerLevel level, ArraialBlockEntity a, int predios, int ruas, boolean gratis) {
 		Era era = a.era;
+		Estilo estilo = estilo(level, a);
 		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, a.getBlockPos());
 		Map<Item, Integer> inv = Vilas.inventario(armazens);
 		int mudou = 0, reformados = 0;
@@ -236,7 +289,7 @@ public enum Era {
 				}
 				BlockState atual = level.getBlockState(e.pos());
 				Block plano = e.state().getBlock();
-				Block novo = era.alvo(plano, e.pos().getY() == barra);
+				Block novo = estilo.alvo(plano, e.pos().getY() == barra);
 				if (novo == atual.getBlock() || atual.isAir() || !equivale(plano, atual.getBlock())) {
 					continue; // already in style, missing (Reparos' job), or changed by a player
 				}

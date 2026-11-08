@@ -33,6 +33,17 @@ public enum Estagio {
 		return prefixo;
 	}
 
+	/** The stage in a Spanish mission's name: Misión, Pueblo, Villa, Villa Real, Ciudad. */
+	public String prefixoHispano() {
+		return switch (this) {
+			case POVOADO -> "Misión";
+			case ARRAIAL -> "Pueblo";
+			case VILA -> "Villa";
+			case VILA_PROSPERA -> "Villa Real";
+			case CIDADE -> "Ciudad";
+		};
+	}
+
 	public Component nome() {
 		return Component.translatable("arraial.estagio." + name().toLowerCase(java.util.Locale.ROOT));
 	}

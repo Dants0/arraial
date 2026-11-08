@@ -195,6 +195,25 @@ public final class Vilas {
 		return level.getOverworldClockTime() / 24000L + 1;
 	}
 
+	private static final List<String> NOMES_HISPANOS = List.of(
+			"Misión de San Ignacio", "Misión de Santa Fe", "Misión de San Miguel", "Misión de Loreto", "Misión de Santa Rosa",
+			"Misión de San Javier", "Misión de Corpus", "Misión de San Borja", "Misión de Concepción", "Misión de Trinidad",
+			"Misión de San Carlos", "Misión de Candelaria", "Misión de Yapeyú", "Misión de San Luis", "Misión de Santo Tomé",
+			"Misión de San Lorenzo", "Misión de Jesús", "Misión de Santa María", "Misión de San Cosme", "Misión de Itapúa");
+
+	/** A name for a Spanish mission (see {@link #nomeAleatorio(RandomSource)}). */
+	static String nomeAleatorio(RandomSource random, boolean hispano) {
+		if (!hispano) {
+			return nomeAleatorio(random);
+		}
+		java.util.Set<String> usados = new java.util.HashSet<>();
+		for (Registro.Info v : Registro.todas().values()) {
+			usados.add(lugar(v.nome));
+		}
+		List<String> livres = NOMES_HISPANOS.stream().filter(n -> !usados.contains(lugar(n))).toList();
+		return livres.isEmpty() ? NOMES_HISPANOS.get(random.nextInt(NOMES_HISPANOS.size())) + " del Sur" : livres.get(random.nextInt(livres.size()));
+	}
+
 	/** A name no arraial in the world uses yet (compared without the stage: "Vila do Tijuco" uses "do Tijuco"). */
 	static String nomeAleatorio(RandomSource random) {
 		java.util.Set<String> usados = new java.util.HashSet<>();

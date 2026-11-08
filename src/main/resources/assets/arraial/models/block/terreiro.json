@@ -1,0 +1,42 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "topo": "arraial:block/terreiro_topo",
+    "lado": "minecraft:block/bricks",
+    "particle": "minecraft:block/bricks"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        4,
+        16
+      ],
+      "faces": {
+        "north": {
+          "texture": "#lado"
+        },
+        "south": {
+          "texture": "#lado"
+        },
+        "east": {
+          "texture": "#lado"
+        },
+        "west": {
+          "texture": "#lado"
+        },
+        "up": {
+          "texture": "#topo"
+        },
+        "down": {
+          "texture": "#lado"
+        }
+      }
+    }
+  ]
+}

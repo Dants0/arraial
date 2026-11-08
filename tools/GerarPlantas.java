@@ -238,7 +238,7 @@ public class GerarPlantas {
 		capela.put('e', "minecraft:brick_stairs[facing=east,half=bottom,shape=straight]");
 		capela.put('w', "minecraft:brick_stairs[facing=west,half=bottom,shape=straight]");
 		capela.put('s', "minecraft:brick_slab[type=bottom]");
-		capela.put('p', "minecraft:oak_stairs[facing=north,half=bottom,shape=straight]");
+		capela.put('p', "minecraft:spruce_stairs[facing=north,half=bottom,shape=straight]");
 		capela.put('A', "minecraft:chiseled_stone_bricks");
 		capela.put('c', "minecraft:candle[candles=3,lit=false,waterlogged=false]");
 		capela.put('B', "minecraft:bell[attachment=floor,facing=south,powered=false]");
@@ -267,7 +267,227 @@ public class GerarPlantas {
 				new String[] {"     ", "     ", "  c  ", "     ", "     "},
 				new String[] {"     ", "     ", "  W  ", "     ", "     "}));
 
+
+		// ---- The fazendas: the engenho (sugar mill shed and a canavial along a water channel) and the cafezal.
+		Map<Character, String> engenho = new HashMap<>();
+		engenho.put('C', "minecraft:cobblestone");
+		engenho.put('D', "minecraft:dirt");
+		engenho.put('W', "minecraft:water");
+		engenho.put('L', "minecraft:oak_log[axis=y]");
+		engenho.put('O', "arraial:moenda[facing=south]");
+		engenho.put('c', "minecraft:sugar_cane[age=0]");
+		engenho.put('s', "minecraft:oak_slab[type=bottom]");
+		engenho.put('b', "minecraft:barrel[facing=up,open=false]");
+		Grade ge = new Grade(9, 5, 9);
+		ge.caixa(0, 0, 0, 8, 0, 8, 'D');
+		ge.caixa(0, 0, 0, 3, 0, 3, 'C');
+		ge.caixa(6, 0, 1, 6, 0, 7, 'W');
+		ge.caixa(0, 1, 0, 3, 3, 3, '.');
+		for (int[] p : new int[][] {{0, 0}, {3, 0}, {0, 3}, {3, 3}}) {
+			ge.caixa(p[0], 1, p[1], p[0], 3, p[1], 'L');
+		}
+		ge.p(1, 1, 1, 'O');
+		ge.p(2, 1, 2, 'b');
+		ge.caixa(4, 1, 0, 8, 2, 8, '.');
+		ge.caixa(5, 1, 1, 5, 2, 7, 'c');
+		ge.caixa(7, 1, 1, 7, 2, 7, 'c');
+		ge.caixa(0, 4, 0, 3, 4, 3, 's');
+		escrever(out.resolve("engenho.nbt"), engenho, ge.camadas());
+
+		Map<Character, String> cafezal = new HashMap<>();
+		cafezal.put('D', "minecraft:dirt");
+		cafezal.put('C', "minecraft:cobblestone");
+		cafezal.put('T', "arraial:terreiro");
+		cafezal.put('f', "arraial:cafeeiro[age=1]");
+		Grade gc = new Grade(9, 2, 7);
+		gc.caixa(0, 0, 0, 8, 0, 6, 'D');
+		gc.caixa(0, 0, 0, 8, 0, 0, 'C');
+		gc.caixa(0, 1, 0, 8, 1, 6, '.');
+		gc.p(4, 1, 0, 'T');
+		for (int z = 2; z <= 6; z += 2) {
+			for (int x = 1; x <= 7; x += 2) {
+				gc.p(x, 1, z, 'f');
+			}
+		}
+		escrever(out.resolve("cafezal.nbt"), cafezal, gc.camadas());
+
+		// ---- The Baroque: the carver's workshop and the Igreja Matriz (soapstone, lime, gilded talha, two bell towers).
+		casas.put('H', "arraial:bancada_entalhe[facing=south]");
+		escrever(out.resolve("oficina_entalhe.nbt"), casas, List.of(
+				new String[] {"CCCCC", "CPPPC", "CPPPC", "CPPPC", "CCCCC"},
+				new String[] {"LMdML", "M...M", "M...M", "M.H.M", "LMMML"},
+				new String[] {"LMDML", "M...M", ".....", "M...M", "LM.ML"},
+				new String[] {"LMMML", "M...M", "M...M", "M.t.M", "LMMML"},
+				new String[] {"eMMMw", "e...w", "e...w", "e...w", "eMMMw"},
+				new String[] {" eMw ", " e.w ", " e.w ", " e.w ", " eMw "},
+				new String[] {"  s  ", "  s  ", "  s  ", "  s  ", "  s  "}));
+
+		Map<Character, String> matriz = new HashMap<>();
+		matriz.put('S', "arraial:pedra_sabao");
+		matriz.put('W', "arraial:cal");
+		matriz.put('G', "minecraft:glass_pane");
+		matriz.put('d', "minecraft:dark_oak_door[facing=south,half=lower,hinge=left,open=false]");
+		matriz.put('D', "minecraft:dark_oak_door[facing=south,half=upper,hinge=left,open=false]");
+		matriz.put('T', "arraial:talha_dourada");
+		matriz.put('B', "minecraft:bell[attachment=floor,facing=south,powered=false]");
+		matriz.put('e', "arraial:telha_escada[facing=east,half=bottom,shape=straight,waterlogged=false]");
+		matriz.put('w', "arraial:telha_escada[facing=west,half=bottom,shape=straight,waterlogged=false]");
+		matriz.put('s', "arraial:telha_laje[type=bottom,waterlogged=false]");
+		matriz.put('p', "minecraft:spruce_stairs[facing=north,half=bottom,shape=straight]");
+		matriz.put('c', "minecraft:candle[candles=3,lit=false,waterlogged=false]");
+		Grade gm = new Grade(9, 11, 12);
+		gm.caixa(0, 0, 0, 8, 0, 11, 'S');
+		gm.parede(0, 1, 0, 8, 5, 11, 'W');
+		gm.caixa(1, 1, 1, 7, 5, 10, '.');
+		for (int[] q : new int[][] {{0, 0}, {8, 0}, {0, 11}, {8, 11}}) {
+			gm.caixa(q[0], 1, q[1], q[0], 5, q[1], 'S');
+		}
+		gm.parede(0, 5, 0, 8, 5, 11, 'S');
+		gm.p(4, 1, 0, 'd');
+		gm.p(4, 2, 0, 'D');
+		gm.caixa(3, 1, 0, 3, 3, 0, 'S');
+		gm.caixa(5, 1, 0, 5, 3, 0, 'S');
+		gm.p(4, 3, 0, 'S');
+		gm.p(4, 4, 0, 'G');
+		for (int z : new int[] {3, 6, 9}) {
+			gm.caixa(0, 3, z, 0, 4, z, 'G');
+			gm.caixa(8, 3, z, 8, 4, z, 'G');
+		}
+		for (int z : new int[] {3, 5, 7}) {
+			for (int x : new int[] {2, 3, 5, 6}) {
+				gm.p(x, 1, z, 'p');
+			}
+		}
+		gm.caixa(3, 1, 10, 5, 1, 10, 'T');
+		gm.p(3, 2, 10, 'c');
+		gm.p(4, 2, 10, 'T');
+		gm.p(5, 2, 10, 'c');
+		gm.caixa(3, 3, 10, 5, 3, 10, 'T');
+		gm.p(4, 4, 10, 'T');
+		for (int r = 0; r < 4; r++) {
+			gm.caixa(r, 6 + r, 0, r, 6 + r, 11, 'e');
+			gm.caixa(8 - r, 6 + r, 0, 8 - r, 6 + r, 11, 'w');
+			gm.caixa(r + 1, 6 + r, 1, 7 - r, 6 + r, 10, '.');
+			gm.caixa(r + 1, 6 + r, 0, 7 - r, 6 + r, 0, 'W');
+			gm.caixa(r + 1, 6 + r, 11, 7 - r, 6 + r, 11, 'W');
+		}
+		gm.caixa(4, 10, 0, 4, 10, 11, 's');
+		for (int tx : new int[] {0, 7}) {
+			gm.caixa(tx, 1, 0, tx + 1, 7, 1, 'W');
+			gm.caixa(tx, 1, 0, tx, 7, 0, 'S');
+			gm.caixa(tx + 1, 1, 0, tx + 1, 7, 0, 'S');
+			gm.caixa(tx, 8, 0, tx + 1, 8, 1, 'S');
+			gm.p(tx == 0 ? 1 : 7, 8, 0, 'B');
+			gm.caixa(tx, 9, 0, tx + 1, 9, 1, 'S');
+			gm.caixa(tx, 10, 0, tx + 1, 10, 1, ' ');
+		}
+		escrever(out.resolve("matriz.nbt"), matriz, gm.camadas());
+
+		// ---- The Spanish missions: an adobe church with a bell-gable (espadaña) and a cross on top.
+		Map<Character, String> missao = new HashMap<>();
+		missao.put('A', "arraial:adobe");
+		missao.put('C', "minecraft:cobblestone");
+		missao.put('G', "minecraft:glass_pane");
+		missao.put('d', "minecraft:oak_door[facing=south,half=lower,hinge=left,open=false]");
+		missao.put('D', "minecraft:oak_door[facing=south,half=upper,hinge=left,open=false]");
+		missao.put('B', "minecraft:bell[attachment=floor,facing=south,powered=false]");
+		missao.put('e', "arraial:telha_escada[facing=east,half=bottom,shape=straight,waterlogged=false]");
+		missao.put('w', "arraial:telha_escada[facing=west,half=bottom,shape=straight,waterlogged=false]");
+		missao.put('s', "arraial:telha_laje[type=bottom,waterlogged=false]");
+		missao.put('p', "minecraft:spruce_stairs[facing=north,half=bottom,shape=straight]");
+		missao.put('P', "minecraft:spruce_planks");
+		missao.put('c', "minecraft:candle[candles=1,lit=false,waterlogged=false]");
+		missao.put('f', "minecraft:oak_fence");
+		Grade gs = new Grade(7, 14, 11);
+		gs.caixa(0, 0, 0, 6, 0, 10, 'C');
+		gs.parede(0, 1, 0, 6, 4, 10, 'A');
+		gs.caixa(1, 1, 1, 5, 4, 9, '.');
+		gs.p(3, 1, 0, 'd');
+		gs.p(3, 2, 0, 'D');
+		gs.p(3, 4, 0, 'G');
+		for (int z : new int[] {3, 7}) {
+			gs.p(0, 3, z, 'G');
+			gs.p(6, 3, z, 'G');
+		}
+		for (int z : new int[] {3, 5}) {
+			for (int x : new int[] {1, 2, 4, 5}) {
+				gs.p(x, 1, z, 'p');
+			}
+		}
+		gs.caixa(2, 1, 9, 4, 1, 9, 'P');
+		gs.p(2, 2, 9, 'c');
+		gs.p(4, 2, 9, 'c');
+		for (int r = 0; r < 3; r++) {
+			gs.caixa(r, 5 + r, 1, r, 5 + r, 10, 'e');
+			gs.caixa(6 - r, 5 + r, 1, 6 - r, 5 + r, 10, 'w');
+			gs.caixa(r + 1, 5 + r, 1, 5 - r, 5 + r, 9, '.');
+			gs.caixa(r + 1, 5 + r, 10, 5 - r, 5 + r, 10, 'A');
+		}
+		gs.caixa(3, 8, 1, 3, 8, 10, 's');
+		gs.caixa(0, 5, 0, 6, 8, 0, 'A');
+		gs.caixa(1, 9, 0, 5, 9, 0, 'A');
+		gs.caixa(2, 10, 0, 4, 10, 0, 'A');
+		gs.p(1, 7, 0, 'B');
+		gs.p(5, 7, 0, 'B');
+		gs.caixa(3, 11, 0, 3, 13, 0, 'f');
+		gs.p(2, 12, 0, 'f');
+		gs.p(4, 12, 0, 'f');
+		escrever(out.resolve("missao.nbt"), missao, gs.camadas());
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
+	}
+
+	/** A 3D grid of legend characters, filled by boxes, for the bigger buildings. ' ' = not part of the plan. */
+	static final class Grade {
+		final char[][][] c; // [y][z][x]
+
+		Grade(int sx, int sy, int sz) {
+			c = new char[sy][sz][sx];
+			for (char[][] camada : c) {
+				for (char[] linha : camada) {
+					java.util.Arrays.fill(linha, ' ');
+				}
+			}
+		}
+
+		void p(int x, int y, int z, char ch) {
+			c[y][z][x] = ch;
+		}
+
+		void caixa(int x0, int y0, int z0, int x1, int y1, int z1, char ch) {
+			for (int y = y0; y <= y1; y++) {
+				for (int z = z0; z <= z1; z++) {
+					for (int x = x0; x <= x1; x++) {
+						c[y][z][x] = ch;
+					}
+				}
+			}
+		}
+
+		/** The outer ring of a box (walls), layer by layer. */
+		void parede(int x0, int y0, int z0, int x1, int y1, int z1, char ch) {
+			for (int y = y0; y <= y1; y++) {
+				for (int z = z0; z <= z1; z++) {
+					for (int x = x0; x <= x1; x++) {
+						if (x == x0 || x == x1 || z == z0 || z == z1) {
+							c[y][z][x] = ch;
+						}
+					}
+				}
+			}
+		}
+
+		List<String[]> camadas() {
+			List<String[]> l = new ArrayList<>();
+			for (char[][] camada : c) {
+				String[] linhas = new String[camada.length];
+				for (int z = 0; z < camada.length; z++) {
+					linhas[z] = new String(camada[z]);
+				}
+				l.add(linhas);
+			}
+			return l;
+		}
 	}
 
 	static void escrever(Path arquivo, Map<Character, String> legenda, List<String[]> camadas) throws IOException {

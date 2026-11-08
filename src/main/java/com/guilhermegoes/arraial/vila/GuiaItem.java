@@ -33,10 +33,10 @@ public class GuiaItem extends Item {
 			new Capitulo("inicio", List.of("inicio.1", "inicio.2", "inicio.3", "inicio.4", "inicio.5", "inicio.6")),
 			new Capitulo("meio", List.of("meio.1", "meio.2", "meio.3", "meio.4", "meio.5", "meio.6", "meio.7", "meio.8", "meio.9",
 					"meio.10", "meio.11")),
-			new Capitulo("fim", List.of("fim.1", "fim.2", "fim.3", "fim.4", "fim.5", "fim.6", "fim.7", "fim.8", "fim.9", "fim.10")),
-			new Capitulo("oficios", List.of("oficios.1", "oficios.2", "oficios.3", "oficios.4", "oficios.5", "oficios.6", "oficios.7")),
+			new Capitulo("fim", List.of("fim.1", "fim.2", "fim.3", "fim.4", "fim.5", "fim.6", "fim.7", "fim.8", "fim.9", "fim.10", "fim.11", "fim.12", "fim.13")),
+			new Capitulo("oficios", List.of("oficios.1", "oficios.2", "oficios.3", "oficios.4", "oficios.5", "oficios.6", "oficios.7", "oficios.8")),
 			new Capitulo("comercio", List.of("comercio.1", "comercio.2", "comercio.3", "comercio.4", "comercio.5")),
-			new Capitulo("itens", List.of("itens.1", "itens.2", "itens.3", "itens.4", "itens.5", "itens.6")),
+			new Capitulo("itens", List.of("itens.1", "itens.2", "itens.3", "itens.4", "itens.5", "itens.6", "itens.7")),
 			new Capitulo("dicas", List.of("dicas.1", "dicas.2")));
 
 	public GuiaItem(Properties properties) {

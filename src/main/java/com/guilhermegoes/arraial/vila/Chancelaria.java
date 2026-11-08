@@ -136,6 +136,7 @@ public final class Chancelaria {
 		m.bandidos = v.ocupadaPor.equals("bandidos") || v.bandidos > 0;
 		m.especialidade = v.especialidade;
 		m.era = eraDe(v);
+		m.povo = v.povo;
 		if (eu != null && meu != null && !id.equals(meu)) {
 			m.rep = eu.reputacaoCom(id);
 			m.tensao = eu.tensao.getOrDefault(id, 0);

@@ -164,6 +164,11 @@ public final class Mundo {
 			somar(v, "minecraft:bricks", 6);
 		}
 		somar(v, "arraial:remedio", n(of, "boticario"));
+		somar(v, "minecraft:sugar", (int) Math.round(4 * n(of, "mestre_engenho") * clima));
+		somar(v, "arraial:rapadura", (int) Math.round(2 * n(of, "mestre_engenho") * clima));
+		somar(v, "arraial:cafe_torrado", (int) Math.round(3 * n(of, "cafeicultor") * clima));
+		somar(v, "arraial:queijo_coalho", Math.min(4, 2 * n(of, "pastor")));
+		somar(v, "arraial:talha_dourada", n(of, "entalhador"));
 
 		// Everyone eats.
 		int comeu = consumirComida(v, pop);

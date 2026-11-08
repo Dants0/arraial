@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:brick"
+  },
+  "pattern": [
+    "BBB"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:terreiro"
+  }
+}

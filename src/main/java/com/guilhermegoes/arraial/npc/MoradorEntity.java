@@ -105,6 +105,20 @@ public class MoradorEntity extends PathfinderMob {
 	/** Children grow up after this many days. */
 	public static final int DIAS_INFANCIA = 3;
 
+	private static final List<String> NOMES_M_HISPANOS = List.of("Juan", "Diego", "Pedro", "Miguel", "Francisco", "Santiago", "Tomás",
+			"Andrés", "Lorenzo", "Ignacio", "Martín", "Esteban", "Rodrigo", "Felipe", "Gaspar", "Nicolás");
+	private static final List<String> NOMES_F_HISPANOS = List.of("María", "Juana", "Isabel", "Catalina", "Inés", "Teresa", "Lucía",
+			"Ana", "Josefa", "Rosa", "Mercedes", "Pilar", "Dolores", "Carmen", "Beatriz", "Clara");
+	private static final List<String> SOBRENOMES_HISPANOS = List.of("García", "Fernández", "López", "Martínez", "Sánchez", "Pérez",
+			"Gómez", "Díaz", "Torres", "Ramírez", "Flores", "Romero", "Vargas", "Castillo", "Herrera", "Mendoza", "Ortiz", "Navarro");
+
+	/** A newcomer to a Spanish mission gets a Spanish name. */
+	private void batizarHispano() {
+		nome = (feminino() ? NOMES_F_HISPANOS : NOMES_M_HISPANOS).get(getRandom().nextInt(16));
+		sobrenome = SOBRENOMES_HISPANOS.get(getRandom().nextInt(SOBRENOMES_HISPANOS.size()));
+		atualizarPlaca();
+	}
+
 	public String sobrenome() {
 		if (sobrenome.isEmpty()) {
 			sobrenome = SOBRENOMES.get(getRandom().nextInt(SOBRENOMES.size()));
@@ -285,6 +299,8 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(3, new CacadorGoal(this));
 		goalSelector.addGoal(3, new EngenheiroGoal(this));
 		goalSelector.addGoal(3, new EmissarioGoal(this));
+		goalSelector.addGoal(3, new EngenhoGoal(this));
+		goalSelector.addGoal(3, new CafezalGoal(this));
 		goalSelector.addGoal(3, new OpenDoorGoal(this, true));
 		goalSelector.addGoal(4, new SoldadoGoal(this));
 		goalSelector.addGoal(4, new LazerGoal(this));
@@ -309,19 +325,123 @@ public class MoradorEntity extends PathfinderMob {
 		atualizarPlaca();
 	}
 
-	/** Soldados wear an iron helmet over their uniform and carry a sword (none of it drops). */
+	/**
+	 * Soldados are issued an iron helmet and sword (which never drop). Better gear in the armazém,
+	 * from this mod or any other, is taken by {@link #vestirDoArmazem}; it drops if they fall, and
+	 * goes back to the armazém if they leave the guard.
+	 */
 	private void armar(boolean soldado) {
 		if (level().isClientSide()) {
 			return;
 		}
-		setItemSlot(EquipmentSlot.HEAD, soldado ? new ItemStack(net.minecraft.world.item.Items.IRON_HELMET) : ItemStack.EMPTY);
-		setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
-		setItemSlot(EquipmentSlot.MAINHAND, soldado ? new ItemStack(net.minecraft.world.item.Items.IRON_SWORD) : ItemStack.EMPTY);
-		for (EquipmentSlot slot : EquipmentSlot.values()) {
-			setDropChance(slot, 0.0F);
-		}
 		if (!soldado) {
+			devolverAoArmazem();
+			for (EquipmentSlot slot : List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND)) {
+				setItemSlot(slot, ItemStack.EMPTY);
+				setDropChance(slot, 0.0F);
+			}
 			setTarget(null);
+			return;
+		}
+		if (getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
+			setItemSlot(EquipmentSlot.HEAD, new ItemStack(net.minecraft.world.item.Items.IRON_HELMET));
+			setDropChance(EquipmentSlot.HEAD, 0.0F);
+		}
+		if (getMainHandItem().isEmpty()) {
+			setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(net.minecraft.world.item.Items.IRON_SWORD));
+			setDropChance(EquipmentSlot.MAINHAND, 0.0F);
+		}
+	}
+
+	private static final List<EquipmentSlot> PECAS = List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND);
+
+	/** How good a piece is for a slot: armour (+ half the toughness), or attack damage for the weapon hand. */
+	static double valor(ItemStack s, EquipmentSlot slot) {
+		if (s.isEmpty()) {
+			return 0;
+		}
+		if (slot != EquipmentSlot.MAINHAND) {
+			var eq = s.get(net.minecraft.core.component.DataComponents.EQUIPPABLE);
+			if (eq == null || eq.slot() != slot) {
+				return -1;
+			}
+		}
+		double v = 0;
+		var mods = s.getOrDefault(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS,
+				net.minecraft.world.item.component.ItemAttributeModifiers.EMPTY);
+		for (var e : mods.modifiers()) {
+			double q = e.modifier().amount();
+			if (slot == EquipmentSlot.MAINHAND) {
+				if (e.attribute().equals(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE)) {
+					v += q;
+				}
+			} else if (e.attribute().equals(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR)) {
+				v += q;
+			} else if (e.attribute().equals(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR_TOUGHNESS)) {
+				v += q * 0.5;
+			}
+		}
+		return v;
+	}
+
+	/** Once a minute, a soldado puts on any better armour or weapon from the armazém (from any mod). */
+	public void vestirDoArmazem(ServerLevel level) {
+		java.util.List<com.guilhermegoes.arraial.vila.ArmazemBlockEntity> armazens = Vilas.armazens(level, vila);
+		for (EquipmentSlot slot : PECAS) {
+			ItemStack atual = getItemBySlot(slot);
+			double melhor = valor(atual, slot);
+			net.minecraft.world.Container fonte = null;
+			int indice = -1;
+			for (var a : armazens) {
+				for (int i = 0; i < a.getContainerSize(); i++) {
+					ItemStack s = a.getItem(i);
+					if (s.isEmpty() || slot == EquipmentSlot.MAINHAND && s.get(net.minecraft.core.component.DataComponents.EQUIPPABLE) != null) {
+						continue;
+					}
+					double v = valor(s, slot);
+					if (v > melhor + 0.01) {
+						melhor = v;
+						fonte = a;
+						indice = i;
+					}
+				}
+			}
+			if (fonte == null) {
+				continue;
+			}
+			ItemStack novo = fonte.getItem(indice).split(1);
+			fonte.setChanged();
+			// What he wore goes back to the armazém, unless it was the issued gear.
+			if (!atual.isEmpty() && getDropChances().byEquipment(slot) > 0) {
+				Vilas.depositar(armazens, atual.getItem(), 1);
+			}
+			setItemSlot(slot, novo);
+			setDropChance(slot, 1.0F);
+		}
+	}
+
+	/** Gear taken from the armazém goes back there. */
+	private void devolverAoArmazem() {
+		if (!(level() instanceof ServerLevel level) || vila == null) {
+			return;
+		}
+		java.util.List<com.guilhermegoes.arraial.vila.ArmazemBlockEntity> armazens = Vilas.armazens(level, vila);
+		for (EquipmentSlot slot : PECAS) {
+			ItemStack s = getItemBySlot(slot);
+			if (!s.isEmpty() && getDropChances().byEquipment(slot) > 0 && !armazens.isEmpty()) {
+				for (var a : armazens) {
+					ItemStack resto = s.copy();
+					for (int i = 0; i < a.getContainerSize() && !resto.isEmpty(); i++) {
+						if (a.getItem(i).isEmpty()) {
+							a.setItem(i, resto);
+							resto = ItemStack.EMPTY;
+						}
+					}
+					if (resto.isEmpty()) {
+						break;
+					}
+				}
+			}
 		}
 	}
 
@@ -600,6 +720,10 @@ public class MoradorEntity extends PathfinderMob {
 	public void definirVila(BlockPos cruzeiro) {
 		if (!cruzeiro.equals(vila) && level() instanceof ServerLevel server) {
 			diaChegada = Vilas.dia(server);
+			// Born or just arrived at a Spanish mission: a Spanish name.
+			if (vila == null && tickCount < 200 && server.getBlockEntity(cruzeiro) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a && a.hispano()) {
+				batizarHispano();
+			}
 		}
 		vila = cruzeiro.immutable();
 	}
@@ -607,8 +731,8 @@ public class MoradorEntity extends PathfinderMob {
 	/** When a morador is attacked, the arraial's soldados come running. */
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
-		// The militia coat is padded: soldiers take a quarter less damage (no chestplate hides the uniform).
-		if (profissao() == Profissao.SOLDADO) {
+		// The militia coat is padded: soldiers take a quarter less damage (unless a chestplate is worn over it).
+		if (profissao() == Profissao.SOLDADO && getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
 			damage *= 0.75F;
 		}
 		boolean ferido = super.hurtServer(level, source, damage);
@@ -654,8 +778,11 @@ public class MoradorEntity extends PathfinderMob {
 		if (!comFome() && getHealth() < getMaxHealth()) {
 			heal(1.0F);
 		}
-		if (profissao() == Profissao.SOLDADO && (getMainHandItem().isEmpty() || !getItemBySlot(EquipmentSlot.CHEST).isEmpty())) {
+		if (profissao() == Profissao.SOLDADO) {
 			armar(true);
+			if (vila != null && (tickCount / 40 + getId()) % 30 == 0) {
+				vestirDoArmazem(level);
+			}
 		}
 		if (vila != null) {
 			setHomeTo(vila, Vilas.RAIO);

@@ -55,6 +55,10 @@ public final class Roteiro {
 				contador = 0;
 				return;
 			}
+			// The test window may lose focus: never leave the pause menu over the photos.
+			if (mc.gui.screen() instanceof net.minecraft.client.gui.screens.PauseScreen) {
+				mc.gui.setScreen(null);
+			}
 			if (++contador < PASSOS.get(indice).espera()) {
 				return;
 			}
@@ -113,6 +117,15 @@ public final class Roteiro {
 			mc().getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
 			cmd("gamemode creative", "time set 6000", "weather clear", "effect clear @s", "kill @e[type=minecraft:vindicator]", "kill @e[type=minecraft:pillager]", "tp @s 0.5 121 -7.5 0 15");
 		});
+		// ARRAIAL_ROTEIRO_SO=novas: only the newest scenes (quicker while working on them).
+		if ("novas".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			novidades();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// Held items, first person.
 		String[] itens = {"facao", "peixeira", "foice", "cantil", "saco_saque", "comenda"};
 		for (int i = 0; i < itens.length; i++) {
@@ -379,6 +392,7 @@ public final class Roteiro {
 			}
 		}
 		passo(10, () -> cmd("kill @e[tag=vitrine]"));
+		novidades();
 		// The Guia: every page must fit the book (114 px wide, 14 lines); photos of a few.
 		passo(10, () -> cmd("item replace entity @s weapon.mainhand with arraial:guia"));
 		passo(20, () -> mc().gameMode.useItem(mc().player, InteractionHand.MAIN_HAND));
@@ -423,11 +437,305 @@ public final class Roteiro {
 		});
 	}
 
+	/** The fazendas, the armour, the Baroque and the Spanish missions. */
+	private static void novidades() {
+		// ---- Armour from other mods: a soldado takes the best gear in the armazém.
+		passo(10, () -> cmd("time set 1000", "kill @e[tag=vitrine]", "tp @s 2.5 121 0.5 0 10",
+				"summon arraial:morador 2.5 121 4.5 {NoAI:1b,Invulnerable:1b,Tags:[\"teste_soldado\"],Rotation:[180f,0f],Profissao:5,Visual:2}",
+				"summon arraial:morador 6.5 121 4.5 {NoAI:1b,Invulnerable:1b,Profissao:6,Visual:4}"));
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos vila = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(0, 120, 0));
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, vila);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.DIAMOND_CHESTPLATE, 1);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.IRON_LEGGINGS, 1);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.NETHERITE_SWORD, 1);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.BEEF, 12);
+			for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(new BlockPos(2, 121, 4)).inflate(20),
+					e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.SOLDADO && e.distanceToSqr(2.5, 121, 4.5) < 9)) {
+				m.definirVila(vila);
+				m.vestirDoArmazem(level);
+				log("armadura: cabeca=" + id(m.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD)) + " peito="
+						+ id(m.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST)) + " pernas="
+						+ id(m.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS)) + " mao=" + id(m.getMainHandItem()));
+			}
+			for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(new BlockPos(2, 121, 4)).inflate(20),
+					e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.PASTOR)) {
+				m.definirVila(vila);
+			}
+			// Charque from the beef, cheese from the corral (the morning routine).
+			if (level.getBlockEntity(vila) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				int antes = com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.CHARQUE);
+				com.guilhermegoes.arraial.vila.Agro.diario(level, a, a.moradores(level));
+				log("charque: " + antes + " -> " + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.CHARQUE)
+						+ " (pastor na vila: " + a.moradores(level).stream().anyMatch(m -> m.profissao() == com.guilhermegoes.arraial.npc.Profissao.PASTOR) + ")");
+			}
+		}));
+		passo(10, () -> cmd("tp @s 2.5 121 0.5 0 10"));
+		passo(40, () -> foto("30_soldado_armadura"));
+
+		// ---- The fazendas, on a fresh flat field with a new Portuguese village.
+		passo(10, () -> servidor((srv, sp) -> {
+			for (String p : new String[] {"engenho", "cafezal", "oficina_entalhe", "matriz", "missao"}) {
+				var t = sp.level().getStructureTemplateManager().get(com.guilhermegoes.arraial.Arraial.id(p));
+				log("planta " + p + ": " + (t.isPresent() ? t.get().getSize().toShortString() : "NAO carregou"));
+			}
+		}));
+		campoPlano(300, 0);
+		passo(10, () -> cmd("tp @s 350.5 121 -24.5 0 0", "arraial vila_nova luso"));
+		passo(40, () -> cmd("execute positioned 350 120 0 run arraial obra_pronta engenho", "execute positioned 350 120 0 run arraial obra_pronta cafezal",
+				"execute positioned 350 120 0 run arraial obra_pronta matriz"));
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			for (String obra : new String[] {"engenho", "cafezal", "matriz"}) {
+				BlockPos c = obra(level, obra);
+				log("obra " + obra + ": " + (c == null ? "NAO construida" : c.toShortString()));
+			}
+			BlockPos eng = obra(level, "engenho"), caf = obra(level, "cafezal");
+			if (eng != null) {
+				cmd("summon arraial:morador " + (eng.getX() + 1) + " " + (eng.getY() + 1) + " " + (eng.getZ() + 1) + " {Profissao:18,Visual:1}");
+			}
+			if (caf != null) {
+				cmd("summon arraial:morador " + (caf.getX() + 1) + " " + (caf.getY() + 1) + " " + (caf.getZ() + 1) + " {Profissao:19,Visual:3,Feminino:1b}",
+						"fill " + (caf.getX() - 12) + " " + (caf.getY() - 2) + " " + (caf.getZ() - 12) + " " + (caf.getX() + 12) + " " + (caf.getY() + 3)
+								+ " " + (caf.getZ() + 12) + " arraial:cafeeiro[age=3] replace arraial:cafeeiro");
+			}
+		}));
+		passo(20, () -> cmd("time set 1000"));
+		passo(900, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(350, 120, 0)));
+			StringBuilder trab = new StringBuilder();
+			for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, sp.getBoundingBox().inflate(80),
+					e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.MESTRE_ENGENHO || e.profissao() == com.guilhermegoes.arraial.npc.Profissao.CAFEICULTOR)) {
+				trab.append(m.nome()).append(' ').append(m.profissao().id()).append(" posto=").append(m.posto() != null).append(" carga=").append(m.cargaCopia()).append("; ");
+			}
+			log("fazendas: acucar=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.SUGAR)
+					+ " rapadura=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.RAPADURA)
+					+ " cafe_torrado=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.CAFE_TORRADO)
+					+ " | " + trab);
+		}));
+		passo(10, () -> verObra("engenho", 9));
+		passo(40, () -> foto("31_engenho"));
+		passo(10, () -> verObra("cafezal", 8));
+		passo(40, () -> foto("32_cafezal"));
+		passo(10, () -> verObra("matriz", 16));
+		passo(50, () -> foto("33_matriz"));
+
+		// ---- A Spanish mission next door.
+		campoPlano(300, 200);
+		passo(10, () -> cmd("tp @s 350.5 121 176.5 0 0", "arraial vila_nova missao"));
+		passo(60, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(350, 120, 200));
+			if (v != null && level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				StringBuilder nomes = new StringBuilder();
+				for (var m : a.moradores(level)) {
+					nomes.append(m.nome()).append(' ').append(m.sobrenome()).append(", ");
+				}
+				log("missao: " + a.nomeCompleto() + " hispano=" + a.hispano() + " igreja=" + (obra(level, "missao") != null) + " moradores: " + nomes);
+			} else {
+				log("missao: NAO fundada");
+			}
+		}));
+		passo(10, () -> verObra("missao", 14));
+		passo(50, () -> foto("34_missao"));
+
+		// ---- Gallery: a real village on natural ground (dry, flat-ish grassland found by biome, then checked), for the mod pages.
+		passo(10, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			var resolvedor = level.getChunkSource().getGenerator().getBiomeSource().createCachingResolver(level.getChunkSource().randomState());
+			candidatos.clear();
+			for (int r = 500; r <= 4000 && candidatos.size() < 6; r += 250) {
+				for (int k = 0; k < 16 && candidatos.size() < 6; k++) {
+					int x = (int) (Math.cos(k * Math.PI / 8) * r), z = (int) (Math.sin(k * Math.PI / 8) * r);
+					boolean todos = true;
+					for (int dx = -48; dx <= 48 && todos; dx += 24) {
+						for (int dz = -48; dz <= 48 && todos; dz += 24) {
+							String b = resolvedor.getNoiseBiome(net.minecraft.core.QuartPos.fromBlock(x + dx), net.minecraft.core.QuartPos.fromBlock(64),
+									net.minecraft.core.QuartPos.fromBlock(z + dz)).unwrapKey().map(c -> c.identifier().getPath()).orElse("");
+							todos = b.equals("plains") || b.equals("savanna") || b.equals("sunflower_plains") || b.equals("meadow");
+						}
+					}
+					if (todos) {
+						candidatos.add(new BlockPos(x, 0, z));
+					}
+				}
+			}
+			log("galeria: " + candidatos.size() + " candidatos de planicie");
+		}));
+		for (int tentativa = 0; tentativa < 4; tentativa++) {
+			final int t = tentativa;
+			passo(10, () -> {
+				if (natural == null && t < candidatos.size()) {
+					BlockPos c = candidatos.get(t);
+					cmd("tp @s " + c.getX() + " 220 " + c.getZ() + " 0 90", "time set 1000");
+				}
+			});
+			passo(500, () -> servidor((srv, sp) -> {
+				if (natural != null || t >= candidatos.size()) {
+					return;
+				}
+				natural = lugarSecoPlano(sp.level(), candidatos.get(t));
+				log("galeria: tentativa " + t + " em " + candidatos.get(t).toShortString() + " -> " + (natural == null ? "sem lugar seco e plano" : natural.toShortString()));
+			}));
+		}
+		passo(10, () -> servidor((srv, sp) -> {
+			if (natural == null) {
+				return;
+			}
+			cmd("tp @s " + natural.getX() + " " + (natural.getY() + 1) + " " + (natural.getZ() - 24) + " 0 0", "arraial vila_nova luso");
+		}));
+		passo(60, () -> servidor((srv, sp) -> {
+			if (natural == null) {
+				return;
+			}
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), natural);
+			if (v == null) {
+				log("galeria: vila nao fundada");
+				return;
+			}
+			natural = v;
+			String em = "execute positioned " + v.getX() + " " + v.getY() + " " + v.getZ() + " run arraial ";
+			cmd(em + "obra_pronta casebre", em + "obra_pronta casebre", em + "obra_pronta rancho", em + "obra_pronta roca", em + "obra_pronta capela",
+					em + "obra_pronta engenho", em + "obra_pronta cafezal", em + "obra_pronta poco", em + "obra_pronta casebre", em + "era imperial");
+		}));
+		passo(80, () -> servidor((srv, sp) -> {
+			if (natural != null) {
+				Vec3 olho = Vec3.atCenterOf(natural).add(-26, 22, -26);
+				sp.teleportTo(sp.level(), olho.x, olho.y, olho.z, java.util.Set.of(), -45, 32, true);
+				sp.getAbilities().flying = true;
+				sp.onUpdateAbilities();
+			}
+		}));
+		passo(10, () -> {                                // clean shots for the mod pages (like F1)
+			if (!mc().gui.hud.isHidden()) {
+				mc().gui.hud.toggle();
+			}
+		});
+		passo(60, () -> foto("35_vila_natural"));
+		passo(10, () -> verObra("capela", 16));
+		passo(50, () -> foto("36_capela_natural"));
+		passo(10, () -> verObra("engenho", 12));
+		passo(50, () -> foto("37_engenho_natural"));
+		passo(10, () -> verObra("cafezal", 10));
+		passo(50, () -> foto("38_cafezal_natural"));
+		passo(10, () -> {
+			if (mc().gui.hud.isHidden()) {
+				mc().gui.hud.toggle();
+			}
+		});
+	}
+
 	// ---------------------------------------------------------------- helpers for the scenes
 
 	private static int alvo = -1;
 	private static BlockPos chao = BlockPos.ZERO;
 	private static String vizinho = "";
+	private static @org.jspecify.annotations.Nullable BlockPos natural;
+	private static final java.util.List<BlockPos> candidatos = new java.util.ArrayList<>();
+
+	/** A flat grass field 100x100 at y=120 (cleared above), centred on x0+50, z0, for buildings that need room. */
+	private static void campoPlano(int x0, int z0) {
+		passo(10, () -> cmd("tp @s " + (x0 + 50) + " 140 " + z0 + " 0 90"));
+		passo(80, () -> {
+			java.util.List<String> c = new java.util.ArrayList<>();
+			for (int i = 0; i < 100; i += 20) {
+				c.add("fill " + (x0 + i) + " 116 " + (z0 - 50) + " " + (x0 + i + 19) + " 119 " + (z0 + 49) + " minecraft:dirt");
+				c.add("fill " + (x0 + i) + " 120 " + (z0 - 50) + " " + (x0 + i + 19) + " 120 " + (z0 + 49) + " minecraft:grass_block");
+				for (int y = 121; y < 160; y += 14) {
+					c.add("fill " + (x0 + i) + " " + y + " " + (z0 - 50) + " " + (x0 + i + 19) + " " + Math.min(159, y + 13) + " " + (z0 + 49) + " minecraft:air");
+				}
+			}
+			cmd(c.toArray(new String[0]));
+		});
+	}
+
+	/** A dry, grassy, gently rolling 60x60 area near {@code c} (centre at ground level), or null. */
+	private static @org.jspecify.annotations.Nullable BlockPos lugarSecoPlano(net.minecraft.server.level.ServerLevel level, BlockPos c) {
+		for (int ox = -64; ox <= 64; ox += 32) {
+			for (int oz = -64; oz <= 64; oz += 32) {
+				int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE, ruins = 0, agua = 0;
+				boolean ok = true;
+				for (int dx = -30; dx <= 30 && ok; dx += 5) {
+					for (int dz = -30; dz <= 30 && ok; dz += 5) {
+						int x = c.getX() + ox + dx, z = c.getZ() + oz + dz;
+						BlockPos topo = new BlockPos(x, level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);
+						var st = level.getBlockState(topo);
+						ok = level.isLoaded(topo);
+						if (!st.getFluidState().isEmpty()) {
+							agua++;            // a stream is welcome (the engenho needs water), a lake is not
+							continue;
+						}
+						if (!st.is(net.minecraft.tags.BlockTags.SUBSTRATE_OVERWORLD)) {
+							ruins++;          // a tree or a rock: a few are fine
+							continue;
+						}
+						min = Math.min(min, topo.getY());
+						max = Math.max(max, topo.getY());
+					}
+				}
+				if (ox == 0 && oz == 0) {
+					log("galeria: centro ok=" + ok + " ruins=" + ruins + " agua=" + agua + " desnivel=" + (max - min));
+				}
+				if (ok && ruins <= 10 && agua <= 8 && max - min <= 10) {
+					int x = c.getX() + ox, z = c.getZ() + oz;
+					return new BlockPos(x, level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
+				}
+			}
+		}
+		return null;
+	}
+
+	private static String id(net.minecraft.world.item.ItemStack s) {
+		return s.isEmpty() ? "-" : BuiltInRegistries.ITEM.getKey(s.getItem()).getPath();
+	}
+
+	/** The finished building of a project nearest to the player (its marker). */
+	private static @org.jspecify.annotations.Nullable BlockPos obra(net.minecraft.server.level.ServerLevel level, String projeto) {
+		BlockPos melhor = null;
+		double d = Double.MAX_VALUE;
+		var jogador = level.players().isEmpty() ? BlockPos.ZERO : level.players().get(0).blockPosition();
+		for (BlockPos p : List.copyOf(com.guilhermegoes.arraial.obra.CanteiroBlockEntity.ativos(level))) {
+			if (level.getBlockEntity(p) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c
+					&& c.projeto().map(x -> x.id().equals(projeto)).orElse(false)) {
+				double x = p.distSqr(jogador);
+				if (x < d) {
+					d = x;
+					melhor = p;
+				}
+			}
+		}
+		return melhor;
+	}
+
+	/** Puts the camera on a diagonal above a finished building, looking at its middle. */
+	private static void verObra(String projeto, double distancia) {
+		servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos m = obra(level, projeto);
+			if (m == null || !(level.getBlockEntity(m) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c)) {
+				log("ver obra: " + projeto + " nao encontrada");
+				return;
+			}
+			var etapas = c.plano(level).map(com.guilhermegoes.arraial.obra.PlanoDeObra::etapas).orElse(List.of());
+			double x = 0, y = 0, z = 0;
+			for (var e : etapas) {
+				x += e.pos().getX();
+				y += e.pos().getY();
+				z += e.pos().getZ();
+			}
+			int n = Math.max(1, etapas.size());
+			Vec3 centro = new Vec3(x / n + 0.5, y / n, z / n + 0.5);
+			Vec3 olho = centro.add(-distancia * 0.7, distancia * 0.55, -distancia * 0.7);
+			double dx = centro.x - olho.x, dy = centro.y - olho.y, dz = centro.z - olho.z;
+			float yaw = (float) (Math.toDegrees(Math.atan2(dz, dx)) - 90);
+			float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
+			sp.teleportTo(level, olho.x, olho.y, olho.z, java.util.Set.of(), yaw, pitch, true);
+			sp.getAbilities().flying = true;
+			sp.onUpdateAbilities();
+		});
+	}
 
 	/** Logs how many of each era block stand around the test village. */
 	private static void contarBlocos(String era) {

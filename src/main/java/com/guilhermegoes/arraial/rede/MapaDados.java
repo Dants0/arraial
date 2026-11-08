@@ -27,6 +27,8 @@ public final class MapaDados {
 		public String tratado = "";
 		public int dias, tributo;
 		public boolean embargamos, embargados, batida;
+		/** "" (Portuguese) or "hispano" (a Spanish mission). */
+		public String povo = "";
 
 		void escrever(RegistryFriendlyByteBuf b) {
 			b.writeUtf(id);
@@ -52,6 +54,7 @@ public final class MapaDados {
 			b.writeBoolean(embargamos);
 			b.writeBoolean(embargados);
 			b.writeBoolean(batida);
+			b.writeUtf(povo);
 		}
 
 		static Vila ler(RegistryFriendlyByteBuf b) {
@@ -79,6 +82,7 @@ public final class MapaDados {
 			v.embargamos = b.readBoolean();
 			v.embargados = b.readBoolean();
 			v.batida = b.readBoolean();
+			v.povo = b.readUtf();
 			return v;
 		}
 	}

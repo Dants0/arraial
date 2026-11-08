@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "#minecraft:logs",
+    "G": "minecraft:grindstone",
+    "S": "minecraft:smooth_stone"
+  },
+  "pattern": [
+    "LGL",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:moenda"
+  }
+}

@@ -258,7 +258,11 @@ public final class Pessoa {
 			case PESCADOR -> new ItemStack(Items.COOKED_COD, 8);
 			case FARINHEIRO -> new ItemStack(ModItems.BEIJU, 8);
 			case BOTICARIO -> new ItemStack(ModItems.REMEDIO, 3);
-			case CACADOR, PASTOR -> new ItemStack(Items.LEATHER, 8);
+			case CACADOR -> new ItemStack(Items.LEATHER, 8);
+			case PASTOR -> new ItemStack(ModItems.QUEIJO_COALHO, 6);
+			case MESTRE_ENGENHO -> new ItemStack(ModItems.RAPADURA, 8);
+			case CAFEICULTOR -> new ItemStack(ModItems.CAFE_TORRADO, 6);
+			case ENTALHADOR -> new ItemStack(com.guilhermegoes.arraial.registry.ModBlocks.TALHA_DOURADA, 2);
 			default -> new ItemStack(ModItems.REIS, 12);
 		};
 	}
