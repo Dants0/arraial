@@ -2,15 +2,15 @@
 
 **Found an arraial, hire a builder, and watch a Brazilian colonial village grow on its own**: from a handful of wattle-and-daub huts around a wooden cross to a whitewashed Cidade with a chapel, a fountain, a town council and neighbours to trade (or go to war) with.
 
-![Arraial: Republican era](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/26_era_republicana.png)
+![An arraial in the savanna](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/35_vila_natural.png)
 
 ### 🏘️ Villages that live
-- **16 trades**, each with its own workstation and look: builder, woodcutter, farmer, potter, clay digger, quarryman, herder (vaqueiro), fisher, hunter, flour maker, stallholder, muleteer, apothecary, soldier, engineer and envoy.
+- **19 trades**, each with its own workstation and look: builder, woodcutter, farmer, potter, clay digger, quarryman, herder (vaqueiro), fisher, hunter, flour maker, stallholder, muleteer, apothecary, soldier, engineer, envoy, sugar master, coffee grower and carver.
 - **Real construction**: pick a project in the Book of Projects and the builders raise it block by block, with materials from the storehouse. The mayor orders new works by himself.
 - **Stages**: Povoado → Arraial → Vila → Prosperous Vila → Cidade.
 - **People, not mobs**: names, surnames, personalities, needs, friendships, rivalries, favours, weddings, children and inheritance.
 
-![Villagers of 16 trades](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/29_skins_homens_1.png)
+![A soldier in diamond armour](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/30_soldado_armadura.png)
 
 ### 💰 Economy and politics
 - Réis, a market stall with supply-and-demand prices, peddlers, orders, muleteers between villages, beaten roads and supply contracts.
@@ -22,25 +22,36 @@
 - **The Chancery**: a diplomacy screen with the regional map, where you propose treaties, demand tribute or declare embargoes.
 - Abandoned villages fall into ruin, and bandits move in.
 
-![The Chancery: diplomacy on the regional map](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/23c_embargo.png)
-
 ### 🎉 Culture
 - A calendar with festas: Saint John's bonfire and quadrilha, the patron saint, the Great Fair, and each village's own traditions.
 - Crises: drought, flood, pests, highwaymen, epidemics and fire.
 
+![The Chancery](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/23c_embargo.png)
+
+### 🌾 Fazendas
+- **Sugar mill (engenho):** the sugar master cuts and replants cane and grinds it into sugar and rapadura.
+- **Coffee plantation (cafezal):** the coffee grower picks, plants and roasts coffee; brew a **cafezinho** for a burst of haste.
+- The herder makes **queijo coalho** from the corral's milk and **charque** from spare beef.
+
+![Sugar mill](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/37_engenho_natural.png)
+
+### ⛪ Brazilian Baroque and Spanish missions
+- **Baroque:** soapstone, gilded carving, the carver and the **Mother Church** with two bell towers; mining towns build white houses on soapstone.
+- **Spanish missions:** about a third of the neighbours are missions, with Spanish names, the cross of Burgundy, adobe walls and a bell-gable church. The frontier is tenser.
+
+![Mother Church](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/33_matriz.png)
+![Spanish mission](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/34_missao.png)
+
 ### 🧱 Three eras
 Colonial (taipa) → Imperial (brick and clay tiles) → Republican (lime and azulejo). Builders reform houses and streets in each era's style.
 
-![Colonial era](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/24_era_colonial.png)
-![Imperial era](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/25_era_imperial.png)
-
 ### 🎒 Items
-Machete, peixeira, sickle, vaqueiro leather, flask, Brazilian foods (farinha, beiju, paçoca, rapadura, pé-de-moleque, quentão) and colonial blocks.
+Machete, peixeira, sickle, vaqueiro leather, flask, Brazilian foods (farinha, beiju, paçoca, rapadura, pé-de-moleque, quentão, cafezinho, queijo coalho, charque) and colonial blocks.
 
-![Festa de São João](https://raw.githubusercontent.com/Dants0/arraial/main/docs/imagens/14_festa.png)
+**Works with armour from other mods:** soldiers wear and wield the best armour and weapon in the storehouse, from any mod.
 
 ### 📖 Getting started
-Craft a **Cruzeiro** (5 dark oak logs in a cross) and place it: you get the **Guia do Arraial**, a 49-page in-game manual. Its first chapter walks you through your first days.
+Craft a **Cruzeiro** (5 dark oak logs in a cross) and place it: you get the **Guia do Arraial**, a 54-page in-game manual. Its first chapter walks you through your first days.
 
 Works with **JEI** (recipes and info pages). Fully translated into **Portuguese (Brazil)** and **English**.
 
