@@ -27,9 +27,10 @@ Funde um arraial com o **Cruzeiro**, contrate um pedreiro e veja o povoado cresc
 - **Fazendas:** engenho de cana (açúcar e rapadura), cafezal (café torrado e cafezinho), queijo coalho e charque do curral.
 - **Barroco:** pedra-sabão, talha dourada, entalhador e a Igreja Matriz; vilas mineradoras ganham casas brancas sobre pedra-sabão.
 - **Missões espanholas:** parte das vilas vizinhas são missões, com nomes, bandeira, adobe e igreja com espadanha próprios, e uma fronteira mais tensa.
+- **Fauna brasileira:** capivara, tamanduá-bandeira, jacaré, onça-pintada e arara (vermelha, canindé e azul) nos biomas quentes. A onça caça bichos do curral e o jacaré espreita na margem.
 - **Compatível com armaduras de outros mods:** os soldados vestem a melhor armadura e arma que houver no Armazém, de qualquer mod.
 - **Itens:** facão, peixeira, foice, couro de vaqueiro, cantil, comidas típicas (farinha, beiju, paçoca, rapadura, pé-de-moleque, quentão) e blocos coloniais.
-- **Guia do Arraial:** manual de 54 páginas dentro do jogo, com sumário clicável.
+- **Guia do Arraial:** manual de 56 páginas dentro do jogo, com sumário clicável.
 - **Integrações (todas opcionais):**
   - **JEI** e **REI**: receitas e páginas de informação.
   - **Jade**: ofício, vila, família e humor dos moradores; estágio, satisfação e prefeito no Cruzeiro.
@@ -80,9 +81,10 @@ Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement 
 - **Fazendas:** sugar mills (sugar, rapadura), coffee plantations (roasted coffee, cafezinho), queijo coalho and charque.
 - **Baroque:** soapstone, gilded carving, the carver and the Mother Church; mining towns get white houses on soapstone.
 - **Spanish missions:** some neighbours are missions, with their own names, flag, adobe and bell-gable church, and a tenser frontier.
+- **Brazilian wildlife:** capybara, giant anteater, caiman, jaguar and macaw (red, blue-and-yellow, hyacinth) in warm biomes. The jaguar hunts corral animals and the caiman lurks at the riverbank.
 - **Armour from other mods:** soldiers wear the best armour and weapon in the storehouse, from any mod.
 - **Items:** machete, peixeira, sickle, vaqueiro leather, flask, Brazilian foods and colonial blocks.
-- **In-game guide:** a 54-page manual with clickable contents.
+- **In-game guide:** a 56-page manual with clickable contents.
 - **Integrations (all optional):**
   - **JEI** and **REI**: recipes and information pages.
   - **Jade**: trade, village, family and mood of villagers; stage, satisfaction and mayor on the Cruzeiro.

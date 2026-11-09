@@ -11,6 +11,7 @@ public class ArraialClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(ModEntities.MORADOR, MoradorRenderer::new);
+		com.guilhermegoes.arraial.client.fauna.FaunaClient.init();
 		ClientPlayNetworking.registerGlobalReceiver(Rede.AbrirTela.TYPE, (p, ctx) -> TelaArraial.receber(p.dados()));
 		IntegracaoXaero.init();
 		// The automated test script (dev only, left out of the published jar): loaded by name, only when asked for.

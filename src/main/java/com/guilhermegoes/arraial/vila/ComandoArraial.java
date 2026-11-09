@@ -217,6 +217,17 @@ public final class ComandoArraial {
 								p.blockPosition().relative(p.getDirection(), 30));
 						return Colonos.partir(level, p, centro, VilaNova.sorteiaMissao(level)) ? 1 : 0;
 					}))
+					// A snapshot of the arraial (for bug reports).
+					.then(Commands.literal("diagnostico").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						if (a == null) {
+							return 0;
+						}
+						String r = Diagnostico.de(c.getSource().getLevel(), a).resumo();
+						c.getSource().sendSuccess(() -> Component.literal(r), false);
+						com.guilhermegoes.arraial.Arraial.LOGGER.info("Diagnostico: {}", r);
+						return 1;
+					}))
 					// The tropeiro sets out now, or comes back now if he is away.
 					.then(Commands.literal("tropa").executes(c -> {
 						ArraialBlockEntity a = arraial(c.getSource());

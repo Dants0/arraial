@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
  * into run/screenshots/arraial_*.png, logs the checks with [ROTEIRO] and closes the game.
  */
 public final class Roteiro {
-	private record Passo(int espera, Runnable acao) {
+	private record Passo(int espera, Runnable acao, java.util.function.@org.jspecify.annotations.Nullable BooleanSupplier ate) {
 	}
 
 	private static final List<Passo> PASSOS = new ArrayList<>();
@@ -60,6 +60,10 @@ public final class Roteiro {
 				mc.gui.setScreen(null);
 			}
 			if (++contador < PASSOS.get(indice).espera()) {
+				return;
+			}
+			var condicao = PASSOS.get(indice).ate();
+			if (condicao != null && !condicao.getAsBoolean()) {
 				return;
 			}
 			contador = 0;
@@ -100,7 +104,12 @@ public final class Roteiro {
 	}
 
 	private static void passo(int espera, Runnable acao) {
-		PASSOS.add(new Passo(espera, acao));
+		PASSOS.add(new Passo(espera, acao, null));
+	}
+
+	/** Waits at least {@code espera} ticks and then until {@code ate} holds, then runs {@code acao}. */
+	private static void passoAte(int espera, java.util.function.BooleanSupplier ate, Runnable acao) {
+		PASSOS.add(new Passo(espera, acao, ate));
 	}
 
 	private static String mao() {
@@ -126,9 +135,27 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=longo: a village founded by settlers on natural ground, left alone for many days.
+		if ("longo".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			testeLongo();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=colonos: a caravan of settlers founds a village live.
 		if ("colonos".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			colonos();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
+		// ARRAIAL_ROTEIRO_SO=fauna: the Brazilian fauna, posed and then let loose.
+		if ("fauna".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			fauna();
 			passo(20, () -> {
 				log("fim do roteiro");
 				mc().stop();
@@ -509,6 +536,52 @@ public final class Roteiro {
 		passo(40, () -> foto("44_pratos"));
 	}
 
+	/** The Brazilian fauna on a clean stage in the sky: a posed line-up, close-ups, then the onça let loose on prey. */
+	private static void fauna() {
+		String[] bichos = {"capivara", "tamandua", "jacare", "onca", "arara"};
+		// Stage: grass at y=200 around x=300, a pool of water on one side, walls of air above.
+		passo(10, () -> cmd("gamemode creative", "tp @s 300.5 205 290.5 0 30", "time set 6000"));
+		passo(40, () -> cmd("fill 280 199 290 320 199 330 minecraft:dirt", "fill 280 200 290 320 200 330 minecraft:grass_block",
+				"fill 280 201 290 320 210 330 minecraft:air", "fill 305 200 315 315 200 325 minecraft:water",
+				"fill 279 201 289 321 202 289 minecraft:oak_fence", "fill 279 201 331 321 202 331 minecraft:oak_fence",
+				"fill 279 201 289 279 202 331 minecraft:oak_fence", "fill 321 201 289 321 202 331 minecraft:oak_fence"));
+		passo(20, () -> {
+			for (int i = 0; i < bichos.length; i++) {
+				cmd("summon arraial:" + bichos[i] + " " + (293.5 + i * 3.5) + " 201 300.5 {NoAI:1b,Rotation:[160f,0f]}");
+			}
+			cmd("summon arraial:capivara 292.0 201 303.0 {NoAI:1b,Age:-24000,Rotation:[200f,0f]}",
+					"summon arraial:arara 309.5 201 303.0 {NoAI:1b,Variant:1,Rotation:[160f,0f]}",
+					"summon arraial:arara 311.5 201 303.0 {NoAI:1b,Variant:2,Rotation:[200f,0f]}");
+			cmd("tp @s 300.5 203.5 293.5 0 20");
+		});
+		passo(60, () -> foto("70_fauna_todos"));
+		for (int i = 0; i < bichos.length; i++) {
+			final int n = i;
+			passo(10, () -> cmd("tp @s " + (292.0 + n * 3.5) + " 202 297.5 -30 20"));
+			passo(30, () -> foto("71_fauna_" + bichos[n]));
+		}
+		passo(10, () -> cmd("tp @s 310.5 202 299.0 0 20"));
+		passo(30, () -> foto("72_fauna_araras"));
+		// Let them loose: the onça with chickens and a capivara; the jacaré in the pool.
+		passo(10, () -> cmd("kill @e[x=280,y=195,z=285,dx=45,dy=20,dz=50,type=!minecraft:player]", "gamemode spectator",
+				"summon arraial:onca 290.5 201 310.5", "summon minecraft:chicken 296.5 201 318.5", "summon minecraft:chicken 297.5 201 318.5",
+				"summon arraial:capivara 286.5 201 318.5", "summon arraial:tamandua 284.5 201 300.5", "summon arraial:arara 300.5 203 305.5",
+				"summon arraial:jacare 310.5 201 320.5", "summon arraial:capivara 303.5 201 322.5",
+				"tp @s 300.5 214 290.5 0 45"));
+		passo(100, () -> foto("73_fauna_solta"));
+		passo(500, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			var caixa = new net.minecraft.world.phys.AABB(278, 195, 288, 322, 215, 332);
+			log("fauna solta: onca " + level.getEntities(com.guilhermegoes.arraial.registry.ModEntities.ONCA, caixa, e -> true).size()
+					+ ", galinhas " + level.getEntities(net.minecraft.world.entity.EntityTypes.CHICKEN, caixa, e -> true).size()
+					+ ", capivaras " + level.getEntities(com.guilhermegoes.arraial.registry.ModEntities.CAPIVARA, caixa, e -> true).size()
+					+ ", jacare " + level.getEntities(com.guilhermegoes.arraial.registry.ModEntities.JACARE, caixa, e -> true).size()
+					+ ", tamandua " + level.getEntities(com.guilhermegoes.arraial.registry.ModEntities.TAMANDUA, caixa, e -> true).size()
+					+ ", araras " + level.getEntities(com.guilhermegoes.arraial.registry.ModEntities.ARARA, caixa, e -> true).size());
+		}));
+		passo(10, () -> foto("74_fauna_depois"));
+	}
+
 	/** A caravan of settlers walks in on natural ground, plants the Cruzeiro and builds the first works. */
 	private static void colonos() {
 		acharTerrenoNatural();
@@ -539,6 +612,64 @@ public final class Roteiro {
 		}
 		passo(10, () -> cmd("tick rate 20"));
 	}
+
+	/**
+	 * The long run: settlers found a village on natural ground and it is left alone (no commands)
+	 * for {@code ARRAIAL_DIAS} days (20 by default), the game sped up with /tick sprint. Every day
+	 * each arraial nearby is written to run/teste_longo.csv (see vila.Diagnostico); every few days a
+	 * photo. The player only watches, from above, in spectator mode.
+	 */
+	private static void testeLongo() {
+		int dias = Integer.parseInt(System.getenv().getOrDefault("ARRAIAL_DIAS", "20"));
+		acharTerrenoNatural();
+		passo(10, () -> servidor((srv, sp) -> {
+			if (natural == null) {
+				log("longo: sem terreno natural");
+				return;
+			}
+			cmd("tp @s " + natural.getX() + " " + (natural.getY() + 30) + " " + (natural.getZ() - 40) + " 0 35", "time set 1000", "gamemode spectator");
+			try {
+				java.nio.file.Files.writeString(mc().gameDirectory.toPath().resolve("teste_longo.csv"),
+						com.guilhermegoes.arraial.vila.Diagnostico.CABECALHO + "\n");
+			} catch (java.io.IOException e) {
+				log("longo: csv " + e);
+			}
+		}));
+		passo(60, () -> cmd("arraial colonos"));
+		// Let the caravan arrive at normal speed (it walks in from 30-40 blocks).
+		for (int i = 0; i < 6; i++) {
+			passo(200, () -> colonosEstado("chegada"));
+		}
+		for (int d = 1; d <= dias; d++) {
+			final int dia = d;
+			passo(5, () -> {
+				inicioDia = System.currentTimeMillis();
+				cmd("tick sprint 24000");
+			});
+			passoAte(40, () -> !mc().getSingleplayerServer().tickRateManager().isSprinting(), () -> servidor((srv, sp) -> {
+				var level = sp.level();
+				StringBuilder csv = new StringBuilder();
+				var vilas = com.guilhermegoes.arraial.vila.Diagnostico.perto(level, natural == null ? sp.blockPosition() : natural, 400);
+				for (var a : vilas) {
+					var r = com.guilhermegoes.arraial.vila.Diagnostico.de(level, a);
+					csv.append(r.csv(dia)).append('\n');
+					log("longo dia " + dia + ": " + r.resumo());
+				}
+				log("longo dia " + dia + ": " + vilas.size() + " vila(s), dia simulado em " + (System.currentTimeMillis() - inicioDia) / 1000 + " s");
+				try {
+					java.nio.file.Files.writeString(mc().gameDirectory.toPath().resolve("teste_longo.csv"), csv.toString(),
+							java.nio.file.StandardOpenOption.APPEND);
+				} catch (java.io.IOException e) {
+					log("longo: csv " + e);
+				}
+			}));
+			if (d % 5 == 0) {
+				passo(40, () -> foto("60_longo_dia" + dia));
+			}
+		}
+	}
+
+	private static long inicioDia;
 
 	private static void colonosEstado(String fase) {
 		servidor((srv, sp) -> {

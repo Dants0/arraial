@@ -111,6 +111,34 @@ public final class Terreno {
 		return true;
 	}
 
+	/**
+	 * A free spot for a single block (an improvised workstation) between {@code raioMin} and
+	 * {@code raioMax} from the Cruzeiro: natural ground, open above, clear of every building.
+	 */
+	public static Optional<BlockPos> lugarParaPosto(ServerLevel level, BlockPos vila, int raioMin, int raioMax) {
+		List<BoundingBox> ocupadas = new ArrayList<>();
+		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {
+			if (p.closerThan(vila, Vilas.RAIO * 2) && level.getBlockEntity(p) instanceof CanteiroBlockEntity c) {
+				c.plano(level).ifPresent(pl -> ocupadas.add(pl.area().inflatedBy(FOLGA)));
+				ocupadas.add(BoundingBox.fromCorners(p, p).inflatedBy(1));
+			}
+		}
+		ocupadas.add(BoundingBox.fromCorners(vila, vila).inflatedBy(3));
+		double inicio = level.getRandom().nextDouble() * Math.PI * 2;
+		for (int raio = raioMin; raio <= raioMax; raio += 2) {
+			for (int i = 0; i < 16; i++) {
+				double a = inicio + i * Math.PI / 8;
+				BlockPos pos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+						vila.offset((int) Math.round(Math.cos(a) * raio), 0, (int) Math.round(Math.sin(a) * raio)));
+				if (level.isLoaded(pos) && livre(level.getBlockState(pos)) && livre(level.getBlockState(pos.above()))
+						&& chao(level.getBlockState(pos.below())) && ocupadas.stream().noneMatch(o -> o.isInside(pos))) {
+					return Optional.of(pos);
+				}
+			}
+		}
+		return Optional.empty();
+	}
+
 	/** The wall's marker goes on free ground a few blocks from the Cruzeiro. */
 	private static Optional<Lugar> pertoDoCruzeiro(ServerLevel level, BlockPos vila, List<BoundingBox> ocupadas) {
 		for (int raio = 5; raio <= 9; raio++) {

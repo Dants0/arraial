@@ -143,6 +143,13 @@ public final class ModItems {
 	/** Réis: the arraial's money, used at the feira. */
 	public static final Item REIS = register("reis", Item::new, new Item.Properties());
 
+	// ---- Spawn eggs of the Brazilian fauna
+	public static final Item CAPIVARA_SPAWN_EGG = register("capivara_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, new Item.Properties().spawnEgg(ModEntities.CAPIVARA));
+	public static final Item TAMANDUA_SPAWN_EGG = register("tamandua_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, new Item.Properties().spawnEgg(ModEntities.TAMANDUA));
+	public static final Item JACARE_SPAWN_EGG = register("jacare_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, new Item.Properties().spawnEgg(ModEntities.JACARE));
+	public static final Item ONCA_SPAWN_EGG = register("onca_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, new Item.Properties().spawnEgg(ModEntities.ONCA));
+	public static final Item ARARA_SPAWN_EGG = register("arara_spawn_egg", net.minecraft.world.item.SpawnEggItem::new, new Item.Properties().spawnEgg(ModEntities.ARARA));
+
 	private static Item prato(String id, int nutricao, float saturacao) {
 		return register(id, Item::new, new Item.Properties().stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.BOWL)
 				.food(new FoodProperties.Builder().nutrition(nutricao).saturationModifier(saturacao).build()));

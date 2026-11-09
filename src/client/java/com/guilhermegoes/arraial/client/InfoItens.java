@@ -19,7 +19,8 @@ final class InfoItens {
 			ModItems.FACAO, ModItems.PEIXEIRA, ModItems.FOICE, ModItems.GIBAO, ModItems.CANTIL, ModItems.SACO_SAQUE, ModItems.COMENDA,
 			ModItems.MAPA_REGIAO, ModBlocks.TAIPA, ModBlocks.TELHA, ModBlocks.CAL, ModBlocks.AZULEJO,
 			ModBlocks.MOENDA, ModBlocks.TERREIRO, ModBlocks.BANCADA_ENTALHE, ModItems.CAFE_CEREJA, ModItems.CAFEZINHO, ModItems.QUEIJO_COALHO,
-			ModItems.CHARQUE, ModBlocks.PEDRA_SABAO, ModBlocks.TALHA_DOURADA, ModBlocks.ADOBE};
+			ModItems.CHARQUE, ModBlocks.PEDRA_SABAO, ModBlocks.TALHA_DOURADA, ModBlocks.ADOBE,
+			ModItems.CAPIVARA_SPAWN_EGG, ModItems.TAMANDUA_SPAWN_EGG, ModItems.JACARE_SPAWN_EGG, ModItems.ONCA_SPAWN_EGG, ModItems.ARARA_SPAWN_EGG};
 
 	private InfoItens() {
 	}

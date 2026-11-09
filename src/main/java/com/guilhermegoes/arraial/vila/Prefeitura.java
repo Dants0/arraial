@@ -379,9 +379,41 @@ public final class Prefeitura {
 						urgentes.add(oficina);
 					}
 				}
+				// And if not even the workshop can be built (it needs the same thing), improvise the
+				// workstation: a stump for a cepo, a tub for the clay... so the village never stays stuck.
+				if (quem != null && IMPROVISAVEIS.contains(quem) && postosDe(level, vila, quem) == 0) {
+					improvisarPosto(level, arraial, prefeito, quem);
+				}
 			}
 		}
 		arraial.pedido = primeiroPedido == null ? Component.empty() : primeiroPedido;
+	}
+
+	/** Trades whose workstation the moradores can improvise when the village is stuck without them. */
+	private static final java.util.Set<Profissao> IMPROVISAVEIS = java.util.EnumSet.of(Profissao.LENHADOR, Profissao.ROCEIRO,
+			Profissao.OLEIRO, Profissao.BARREIRO, Profissao.CAVOUQUEIRO, Profissao.PASTOR);
+
+	/** Puts down the trade's workstation, free, a little away from the centre and facing outwards. */
+	private static void improvisarPosto(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, Profissao quem) {
+		net.minecraft.world.level.block.Block bloco = quem.posto();
+		if (bloco == null) {
+			return;
+		}
+		BlockPos vila = arraial.getBlockPos();
+		Optional<BlockPos> lugar = Terreno.lugarParaPosto(level, vila, 12, Vilas.RAIO - 12);
+		if (lugar.isEmpty()) {
+			return;
+		}
+		BlockPos p = lugar.get();
+		net.minecraft.world.level.block.state.BlockState estado = bloco.defaultBlockState();
+		if (estado.hasProperty(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING)) {
+			net.minecraft.core.Direction fora = net.minecraft.core.Direction.getApproximateNearest(p.getX() - vila.getX(), 0, p.getZ() - vila.getZ());
+			estado = estado.setValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING, fora);
+		}
+		level.setBlock(p, estado, net.minecraft.world.level.block.Block.UPDATE_ALL);
+		Component texto = Component.translatable("arraial.cronica.improviso", prefeito.nome(), bloco.getName(), quem.titulo(false));
+		Cronica.anotar(level, vila, texto);
+		avisar(level, arraial, texto.copy().withStyle(ChatFormatting.AQUA));
 	}
 
 	/** Makes sure some pedreiro will take the job: an unemployed morador is hired if needed. */

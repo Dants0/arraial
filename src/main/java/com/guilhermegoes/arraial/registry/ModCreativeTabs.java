@@ -64,6 +64,11 @@ public final class ModCreativeTabs {
 						output.accept(ModItems.SACO_SAQUE);
 						output.accept(ModItems.COMENDA);
 						output.accept(ModItems.MAPA_REGIAO);
+						output.accept(ModItems.CAPIVARA_SPAWN_EGG);
+						output.accept(ModItems.TAMANDUA_SPAWN_EGG);
+						output.accept(ModItems.JACARE_SPAWN_EGG);
+						output.accept(ModItems.ONCA_SPAWN_EGG);
+						output.accept(ModItems.ARARA_SPAWN_EGG);
 						output.accept(ModBlocks.TAIPA);
 						output.accept(ModBlocks.TELHA);
 						output.accept(ModBlocks.TELHA_ESCADA);
