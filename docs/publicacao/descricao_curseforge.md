@@ -17,7 +17,8 @@
 - A council of interest groups, proposals and votes, taxes, corruption, protests, and hereditary coronéis.
 
 ### 🗺️ A living region
-- Neighbouring villages appear, grow, migrate, trade, quarrel over land and go to war, even while you are away.
+- **Villages founded before your eyes:** while you explore, a caravan of settlers with a laden donkey walks in, plants the Cruzeiro, lights a campfire, and its builder raises the first house, field and well block by block.
+- Neighbouring villages grow, migrate, trade, quarrel over land and go to war, even while you are away.
 - Chunk-based territory, border markers, disputes, skirmishes and peace with tribute.
 - **The Chancery**: a diplomacy screen with the regional map, where you propose treaties, demand tribute or declare embargoes.
 - Abandoned villages fall into ruin, and bandits move in.
@@ -53,7 +54,15 @@ Machete, peixeira, sickle, vaqueiro leather, flask, Brazilian foods (farinha, be
 ### 📖 Getting started
 Craft a **Cruzeiro** (5 logs of any wood in a cross) and place it: you get the **Guia do Arraial**, a 54-page in-game manual. Its first chapter walks you through your first days.
 
-Works with **JEI** (recipes and info pages). Fully translated into **Portuguese (Brazil)** and **English**.
+### 🔌 Integrations (all optional)
+- **JEI** and **REI**: recipes and information pages.
+- **Jade**: a villager's trade, village, family and mood; the Cruzeiro's stage, satisfaction, treasury and mayor.
+- **Xaero's Minimap / World Map**: every village you have visited becomes a waypoint in its flag colour.
+- **Mod Menu**: a settings screen (neighbours, missions, crises, newcomers, live founding, waypoints...).
+- **Farmer's Delight Refabricated**: baião de dois, moqueca and vaca atolada in the cooking pot; the peixeira works as a knife.
+- **Terralith**: every biome is recognised by the regional map and by village cultures.
+
+Fully translated into **Portuguese (Brazil)** and **English**.
 
 ---
 🇧🇷 **Português:** vilas coloniais brasileiras que se constroem e se governam sozinhas. O mod é todo traduzido para português, e a criação está documentada no devblog: [dantas-dev.com/pt/blog](https://dantas-dev.com/pt/blog) · English: [dantas-dev.com/en/blog](https://dantas-dev.com/en/blog).
