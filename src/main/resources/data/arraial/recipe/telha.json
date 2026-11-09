@@ -1,15 +1,13 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "building",
-  "key": {
-    "B": "minecraft:brick"
-  },
-  "pattern": [
-    "B B",
-    " B "
+  "ingredients": [
+    "minecraft:brick",
+    "minecraft:brick",
+    "minecraft:clay_ball"
   ],
   "result": {
-    "count": 2,
-    "id": "arraial:telha"
+    "id": "arraial:telha",
+    "count": 2
   }
 }

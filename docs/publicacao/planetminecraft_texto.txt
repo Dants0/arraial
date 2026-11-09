@@ -33,7 +33,7 @@ ITEMS
 Machete, peixeira, sickle, vaqueiro leather, a flask, Brazilian foods (farinha, beiju, paçoca, rapadura, pé-de-moleque, quentão) and colonial blocks.
 
 GETTING STARTED
-Craft a Cruzeiro (5 dark oak logs in a cross) and place it: you get the Guia do Arraial, a 49-page in-game manual whose first chapter walks you through your first days.
+Craft a Cruzeiro (5 logs of any wood in a cross) and place it: you get the Guia do Arraial, a 49-page in-game manual whose first chapter walks you through your first days.
 
 REQUIREMENTS
 Minecraft 26.3 | Fabric Loader 0.20.1+ | Fabric API (https://modrinth.com/mod/fabric-api) | Java 25 | optional: JEI. Needed on both client and server. Fully translated into English and Portuguese (Brazil).

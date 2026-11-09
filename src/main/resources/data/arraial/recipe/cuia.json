@@ -1,1 +1,12 @@
-{"type": "minecraft:crafting_shapeless", "category": "misc", "ingredients": ["minecraft:pumpkin"], "result": {"id": "arraial:cuia", "count": 2}}
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:pumpkin",
+    "minecraft:bowl"
+  ],
+  "result": {
+    "id": "arraial:cuia",
+    "count": 2
+  }
+}

@@ -81,7 +81,7 @@ Machete, peixeira, sickle, vaqueiro leather, flask, Brazilian foods (farinha, be
 **Works with armour from other mods:** soldiers wear and wield the best armour and weapon in the storehouse, from any mod.
 
 ### 📖 Getting started
-Craft a **Cruzeiro** (5 dark oak logs in a cross) and place it: you get the **Guia do Arraial**, a 54-page in-game manual. Its first chapter walks you through your first days.
+Craft a **Cruzeiro** (5 logs of any wood in a cross) and place it: you get the **Guia do Arraial**, a 54-page in-game manual. Its first chapter walks you through your first days.
 
 Works with **JEI** (recipes and info pages). Fully translated into **Portuguese (Brazil)** and **English**.
 

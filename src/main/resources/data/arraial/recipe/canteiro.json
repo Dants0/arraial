@@ -1,1 +1,12 @@
-{"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["PPP", " S ", " S "], "key": {"P": "#minecraft:planks", "S": "minecraft:stick"}, "result": {"id": "arraial:canteiro"}}
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#minecraft:planks",
+    "minecraft:stick",
+    "minecraft:paper"
+  ],
+  "result": {
+    "id": "arraial:canteiro"
+  }
+}

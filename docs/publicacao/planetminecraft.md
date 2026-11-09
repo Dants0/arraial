@@ -58,7 +58,7 @@ Colonial (taipa) → Imperial (brick and clay tiles) → Republican (lime and az
 Machete, peixeira, sickle, vaqueiro leather, a flask, Brazilian foods (farinha, beiju, paçoca, rapadura, pé-de-moleque, quentão) and colonial blocks.
 
 [b]📖 GETTING STARTED[/b]
-Craft a [b]Cruzeiro[/b] (5 dark oak logs in a cross) and place it: you get the [b]Guia do Arraial[/b], a 49-page in-game manual whose first chapter walks you through your first days.
+Craft a [b]Cruzeiro[/b] (5 logs of any wood in a cross) and place it: you get the [b]Guia do Arraial[/b], a 49-page in-game manual whose first chapter walks you through your first days.
 
 [b]REQUIREMENTS[/b]
 Minecraft 26.3 · Fabric Loader 0.20.1+ · [url=https://modrinth.com/mod/fabric-api]Fabric API[/url] · Java 25 · optional: JEI. Needed on both client and server. Fully translated into English and Portuguese (Brazil).

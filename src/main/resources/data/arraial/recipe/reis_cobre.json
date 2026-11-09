@@ -1,1 +1,12 @@
-{"type": "minecraft:crafting_shapeless", "category": "misc", "ingredients": ["minecraft:copper_ingot"], "result": {"id": "arraial:reis", "count": 3}}
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:copper_ingot",
+    "minecraft:paper"
+  ],
+  "result": {
+    "id": "arraial:reis",
+    "count": 3
+  }
+}

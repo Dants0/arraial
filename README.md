@@ -36,7 +36,7 @@ Funde um arraial com o **Cruzeiro**, contrate um pedreiro e veja o povoado cresc
 A criação do Arraial (sistemas, testes, bastidores) está sendo documentada no devblog: **[dantas-dev.com/pt/blog](https://dantas-dev.com/pt/blog)**.
 
 ### Como começar
-1. Faça um **Cruzeiro** (5 toras de carvalho escuro em cruz) e coloque num lugar plano. Você ganha o Guia.
+1. Faça um **Cruzeiro** (5 toras de qualquer madeira em cruz) e coloque num lugar plano. Você ganha o Guia.
 2. Faça um **Armazém** (tábuas e baú), guarde comida e ponha camas.
 3. Faça um **Contrato de Pedreiro** (papel, esmeralda e tijolo), um **Marco da Obra** e um **Livro de Projetos**.
 4. Leia o Guia: o capítulo *Primeiros dias* traz a lista do começo.
