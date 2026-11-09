@@ -152,13 +152,13 @@ for (const f of fs.readdirSync(path.join(RES, 'data/arraial/recipe'))) {
 function slot(ref, l) {
 	if (!ref) return '<span class="slot"></span>';
 	const g = ingrediente(ref, l);
-	const img = g.icone ? `<img src="${g.icone}" alt="">` : `<span class="sem">${esc(g.nome.slice(0, 2))}</span>`;
+	const img = g.icone ? `<img src="${g.icone}" alt="${esc(g.nome)}" width="26" height="26">` : `<span class="sem">${esc(g.nome.slice(0, 2))}</span>`;
 	return `<span class="slot" title="${esc(g.nome)}">${img}</span>`;
 }
 function receitaHtml(r, l) {
 	const T = TXT[l];
 	const qtd = r.result && r.result.count > 1 ? `<span class="qtd">×${r.result.count}</span>` : '';
-	const resultado = `<span class="seta">→</span><span class="slot saida">${(r.result && iconeArraial(r.result.id.split(':')[1])) ? `<img src="${iconeArraial(r.result.id.split(':')[1])}" alt="">` : ''}${qtd}</span>`;
+	const resultado = `<span class="seta">→</span><span class="slot saida">${(r.result && iconeArraial(r.result.id.split(':')[1])) ? `<img src="${iconeArraial(r.result.id.split(':')[1])}" alt="${esc(nomeArraial(r.result.id.split(':')[1], l))}" width="32" height="32">` : ''}${qtd}</span>`;
 	const lista = refs => {
 		const cont = new Map();
 		for (const x of refs) { const k = JSON.stringify(x); cont.set(k, (cont.get(k) || 0) + 1); }
@@ -225,14 +225,23 @@ function listaMd(linhas) {
 }
 
 // ---------------------------------------------------------------- texts of the wiki itself
+const SITE = 'https://arraial.dantas-dev.com';
 const LINKS = {
 	curseforge: 'https://www.curseforge.com/minecraft/mc-mods/arraial', modrinth: 'https://modrinth.com/mod/arraial',
 	github: 'https://github.com/Dants0/arraial', issues: 'https://github.com/Dants0/arraial/issues'
 };
 const TXT = {
 	pt: {
-		html: 'pt-BR', titulo: 'Arraial — Wiki oficial', outra: 'English', outraUrl: 'en/', raiz: '',
-		desc: 'Wiki oficial do Arraial, mod de Minecraft (Fabric) de vilas coloniais brasileiras: ofícios, obras, economia, política, eras, fauna e mais.',
+		html: 'pt-BR', titulo: 'Arraial: mod de vilas brasileiras para Minecraft (Fabric) | Wiki oficial', outra: 'English', outraUrl: 'en/', raiz: '',
+		desc: 'Wiki oficial do Arraial, mod brasileiro de Minecraft (Fabric 26.3): funde um povoado no sertão e veja virar cidade. Moradores com 19 ofícios, obras bloco a bloco, feira, São João, política, guerras, eras coloniais e fauna brasileira. Receitas, guia e download.',
+		h1: 'mod de vilas brasileiras para Minecraft', altNome: 'Arraial mod', locale: 'pt_BR', localeOutro: 'en_US',
+		ogAlt: 'Arraial: uma vila colonial brasileira no Minecraft',
+		palavras: 'Arraial, mod Minecraft brasileiro, mod de vilas Minecraft, Minecraft Fabric mod, vila colonial, sertão, São João Minecraft, colônia Minecraft, mod brasileiro, capivara Minecraft, onça Minecraft, Minecraft 26.3',
+		legendas: { '23c_embargo': 'Chancelaria: tratados, tributo e embargo entre vilas', '23d_mapa': 'Mapa da Região com as terras de cada vila',
+			'28_guia_p2': 'O Guia do Arraial, manual dentro do jogo', '30_soldado_armadura': 'Soldado vestindo a melhor armadura do Armazém',
+			'32_cafezal': 'Cafezal com terreiro de café', '33_matriz': 'Igreja Matriz barroca', '34_missao': 'Missão espanhola com igreja de espadanha',
+			'35_vila_natural': 'Vila crescida em terreno natural', '37_engenho_natural': 'Engenho de cana', '50_caravana': 'Caravana de colonos chegando',
+			'51_chegada': 'Os colonos fincam o Cruzeiro', '52_obra_5': 'O pedreiro levanta as primeiras obras', '72_fauna_araras': 'Araras canindé e azul' },
 		lema: 'Funde um povoado no sertão e veja-o virar cidade. Moradores com ofício, obras bloco a bloco, feira, festas, política, guerras entre vilas, eras da história do Brasil e a fauna brasileira.',
 		blog: 'https://dantas-dev.com/pt/blog', blogNome: 'Devblog',
 		nav: { visao: 'Visão geral', comecar: 'Começando', guia: 'O Guia', oficios: 'Ofícios', obras: 'Obras e estágios', itens: 'Itens e blocos', fauna: 'Fauna', config: 'Integrações e config', comandos: 'Comandos', galeria: 'Galeria', faq: 'Perguntas' },
@@ -272,8 +281,16 @@ const TXT = {
 		galeriaIntro: 'Imagens do jogo.', baixar: 'Baixar'
 	},
 	en: {
-		html: 'en', titulo: 'Arraial — Official Wiki', outra: 'Português', outraUrl: '../', raiz: '../',
-		desc: 'Official wiki of Arraial, a Minecraft (Fabric) mod about Brazilian colonial villages: trades, building projects, economy, politics, eras, wildlife and more.',
+		html: 'en', titulo: 'Arraial: Brazilian Colonial Village Mod for Minecraft (Fabric) | Official Wiki', outra: 'Português', outraUrl: '../', raiz: '../',
+		desc: 'Official wiki of Arraial, a Minecraft Fabric 26.3 colony and village mod set in colonial Brazil: found a hamlet, watch it grow into a city. Villagers with 19 trades, buildings raised block by block, markets, festivals, politics, wars, eras and Brazilian wildlife. Recipes, guide and download.',
+		h1: 'Brazilian colonial village mod for Minecraft', altNome: 'Arraial mod', locale: 'en_US', localeOutro: 'pt_BR',
+		ogAlt: 'Arraial: a Brazilian colonial village in Minecraft',
+		palavras: 'Arraial, Minecraft village mod, Minecraft colony mod, Fabric mod, Brazilian Minecraft mod, colonial Brazil, villagers with jobs, town building mod, capybara Minecraft, jaguar Minecraft, Minecraft 26.3',
+		legendas: { '23c_embargo': 'The Chancery: treaties, tribute and embargoes between villages', '23d_mapa': 'The Regional Map with each village\'s lands',
+			'28_guia_p2': 'The Arraial Guide, an in-game manual', '30_soldado_armadura': 'A soldier wearing the best armour from the storehouse',
+			'32_cafezal': 'Coffee plantation with a drying yard', '33_matriz': 'Baroque Mother Church', '34_missao': 'Spanish mission with a bell-gable church',
+			'35_vila_natural': 'A village grown on natural terrain', '37_engenho_natural': 'Sugar cane mill', '50_caravana': 'A caravan of settlers arriving',
+			'51_chegada': 'The settlers plant the Cruzeiro', '52_obra_5': 'The builder raises the first buildings', '72_fauna_araras': 'Blue-and-yellow and hyacinth macaws' },
 		lema: 'Found a hamlet in the backlands and watch it become a city. Villagers with trades, buildings raised block by block, markets, festas, politics, wars between villages, eras of Brazilian history and Brazilian wildlife.',
 		blog: 'https://dantas-dev.com/en/blog', blogNome: 'Devblog',
 		nav: { visao: 'Overview', comecar: 'Getting started', guia: 'The Guide', oficios: 'Trades', obras: 'Buildings & stages', itens: 'Items & blocks', fauna: 'Wildlife', config: 'Integrations & config', comandos: 'Commands', galeria: 'Gallery', faq: 'FAQ' },
@@ -385,10 +402,10 @@ function pagina(l) {
 		<h3>${T.itensTit}</h3><div class="itens">${soltos.map(cartao).join('')}</div>`;
 
 	// Wildlife
-	const fauna = `<p>${T.faunaIntro}</p>${foto('70_fauna_todos.png') ? `<figure class="larga"><img src="${img(foto('70_fauna_todos.png'))}" alt="" loading="lazy"></figure>` : ''}
+	const fauna = `<p>${T.faunaIntro}</p>${foto('70_fauna_todos.png') ? `<figure class="larga"><img src="${img(foto('70_fauna_todos.png'))}" alt="${esc(T.nav.fauna)}: ${FAUNA.map(b => L['entity.arraial.' + b]).join(', ')}" width="1280" height="720" loading="lazy"></figure>` : ''}
 		<div class="fauna">${FAUNA.map(b => {
 			const f = foto('71_fauna_' + b + '.png') || (b === 'arara' && foto('72_fauna_araras.png'));
-			return `<article class="bicho">${f ? `<img src="${img(f)}" alt="${esc(L['entity.arraial.' + b])}" loading="lazy">` : ''}
+			return `<article class="bicho">${f ? `<img src="${img(f)}" alt="${esc(L['entity.arraial.' + b])} (Minecraft)" width="1280" height="720" loading="lazy">` : ''}
 			<div><h3>${ic(iconeArraial(b + '_spawn_egg'))} ${esc(L['entity.arraial.' + b])}</h3><p><b>${T.ondeVive}:</b> ${esc(T.onde[b])}</p><p>${esc(L['arraial.jei.' + b + '_spawn_egg'] || '')}</p></div></article>`;
 		}).join('')}</div>`;
 
@@ -401,9 +418,32 @@ function pagina(l) {
 
 	// Gallery
 	const fotos = fs.readdirSync(IMAGENS).filter(f => /^\d/.test(f) && !f.startsWith('71_') && !f.startsWith('70_'));
-	const galeria = `<div class="galeria">${fotos.map(f => `<a href="${img(foto(f))}"><img src="${img(foto(f))}" alt="" loading="lazy"></a>`).join('')}</div>`;
+	const legenda = f => T.legendas[f.replace(/\.png$/, '')] || 'Arraial';
+	const galeria = `<div class="galeria">${fotos.map(f => `<figure><a href="${img(foto(f))}"><img src="${img(foto(f))}" alt="${esc(legenda(f))}" width="1280" height="720" loading="lazy"></a><figcaption>${esc(legenda(f))}</figcaption></figure>`).join('')}</div>`;
 
 	const faq = T.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${a}</p></details>`).join('');
+
+	// Structured data: the mod as a free game application, and the FAQ.
+	const url = SITE + (l === 'pt' ? '/' : '/en/');
+	const ld = {
+		'@context': 'https://schema.org',
+		'@graph': [
+			{ '@type': 'WebSite', '@id': SITE + '/#site', url: SITE + '/', name: 'Arraial Wiki', inLanguage: ['pt-BR', 'en'] },
+			{
+				'@type': 'SoftwareApplication', name: 'Arraial', alternateName: T.altNome, url, description: T.desc,
+				applicationCategory: 'GameApplication', applicationSubCategory: 'Minecraft mod', operatingSystem: 'Windows, macOS, Linux',
+				softwareVersion: VERSAO, image: SITE + '/img/og.jpg', screenshot: fotos.slice(0, 6).map(f => SITE + '/' + foto(f)),
+				offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, inLanguage: ['pt-BR', 'en'],
+				author: { '@type': 'Person', name: 'Dants0', url: 'https://dantas-dev.com' },
+				downloadUrl: [LINKS.curseforge, LINKS.modrinth], sameAs: [LINKS.curseforge, LINKS.modrinth, LINKS.github],
+				keywords: T.palavras
+			},
+			{
+				'@type': 'FAQPage', mainEntity: T.faq.map(([q, a]) => ({ '@type': 'Question', name: q,
+					acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') } }))
+			}
+		]
+	};
 
 	return `<!doctype html>
 <html lang="${T.html}">
@@ -412,17 +452,38 @@ function pagina(l) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(T.titulo)}</title>
 <meta name="description" content="${esc(T.desc)}">
+<meta name="keywords" content="${esc(T.palavras)}">
+<meta name="author" content="Dants0">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="theme-color" content="#b5562c">
+<link rel="canonical" href="${url}">
+<link rel="alternate" hreflang="pt-BR" href="${SITE}/">
+<link rel="alternate" hreflang="en" href="${SITE}/en/">
+<link rel="alternate" hreflang="x-default" href="${SITE}/en/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Arraial Wiki">
+<meta property="og:url" content="${url}">
+<meta property="og:locale" content="${T.locale}">
+<meta property="og:locale:alternate" content="${T.localeOutro}">
 <meta property="og:title" content="${esc(T.titulo)}">
 <meta property="og:description" content="${esc(T.desc)}">
-<meta property="og:image" content="https://arraial.dantas-dev.com/img/fotos/35_vila_natural.jpg">
-<link rel="icon" href="${R}img/fotos/icone.png">
-<link rel="alternate" hreflang="pt-BR" href="https://arraial.dantas-dev.com/">
-<link rel="alternate" hreflang="en" href="https://arraial.dantas-dev.com/en/">
+<meta property="og:image" content="${SITE}/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(T.ogAlt)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(T.titulo)}">
+<meta name="twitter:description" content="${esc(T.desc)}">
+<meta name="twitter:image" content="${SITE}/img/og.jpg">
+<link rel="icon" type="image/png" href="${R}img/fotos/icone.png">
+<link rel="apple-touch-icon" href="${R}img/fotos/icone.png">
+<link rel="preload" as="image" href="${img(foto('35_vila_natural.png'))}">
 <link rel="stylesheet" href="${R}estilo.css">
+<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
 </head>
 <body>
 <header class="topo">
-	<a class="marca" href="#visao"><img src="${R}img/fotos/icone.png" alt="" class="px"> Arraial <small>wiki</small></a>
+	<a class="marca" href="#visao"><img src="${R}img/fotos/icone.png" alt="Arraial" class="px" width="28" height="28"> Arraial <small>wiki</small></a>
 	<button class="menu" aria-label="Menu" aria-expanded="false">☰</button>
 	<a class="lingua" href="${T.outraUrl}">${T.outra}</a>
 </header>
@@ -431,7 +492,7 @@ function pagina(l) {
 <main>
 <div class="capa" style="background-image:url('${img(foto('35_vila_natural.png'))}')">
 	<div class="capa-texto">
-		<h1>Arraial</h1>
+		<h1>Arraial <span>${esc(T.h1)}</span></h1>
 		<p>${esc(T.lema)}</p>
 		<p class="selos"><span>Minecraft ${MCVER}</span><span>Fabric</span><span>Java 25</span><span>${T.versao} ${esc(VERSAO)}</span></p>
 		<p><a class="botao forte" href="${LINKS.curseforge}">${T.baixar} · CurseForge</a> <a class="botao" href="${LINKS.modrinth}">Modrinth</a> <a class="botao" href="${LINKS.github}">GitHub</a> <a class="botao" href="${T.blog}">${T.blogNome}</a></p>
@@ -488,7 +549,7 @@ img.px{image-rendering:pixelated;width:20px;height:20px;vertical-align:-4px}
 main{flex:1;min-width:0;padding:24px 28px 60px}
 .capa{border-radius:16px;overflow:hidden;background:#3a2a1a center/cover;min-height:320px;display:flex;align-items:flex-end}
 .capa-texto{width:100%;padding:28px;background:linear-gradient(transparent,rgba(20,12,4,.85) 35%);color:#fff7ea}
-.capa h1{margin:0;font-size:3rem;letter-spacing:-.02em}.capa p{max-width:720px}
+.capa h1{margin:0;font-size:3rem;letter-spacing:-.02em;line-height:1.1}.capa h1 span{display:block;font-size:1.1rem;font-weight:600;letter-spacing:0;color:#f3d9a8;margin-top:4px}.capa p{max-width:720px}
 .selos span{display:inline-block;margin:0 6px 6px 0;padding:2px 10px;border-radius:999px;background:rgba(255,255,255,.15);font-size:.85rem}
 .botao{display:inline-block;margin:4px 4px 0 0;padding:8px 16px;border-radius:10px;border:1px solid var(--borda);background:var(--papel);color:var(--tinta);text-decoration:none;font-weight:600}
 .capa .botao{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff}
@@ -525,7 +586,7 @@ th{background:var(--fundo);font-size:.85rem;text-transform:uppercase;letter-spac
 .bicho>div{padding:12px 16px}.bicho h3{margin:0 0 6px}.bicho p{margin:6px 0;font-size:.93rem}
 .config{display:grid;grid-template-columns:max-content 1fr;gap:8px 18px;background:var(--papel);border:1px solid var(--borda);border-radius:12px;padding:16px}
 .config dt{font-weight:700}.config dd{margin:0;color:var(--suave)}
-.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}.galeria img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;display:block}
+.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}.galeria figure{margin:0}.galeria img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:10px;display:block}.galeria figcaption{font-size:.85rem;color:var(--suave);margin-top:4px}
 footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--borda);color:var(--suave);font-size:.9rem}
 @media (max-width:860px){.menu{display:block}.lado{position:fixed;top:57px;left:0;bottom:0;height:auto;background:var(--fundo);z-index:9;transform:translateX(-100%);transition:transform .2s;border-right:1px solid var(--borda)}
 .lado.aberto{transform:none}main{padding:16px}.duas{grid-template-columns:1fr}.capa h1{font-size:2.2rem}.capa{min-height:260px}.config{grid-template-columns:1fr}.config dd{margin-bottom:8px}}
@@ -534,5 +595,23 @@ footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--borda);color:
 fs.writeFileSync(path.join(SAIDA, 'estilo.css'), CSS);
 fs.writeFileSync(path.join(SAIDA, 'index.html'), pagina('pt'));
 fs.writeFileSync(path.join(SAIDA, 'en/index.html'), pagina('en'));
+const hoje = new Date().toISOString().slice(0, 10);
+const alt = `<xhtml:link rel="alternate" hreflang="pt-BR" href="${SITE}/"/><xhtml:link rel="alternate" hreflang="en" href="${SITE}/en/"/><xhtml:link rel="alternate" hreflang="x-default" href="${SITE}/en/"/>`;
+fs.writeFileSync(path.join(SAIDA, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url><loc>${SITE}/</loc><lastmod>${hoje}</lastmod>${alt}</url>
+<url><loc>${SITE}/en/</loc><lastmod>${hoje}</lastmod>${alt}</url>
+</urlset>
+`);
+fs.writeFileSync(path.join(SAIDA, 'robots.txt'), 'User-agent: *\nAllow: /\n\nSitemap: ' + SITE + '/sitemap.xml\n');
+if (process.platform === 'win32') {
+	try {
+		require('child_process').execFileSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(__dirname, 'og_imagem.ps1'),
+			'-Foto', path.join(IMAGENS, '35_vila_natural.png'), '-Icone', path.join(IMAGENS, 'icone.png'), '-Saida', path.join(SAIDA, 'img/og.jpg'),
+			'-Linha1', 'Mod de vilas brasileiras para Minecraft', '-Linha2', 'Brazilian colonial village mod  \u00b7  Fabric ' + MCVER], { stdio: 'inherit' });
+	} catch (e) {
+		console.warn('imagem de compartilhamento falhou');
+	}
+}
 const semIcone = ITENS.filter(i => !iconeArraial(i.id)).map(i => i.id);
 console.log(`wiki em ${SAIDA}: ${ITENS.length} itens/blocos, ${Object.keys(RECEITAS).length} receitas, ${copiados.size} ícones` + (semIcone.length ? `; sem ícone: ${semIcone.join(', ')}` : ''));
