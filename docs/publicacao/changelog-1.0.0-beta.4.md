@@ -11,6 +11,12 @@ Spawn eggs are in the creative tab, with JEI/REI pages. The guide book has a new
 
 **Villages / Vilas:**
 - A new village that lacks a trade nobody can take up now **improvises the workstation**. For example, with no woodcutter there were no planks, so nothing got built. Now the mayor sets down a chopping block and someone becomes a woodcutter. / Quando falta um ofício que ninguém pode assumir, o prefeito **improvisa o posto** e alguém assume o ofício. Antes, por exemplo, sem lenhador não havia tábua e nada era construído.
+- **New villages no longer get stuck or die out / Vilas novas não travam nem morrem mais** (found by a 20-day automated test / achado num teste automático de 20 dias):
+  - Monsters no longer spawn naturally inside a village's territory. A cave next to the houses could breed skeletons that shot the farmers one by one. / Monstros não nascem mais no território da vila: uma caverna ao lado das casas criava esqueletos que matavam os roceiros um a um.
+  - Straw mattress: the farmer makes beds from wheat and planks, so the first wooden houses no longer wait for a shepherd. / Colchão de palha: o roceiro faz cama com trigo e tábuas.
+  - Houses are built in the village's own wood (acacia in the savanna). / Casas na madeira da vila (acácia na savana).
+  - A building that cannot be finished no longer holds back material from the others. The mission church is ordered once everyone has a home. / Obra impossível não segura material das outras; a igreja da missão só vem quando todos têm casa.
+  - A second field is ordered before food runs low. / A segunda roça vem antes de faltar comida.
 - `/arraial diagnostico`: a one-line summary of the nearest village, covering:
   - people, beds, homeless, hungry, sick;
   - food, satisfaction, treasury, crisis;
