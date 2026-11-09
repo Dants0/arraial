@@ -101,7 +101,18 @@ function modeloDoItem(id) {
 	})(json(f));
 	return achado;
 }
+/** Icons rendered in the game itself (tools/recortar_icones.ps1), as the inventory shows them. */
+const ICONES_JOGO = path.join(RAIZ, 'docs/icones');
 function iconeArraial(id) {
+	const doJogo = path.join(ICONES_JOGO, id + '.png');
+	if (fs.existsSync(doJogo)) {
+		const nome = 'jogo_' + id + '.png';
+		if (!copiados.has(nome)) {
+			fs.copyFileSync(doJogo, path.join(SAIDA, 'img/icon', nome));
+			copiados.set(nome, true);
+		}
+		return 'img/icon/' + nome;
+	}
 	return icone('arraial:item/' + id) || icone(texturaDoModelo(modeloDoItem(id))) || icone('arraial:block/' + id);
 }
 const TAGS = {
