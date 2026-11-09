@@ -93,7 +93,7 @@ public final class Bases {
 					|| !Territorio.donos(b.dimensao, pos.getX() >> 4, pos.getZ() >> 4).isEmpty()) {
 				continue;
 			}
-			if (server.overworld().getRandom().nextFloat() < 0.25F) {
+			if (com.guilhermegoes.arraial.config.ArraialConfig.get().basesOcupadas && server.overworld().getRandom().nextFloat() < 0.25F) {
 				ocupar(b);
 			}
 		}

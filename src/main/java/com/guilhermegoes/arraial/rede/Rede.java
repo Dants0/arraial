@@ -35,7 +35,43 @@ public final class Rede {
 		}
 	}
 
+	/** A village the player knows, for the minimap (see VilasConhecidas). */
+	public record VilaMapa(String id, String nome, int x, int y, int z, String dimensao, String cor, boolean hispano, boolean abandonada) {
+	}
+
+	/** The villages this player knows (sent when the list changes). */
+	public record Vilas(java.util.List<VilaMapa> vilas) implements CustomPacketPayload {
+		public static final Type<Vilas> TYPE = new Type<>(Arraial.id("vilas_conhecidas"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, Vilas> CODEC = StreamCodec.of((b, p) -> {
+			b.writeVarInt(p.vilas().size());
+			for (VilaMapa v : p.vilas()) {
+				b.writeUtf(v.id());
+				b.writeUtf(v.nome());
+				b.writeVarInt(v.x());
+				b.writeVarInt(v.y());
+				b.writeVarInt(v.z());
+				b.writeUtf(v.dimensao());
+				b.writeUtf(v.cor());
+				b.writeBoolean(v.hispano());
+				b.writeBoolean(v.abandonada());
+			}
+		}, b -> {
+			int n = b.readVarInt();
+			java.util.List<VilaMapa> l = new java.util.ArrayList<>();
+			for (int i = 0; i < n; i++) {
+				l.add(new VilaMapa(b.readUtf(), b.readUtf(), b.readVarInt(), b.readVarInt(), b.readVarInt(), b.readUtf(), b.readUtf(), b.readBoolean(), b.readBoolean()));
+			}
+			return new Vilas(l);
+		});
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
 	public static void init() {
+		PayloadTypeRegistry.clientboundPlay().register(Vilas.TYPE, Vilas.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(AbrirTela.TYPE, AbrirTela.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(Acao.TYPE, Acao.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Acao.TYPE, (p, ctx) -> Chancelaria.agir(ctx.player(), p));

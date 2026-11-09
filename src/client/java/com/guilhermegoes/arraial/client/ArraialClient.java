@@ -12,6 +12,7 @@ public class ArraialClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(ModEntities.MORADOR, MoradorRenderer::new);
 		ClientPlayNetworking.registerGlobalReceiver(Rede.AbrirTela.TYPE, (p, ctx) -> TelaArraial.receber(p.dados()));
+		IntegracaoXaero.init();
 		// The automated test script (dev only, left out of the published jar): loaded by name, only when asked for.
 		if ("1".equals(System.getenv("ARRAIAL_ROTEIRO"))) {
 			try {

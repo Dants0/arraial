@@ -10,6 +10,10 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	maven { url = "https://maven.blamejared.com/" } // JEI
+	exclusiveContent { // Jade, Mod Menu, Xaero's Minimap (optional integrations)
+		forRepository { maven { url = "https://api.modrinth.com/maven" } }
+		filter { includeGroup "maven.modrinth" }
+	}
 }
 
 loom {
@@ -33,7 +37,25 @@ dependencies {
 
 	// JEI: compile against its API; the full mod only in the dev client (optional for players).
 	compileOnly "mezz.jei:jei-${project.minecraft_version}-fabric-api:${project.jei_version}"
-	localRuntime "mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}"
+	// The dev client runs JEI, or REI with -PcomRei (they are both recipe viewers: one at a time).
+	if (!project.hasProperty("comRei")) {
+		localRuntime "mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}"
+	} else {
+		localRuntime "maven.modrinth:rei:${project.rei_version}"
+		localRuntime "maven.modrinth:architectury-api:${project.architectury_version}"
+		localRuntime "maven.modrinth:cloth-config:${project.cloth_config_version}"
+	}
+
+	// Optional integrations: compiled against, never required by players; all three run in the dev client.
+	compileOnly "maven.modrinth:jade:${project.jade_version}"
+	compileOnly "maven.modrinth:modmenu:${project.modmenu_version}"
+	compileOnly "maven.modrinth:xaeros-minimap:${project.xaero_version}"
+	compileOnly "maven.modrinth:rei:${project.rei_version}"
+	compileOnly "maven.modrinth:architectury-api:${project.architectury_version}"
+	localRuntime "maven.modrinth:jade:${project.jade_version}"
+	localRuntime "maven.modrinth:modmenu:${project.modmenu_version}"
+	localRuntime "maven.modrinth:xaeros-minimap:${project.xaero_version}"
+	localRuntime "maven.modrinth:farmers-delight-refabricated:${project.farmers_delight_version}"
 }
 
 processResources {

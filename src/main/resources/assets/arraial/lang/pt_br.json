@@ -1225,5 +1225,16 @@
 	"arraial.jade.crise": "Crise: %s",
 	"arraial.jade.posto": "Posto de %s",
 	"arraial.jade.posto_livre": "livre: espera um morador sem ofício",
-	"arraial.jade.trabalhador": "Trabalha aqui: %s"
+	"arraial.jade.trabalhador": "Trabalha aqui: %s",
+	"item.arraial.baiao_de_dois": "Baião de Dois",
+	"item.arraial.moqueca": "Moqueca",
+	"item.arraial.vaca_atolada": "Vaca Atolada",
+	"arraial.colonos.status": "seguindo a caravana",
+	"arraial.colonos.status_lider": "procurando terra para o povoado",
+	"arraial.colonos.chegando": "Ao longe, uma caravana de colonos com um burro carregado procura terra boa para fundar um povoado.",
+	"arraial.colonos.chegando_missao": "Ao longe, freis e colonos espanhóis com um burro carregado procuram terra para fundar uma missão.",
+	"arraial.colonos.fundaram": "Os colonos fincaram o Cruzeiro: nasce o %s!",
+	"arraial.cronica.colonos": "Uma caravana de colonos chegou com um burro carregado, fincou o Cruzeiro e acendeu a primeira fogueira.",
+	"arraial.config.fundacao_ao_vivo": "Fundação ao vivo",
+	"arraial.config.fundacao_ao_vivo.dica": "Vilas novas são fundadas na sua frente: uma caravana de colonos chega, finca o Cruzeiro e o pedreiro levanta as primeiras obras. Desligado, elas aparecem prontas."
 }

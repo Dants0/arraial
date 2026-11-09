@@ -92,6 +92,9 @@ public final class Cultura {
 		var bioma = fonte.createCachingResolver(level.getChunkSource().randomState())
 				.getNoiseBiome(net.minecraft.core.QuartPos.fromBlock(pos.getX()), net.minecraft.core.QuartPos.fromBlock(pos.getY()), net.minecraft.core.QuartPos.fromBlock(pos.getZ()));
 		String b = bioma.unwrapKey().map(k -> k.identifier().getPath()).orElse("plains");
+		if (Biomas.conhecido(b) >= 0) {
+			return Biomas.regiao(Biomas.conhecido(b));
+		}
 		if (b.contains("snow") || b.contains("frozen") || b.contains("taiga") || b.contains("grove")) {
 			return "frio";
 		}

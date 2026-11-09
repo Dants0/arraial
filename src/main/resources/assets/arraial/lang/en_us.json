@@ -1225,5 +1225,16 @@
 	"arraial.jade.crise": "Crisis: %s",
 	"arraial.jade.posto": "%s workstation",
 	"arraial.jade.posto_livre": "free: waiting for a villager without a trade",
-	"arraial.jade.trabalhador": "Works here: %s"
+	"arraial.jade.trabalhador": "Works here: %s",
+	"item.arraial.baiao_de_dois": "Baião de Dois (Rice and Beans with Cheese)",
+	"item.arraial.moqueca": "Moqueca (Fish Stew)",
+	"item.arraial.vaca_atolada": "Vaca Atolada (Beef and Cassava Stew)",
+	"arraial.colonos.status": "following the caravan",
+	"arraial.colonos.status_lider": "looking for land to settle",
+	"arraial.colonos.chegando": "In the distance, a caravan of settlers with a laden donkey looks for good land to found a hamlet.",
+	"arraial.colonos.chegando_missao": "In the distance, Spanish friars and settlers with a laden donkey look for land to found a mission.",
+	"arraial.colonos.fundaram": "The settlers plant the Cruzeiro: %s is born!",
+	"arraial.cronica.colonos": "A caravan of settlers arrived with a laden donkey, planted the Cruzeiro and lit the first campfire.",
+	"arraial.config.fundacao_ao_vivo": "Live founding",
+	"arraial.config.fundacao_ao_vivo.dica": "New villages are founded before your eyes: a caravan of settlers arrives, plants the Cruzeiro and the builder raises the first works. Off: they appear ready."
 }

@@ -95,6 +95,8 @@ public final class Registro {
 		public String era = "";
 		/** "" (Portuguese) or "hispano" (a Spanish mission). */
 		public String povo = "";
+		/** Players (UUIDs) who have been on its land: it shows on their maps. */
+		public java.util.List<String> conhecida = new java.util.ArrayList<>();
 		public java.util.List<String> costumes = new java.util.ArrayList<>();
 		public java.util.List<String> tradicoes = new java.util.ArrayList<>();
 		public boolean bandeiraHasteada;

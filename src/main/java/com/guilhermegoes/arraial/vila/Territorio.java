@@ -38,10 +38,16 @@ public final class Territorio {
 	private static final int TENSAO_DISPUTA = 40;
 
 	public static void init() {
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((h, sender, server) -> VilasConhecidas.esquecer(h.player.getUUID()));
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (server.getTickCount() % 20 == 0) {
 				for (ServerPlayer p : server.getPlayerList().getPlayers()) {
 					mostrarFronteira(p);
+				}
+			}
+			if (server.getTickCount() % 100 == 0) {
+				for (ServerPlayer p : server.getPlayerList().getPlayers()) {
+					VilasConhecidas.enviar(p);
 				}
 			}
 		});
@@ -121,6 +127,7 @@ public final class Territorio {
 		ServerLevel level = (ServerLevel) p.level();
 		ChunkPos c = p.chunkPosition();
 		List<String> d = donos(level.dimension().identifier().toString(), c.x(), c.z());
+		VilasConhecidas.pisou(p, d);
 		String chave = String.join("|", d);
 		String antes = ULTIMO.put(p.getUUID(), chave);
 		if (chave.equals(antes) || antes == null && d.isEmpty()) {
@@ -141,7 +148,9 @@ public final class Territorio {
 			msg = Component.literal("⚔ ").append(Component.translatable("arraial.territorio.disputada", a == null ? "?" : a.nome, b == null ? "?" : b.nome))
 					.withStyle(ChatFormatting.RED);
 		}
-		p.sendOverlayMessage(msg);
+		if (com.guilhermegoes.arraial.config.ArraialConfig.get().avisoFronteira) {
+			p.sendOverlayMessage(msg);
+		}
 	}
 
 	// ================================================================ the day

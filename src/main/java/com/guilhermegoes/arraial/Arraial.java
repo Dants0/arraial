@@ -22,6 +22,7 @@ public class Arraial implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		com.guilhermegoes.arraial.config.ArraialConfig.carregar();
 		ModComponents.init();
 		ModBlocks.init();
 		ModBlockEntities.init();

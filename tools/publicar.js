@@ -37,10 +37,15 @@ function exigir() {
   if (!fs.existsSync(changelogArq)) throw new Error(`changelog não encontrado: ${changelogArq}`);
 }
 
+// Optional integrations (listed on the version, and Arraial shows up on their pages as a dependent).
+const OPCIONAIS_MODRINTH = { jei: 'u6dRKJwZ', rei: 'nfn13YXA', jade: 'nvQzSEkH', modmenu: 'mOgUt4GM', xaero: '1bokaNcj',
+  farmersdelight: '7vxePowz', terralith: '8oi3bsk5' };
+const OPCIONAIS_CURSEFORGE = ['jei', 'roughly-enough-items', 'jade', 'modmenu', 'xaeros-minimap', 'farmers-delight-refabricated', 'terralith'];
+
 async function modrinth(changelog) {
   const data = {
     project_id: MODRINTH_PROJETO, name: `Arraial ${versao}`, version_number: versao, changelog,
-    dependencies: [{ project_id: 'P7dR8mSH', dependency_type: 'required' }, { project_id: 'u6dRKJwZ', dependency_type: 'optional' }],
+    dependencies: [{ project_id: 'P7dR8mSH', dependency_type: 'required' }, ...Object.values(OPCIONAIS_MODRINTH).map(project_id => ({ project_id, dependency_type: 'optional' }))],
     game_versions: [MC], version_type: tipo, loaders: ['fabric'], featured: true, status: 'listed', file_parts: ['jar'], primary_file: 'jar'
   };
   if (teste) return console.log('[modrinth] enviaria:', { ...data, changelog: changelog.length + ' caracteres' });
@@ -64,7 +69,7 @@ async function curseforge(changelog) {
   const meta = {
     changelog, changelogType: 'markdown', displayName: `Arraial ${versao}`, releaseType: tipo,
     gameVersions: [CF_VERSOES.minecraft, CF_VERSOES.fabric, CF_VERSOES.java25, CF_VERSOES.client, CF_VERSOES.server],
-    relations: { projects: [{ slug: 'fabric-api', type: 'requiredDependency' }, { slug: 'jei', type: 'optionalDependency' }] }
+    relations: { projects: [{ slug: 'fabric-api', type: 'requiredDependency' }, ...OPCIONAIS_CURSEFORGE.map(slug => ({ slug, type: 'optionalDependency' }))] }
   };
   if (teste) return console.log('[curseforge] enviaria para o projeto', CURSEFORGE_PROJETO, { ...meta, changelog: changelog.length + ' caracteres' });
   const form = new FormData();

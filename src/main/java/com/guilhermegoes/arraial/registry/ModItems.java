@@ -78,6 +78,13 @@ public final class ModItems {
 	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
 	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));
+	// ---- Dishes of the cooking pot (Farmer's Delight): their recipes only load with that mod
+	/** Baião de dois: rice with queijo coalho, charque and onion. */
+	public static final Item BAIAO_DE_DOIS = prato("baiao_de_dois", 14, 0.75F);
+	/** Moqueca: fish stewed with tomato and onion, thickened with farinha (pirão). */
+	public static final Item MOQUECA = prato("moqueca", 12, 0.8F);
+	/** Vaca atolada: beef "stuck in the mud" of mandioca. */
+	public static final Item VACA_ATOLADA = prato("vaca_atolada", 14, 0.75F);
 	/** Chapéu de couro: the sertanejo leather hat, worn on the head (3D model). */
 	public static final Item CHAPEU_COURO = register("chapeu_couro", Item::new, new Item.Properties().stacksTo(1)
 			.component(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.HEAD)
@@ -135,6 +142,11 @@ public final class ModItems {
 	public static final Item GUIA = register("guia", com.guilhermegoes.arraial.vila.GuiaItem::new, new Item.Properties().stacksTo(1));
 	/** Réis: the arraial's money, used at the feira. */
 	public static final Item REIS = register("reis", Item::new, new Item.Properties());
+
+	private static Item prato(String id, int nutricao, float saturacao) {
+		return register(id, Item::new, new Item.Properties().stacksTo(16).usingConvertsTo(net.minecraft.world.item.Items.BOWL)
+				.food(new FoodProperties.Builder().nutrition(nutricao).saturationModifier(saturacao).build()));
+	}
 
 	private static Item register(String name, Function<Item.Properties, Item> factory, Item.Properties props) {
 		ResourceKey<Item> key = ResourceKey.create(Registries.ITEM, Arraial.id(name));

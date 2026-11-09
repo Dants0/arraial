@@ -117,6 +117,24 @@ public final class Roteiro {
 			mc().getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
 			cmd("gamemode creative", "time set 6000", "weather clear", "effect clear @s", "kill @e[type=minecraft:vindicator]", "kill @e[type=minecraft:pillager]", "tp @s 0.5 121 -7.5 0 15");
 		});
+		// ARRAIAL_ROTEIRO_SO=integracoes: only the scenes of the optional integrations.
+		if ("integracoes".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			integracoes();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
+		// ARRAIAL_ROTEIRO_SO=colonos: a caravan of settlers founds a village live.
+		if ("colonos".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			colonos();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=novas: only the newest scenes (quicker while working on them).
 		if ("novas".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			novidades();
@@ -437,6 +455,112 @@ public final class Roteiro {
 		});
 	}
 
+	/** Jade, Mod Menu and Xaero's Minimap (installed in the dev client). */
+	private static void integracoes() {
+		// Mod Menu knows us; our settings screen.
+		passo(10, () -> {
+			boolean registrado = net.fabricmc.loader.api.FabricLoader.getInstance().getEntrypointContainers("modmenu", Object.class).stream()
+					.anyMatch(e -> e.getProvider().getMetadata().getId().equals("arraial"));
+			log("modmenu: arraial registrado=" + registrado + " | jade carregado=" + net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("jade")
+					+ " | xaero carregado=" + net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("xaerominimap"));
+			mc().gui.setScreen(new TelaConfig(null));
+		});
+		passo(30, () -> foto("40_config"));
+		passo(10, () -> mc().gui.setScreen(null));
+		// Jade on a villager and on the Cruzeiro (the player walks over the village's land, so it becomes known).
+		passo(10, () -> servidor((srv, sp) -> {
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(0, 120, 0));
+			alvoJade = v == null ? new BlockPos(0, 120, 0) : v;
+			sp.getAbilities().flying = true;
+			sp.onUpdateAbilities();
+			sp.teleportTo(sp.level(), alvoJade.getX() + 0.5, alvoJade.getY() + 1.5, alvoJade.getZ() - 6.5, java.util.Set.of(), 0, 10, true);
+			cmd("time set 6000", "summon arraial:morador " + (alvoJade.getX() + 0.5) + " " + (alvoJade.getY() + 1) + " " + (alvoJade.getZ() - 4.5)
+					+ " {NoAI:1b,Invulnerable:1b,Profissao:3,Visual:1,Rotation:[180f,0f],Tags:[\"jade\"]}");
+		}));
+		passo(40, () -> servidor((srv, sp) -> sp.level().getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class,
+				sp.getBoundingBox().inflate(8), e -> e.entityTags().contains("jade")).stream().findFirst().ifPresent(e -> olhar(sp, e))));
+		passo(40, () -> foto("41_jade_morador"));
+		passo(10, () -> servidor((srv, sp) -> {
+			cmd("kill @e[tag=jade]");
+			Vec3 olho = Vec3.atCenterOf(alvoJade).add(0, 1.6, -2.6);
+			Vec3 d = Vec3.atCenterOf(alvoJade).add(0, -0.15, 0).subtract(olho);
+			float yaw = (float) (Math.toDegrees(Math.atan2(d.z, d.x)) - 90);
+			float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
+			sp.teleportTo(sp.level(), olho.x, olho.y - 1.62, olho.z, java.util.Set.of(), yaw, pitch, true);
+		}));
+		passo(50, () -> foto("42_jade_cruzeiro"));
+		// Xaero: the known villages become waypoints (the list is sent every 5 s).
+		passo(140, () -> log("xaero: " + IntegracaoXaero.estado()));
+		passo(10, () -> cmd("tp @s " + (alvoJade.getX() + 0.5) + " " + (alvoJade.getY() + 30) + " " + (alvoJade.getZ() - 30.5) + " 0 40"));
+		passo(60, () -> foto("43_xaero_minimapa"));
+		passo(10, () -> log("xaero depois: " + IntegracaoXaero.estado()));
+		// Farmer's Delight: the dishes' recipes loaded for the cooking pot; their icons in the hotbar. REI loaded?
+		passo(10, () -> servidor((srv, sp) -> {
+			StringBuilder s = new StringBuilder("farmersdelight carregado=" + net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("farmersdelight")
+					+ " rei carregado=" + net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("roughlyenoughitems") + " receitas:");
+			for (String r : new String[] {"baiao_de_dois", "moqueca", "vaca_atolada"}) {
+				var chave = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.RECIPE, com.guilhermegoes.arraial.Arraial.id(r));
+				s.append(' ').append(r).append('=').append(srv.getRecipeManager().byKey(chave).map(h -> h.value().getType().toString()).orElse("ausente"));
+			}
+			log(s.toString());
+			cmd("clear @s", "give @s arraial:baiao_de_dois", "give @s arraial:moqueca", "give @s arraial:vaca_atolada", "give @s arraial:peixeira",
+					"give @s farmersdelight:cooking_pot", "tp @s " + (alvoJade.getX() + 0.5) + " " + (alvoJade.getY() + 1) + " " + (alvoJade.getZ() - 6.5) + " 0 20");
+		}));
+		passo(40, () -> foto("44_pratos"));
+	}
+
+	/** A caravan of settlers walks in on natural ground, plants the Cruzeiro and builds the first works. */
+	private static void colonos() {
+		acharTerrenoNatural();
+		passo(10, () -> servidor((srv, sp) -> {
+			if (natural == null) {
+				log("colonos: sem terreno natural");
+				return;
+			}
+			cmd("tp @s " + natural.getX() + " " + (natural.getY() + 6) + " " + (natural.getZ() - 30) + " 0 10", "time set 1000", "gamemode spectator");
+		}));
+		passo(60, () -> cmd("arraial colonos"));
+		passo(100, () -> colonosEstado("partiu"));
+		passo(10, () -> foto("50_caravana"));
+		for (int i = 0; i < 6; i++) {
+			passo(200, () -> colonosEstado("andando"));
+		}
+		passo(10, () -> foto("51_chegada"));
+		// The building, sped up.
+		passo(10, () -> cmd("tick rate 100"));
+		for (int i = 0; i < 6; i++) {
+			final int n = i;
+			passo(600, () -> {
+				colonosEstado("obra");
+				if (n == 2 || n == 5) {
+					foto("52_obra_" + n);
+				}
+			});
+		}
+		passo(10, () -> cmd("tick rate 20"));
+	}
+
+	private static void colonosEstado(String fase) {
+		servidor((srv, sp) -> {
+			var level = sp.level();
+			var perto = level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, sp.getBoundingBox().inflate(120), e -> true);
+			long colonos = perto.stream().filter(e -> e.fundacao() != null).count();
+			StringBuilder s = new StringBuilder("colonos " + fase + ": a caminho=" + colonos + " moradores=" + perto.size());
+			perto.stream().filter(e -> e.liderColonos()).findFirst().ifPresent(l -> s.append(" lider em ").append(l.blockPosition().toShortString())
+					.append(" faltam ").append((int) Math.sqrt(l.blockPosition().distSqr(l.fundacao()))));
+			BlockPos v = natural == null ? null : com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, natural);
+			if (v != null) {
+				s.append(" | vila em ").append(v.toShortString());
+				for (var c : com.guilhermegoes.arraial.obra.CanteiroBlockEntity.daVila(level, v)) {
+					s.append(" [").append(c.projeto().map(p -> p.id()).orElse("?")).append(' ').append(c.progresso()).append(c.concluida() ? " pronta" : "").append(']');
+				}
+				perto.stream().filter(e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.PEDREIRO).findFirst()
+						.ifPresent(e -> s.append(" pedreiro: ").append(e.status().getString()));
+			}
+			log(s.toString());
+		});
+	}
+
 	/** The fazendas, the armour, the Baroque and the Spanish missions. */
 	private static void novidades() {
 		// ---- Armour from other mods: a soldado takes the best gear in the armazém.
@@ -542,44 +666,7 @@ public final class Roteiro {
 		passo(50, () -> foto("34_missao"));
 
 		// ---- Gallery: a real village on natural ground (dry, flat-ish grassland found by biome, then checked), for the mod pages.
-		passo(10, () -> servidor((srv, sp) -> {
-			var level = sp.level();
-			var resolvedor = level.getChunkSource().getGenerator().getBiomeSource().createCachingResolver(level.getChunkSource().randomState());
-			candidatos.clear();
-			for (int r = 500; r <= 4000 && candidatos.size() < 6; r += 250) {
-				for (int k = 0; k < 16 && candidatos.size() < 6; k++) {
-					int x = (int) (Math.cos(k * Math.PI / 8) * r), z = (int) (Math.sin(k * Math.PI / 8) * r);
-					boolean todos = true;
-					for (int dx = -48; dx <= 48 && todos; dx += 24) {
-						for (int dz = -48; dz <= 48 && todos; dz += 24) {
-							String b = resolvedor.getNoiseBiome(net.minecraft.core.QuartPos.fromBlock(x + dx), net.minecraft.core.QuartPos.fromBlock(64),
-									net.minecraft.core.QuartPos.fromBlock(z + dz)).unwrapKey().map(c -> c.identifier().getPath()).orElse("");
-							todos = b.equals("plains") || b.equals("savanna") || b.equals("sunflower_plains") || b.equals("meadow");
-						}
-					}
-					if (todos) {
-						candidatos.add(new BlockPos(x, 0, z));
-					}
-				}
-			}
-			log("galeria: " + candidatos.size() + " candidatos de planicie");
-		}));
-		for (int tentativa = 0; tentativa < 4; tentativa++) {
-			final int t = tentativa;
-			passo(10, () -> {
-				if (natural == null && t < candidatos.size()) {
-					BlockPos c = candidatos.get(t);
-					cmd("tp @s " + c.getX() + " 220 " + c.getZ() + " 0 90", "time set 1000");
-				}
-			});
-			passo(500, () -> servidor((srv, sp) -> {
-				if (natural != null || t >= candidatos.size()) {
-					return;
-				}
-				natural = lugarSecoPlano(sp.level(), candidatos.get(t));
-				log("galeria: tentativa " + t + " em " + candidatos.get(t).toShortString() + " -> " + (natural == null ? "sem lugar seco e plano" : natural.toShortString()));
-			}));
-		}
+		acharTerrenoNatural();
 		passo(10, () -> servidor((srv, sp) -> {
 			if (natural == null) {
 				return;
@@ -632,6 +719,49 @@ public final class Roteiro {
 	private static int alvo = -1;
 	private static BlockPos chao = BlockPos.ZERO;
 	private static String vizinho = "";
+	private static BlockPos alvoJade = BlockPos.ZERO;
+	/** Finds dry, flat-ish grassland far from the test village (result in {@link #natural}). */
+	private static void acharTerrenoNatural() {
+		passo(10, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			var resolvedor = level.getChunkSource().getGenerator().getBiomeSource().createCachingResolver(level.getChunkSource().randomState());
+			candidatos.clear();
+			for (int r = 500; r <= 4000 && candidatos.size() < 6; r += 250) {
+				for (int k = 0; k < 16 && candidatos.size() < 6; k++) {
+					int x = (int) (Math.cos(k * Math.PI / 8) * r), z = (int) (Math.sin(k * Math.PI / 8) * r);
+					boolean todos = true;
+					for (int dx = -48; dx <= 48 && todos; dx += 24) {
+						for (int dz = -48; dz <= 48 && todos; dz += 24) {
+							String b = resolvedor.getNoiseBiome(net.minecraft.core.QuartPos.fromBlock(x + dx), net.minecraft.core.QuartPos.fromBlock(64),
+									net.minecraft.core.QuartPos.fromBlock(z + dz)).unwrapKey().map(c -> c.identifier().getPath()).orElse("");
+							todos = b.equals("plains") || b.equals("savanna") || b.equals("sunflower_plains") || b.equals("meadow");
+						}
+					}
+					if (todos) {
+						candidatos.add(new BlockPos(x, 0, z));
+					}
+				}
+			}
+			log("galeria: " + candidatos.size() + " candidatos de planicie");
+		}));
+		for (int tentativa = 0; tentativa < 4; tentativa++) {
+			final int t = tentativa;
+			passo(10, () -> {
+				if (natural == null && t < candidatos.size()) {
+					BlockPos c = candidatos.get(t);
+					cmd("tp @s " + c.getX() + " 220 " + c.getZ() + " 0 90", "time set 1000");
+				}
+			});
+			passo(500, () -> servidor((srv, sp) -> {
+				if (natural != null || t >= candidatos.size()) {
+					return;
+				}
+				natural = lugarSecoPlano(sp.level(), candidatos.get(t));
+				log("galeria: tentativa " + t + " em " + candidatos.get(t).toShortString() + " -> " + (natural == null ? "sem lugar seco e plano" : natural.toShortString()));
+			}));
+		}
+	}
+
 	private static @org.jspecify.annotations.Nullable BlockPos natural;
 	private static final java.util.List<BlockPos> candidatos = new java.util.ArrayList<>();
 

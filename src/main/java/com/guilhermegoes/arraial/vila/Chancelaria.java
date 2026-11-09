@@ -175,6 +175,10 @@ public final class Chancelaria {
 	}
 
 	private static int tipo(String b) {
+		int conhecido = Biomas.conhecido(b);
+		if (conhecido >= 0) {
+			return conhecido;
+		}
 		if (b.contains("river")) {
 			return MapaDados.RIO;
 		}

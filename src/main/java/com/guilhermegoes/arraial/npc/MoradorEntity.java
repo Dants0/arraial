@@ -190,6 +190,14 @@ public class MoradorEntity extends PathfinderMob {
 	// ---- Mascate (a peddler from another arraial; see Comercio) and caravan escort
 	private String mascateOrigem = "";
 	private @Nullable BlockPos mascateVila;
+	/** A settler on the way: where the caravan will plant its Cruzeiro (null: not a settler). */
+	private @Nullable BlockPos fundacao;
+	/** The settler who leads the caravan (plants the Cruzeiro on arrival). */
+	private boolean liderColonos;
+	/** The caravan founds a Spanish mission. */
+	private boolean colonosHispanos;
+	/** Game time the caravan set out (after a long while they settle wherever they are). */
+	private long colonosDesde;
 	private long mascateFim;
 	private int bolsa;
 	private java.util.@Nullable UUID escolta;
@@ -205,6 +213,30 @@ public class MoradorEntity extends PathfinderMob {
 
 	public String mascateOrigem() {
 		return mascateOrigem;
+	}
+
+	public @Nullable BlockPos fundacao() {
+		return fundacao;
+	}
+
+	public boolean liderColonos() {
+		return liderColonos;
+	}
+
+	public boolean colonosHispanos() {
+		return colonosHispanos;
+	}
+
+	public long colonosDesde() {
+		return colonosDesde;
+	}
+
+	/** Makes this morador a settler heading for {@code destino} (null: arrived, no longer a settler). */
+	public void setColono(@Nullable BlockPos destino, boolean lider, boolean hispanos, long desde) {
+		fundacao = destino;
+		liderColonos = destino != null && lider;
+		colonosHispanos = destino != null && hispanos;
+		colonosDesde = desde;
 	}
 
 	public @Nullable BlockPos mascateVila() {
@@ -283,6 +315,7 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(1, new FestejarGoal(this));
 		goalSelector.addGoal(1, new ProtestarGoal(this));
 		goalSelector.addGoal(2, new MascateGoal(this));
+		goalSelector.addGoal(2, new ColonosGoal(this));
 		goalSelector.addGoal(2, new ConstruirGoal(this));
 		goalSelector.addGoal(2, new BoticarioGoal(this));
 		goalSelector.addGoal(2, new ArtesaoGoal(this));
@@ -527,6 +560,11 @@ public class MoradorEntity extends PathfinderMob {
 		return profissao().titulo(feminino());
 	}
 
+	/** What the morador is doing right now (shown over the head and by Jade). */
+	public Component status() {
+		return status;
+	}
+
 	public void setStatus(Component novo) {
 		if (!novo.equals(status)) {
 			status = novo;
@@ -765,7 +803,7 @@ public class MoradorEntity extends PathfinderMob {
 			soltar(level, casa);
 			casa = null;
 		}
-		if (vila == null && profissao() != Profissao.MASCATE) { // a mascate is only passing through
+		if (vila == null && fundacao == null && profissao() != Profissao.MASCATE) { // a mascate is only passing through; settlers found their own
 			BlockPos encontrada = Vilas.maisProxima(level, blockPosition());
 			if (encontrada != null) {
 				definirVila(encontrada);
@@ -780,7 +818,7 @@ public class MoradorEntity extends PathfinderMob {
 		}
 		if (profissao() == Profissao.SOLDADO) {
 			armar(true);
-			if (vila != null && (tickCount / 40 + getId()) % 30 == 0) {
+			if (vila != null && (tickCount / 40 + getId()) % 30 == 0 && com.guilhermegoes.arraial.config.ArraialConfig.get().soldadosUsamArmazem) {
 				vestirDoArmazem(level);
 			}
 		}
@@ -1118,6 +1156,12 @@ public class MoradorEntity extends PathfinderMob {
 			output.putLong("MascateVila", mascateVila.asLong());
 		}
 		output.putLong("MascateFim", mascateFim);
+		if (fundacao != null) {
+			output.putLong("Fundacao", fundacao.asLong());
+			output.putBoolean("LiderColonos", liderColonos);
+			output.putBoolean("ColonosHispanos", colonosHispanos);
+			output.putLong("ColonosDesde", colonosDesde);
+		}
 		output.putInt("Bolsa", bolsa);
 		if (escolta != null) {
 			output.store("Escolta", net.minecraft.core.UUIDUtil.CODEC, escolta);
@@ -1180,6 +1224,11 @@ public class MoradorEntity extends PathfinderMob {
 		long mv = input.getLongOr("MascateVila", Long.MIN_VALUE);
 		mascateVila = mv == Long.MIN_VALUE ? null : BlockPos.of(mv);
 		mascateFim = input.getLongOr("MascateFim", 0L);
+		long fu = input.getLongOr("Fundacao", Long.MIN_VALUE);
+		fundacao = fu == Long.MIN_VALUE ? null : BlockPos.of(fu);
+		liderColonos = input.getBooleanOr("LiderColonos", false);
+		colonosHispanos = input.getBooleanOr("ColonosHispanos", false);
+		colonosDesde = input.getLongOr("ColonosDesde", 0L);
 		bolsa = input.getIntOr("Bolsa", 0);
 		escolta = input.read("Escolta", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 		escoltada = input.getBooleanOr("Escoltada", false);

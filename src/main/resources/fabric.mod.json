@@ -24,6 +24,15 @@
 		],
 		"jei_mod_plugin": [
 			"com.guilhermegoes.arraial.client.ArraialJei"
+		],
+		"modmenu": [
+			"com.guilhermegoes.arraial.client.ArraialModMenu"
+		],
+		"jade": [
+			"com.guilhermegoes.arraial.client.ArraialJade"
+		],
+		"rei_client": [
+			"com.guilhermegoes.arraial.client.ArraialRei"
 		]
 	},
 	"depends": {
@@ -33,6 +42,12 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"jei": "*"
+		"jei": "*",
+		"jade": "*",
+		"modmenu": "*",
+		"xaerominimap": "*",
+		"roughlyenoughitems": "*",
+		"farmersdelight": "*",
+		"terralith": "*"
 	}
 }

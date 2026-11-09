@@ -108,6 +108,10 @@ public class ArraialBlockEntity extends BlockEntity {
 		return legitimidade;
 	}
 
+	public int populacao() {
+		return populacao;
+	}
+
 	public int tesouro() {
 		return tesouro;
 	}
@@ -207,7 +211,7 @@ public class ArraialBlockEntity extends BlockEntity {
 	void fundar(ServerLevel level) {
 		if (nome.isEmpty()) {
 			nome = Vilas.nomeAleatorio(level.getRandom(), hispano());
-			proximaChegada = level.getGameTime() + Vilas.INTERVALO_CHEGADA;
+			proximaChegada = level.getGameTime() + com.guilhermegoes.arraial.config.ArraialConfig.get().intervaloChegada();
 			anotar(new Cronica.Entrada(Vilas.dia(level), Component.translatable("arraial.cronica.fundacao", nomeCompleto())));
 			setChanged();
 		}
@@ -248,13 +252,13 @@ public class ArraialBlockEntity extends BlockEntity {
 				&& moradores.stream().noneMatch(m -> m.profissao() == Profissao.NENHUMA && m.gabinete() == null);
 		if (camasLivres <= 0 && !atraiPorTrabalho) {
 			// Nobody comes while there is nowhere to live or work; the clock starts when that changes.
-			arraial.proximaChegada = Math.max(arraial.proximaChegada, server.getGameTime() + Vilas.INTERVALO_CHEGADA);
+			arraial.proximaChegada = Math.max(arraial.proximaChegada, server.getGameTime() + com.guilhermegoes.arraial.config.ArraialConfig.get().intervaloChegada());
 			return;
 		}
 		if (server.getGameTime() >= arraial.proximaChegada) {
 			arraial.receberMorador(server);
 			// A happy arraial is talked about: newcomers come twice as fast.
-			arraial.proximaChegada = server.getGameTime() + (arraial.satisfacao > 75 ? Vilas.INTERVALO_CHEGADA / 2 : Vilas.INTERVALO_CHEGADA);
+			arraial.proximaChegada = server.getGameTime() + (arraial.satisfacao > 75 ? com.guilhermegoes.arraial.config.ArraialConfig.get().intervaloChegada() / 2 : com.guilhermegoes.arraial.config.ArraialConfig.get().intervaloChegada());
 			arraial.setChanged();
 		}
 	}

@@ -109,8 +109,15 @@ public final class Crise {
 		Crise c = arraial.crise;
 		long agora = level.getGameTime();
 		if (c.tipo == null) {
-			if (agora % 100 == 0) {
-				sortear(level, arraial, moradores);
+			if (agora % 100 == 0 && com.guilhermegoes.arraial.config.ArraialConfig.get().crises) {
+				// The frequency setting: below 100% some rolls are skipped, above it some happen twice.
+				int f = com.guilhermegoes.arraial.config.ArraialConfig.get().frequenciaCrises;
+				if (level.getRandom().nextInt(100) < Math.min(100, f)) {
+					sortear(level, arraial, moradores);
+				}
+				if (arraial.crise.tipo == null && f > 100 && level.getRandom().nextInt(100) < f - 100) {
+					sortear(level, arraial, moradores);
+				}
 			}
 			return;
 		}

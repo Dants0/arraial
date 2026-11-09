@@ -20,7 +20,7 @@ Funde um arraial com o **Cruzeiro**, contrate um pedreiro e veja o povoado cresc
 - **Calendário e festas:** São João com fogueira e quadrilha, padroeiro, Feira Grande e tradições de cada vila.
 - **Crises:** seca, enchente, praga, salteadores, epidemia e incêndio.
 - **Política:** conselho por grupos, propostas, votação, impostos, corrupção, protestos e coronelismo hereditário.
-- **Mundo vivo:** vilas vizinhas nascem e crescem sozinhas, migram, comerciam, entram em guerra e viram ruínas ocupadas por bandidos.
+- **Mundo vivo:** caravanas de colonos chegam e fundam povoados na sua frente; as vilas vizinhas crescem sozinhas, migram, comerciam, entram em guerra e viram ruínas ocupadas por bandidos.
 - **Território e diplomacia:** fronteiras por chunk, Marco de Fronteira, disputas, guerra e paz com tributo. Na **Chancelaria** (Escrivaninha) você propõe tratados, exige tributo e declara embargo. Tem também o **Mapa da Região**.
 - **Cultura e vida pessoal:** bandeiras e costumes por vila, personalidade, amizades, rivalidades, favores, casamentos, filhos e herança.
 - **Eras:** Colonial (taipa), Imperial (tijolo e telha), Republicana (cal e azulejo), com reforma das casas e das ruas, Capela e Chafariz.
@@ -30,7 +30,13 @@ Funde um arraial com o **Cruzeiro**, contrate um pedreiro e veja o povoado cresc
 - **Compatível com armaduras de outros mods:** os soldados vestem a melhor armadura e arma que houver no Armazém, de qualquer mod.
 - **Itens:** facão, peixeira, foice, couro de vaqueiro, cantil, comidas típicas (farinha, beiju, paçoca, rapadura, pé-de-moleque, quentão) e blocos coloniais.
 - **Guia do Arraial:** manual de 54 páginas dentro do jogo, com sumário clicável.
-- Compatível com o **JEI** (opcional): receitas e páginas de informação.
+- **Integrações (todas opcionais):**
+  - **JEI** e **REI**: receitas e páginas de informação.
+  - **Jade**: ofício, vila, família e humor dos moradores; estágio, satisfação e prefeito no Cruzeiro.
+  - **Xaero's Minimap**: as vilas que você conhece viram waypoints na cor da bandeira.
+  - **Mod Menu**: tela de configuração. Sem ele, edite `config/arraial.json`.
+  - **Farmer's Delight Refabricated**: baião de dois, moqueca e vaca atolada na panela; a peixeira serve de faca.
+  - **Terralith**: todos os biomas reconhecidos no mapa e na cultura das vilas.
 
 ### Devblog
 A criação do Arraial (sistemas, testes, bastidores) está sendo documentada no devblog: **[dantas-dev.com/pt/blog](https://dantas-dev.com/pt/blog)**.
@@ -43,7 +49,7 @@ A criação do Arraial (sistemas, testes, bastidores) está sendo documentada no
 
 ### Instalação
 - Fabric Loader 0.20.1 ou mais novo, **Fabric API** e Java 25.
-- Opcional: JEI.
+- Opcionais: JEI ou REI, Jade, Xaero's Minimap, Mod Menu, Farmer's Delight Refabricated, Terralith.
 - Coloque o `.jar` na pasta `mods`. O mod precisa estar no servidor e no cliente.
 
 ## Imagens
@@ -67,7 +73,7 @@ Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement 
 - **Calendar and festas:** Saint John, the patron saint, the Great Fair and each village's traditions.
 - **Crises:** drought, flood, pests, highwaymen, epidemics and fire.
 - **Politics:** a council of interest groups, proposals, votes, taxes, corruption, protests and hereditary coronéis.
-- **A living world:** neighbouring villages grow, migrate, trade, go to war and fall to ruin, where bandits move in.
+- **A living world:** caravans of settlers arrive and found hamlets before your eyes; neighbouring villages grow, migrate, trade, go to war and fall to ruin, where bandits move in.
 - **Territory and diplomacy:** chunk borders, disputes, war and peace with tribute. At the **Chancery** you propose treaties, demand tribute and declare embargoes. There is also a **Regional Map**.
 - **Culture and personal life:** flags and customs, personalities, friendships, favours, weddings, children and inheritance.
 - **Eras:** Colonial, Imperial and Republican, with houses and streets reformed in each style.
@@ -77,14 +83,20 @@ Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement 
 - **Armour from other mods:** soldiers wear the best armour and weapon in the storehouse, from any mod.
 - **Items:** machete, peixeira, sickle, vaqueiro leather, flask, Brazilian foods and colonial blocks.
 - **In-game guide:** a 54-page manual with clickable contents.
-- Optional **JEI** support.
+- **Integrations (all optional):**
+  - **JEI** and **REI**: recipes and information pages.
+  - **Jade**: trade, village, family and mood of villagers; stage, satisfaction and mayor on the Cruzeiro.
+  - **Xaero's Minimap**: the villages you know become waypoints in their flag colour.
+  - **Mod Menu**: a settings screen. Without it, edit `config/arraial.json`.
+  - **Farmer's Delight Refabricated**: baião de dois, moqueca and vaca atolada in the cooking pot; the peixeira works as a knife.
+  - **Terralith**: every biome recognised by the map and village cultures.
 
 ### Devblog
 The making of Arraial (systems, tests, behind the scenes) is documented on the devblog (in Portuguese and English): **[dantas-dev.com/pt/blog](https://dantas-dev.com/pt/blog)**, **[dantas-dev.com/en/blog](https://dantas-dev.com/en/blog)**
 
 ### Install
 - Fabric Loader 0.20.1+, **Fabric API** and Java 25.
-- Optional: JEI.
+- Optional: JEI or REI, Jade, Xaero's Minimap, Mod Menu, Farmer's Delight Refabricated, Terralith.
 - Required on both server and client.
 
 ## Licença / License

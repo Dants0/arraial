@@ -209,6 +209,14 @@ public final class ComandoArraial {
 						VilaNova.fundar(level, level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, onde), p, false);
 						return 1;
 					})))
+					// A caravan of settlers walks in and founds a povoado 30 blocks ahead (for testing and videos).
+					.then(Commands.literal("colonos").executes(c -> {
+						var p = c.getSource().getPlayerOrException();
+						ServerLevel level = c.getSource().getLevel();
+						BlockPos centro = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+								p.blockPosition().relative(p.getDirection(), 30));
+						return Colonos.partir(level, p, centro, VilaNova.sorteiaMissao(level)) ? 1 : 0;
+					}))
 					// The tropeiro sets out now, or comes back now if he is away.
 					.then(Commands.literal("tropa").executes(c -> {
 						ArraialBlockEntity a = arraial(c.getSource());
