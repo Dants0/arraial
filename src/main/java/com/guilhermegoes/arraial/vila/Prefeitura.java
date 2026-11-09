@@ -167,6 +167,23 @@ public final class Prefeitura {
 	private static void despachar(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, List<MoradorEntity> moradores) {
 		BlockPos vila = arraial.getBlockPos();
 		List<CanteiroBlockEntity> ativas = CanteiroBlockEntity.daVila(level, vila);
+		// A site already going up that needs something nobody can get (the caravan's mud bricks ran
+		// out, no barreiro to dig earth for more) would wait forever: improvise the missing trade.
+		Set<Profissao> presentes = Demanda.oficios(level, vila);
+		for (CanteiroBlockEntity c : ativas) {
+			if (c.concluida()) {
+				continue;
+			}
+			Optional<net.minecraft.world.item.Item> sem = Demanda.inviavel(level, vila, Demanda.restante(level, c), presentes);
+			if (sem.isEmpty()) {
+				continue;
+			}
+			Profissao quem = Demanda.faltante(level, vila, sem.get(), 1, presentes);
+			if (quem != null && IMPROVISAVEIS.contains(quem) && postosDe(level, vila, quem) == 0) {
+				improvisarPosto(level, arraial, prefeito, quem, moradores);
+				presentes.add(quem);
+			}
+		}
 		if (ativas.size() >= MAX_OBRAS) {
 			contratarPedreiro(level, arraial, prefeito, moradores);
 			arraial.pedido = Component.empty();
@@ -191,7 +208,8 @@ public final class Prefeitura {
 		if (postos(level, vila, ModPois.CEPO) == 0) {
 			desejos.add("serraria");
 		}
-		if (comida < n * 2 && postos(level, vila, ModPois.BALAIO) < 1 + n / 5) {
+		// Food for less than four days: another roça (one per four people) before hunger comes.
+		if (comida < n * 4 && postos(level, vila, ModPois.BALAIO) < 1 + n / 4) {
 			desejos.add("roca");
 		}
 		if (n >= 5 && postos(level, vila, ModPois.POSTO_GUARDA) == 0) {
@@ -250,7 +268,7 @@ public final class Prefeitura {
 		// The church: a Spanish mission builds its own from the start; a Portuguese arraial its Capela
 		// (Imperial) and later the Baroque Matriz, with a carver for the gilded talha.
 		if (arraial.hispano()) {
-			if (n >= 3 && obras(level, vila, "missao") == 0) {
+			if (n >= 6 && semCasa == 0 && obras(level, vila, "missao") == 0) {
 				desejos.add("missao");
 			}
 		} else {
@@ -279,7 +297,7 @@ public final class Prefeitura {
 		if (semCasa > 0) {
 			urgentes.add("casa");
 		}
-		if (comida < n) {
+		if (comida < n * 2) {
 			urgentes.add("roca");
 		}
 		// Crises: a poço against the drought, a guarita against bandits, a curral (chickens) against the plague.
@@ -371,7 +389,10 @@ public final class Prefeitura {
 					primeiroPedido = Component.translatable("arraial.vila.pedido", bloqueado.nome(), falta.getDefaultInstance().getHoverName());
 				}
 				// Nobody can make it: first build the workshop of the trade that would.
-				Profissao quem = Demanda.quemFaz(falta);
+				Profissao quem = Demanda.faltante(level, vila, falta, 1, oficios);
+				if (quem == null) {
+					quem = Demanda.quemFaz(falta);
+				}
 				String oficina = quem == null ? null : OFICINA.get(quem);
 				if (oficina != null && !tentados.contains(oficina) && postosDe(level, vila, quem) == 0) {
 					desejos.add(i + 1, oficina);
@@ -382,7 +403,7 @@ public final class Prefeitura {
 				// And if not even the workshop can be built (it needs the same thing), improvise the
 				// workstation: a stump for a cepo, a tub for the clay... so the village never stays stuck.
 				if (quem != null && IMPROVISAVEIS.contains(quem) && postosDe(level, vila, quem) == 0) {
-					improvisarPosto(level, arraial, prefeito, quem);
+					improvisarPosto(level, arraial, prefeito, quem, moradores);
 				}
 			}
 		}
@@ -394,7 +415,8 @@ public final class Prefeitura {
 			Profissao.OLEIRO, Profissao.BARREIRO, Profissao.CAVOUQUEIRO, Profissao.PASTOR);
 
 	/** Puts down the trade's workstation, free, a little away from the centre and facing outwards. */
-	private static void improvisarPosto(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, Profissao quem) {
+	private static void improvisarPosto(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, Profissao quem,
+			List<MoradorEntity> moradores) {
 		net.minecraft.world.level.block.Block bloco = quem.posto();
 		if (bloco == null) {
 			return;
@@ -414,6 +436,27 @@ public final class Prefeitura {
 		Component texto = Component.translatable("arraial.cronica.improviso", prefeito.nome(), bloco.getName(), quem.titulo(false));
 		Cronica.anotar(level, vila, texto);
 		avisar(level, arraial, texto.copy().withStyle(ChatFormatting.AQUA));
+		liberarAlguem(level, arraial, prefeito, moradores);
+	}
+
+	/**
+	 * Nobody without a trade to take a new workstation? Then someone from a trade with two or more
+	 * hands (never the last of one) is sent to find work again: the free workstation will be theirs.
+	 */
+	private static void liberarAlguem(ServerLevel level, ArraialBlockEntity arraial, MoradorEntity prefeito, List<MoradorEntity> moradores) {
+		if (moradores.stream().anyMatch(m -> m.profissao() == Profissao.NENHUMA && !m.crianca() && m.gabinete() == null)) {
+			return;
+		}
+		Map<Profissao, Long> conta = new java.util.EnumMap<>(Profissao.class);
+		moradores.forEach(m -> conta.merge(m.profissao(), 1L, Long::sum));
+		moradores.stream()
+				.filter(m -> m != prefeito && m.profissao() != Profissao.NENHUMA && conta.getOrDefault(m.profissao(), 0L) >= 2 && m.obra() == null)
+				.max(Comparator.comparingLong(m -> conta.get(m.profissao())))
+				.ifPresent(m -> {
+					Component antigo = m.titulo();
+					m.setProfissao(Profissao.NENHUMA);
+					Cronica.anotar(level, arraial.getBlockPos(), Component.translatable("arraial.cronica.remanejou", prefeito.nome(), m.nome(), antigo));
+				});
 	}
 
 	/** Makes sure some pedreiro will take the job: an unemployed morador is hired if needed. */

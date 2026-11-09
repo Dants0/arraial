@@ -46,7 +46,9 @@ public final class VilaNova {
 	private static final List<String> COMECO_MISSAO = List.of("missao", "casebre", "rancho", "roca", "poco");
 	/** What a caravan builds first, by itself: a roof, food and water; the prefeito orders the rest. */
 	private static final List<String> AO_VIVO = List.of("casebre", "roca", "poco");
-	private static final List<String> AO_VIVO_MISSAO = List.of("casebre", "roca", "poco", "missao");
+	// The mission church is too big for the mules (it filled the armazém and left the houses short):
+	// the prefeito orders it once everyone has a roof (see Prefeitura).
+	private static final List<String> AO_VIVO_MISSAO = List.of("casebre", "roca", "poco");
 	/** Share of autonomous villages that are Spanish missions. */
 	static final float CHANCE_MISSAO = 0.3F;
 

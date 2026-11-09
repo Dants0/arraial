@@ -34,7 +34,8 @@ public class CanteiroBlockEntity extends BlockEntity {
 	private @Nullable PlanoDeObra plano;
 	/** Muralha only: the size and wood fixed when the wall was first drawn. */
 	private int muroRaio = 0;
-	private int muroMadeira = 0;
+	/** The wood of this site (index in Receitas.MADEIRAS), chosen once: -1 until the plan is first made. */
+	private int muroMadeira = -1;
 
 	public CanteiroBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.CANTEIRO, pos, state);
@@ -152,7 +153,11 @@ public class CanteiroBlockEntity extends BlockEntity {
 			}
 			Muralha.planejar(level, worldPosition, muroRaio, muroMadeira).ifPresent(p -> plano = p);
 		} else if (plano == null) {
-			projeto().flatMap(p -> PlanoDeObra.criar(level, p, worldPosition, frente())).ifPresent(p -> plano = p);
+			if (muroMadeira < 0) {
+				muroMadeira = Math.max(0, PlanoDeObra.madeiraDaVila(level, worldPosition));
+				setChanged();
+			}
+			projeto().flatMap(p -> PlanoDeObra.criar(level, p, worldPosition, frente(), muroMadeira)).ifPresent(p -> plano = p);
 		}
 		return Optional.ofNullable(plano);
 	}

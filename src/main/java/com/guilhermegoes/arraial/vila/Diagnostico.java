@@ -17,24 +17,24 @@ import net.minecraft.server.level.ServerLevel;
  */
 public final class Diagnostico {
 	public static final String CABECALHO = "dia;vila;autonoma;hispano;estagio;era;moradores;criancas;camas;sem_casa;com_fome;doentes;comida;"
-			+ "satisfacao;legitimidade;tesouro;crise;obras_prontas;obras_andando;obras;oficios;pedido";
+			+ "satisfacao;legitimidade;tesouro;crise;obras_prontas;obras_andando;obras;oficios;estoque;pedido";
 
 	public record Retrato(String nome, boolean autonoma, boolean hispano, String estagio, String era, int moradores, int criancas, long camas,
 			int semCasa, int comFome, int doentes, int comida, int satisfacao, int legitimidade, int tesouro, String crise, int prontas,
-			int andando, String obras, String oficios, String pedido) {
+			int andando, String obras, String oficios, String estoque, String pedido) {
 
 		public String csv(long dia) {
 			return String.join(";", String.valueOf(dia), nome, String.valueOf(autonoma), String.valueOf(hispano), estagio, era,
 					String.valueOf(moradores), String.valueOf(criancas), String.valueOf(camas), String.valueOf(semCasa), String.valueOf(comFome),
 					String.valueOf(doentes), String.valueOf(comida), String.valueOf(satisfacao), String.valueOf(legitimidade), String.valueOf(tesouro),
-					crise, String.valueOf(prontas), String.valueOf(andando), obras, oficios, pedido.replace(';', ','));
+					crise, String.valueOf(prontas), String.valueOf(andando), obras, oficios, estoque, pedido.replace(';', ','));
 		}
 
 		public String resumo() {
 			return nome + " | " + estagio + "/" + era + " | gente " + moradores + " (" + criancas + " crianças), camas " + camas + ", sem casa "
 					+ semCasa + ", fome " + comFome + ", doentes " + doentes + " | comida " + comida + " | satisfação " + satisfacao
 					+ ", legitimidade " + legitimidade + ", tesouro " + tesouro + " | crise " + crise + " | obras " + prontas + " prontas, "
-					+ andando + " em andamento " + obras + " | ofícios " + oficios + " | pedido: " + pedido;
+					+ andando + " em andamento " + obras + " | ofícios " + oficios + " | estoque " + estoque + " | pedido: " + pedido;
 		}
 	}
 
@@ -71,13 +71,30 @@ public final class Diagnostico {
 				prontas++;
 			} else {
 				andando++;
-				obras.append('[').append(id).append(' ').append(c.progresso()).append(']');
+				obras.append('[').append(id).append(' ').append(c.progresso());
+				var falta = com.guilhermegoes.arraial.trabalho.Demanda.restante(level, c);
+				if (!falta.isEmpty()) {
+					obras.append(" falta");
+					falta.entrySet().stream().limit(4).forEach(e -> obras.append(' ').append(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(e.getKey()).getPath()).append('x').append(e.getValue()));
+				}
+				obras.append(']');
 			}
 		}
+		// The armazém's biggest piles, so a stuck site can be told apart from an empty storehouse.
+		var inv = Vilas.inventario(Vilas.armazens(level, a.getBlockPos()));
+		StringBuilder estoque = new StringBuilder();
+		inv.entrySet().stream().sorted((x, y) -> y.getValue() - x.getValue()).limit(6)
+				.forEach(e -> estoque.append(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(e.getKey()).getPath()).append('x').append(e.getValue()).append(' '));
+		// What each morador is doing right now (who is idle, who is stuck).
+		StringBuilder gente = new StringBuilder();
+		for (MoradorEntity m : ms) {
+			gente.append(m.nome()).append('/').append(m.profissao().id()).append(m.comFome() ? "/FOME" : "").append(':').append(m.status().getString()).append(" | ");
+		}
+		com.guilhermegoes.arraial.Arraial.LOGGER.info("[diagnostico] {}: {}", a.nomeCompleto(), gente);
 		Crise.Tipo crise = a.crise.tipo();
 		return new Retrato(a.nomeCompleto(), a.autonoma, a.hispano(), a.estagio.name().toLowerCase(java.util.Locale.ROOT), a.era.id(), ms.size(),
 				criancas, a.camas(level), semCasa, fome, doentes, comida, a.satisfacao, a.legitimidade, a.tesouro,
-				crise == null ? "-" : crise.name().toLowerCase(java.util.Locale.ROOT), prontas, andando, obras.toString(), oficios.toString(),
+				crise == null ? "-" : crise.name().toLowerCase(java.util.Locale.ROOT), prontas, andando, obras.toString(), oficios.toString(), estoque.toString().trim(),
 				a.pedido.getString());
 	}
 

@@ -178,7 +178,8 @@ public final class Demanda {
 	public static int reservadoAntes(ServerLevel level, BlockPos vila, CanteiroBlockEntity site, Item item) {
 		int total = 0;
 		for (CanteiroBlockEntity c : CanteiroBlockEntity.daVila(level, vila)) {
-			if (c == site || CanteiroBlockEntity.ORDEM.compare(c, site) >= 0) {
+			if (c == site || CanteiroBlockEntity.ORDEM.compare(c, site) >= 0
+					|| inviavel(level, vila, restante(level, c), oficios(level, vila)).isPresent()) {
 				break;
 			}
 			total += restante(level, c).getOrDefault(item, 0);
@@ -302,6 +303,45 @@ public final class Demanda {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * The trade the arraial lacks to get {@code item}, following the chain down: mud bricks need
+	 * the oleiro, who needs earth, which the barreiro digs; with an oleiro already there, the answer
+	 * is the barreiro. Null when nothing is missing (or no trade at all can make it).
+	 */
+	public static @Nullable Profissao faltante(ServerLevel level, BlockPos vila, Item item, int quantidade, Set<Profissao> oficios) {
+		return faltante(Vilas.inventario(Vilas.armazens(level, vila)), item, quantidade, oficios, 0);
+	}
+
+	private static @Nullable Profissao faltante(Map<Item, Integer> inv, Item item, int quantidade, Set<Profissao> oficios, int nivel) {
+		if (obtivel(inv, item, quantidade, oficios, nivel)) {
+			return null;
+		}
+		Profissao fonte = item.getDefaultInstance().is(ItemTags.LOGS) ? Profissao.LENHADOR : FONTES.get(item);
+		if (fonte != null) {
+			return fonte;
+		}
+		Profissao primeiro = null;
+		for (Receitas.Receita r : Receitas.todasPara(item)) {
+			if (!oficios.contains(r.quem())) {
+				if (primeiro == null) {
+					primeiro = r.quem();
+				}
+				continue;
+			}
+			if (nivel >= 4) {
+				continue;
+			}
+			int lotes = (quantidade + r.quantidade() - 1) / r.quantidade();
+			for (Map.Entry<Item, Integer> ing : r.entrada().entrySet()) {
+				Profissao f = faltante(inv, ing.getKey(), ing.getValue() * lotes, oficios, nivel + 1);
+				if (f != null) {
+					return f;
+				}
+			}
+		}
+		return primeiro;
 	}
 
 	/** The trade that gathers or makes {@code item}, or null. */

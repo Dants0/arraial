@@ -67,6 +67,15 @@ public final class PlanoDeObra {
 	}
 
 	public static Optional<PlanoDeObra> criar(ServerLevel level, Catalogo.Projeto projeto, BlockPos marco, Direction frente) {
+		return criar(level, projeto, marco, frente, 0);
+	}
+
+	/**
+	 * As above, with the arraial's wood ({@code madeira}: index in Receitas.MADEIRAS): the oak logs,
+	 * planks, doors, fences, slabs and stairs of the drawing are built in that wood, so a savanna
+	 * village raises acacia houses with the acacia its lenhador cuts.
+	 */
+	public static Optional<PlanoDeObra> criar(ServerLevel level, Catalogo.Projeto projeto, BlockPos marco, Direction frente, int madeira) {
 		if (Muralha.e(projeto)) {
 			return Muralha.planejar(level, marco, 0, madeiraDaVila(level, marco));
 		}
@@ -99,7 +108,7 @@ public final class PlanoDeObra {
 			if (indice < 0 || indice >= paleta.size()) {
 				continue;
 			}
-			BlockState state = paleta.get(indice);
+			BlockState state = trocarMadeira(paleta.get(indice), madeira);
 			if (state.is(net.minecraft.world.level.block.Blocks.STRUCTURE_VOID)) {
 				continue;
 			}
@@ -142,7 +151,9 @@ public final class PlanoDeObra {
 	 * stone, so the arraial never needs a lenhador to build the lenhador's own shed.
 	 */
 	private static final Map<net.minecraft.world.level.block.Block, Custo> CUSTOS_ESPECIAIS = Map.ofEntries(
-			Map.entry(net.minecraft.world.level.block.Blocks.FARMLAND, new Custo(Items.DIRT, 1)),
+			// Earth is dug on the site itself: soil, paths and tilled ground cost nothing from the armazém.
+			Map.entry(net.minecraft.world.level.block.Blocks.DIRT, new Custo(Items.DIRT, 0)),
+			Map.entry(net.minecraft.world.level.block.Blocks.FARMLAND, new Custo(Items.DIRT, 0)),
 			// The era buildings: the capela's bell, glass and altar, the fountain's dressed stone.
 			Map.entry(net.minecraft.world.level.block.Blocks.BELL, new Custo(Items.IRON_INGOT, 4)),
 			Map.entry(net.minecraft.world.level.block.Blocks.GLASS_PANE, new Custo(Items.SAND, 1)),
@@ -150,7 +161,7 @@ public final class PlanoDeObra {
 			Map.entry(net.minecraft.world.level.block.Blocks.STONE_BRICKS, new Custo(Items.COBBLESTONE, 1)),
 			Map.entry(net.minecraft.world.level.block.Blocks.STONE_BRICK_WALL, new Custo(Items.COBBLESTONE, 1)),
 			Map.entry(net.minecraft.world.level.block.Blocks.CANDLE, new Custo(Items.HONEYCOMB, 0)),
-			Map.entry(net.minecraft.world.level.block.Blocks.DIRT_PATH, new Custo(Items.DIRT, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.DIRT_PATH, new Custo(Items.DIRT, 0)),
 			// The fazendas and the new era buildings: cane and coffee seedlings come with the plan; lime from clay,
 			// tiles from bricks, soapstone from the quarry, adobe from mud bricks, pews and altars from any planks.
 			Map.entry(net.minecraft.world.level.block.Blocks.SUGAR_CANE, new Custo(Items.SUGAR_CANE, 0)),
@@ -167,7 +178,7 @@ public final class PlanoDeObra {
 			Map.entry(net.minecraft.world.level.block.Blocks.SPRUCE_PLANKS, new Custo(Items.OAK_PLANKS, 1)),
 			Map.entry(net.minecraft.world.level.block.Blocks.BARREL, new Custo(Items.OAK_PLANKS, 4)),
 			Map.entry(net.minecraft.world.level.block.Blocks.DARK_OAK_DOOR, new Custo(Items.OAK_DOOR, 1)),
-			Map.entry(net.minecraft.world.level.block.Blocks.GRASS_BLOCK, new Custo(Items.DIRT, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.GRASS_BLOCK, new Custo(Items.DIRT, 0)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.CEPO, new Custo(Items.OAK_LOG, 2)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BALAIO, new Custo(Items.OAK_PLANKS, 4)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.POSTO_GUARDA, new Custo(Items.OAK_PLANKS, 4)),
@@ -185,6 +196,23 @@ public final class PlanoDeObra {
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.VARAL_CACA, new Custo(Items.STICK, 5)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.PRANCHETA, new Custo(Items.OAK_PLANKS, 4)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.ESCRIVANINHA, new Custo(Items.OAK_PLANKS, 5)));
+
+	private static BlockState trocarMadeira(BlockState state, int madeira) {
+		var lista = com.guilhermegoes.arraial.trabalho.Receitas.MADEIRAS;
+		if (madeira <= 0 || madeira >= lista.size()) {
+			return state;
+		}
+		var carvalho = lista.get(0);
+		var nova = lista.get(madeira);
+		Item[][] pares = {{carvalho.tora(), nova.tora()}, {carvalho.tabua(), nova.tabua()}, {carvalho.porta(), nova.porta()},
+				{carvalho.cerca(), nova.cerca()}, {carvalho.laje(), nova.laje()}, {carvalho.escada(), nova.escada()}, {carvalho.portao(), nova.portao()}};
+		for (Item[] par : pares) {
+			if (state.is(net.minecraft.world.level.block.Block.byItem(par[0]))) {
+				return net.minecraft.world.level.block.Block.byItem(par[1]).withPropertiesOf(state);
+			}
+		}
+		return state;
+	}
 
 	/** Index in {@link com.guilhermegoes.arraial.trabalho.Receitas#MADEIRAS} of the wood the arraial near {@code pos} uses most. */
 	static int madeiraDaVila(ServerLevel level, BlockPos pos) {

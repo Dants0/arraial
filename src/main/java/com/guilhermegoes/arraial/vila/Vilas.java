@@ -66,6 +66,20 @@ public final class Vilas {
 		return melhor;
 	}
 
+	/**
+	 * True inside an arraial's territory, near its level (20 blocks up or down): no monster spawns
+	 * naturally there (see MobSpawnMixin). Cheap: no block entity lookups, it runs on every spawn try.
+	 */
+	public static boolean protegido(ServerLevel level, BlockPos pos) {
+		for (BlockPos centro : ativas(level)) {
+			double dx = centro.getX() - pos.getX(), dz = centro.getZ() - pos.getZ();
+			if (Math.abs(centro.getY() - pos.getY()) <= 20 && dx * dx + dz * dz <= (double) RAIO * RAIO) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** True when another arraial's Cruzeiro is too close to {@code pos}. */
 	public static boolean temVizinha(ServerLevel level, BlockPos pos) {
 		for (BlockPos centro : ativas(level)) {

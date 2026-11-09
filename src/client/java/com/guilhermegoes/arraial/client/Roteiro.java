@@ -153,6 +153,26 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=icones: every item drawn as in the inventory, for the wiki (tools/gerar_wiki.js).
+		if ("icones".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			TelaIcones tela = new TelaIcones();
+			passo(20, () -> {
+				mc().gui.setScreen(tela);
+			});
+			passo(40, () -> {
+				try {
+					java.nio.file.Files.writeString(mc().gameDirectory.toPath().resolve("icones.json"), tela.manifesto(mc().getWindow().getGuiScale()));
+				} catch (java.io.IOException e) {
+					log("icones: " + e);
+				}
+				foto("icones");
+			});
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=fauna: the Brazilian fauna, posed and then let loose.
 		if ("fauna".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			fauna();

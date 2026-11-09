@@ -54,6 +54,8 @@ public final class Receitas {
 				add(Profissao.PASTOR, Items.BED.red(), 1, Map.of(la, 3, m.tabua(), 3));
 			}
 			add(Profissao.PASTOR, Items.BED.white(), 1, Map.of(Items.WOOL.white(), 3, m.tabua(), 3));
+			// No pastor yet? A straw mattress: the roceiro stuffs it with wheat straw (a new village's first beds).
+			add(Profissao.ROCEIRO, Items.BED.red(), 1, Map.of(Items.WHEAT, 3, m.tabua(), 3));
 		}
 		add(Profissao.LENHADOR, Items.TORCH, 4, Map.of(Items.STICK, 1, Items.CHARCOAL, 1));
 

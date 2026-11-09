@@ -35,6 +35,9 @@
 			"com.guilhermegoes.arraial.client.ArraialRei"
 		]
 	},
+	"mixins": [
+		"arraial.mixins.json"
+	],
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~26.3",
