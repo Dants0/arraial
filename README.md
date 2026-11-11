@@ -13,7 +13,7 @@ Fabric · Minecraft 26.3 · <a href="https://arraial.dantas-dev.com">Wiki</a> ·
 Funde um arraial com o **Cruzeiro**, contrate um pedreiro e veja o povoado crescer sozinho: os moradores constroem casas, plantam, criam, comerciam, fazem festa, votam, brigam por terra e atravessam três eras de arquitetura, do Povoado de taipa até a Cidade caiada.
 
 ### O que tem
-- **19 ofícios** com posto de trabalho próprio: pedreiro, lenhador, roceiro, oleiro, barreiro, cavouqueiro, pastor (vaqueiro), pescador, caçador, farinheiro, feirante, tropeiro, boticário, soldado, engenheiro, relações públicas, mestre de engenho, cafeicultor e entalhador.
+- **23 ofícios** com posto de trabalho próprio: pedreiro, lenhador, roceiro, oleiro, barreiro, cavouqueiro, pastor (vaqueiro), pescador, caçador, farinheiro, feirante, tropeiro, boticário, soldado, engenheiro, relações públicas, mestre de engenho, cafeicultor, entalhador, barqueiro, estivador, moleiro e ferroviário.
 - **Obras** escolhidas no Livro de Projetos e erguidas bloco a bloco com o material do Armazém. O prefeito pede obras sozinho.
 - **Estágios:** Povoado → Arraial → Vila → Vila próspera → Cidade.
 - **Economia:** réis, banca de feira com preço por oferta e procura, mascates, encomendas, tropeiros entre vilas, estradas batidas e contratos.
@@ -24,6 +24,7 @@ Funde um arraial com o **Cruzeiro**, contrate um pedreiro e veja o povoado cresc
 - **Território e diplomacia:** fronteiras por chunk, Marco de Fronteira, disputas, guerra e paz com tributo. Na **Chancelaria** (Escrivaninha) você propõe tratados, exige tributo e declara embargo. Tem também o **Mapa da Região**.
 - **Cultura e vida pessoal:** bandeiras e costumes por vila, personalidade, amizades, rivalidades, favores, casamentos, filhos e herança.
 - **Eras:** Colonial (taipa), Imperial (tijolo e telha), Republicana (cal e azulejo), com reforma das casas e das ruas, Capela e Chafariz.
+- **Rios, portos e caminhos:** trapiche e canoa entre vilas ribeirinhas; porto no litoral com navio mercante (sal, ferro e chita); moinho d'água e monjolo; pontes de verdade e estradas para as vilas vizinhas; e, na era Republicana, a estação com o trem.
 - **Fazendas:** engenho de cana (açúcar e rapadura), cafezal (café torrado e cafezinho), queijo coalho e charque do curral.
 - **Barroco:** pedra-sabão, talha dourada, entalhador e a Igreja Matriz; vilas mineradoras ganham casas brancas sobre pedra-sabão.
 - **Missões espanholas:** parte das vilas vizinhas são missões, com nomes, bandeira, adobe e igreja com espadanha próprios, e uma fronteira mais tensa.
@@ -67,7 +68,7 @@ A criação do Arraial (sistemas, testes, bastidores) está sendo documentada no
 Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement grow on its own. Its villagers build houses, farm, herd, trade, hold festas, vote, quarrel over land, and pass through three eras of architecture, from a mud-hut Povoado to a whitewashed Cidade.
 
 ### Features
-- **19 trades**, each with its own workstation.
+- **23 trades**, each with its own workstation.
 - **Construction projects** built block by block from the storehouse. The mayor orders works on their own.
 - **Stages:** Povoado → Arraial → Vila → Prosperous Vila → Cidade.
 - **Economy:** réis, a market stall with supply-and-demand prices, peddlers, orders, muleteers between villages, beaten roads and contracts.
@@ -78,6 +79,7 @@ Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement 
 - **Territory and diplomacy:** chunk borders, disputes, war and peace with tribute. At the **Chancery** you propose treaties, demand tribute and declare embargoes. There is also a **Regional Map**.
 - **Culture and personal life:** flags and customs, personalities, friendships, favours, weddings, children and inheritance.
 - **Eras:** Colonial, Imperial and Republican, with houses and streets reformed in each style.
+- **Rivers, ports and roads:** wharves and canoes between riverside villages; a coastal port with a merchant ship (salt, iron and chita cloth); water mills and the monjolo; real bridges and roads to neighbouring villages; and, in the Republican era, the railway station and its train.
 - **Fazendas:** sugar mills (sugar, rapadura), coffee plantations (roasted coffee, cafezinho), queijo coalho and charque.
 - **Baroque:** soapstone, gilded carving, the carver and the Mother Church; mining towns get white houses on soapstone.
 - **Spanish missions:** some neighbours are missions, with their own names, flag, adobe and bell-gable church, and a tenser frontier.
