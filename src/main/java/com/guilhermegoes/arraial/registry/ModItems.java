@@ -75,6 +75,10 @@ public final class ModItems {
 	/** Charque: salted, sun-dried beef; keeps on long journeys. */
 	public static final Item CHARQUE = register("charque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(6).saturationModifier(0.8F).build()));
+	/** Sal grosso: coarse salt brought by the ships; cures meat into charque. */
+	public static final Item SAL = register("sal", Item::new, new Item.Properties());
+	/** Chita: printed cotton from overseas, the cloth of the festa junina. */
+	public static final Item CHITA = register("chita", Item::new, new Item.Properties());
 	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
 	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));

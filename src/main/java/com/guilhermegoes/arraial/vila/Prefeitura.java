@@ -61,7 +61,8 @@ public final class Prefeitura {
 			Map.entry(Profissao.MESTRE_ENGENHO, "engenho"),
 			Map.entry(Profissao.CAFEICULTOR, "cafezal"),
 			Map.entry(Profissao.ENTALHADOR, "oficina_entalhe"),
-			Map.entry(Profissao.BARQUEIRO, "trapiche"));
+			Map.entry(Profissao.BARQUEIRO, "trapiche"),
+			Map.entry(Profissao.ESTIVADOR, "porto"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -243,6 +244,10 @@ public final class Prefeitura {
 		// The river: a trapiche (and a barqueiro) once the arraial is established by the water.
 		if (n >= 7 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.AMARRA) == 0 && Vilas.temAgua(level, vila)) {
 			desejos.add("trapiche");
+		}
+		// The sea: a Vila on the coast (deep water nearby) raises a porto, and the ships start to call.
+		if (n >= 9 && estagio.pelo(Estagio.VILA) && obras(level, vila, "porto") == 0 && Vilas.litoral(level, vila)) {
+			desejos.add("porto");
 		}
 		if (n >= 7 && postos(level, vila, ModPois.VARAL_CACA) == 0) {
 			desejos.add("rancho_cacador");

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arraial:block/guindaste"
+    },
+    "facing=east": {
+      "model": "arraial:block/guindaste",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arraial:block/guindaste",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arraial:block/guindaste",
+      "y": 270
+    }
+  }
+}

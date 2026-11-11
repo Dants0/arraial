@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=porto: a village on a deep lagoon, its porto, a ship calling and sailing.
+		if ("porto".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			porto();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=rios: two villages on a river, a trapiche each, a canoe trip between them.
 		if ("rios".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			rios();
@@ -1149,6 +1158,141 @@ public final class Roteiro {
 			}
 		}));
 		passo(20, () -> foto("82_trapiche_pedreiro"));
+	}
+
+	/** A flat field with a deep lagoon (seven blocks of water) south of it, and a village. */
+	private static void campoComLagoa(int x0, int z0) {
+		campoPlano(x0, z0);
+		passo(20, () -> cmd("fill " + x0 + " 113 " + (z0 + 18) + " " + (x0 + 99) + " 119 " + (z0 + 49) + " minecraft:water",
+				"fill " + x0 + " 120 " + (z0 + 18) + " " + (x0 + 99) + " 120 " + (z0 + 49) + " minecraft:air",
+				"fill " + x0 + " 112 " + (z0 + 18) + " " + (x0 + 99) + " 112 " + (z0 + 49) + " minecraft:sand"));
+		passo(10, () -> cmd("tp @s " + (x0 + 50) + ".5 121 " + (z0 - 24) + ".5 0 0", "arraial vila_nova luso"));
+	}
+
+	private static String estivadores(net.minecraft.server.level.ServerLevel level, int x, int z) {
+		StringBuilder b = new StringBuilder();
+		for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(x - 70, 100, z - 70, x + 70, 160, z + 70),
+				e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.ESTIVADOR || e.profissao() == com.guilhermegoes.arraial.npc.Profissao.MASCATE)) {
+			b.append(m.profissao().name()).append(' ').append(m.nome()).append(" posto=").append(m.posto() == null ? "-" : m.posto().toShortString())
+					.append(" pos=").append(m.blockPosition().toShortString()).append(" carga=").append(m.cargaCopia())
+					.append(" status=").append(m.status().getString()).append(" objetivo=").append(m.goalAtual()).append("; ");
+		}
+		return b.length() == 0 ? "nenhum" : b.toString();
+	}
+
+	private static int foraDoLugar(net.minecraft.server.level.ServerLevel level, String area, int agua) {
+		String[] v = area.split(",");
+		if (v.length != 6) {
+			return -1;
+		}
+		int n = 0;
+		for (BlockPos p : BlockPos.betweenClosed(Integer.parseInt(v[0]), Integer.parseInt(v[1]), Integer.parseInt(v[2]),
+				Integer.parseInt(v[3]), Integer.parseInt(v[4]), Integer.parseInt(v[5]))) {
+			var st = level.getBlockState(p);
+			if (p.getY() <= agua ? !st.is(net.minecraft.world.level.block.Blocks.WATER) : !st.isAir()) {
+				n++;
+			}
+		}
+		return n;
+	}
+
+	private static final String[] AREA_NAVIO = {""};
+
+	/**
+	 * The port: a village on a deep lagoon gets a finished porto and an estivador, a full armazém and
+	 * a treasury; the ship comes in (blocks alongside the deck, the captain on the quay), the
+	 * estivador makes his trips, the player sells sugar to the captain, and the ship sails (the water
+	 * comes back).
+	 */
+	private static void porto() {
+		final int x = 350, z = 800;
+		campoComLagoa(300, 800);
+		passo(160, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta porto"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			var porto = com.guilhermegoes.arraial.vila.Navio.porto(level, v);
+			log("porto: vila " + v.toShortString() + " litoral=" + com.guilhermegoes.arraial.vila.Vilas.litoral(level, v)
+					+ " porto " + (porto == null ? "NAO construido" : porto.getBlockPos().toShortString() + " " + porto.frente()));
+			if (porto != null) {
+				BlockPos c = com.guilhermegoes.arraial.vila.Navio.cais(porto);
+				cmd("summon arraial:morador " + c.getX() + " " + (c.getY() + 1) + " " + c.getZ() + " {Profissao:0,Visual:3}");
+			}
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.SUGAR, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, com.guilhermegoes.arraial.registry.ModItems.RAPADURA, 48);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.LEATHER, 32);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, com.guilhermegoes.arraial.registry.ModItems.CAFE_TORRADO, 32);
+			cmd("execute positioned " + x + " 120 " + z + " run arraial tesouro 150");
+		}));
+		passo(200, () -> servidor((srv, sp) -> log("porto: " + estivadores(sp.level(), x, z))));
+		passo(10, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial navio"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				AREA_NAVIO[0] = com.guilhermegoes.arraial.vila.Navio.area(a);
+				log("porto: navio atracado=" + com.guilhermegoes.arraial.vila.Navio.atracado(a) + " area=" + AREA_NAVIO[0] + " agua="
+						+ com.guilhermegoes.arraial.vila.Navio.agua(a) + " tesouro=" + a.tesouro() + " | " + estivadores(level, x, z));
+			}
+		}));
+		passo(10, () -> verObra("porto", 26));
+		passo(40, () -> foto("83_porto_navio"));
+		// The estivador's trips.
+		passoAte(40, 2400, () -> {
+			var srv = mc().getSingleplayerServer();
+			if (srv == null) {
+				return false;
+			}
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(srv.overworld(), new BlockPos(x, 120, z));
+			return v != null && srv.overworld().getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a
+					&& com.guilhermegoes.arraial.vila.Navio.lotes(a) >= 2;
+		}, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+				log("porto: lotes=" + com.guilhermegoes.arraial.vila.Navio.lotes(a) + " vendeu=" + com.guilhermegoes.arraial.vila.Navio.vendeu(a)
+						+ " comprou=" + com.guilhermegoes.arraial.vila.Navio.comprou(a) + " tesouro=" + a.tesouro()
+						+ " | armazem acucar=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.SUGAR)
+						+ " sal=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.SAL)
+						+ " ferro=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.IRON_INGOT)
+						+ " chita=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.CHITA)
+						+ " | " + estivadores(level, x, z));
+			}
+			// The player sells sugar to the captain and buys salt from him.
+			for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(100),
+					e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.MASCATE
+							&& com.guilhermegoes.arraial.vila.Navio.ORIGEM.equals(e.mascateOrigem()))) {
+				var acucar = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SUGAR, 16);
+				int antes = sp.getInventory().countItem(com.guilhermegoes.arraial.registry.ModItems.REIS);
+				com.guilhermegoes.arraial.vila.Comercio.negociar(level, m, sp, acucar);
+				int depois = sp.getInventory().countItem(com.guilhermegoes.arraial.registry.ModItems.REIS);
+				var reis = new net.minecraft.world.item.ItemStack(com.guilhermegoes.arraial.registry.ModItems.REIS, 30);
+				com.guilhermegoes.arraial.vila.Comercio.negociar(level, m, sp, reis);
+				log("porto: jogador vendeu acucar (sobrou " + acucar.getCount() + ") por " + (depois - antes) + " reis; comprou do capitao, reis restantes na mao "
+						+ reis.getCount() + " sal no inventario=" + sp.getInventory().countItem(com.guilhermegoes.arraial.registry.ModItems.SAL));
+				break;
+			}
+		}));
+		passo(10, () -> verObra("porto", 18));
+		passo(40, () -> foto("84_porto_estivador"));
+		passo(10, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial navio"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				StringBuilder cr = new StringBuilder();
+				var entradas = a.cronica();
+				for (int i = Math.max(0, entradas.size() - 3); i < entradas.size(); i++) {
+					cr.append(entradas.get(i).texto().getString()).append(" / ");
+				}
+				log("porto: zarpou atracado=" + com.guilhermegoes.arraial.vila.Navio.atracado(a) + " blocos fora do lugar="
+						+ foraDoLugar(level, AREA_NAVIO[0], com.guilhermegoes.arraial.vila.Navio.agua(a)) + " | " + estivadores(level, x, z) + " | cronica: " + cr);
+			}
+		}));
+		passo(10, () -> verObra("porto", 26));
+		passo(40, () -> foto("85_porto_zarpou"));
 	}
 
 	/** Puts the camera on a diagonal above a finished building, looking at its middle. */

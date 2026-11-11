@@ -37,7 +37,8 @@ public enum Profissao {
 	/** The Baroque carver: gilded talha and soapstone for the Matriz. */
 	ENTALHADOR("entalhador"),
 	/** The river trader: takes the canoe from the trapiche to other arraiais with a trapiche. */
-	BARQUEIRO("barqueiro");
+	BARQUEIRO("barqueiro"),
+	ESTIVADOR("estivador");
 
 	private final String id;
 
@@ -76,6 +77,7 @@ public enum Profissao {
 			case CAFEICULTOR -> ModBlocks.TERREIRO;
 			case ENTALHADOR -> ModBlocks.BANCADA_ENTALHE;
 			case BARQUEIRO -> ModBlocks.AMARRA;
+			case ESTIVADOR -> ModBlocks.GUINDASTE;
 			default -> null;
 		};
 	}

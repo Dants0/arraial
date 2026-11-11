@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "arraial:chita",
+    "minecraft:string"
+  ],
+  "result": {
+    "count": 8,
+    "id": "arraial:bandeirinhas"
+  }
+}

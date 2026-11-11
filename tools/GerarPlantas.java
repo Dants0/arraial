@@ -450,7 +450,64 @@ public class GerarPlantas {
 				new String[] {"L...L", ".....", "L...L", "     ", "     ", "     ", "     ", "     ", "   l ", "     "},
 				new String[] {"sssss", "sssss", "sssss", "     ", "     ", "     ", "     ", "     ", "     ", "     "}));
 
+		// ---- Rios: the porto. A stone warehouse on the shore (z 0-4) and a long deck out to deep
+		// water (z 5-15) with the guindaste (estivador) near the end; the ship moors alongside.
+		Map<Character, String> porto = new HashMap<>();
+		porto.put('C', "minecraft:cobblestone");
+		porto.put('P', "minecraft:oak_planks");
+		porto.put('L', "minecraft:oak_log[axis=y]");
+		porto.put('F', "minecraft:oak_fence[east=false,north=false,south=false,waterlogged=false,west=false]");
+		porto.put('s', "minecraft:oak_slab[type=bottom,waterlogged=false]");
+		porto.put('b', "minecraft:barrel[facing=up,open=false]");
+		porto.put('G', "arraial:guindaste[facing=south]");
+		porto.put('l', "arraial:lampiao[hanging=false,waterlogged=false]");
+		String[] deque0 = new String[11], deque1 = new String[11], nada = new String[11];
+		for (int i = 0; i < 11; i++) {
+			deque0[i] = " PPPPPPP ";
+			deque1[i] = i >= 4 && i <= 6 ? " F...... " : " F.....F ";
+			nada[i] = "         ";
+		}
+		deque1[9] = " F..G..F ";
+		deque1[10] = " l.....l ";
+		escrever(out.resolve("porto.nbt"), porto, List.of(
+				concat(new String[] {"CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC", "CCCCCCCCC"}, deque0),
+				concat(new String[] {"LPP...PPL", "Pb.....bP", "P.......P", "Pb.....bP", "LPP...PPL"}, deque1),
+				concat(new String[] {"LPP...PPL", "P.......P", ".........", "P.......P", "LPP...PPL"}, nada),
+				concat(new String[] {"LPPPPPPPL", "P.......P", "P.......P", "P.......P", "LPPPPPPPL"}, nada),
+				concat(new String[] {"sssssssss", "sssssssss", "sssssssss", "sssssssss", "sssssssss"}, nada)));
+
+		// ---- The navio mercante (placed and removed by Navio, never built): a two-masted ship,
+		// keel two blocks under the surface, a dry hold, a stern cabin and white sails.
+		Map<Character, String> navio = new HashMap<>();
+		navio.put('H', "minecraft:spruce_planks");
+		navio.put('T', "minecraft:spruce_log[axis=y]");
+		navio.put('W', "minecraft:white_wool");
+		navio.put('R', "minecraft:red_wool");
+		navio.put('f', "minecraft:spruce_fence[east=false,north=false,south=false,waterlogged=false,west=false]");
+		navio.put('s', "minecraft:spruce_slab[type=bottom,waterlogged=false]");
+		navio.put('B', "minecraft:barrel[facing=up,open=false]");
+		String[] casco = {" HHH ", "H...H", "H...H", "H...H", "H...H", "H...H", "H...H", "H...H", "H...H", "H...H", "H...H", " H.H ", "  H  "};
+		String[] vela = {"     ", "     ", "     ", "     ", "WWTWW", "     ", "     ", "     ", "     ", "WWTWW", "     ", "     ", "     "};
+		String[] mastro = {"     ", "     ", "     ", "     ", "  T  ", "     ", "     ", "     ", "     ", "  T  ", "     ", "     ", "     "};
+		escrever(out.resolve("navio.nbt"), navio, List.of(
+				new String[] {"     ", " HHH ", " HHH ", " HHH ", " HHH ", " HHH ", " HHH ", " HHH ", " HHH ", " HHH ", " HHH ", " HHH ", "     "},
+				casco,
+				casco,
+				new String[] {" HHH ", "HHHHH", "HHHHH", "HHHHH", "HHHHH", "HHHHH", "HHHHH", "HHHHH", "HHHHH", "HHHHH", "HHHHH", " HHH ", "  H  "},
+				new String[] {" fff ", "HHHHH", "H...H", "f...f", "f.T.f", "f...f", "fB.Bf", "f...f", "fB..f", "f.T.f", "f...f", " f.f ", "  f  "},
+				new String[] {"     ", "HHHHH", "H...H", "     ", "  T  ", "     ", "     ", "     ", "     ", "  T  ", "     ", "     ", "     "},
+				new String[] {"     ", "sssss", "sssss", "     ", "  T  ", "     ", "     ", "     ", "     ", "  T  ", "     ", "     ", "     "},
+				vela, vela, vela, vela,
+				mastro,
+				new String[] {"     ", "     ", "     ", "     ", "  R  ", "     ", "     ", "     ", "     ", "  R  ", "     ", "     ", "     "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
+	}
+
+	static String[] concat(String[] a, String[] b) {
+		String[] r = java.util.Arrays.copyOf(a, a.length + b.length);
+		System.arraycopy(b, 0, r, a.length, b.length);
+		return r;
 	}
 
 	/** A 3D grid of legend characters, filled by boxes, for the bigger buildings. ' ' = not part of the plan. */

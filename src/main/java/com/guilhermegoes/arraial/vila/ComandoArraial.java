@@ -249,6 +249,23 @@ public final class ComandoArraial {
 						c.getSource().sendFailure(Component.translatable("arraial.comando.sem_tropeiro"));
 						return 0;
 					}))
+					// The navio mercante comes in now, or sails now if it is in port.
+					.then(Commands.literal("navio").executes(c -> {
+						ArraialBlockEntity a = arraial(c.getSource());
+						if (a == null) {
+							return 0;
+						}
+						ServerLevel level = c.getSource().getLevel();
+						if (Navio.atracado(a)) {
+							Navio.partir(level, a);
+							return 1;
+						}
+						if (Navio.chegar(level, a)) {
+							return 1;
+						}
+						c.getSource().sendFailure(Component.translatable("arraial.comando.sem_porto"));
+						return 0;
+					}))
 					// Relações públicas sets out on a mission now, or comes back now.
 					.then(Commands.literal("missao").executes(c -> {
 						ArraialBlockEntity a = arraial(c.getSource());

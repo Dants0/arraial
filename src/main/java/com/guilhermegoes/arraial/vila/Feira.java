@@ -52,7 +52,8 @@ public final class Feira {
 			new Mercadoria(ModItems.CUIA, 2), new Mercadoria(Items.SUGAR, 1),
 			new Mercadoria(ModItems.CAFE_CEREJA, 1), new Mercadoria(ModItems.CAFE_TORRADO, 4), new Mercadoria(ModItems.CAFEZINHO, 3),
 			new Mercadoria(ModItems.QUEIJO_COALHO, 3), new Mercadoria(ModItems.CHARQUE, 4), new Mercadoria(Items.GOLD_NUGGET, 2),
-			new Mercadoria(com.guilhermegoes.arraial.registry.ModBlocks.TALHA_DOURADA.asItem(), 6), new Mercadoria(com.guilhermegoes.arraial.registry.ModBlocks.LAMPIAO.asItem(), 10), new Mercadoria(ModItems.CHAPEU_COURO, 12));
+			new Mercadoria(com.guilhermegoes.arraial.registry.ModBlocks.TALHA_DOURADA.asItem(), 6), new Mercadoria(com.guilhermegoes.arraial.registry.ModBlocks.LAMPIAO.asItem(), 10), new Mercadoria(ModItems.CHAPEU_COURO, 12),
+			new Mercadoria(ModItems.SAL, 2), new Mercadoria(ModItems.CHITA, 4));
 
 	/** The good each player has picked at the stalls (not saved). */
 	private static final Map<UUID, Integer> ESCOLHA = new HashMap<>();

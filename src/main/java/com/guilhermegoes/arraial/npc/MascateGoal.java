@@ -41,6 +41,21 @@ public class MascateGoal extends Goal {
 			return;
 		}
 		t++;
+		if (com.guilhermegoes.arraial.vila.Navio.ORIGEM.equals(m.mascateOrigem())) {
+			// The ship's captain keeps to the quay; he boards when the ship sails (Navio.partir).
+			if (level.getGameTime() >= m.mascateFim() + 1200) {
+				Comercio.irEmbora(level, m);
+				return;
+			}
+			if (t % 160 == 1) {
+				BlockPos alvo = vila.offset(m.getRandom().nextInt(5) - 2, 0, m.getRandom().nextInt(5) - 2);
+				m.getNavigation().moveTo(alvo.getX() + 0.5, alvo.getY(), alvo.getZ() + 0.5, 0.4);
+			}
+			if (t % 300 == 0 && m.getRandom().nextFloat() < 0.5F) {
+				m.dizer(Component.translatable("arraial.fala.capitao." + m.getRandom().nextInt(3)), 60);
+			}
+			return;
+		}
 		if (level.getGameTime() >= m.mascateFim() || level.isDarkOutside()) {
 			saindo++;
 			BlockPos borda = Caravana.borda(level, vila, m.mascateOrigem());

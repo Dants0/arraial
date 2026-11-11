@@ -83,6 +83,34 @@ public final class Vilas {
 		return false;
 	}
 
+	/**
+	 * On the coast (or a great lake): many columns around the Cruzeiro are open water at least three
+	 * deep, enough for a ship's keel.
+	 */
+	public static boolean litoral(ServerLevel level, BlockPos vila) {
+		int fundas = 0;
+		for (int dx = -RAIO; dx <= RAIO; dx += 8) {
+			for (int dz = -RAIO; dz <= RAIO; dz += 8) {
+				BlockPos p = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, vila.offset(dx, 0, dz)).below();
+				if (level.isLoaded(p) && profundidade(level, p) >= 3 && ++fundas >= 12) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/** How many water blocks from this one down. */
+	public static int profundidade(ServerLevel level, BlockPos topo) {
+		int n = 0;
+		BlockPos.MutableBlockPos p = topo.mutable();
+		while (n < 8 && level.getFluidState(p).is(net.minecraft.tags.FluidTags.WATER)) {
+			n++;
+			p.move(net.minecraft.core.Direction.DOWN);
+		}
+		return n;
+	}
+
 	public static boolean protegido(ServerLevel level, BlockPos pos) {
 		for (BlockPos centro : ativas(level)) {
 			double dx = centro.getX() - pos.getX(), dz = centro.getZ() - pos.getZ();

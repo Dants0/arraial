@@ -66,6 +66,15 @@ public class ArraialBlockEntity extends BlockEntity {
 	int diasLegitimidadeBaixa;
 	/** Réis in the arraial's coffers (earned at the feira and by the tropeiro). */
 	int tesouro = 20;
+	/** The navio mercante in port (see Navio): game time it sails (0 = none), its name, its blocks. */
+	long navioAte;
+	String navioNome = "";
+	String navioArea = "";
+	int navioAgua;
+	int navioLotes;
+	int navioVendeu;
+	int navioComprou;
+	long navioUltimo;
 	/** Current stage (Povoado, Arraial, Vila...), see {@link Estagio}. */
 	Estagio estagio = Estagio.POVOADO;
 	/** How the arraial builds (see {@link Era}). */
@@ -233,6 +242,7 @@ public class ArraialBlockEntity extends BlockEntity {
 			return;
 		}
 		arraial.fundar(server);
+		Navio.tick(server, arraial);
 
 		List<MoradorEntity> moradores = arraial.moradores(server);
 		arraial.populacao = moradores.size();
@@ -294,6 +304,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		Caravana.diario(level, this, moradores);
 		Diplomacia.diario(level, this, moradores);
 		Comercio.diario(level, this, moradores);
+		Navio.diario(level, this, moradores);
 		Familias.diario(level, this, moradores);
 		Agro.diario(level, this, moradores);
 	}
@@ -396,6 +407,14 @@ public class ArraialBlockEntity extends BlockEntity {
 		era = Era.de(input.getIntOr("Era", 0));
 		povo = input.getStringOr("Povo", "");
 		ultimoTick = input.getLongOr("UltimoTick", 0L);
+		navioAte = input.getLongOr("NavioAte", 0L);
+		navioNome = input.getStringOr("NavioNome", "");
+		navioArea = input.getStringOr("NavioArea", "");
+		navioAgua = input.getIntOr("NavioAgua", 0);
+		navioLotes = input.getIntOr("NavioLotes", 0);
+		navioVendeu = input.getIntOr("NavioVendeu", 0);
+		navioComprou = input.getIntOr("NavioComprou", 0);
+		navioUltimo = input.getLongOr("NavioUltimo", 0L);
 		precos.clear();
 		input.read("Precos", com.mojang.serialization.Codec.unboundedMap(com.mojang.serialization.Codec.STRING, com.mojang.serialization.Codec.DOUBLE)).ifPresent(precos::putAll);
 		reputacao.clear();
@@ -421,6 +440,14 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.store("Pagamentos", com.mojang.serialization.Codec.unboundedMap(net.minecraft.core.UUIDUtil.STRING_CODEC, com.mojang.serialization.Codec.INT), java.util.Map.copyOf(pagamentos));
 		output.putInt("Satisfacao", satisfacao);
 		output.putLong("UltimoDiario", ultimoDiario);
+		output.putLong("NavioAte", navioAte);
+		output.putString("NavioNome", navioNome);
+		output.putString("NavioArea", navioArea);
+		output.putInt("NavioAgua", navioAgua);
+		output.putInt("NavioLotes", navioLotes);
+		output.putInt("NavioVendeu", navioVendeu);
+		output.putInt("NavioComprou", navioComprou);
+		output.putLong("NavioUltimo", navioUltimo);
 		output.putBoolean("Autonoma", autonoma);
 		output.putBoolean("Abandonada", abandonada);
 		output.putLong("DiaRuina", diaRuina);

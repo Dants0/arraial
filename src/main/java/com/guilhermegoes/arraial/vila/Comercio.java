@@ -130,6 +130,9 @@ public final class Comercio {
 
 	/** The mascate's price: his home's price plus the road (distance and risk). */
 	private static double preco(ServerLevel level, MoradorEntity m, Item item) {
+		if (Navio.ORIGEM.equals(m.mascateOrigem())) {
+			return Navio.precoVenda(item);
+		}
 		Registro.Info v = Registro.get(m.mascateOrigem());
 		double base = Math.max(0.5, Feira.base(item));
 		double la = v == null ? base : v.precos.getOrDefault(Feira.id(item), base);
@@ -177,6 +180,10 @@ public final class Comercio {
 			}
 			p.sendSystemMessage(Component.translatable("arraial.feira.comprou", qtd, e.getKey().getDefaultInstance().getHoverName(), custo)
 					.withStyle(ChatFormatting.GREEN));
+			return;
+		}
+		if (!mao.isEmpty() && Navio.ORIGEM.equals(m.mascateOrigem())) {
+			Navio.comprarDoJogador(level, m, p, mao); // the ship's captain buys the colony's exports
 			return;
 		}
 		if (!mao.isEmpty() && Feira.base(mao.getItem()) > 0) {

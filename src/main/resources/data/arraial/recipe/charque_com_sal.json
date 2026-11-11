@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:beef",
+    "minecraft:beef",
+    "minecraft:beef",
+    "arraial:sal"
+  ],
+  "result": {
+    "count": 3,
+    "id": "arraial:charque"
+  }
+}

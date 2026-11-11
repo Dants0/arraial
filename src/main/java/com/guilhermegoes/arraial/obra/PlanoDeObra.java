@@ -175,6 +175,7 @@ public final class PlanoDeObra {
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.TERREIRO, new Custo(Items.BRICK, 4)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BANCADA_ENTALHE, new Custo(Items.OAK_PLANKS, 4)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.AMARRA, new Custo(Items.OAK_LOG, 1)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.GUINDASTE, new Custo(Items.OAK_LOG, 3)),
 			Map.entry(net.minecraft.world.level.block.Blocks.SPRUCE_STAIRS, new Custo(Items.OAK_PLANKS, 1)),
 			Map.entry(net.minecraft.world.level.block.Blocks.SPRUCE_PLANKS, new Custo(Items.OAK_PLANKS, 1)),
 			Map.entry(net.minecraft.world.level.block.Blocks.BARREL, new Custo(Items.OAK_PLANKS, 4)),

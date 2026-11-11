@@ -43,7 +43,10 @@ public class FestejarGoal extends Goal {
 
 	private boolean pode() {
 		return festa() != null && !morador.isSleeping() && !morador.viajando() && !morador.doente()
-				&& morador.profissao() != Profissao.SOLDADO && level().isBrightOutside();
+				&& morador.profissao() != Profissao.SOLDADO && level().isBrightOutside()
+				&& morador.viagemFase() == 0 // a troop or canoe being loaded or unloaded finishes the job first
+				&& !(morador.profissao() == Profissao.ESTIVADOR && morador.arraial() != null
+						&& com.guilhermegoes.arraial.vila.Navio.atracado(morador.arraial())); // a ship in port does not wait for the festa
 	}
 
 	@Override

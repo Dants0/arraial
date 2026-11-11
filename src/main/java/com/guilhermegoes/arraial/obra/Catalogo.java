@@ -51,6 +51,7 @@ public final class Catalogo {
 			new Projeto("matriz"),
 			new Projeto("missao"),
 			new Projeto("trapiche"),
+			new Projeto("porto"),
 			new Projeto(Muralha.ID));
 
 	public static Optional<Projeto> porId(String id) {

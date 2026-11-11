@@ -56,7 +56,7 @@ Ordem escolhida pelo usuário: 1 → 3 → 4. Cada etapa compila, passa por uma 
 | Etapa | Conteúdo | Estado |
 |---|---|---|
 | 1A | **Trapiche e barqueiro** — ofício barqueiro (posto: amarra), trapiche erguido na beira d'água (deque sobre o rio), viagens de canoa entre vilas com trapiche: mais carga, mais rápidas, sem salteador; enchente prende a canoa; frete fluvial barateia o preço regional | ✅ |
-| 1B | **Porto e navio mercante** — vila no litoral ergue o porto; de tempos em tempos chega um navio que vende sal, ferro e tecido e compra açúcar, café, rapadura, couro e charque | ⏳ |
+| 1B | **Porto e navio mercante** — vila no litoral ergue o porto; de tempos em tempos chega um navio que vende sal, ferro e tecido e compra açúcar, café, rapadura, couro e charque | ✅ |
 | 1C | **Moinho d'água e monjolo** — o monjolo pila café e mandioca mais rápido; o moinho mói trigo em farinha de trigo (base para o padeiro da etapa 3) | ⏳ |
 | 1D | **Ponte** — o engenheiro lança ponte onde a estrada cruza água | ⏳ |
 | 1E | **Ferrovia (era Republicana)** — estação; vilas com estação trocam por trem: rápido, barato e seguro | ⏳ |
