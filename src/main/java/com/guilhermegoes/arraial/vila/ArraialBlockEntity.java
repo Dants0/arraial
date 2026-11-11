@@ -75,6 +75,21 @@ public class ArraialBlockEntity extends BlockEntity {
 	int navioVendeu;
 	int navioComprou;
 	long navioUltimo;
+	/** Neighbours (Registro ids) a finished road leads to (see EngenheiroGoal). */
+	final java.util.Set<String> estradas = new java.util.HashSet<>();
+
+	/** Marks the road to this neighbour as finished; true the first time. */
+	public boolean marcarEstrada(String destino) {
+		boolean novo = estradas.add(destino);
+		if (novo) {
+			setChanged();
+		}
+		return novo;
+	}
+
+	public boolean estradaPara(String destino) {
+		return estradas.contains(destino);
+	}
 	/** Current stage (Povoado, Arraial, Vila...), see {@link Estagio}. */
 	Estagio estagio = Estagio.POVOADO;
 	/** How the arraial builds (see {@link Era}). */
@@ -415,6 +430,12 @@ public class ArraialBlockEntity extends BlockEntity {
 		navioVendeu = input.getIntOr("NavioVendeu", 0);
 		navioComprou = input.getIntOr("NavioComprou", 0);
 		navioUltimo = input.getLongOr("NavioUltimo", 0L);
+		estradas.clear();
+		for (String e : input.getStringOr("Estradas", "").split(";")) {
+			if (!e.isBlank()) {
+				estradas.add(e);
+			}
+		}
 		precos.clear();
 		input.read("Precos", com.mojang.serialization.Codec.unboundedMap(com.mojang.serialization.Codec.STRING, com.mojang.serialization.Codec.DOUBLE)).ifPresent(precos::putAll);
 		reputacao.clear();
@@ -448,6 +469,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.putInt("NavioVendeu", navioVendeu);
 		output.putInt("NavioComprou", navioComprou);
 		output.putLong("NavioUltimo", navioUltimo);
+		output.putString("Estradas", String.join(";", estradas));
 		output.putBoolean("Autonoma", autonoma);
 		output.putBoolean("Abandonada", abandonada);
 		output.putLong("DiaRuina", diaRuina);

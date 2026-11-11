@@ -544,7 +544,7 @@ public final class Prefeitura {
 		return tipo == null ? 0 : postos(level, vila, tipo);
 	}
 
-	static void avisar(ServerLevel level, ArraialBlockEntity arraial, Component msg) {
+	public static void avisar(ServerLevel level, ArraialBlockEntity arraial, Component msg) {
 		for (ServerPlayer p : level.players()) {
 			if (p.blockPosition().closerThan(arraial.getBlockPos(), Vilas.RAIO * 2)) {
 				p.sendSystemMessage(msg);

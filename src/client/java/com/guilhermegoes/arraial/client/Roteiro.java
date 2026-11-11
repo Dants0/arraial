@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=ponte: the engenheiro opens the road to a neighbour across a river, with a bridge.
+		if ("ponte".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			ponte();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=moinho: a village on a river with a water mill and a monjolo.
 		if ("moinho".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			moinho();
@@ -1185,6 +1194,112 @@ public final class Roteiro {
 	}
 
 	private static final String[] ESTADOS = {"", ""};
+
+	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */
+	private static void voar(double x, double y, double z, float yaw, float pitch) {
+		servidor((srv, sp) -> {
+			sp.teleportTo(sp.level(), x, y, z, java.util.Set.of(), yaw, pitch, true);
+			sp.getAbilities().flying = true;
+			sp.onUpdateAbilities();
+		});
+	}
+
+	/** The deck and railings of the bridge where the line x = 350 crosses the river (z 1225-1237). */
+	private static String ponteEm(net.minecraft.server.level.ServerLevel level) {
+		int deque = 0, cercas = 0, toras = 0, vaos = 0;
+		for (int z = 1225; z <= 1237; z++) {
+			boolean vao = false;
+			for (int x = 346; x <= 354; x++) {
+				var d = level.getBlockState(new BlockPos(x, 120, z));
+				if (d.is(net.minecraft.tags.BlockTags.PLANKS)) {
+					deque++;
+					vao = true;
+				}
+				if (level.getBlockState(new BlockPos(x, 121, z)).is(net.minecraft.tags.BlockTags.WOODEN_FENCES)) {
+					cercas++;
+				}
+				if (level.getBlockState(new BlockPos(x, 118, z)).is(net.minecraft.tags.BlockTags.LOGS)) {
+					toras++;
+				}
+			}
+			if (vao) {
+				vaos++;
+			}
+		}
+		StringBuilder mapa = new StringBuilder();
+		for (int z = 1222; z <= 1240; z++) {
+			mapa.append(" | z").append(z).append(' ');
+			for (int x = 345; x <= 355; x++) {
+				BlockPos p = new BlockPos(x, 120, z);
+				var b = level.getBlockState(p);
+				char c = level.getBlockState(p.above()).is(net.minecraft.tags.BlockTags.WOODEN_FENCES) ? 'F'
+						: b.is(net.minecraft.tags.BlockTags.PLANKS) ? 'P' : !level.getFluidState(p.below()).isEmpty() && b.isAir() ? '~' : b.isAir() ? '.' : '#';
+				mapa.append(c);
+			}
+		}
+		return "vaos " + vaos + "/13 deque=" + deque + " cercas=" + cercas + " pilares(y118)=" + toras + mapa;
+	}
+
+	/**
+	 * Bridges and roads: village B far to the south, village A on a river; A gets an oficina do
+	 * engenheiro, an engenheiro and planks, and opens the road towards B, bridging the river.
+	 */
+	private static void ponte() {
+		final int x = 350, z = 1200;
+		// Village B, 180 blocks south.
+		passo(10, () -> cmd("tp @s " + x + " 150 " + (z + 156)));
+		passo(200, () -> cmd("tp @s " + x + ".5 ~ " + (z + 156) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> servidor((srv, sp) -> {
+			BlockPos b = com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(x, 100, z + 180));
+			log("ponte: vila B " + (b == null ? "NAO" : b.toShortString()));
+		}));
+		// Village A on the river.
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("ponte: chunks carregados"));
+		campoComRio(300, z);
+		// A strip of flat land beyond the field for the road to run on.
+		passo(20, () -> cmd("fill 340 116 " + (z + 50) + " 360 119 " + (z + 80) + " minecraft:dirt", "fill 340 120 " + (z + 50) + " 360 120 " + (z + 80) + " minecraft:grass_block",
+				"fill 340 121 " + (z + 50) + " 360 140 " + (z + 80) + " minecraft:air", "fill 340 141 " + (z + 50) + " 360 160 " + (z + 80) + " minecraft:air"));
+		passo(160, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta oficina_engenheiro"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos prancheta = blocoNaObra(level, v, "oficina_engenheiro", com.guilhermegoes.arraial.registry.ModBlocks.PRANCHETA);
+			log("ponte: vila A " + v.toShortString() + " prancheta=" + (prancheta == null ? "NAO" : prancheta.toShortString()));
+			if (prancheta != null) {
+				cmd("summon arraial:morador " + prancheta.getX() + " " + (prancheta.getY() + 1) + " " + (prancheta.getZ() + 1) + " {Profissao:0,Visual:2}");
+			}
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_PLANKS, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_PLANKS, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_PLANKS, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_FENCE, 16);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.TORCH, 32);
+		}));
+		for (int i = 0; i < 6; i++) {
+			passo(1200, () -> servidor((srv, sp) -> {
+				var level = sp.level();
+				BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+				BlockPos b = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 100, z + 180));
+				String idB = b == null ? "?" : com.guilhermegoes.arraial.vila.Economia.id(level, b);
+				StringBuilder eng = new StringBuilder();
+				for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(90),
+						e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.ENGENHEIRO)) {
+					eng.append(m.nome()).append(" pos=").append(m.blockPosition().toShortString()).append(" status=").append(m.status().getString())
+							.append(" carga=").append(m.cargaCopia()).append("; ");
+				}
+				if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+					log("ponte: estrada para B=" + a.estradaPara(idB) + " | " + ponteEm(level) + " | tabuas no armazem="
+							+ com.guilhermegoes.arraial.vila.Vilas.contar(com.guilhermegoes.arraial.vila.Vilas.armazens(level, v), net.minecraft.world.item.Items.OAK_PLANKS)
+							+ " | " + eng);
+				}
+			}));
+		}
+		passo(10, () -> voar(x + 12.5, 125, z + 31.5, 90, 15));
+		passo(40, () -> foto("91_ponte"));
+		passo(10, () -> voar(x + 0.5, 150, z + 6.5, 0, 55));
+		passo(40, () -> foto("92_estrada"));
+	}
 
 	/**
 	 * The water: a village on a river gets a finished moinho and monjolo; the wheel turns and the

@@ -422,7 +422,7 @@
 	"arraial.cacador.sem_caca": "sem caça por perto (deixando os bichos se criarem)",
 	"arraial.cacador.caca": "caça",
 	"arraial.cacador.cacando": "caçando: %s",
-	"arraial.engenheiro.tudo_pronto": "ruas, pontes e luzes em dia",
+	"arraial.engenheiro.tudo_pronto": "ruas, pontes, estradas e luzes em dia",
 	"arraial.engenheiro.material": "buscando material",
 	"arraial.engenheiro.falta": "falta material (tábua, cerca ou tocha)",
 	"arraial.engenheiro.rua": "abrindo rua",
@@ -1310,5 +1310,7 @@
 	"arraial.jei.roda_dagua": "A roda do moinho: gira sozinha enquanto tiver água embaixo ou ao lado.",
 	"arraial.jei.monjolo": "Pilão movido a água: com água por perto ele bate sozinho o dia todo. Vila com monjolo pronto faz farinha de mandioca duas vezes mais rápido, e o cafeicultor torra o dobro de café sem perder grão.",
 	"arraial.jei.farinha_trigo": "Moída no moinho d'água. Asse no forno ou no defumador para virar pão.",
-	"arraial.guia.rios.3": "§lMoinho d'água e monjolo§0\n\nO §lmoinho§0 se ergue na beira do rio: a roda gira na água e a §lmó§0 mói o trigo. O §lmoleiro§0 faz farinha de trigo e o pão rende três vezes mais.\n\nO §lmonjolo§0 é um pilão que a água bate sozinho: a farinha de mandioca e o café saem duas vezes mais rápido.\n\n§8Sem água, a roda e o monjolo param."
+	"arraial.guia.rios.3": "§lMoinho d'água e monjolo§0\n\nO §lmoinho§0 se ergue na beira do rio: a roda gira na água e a §lmó§0 mói o trigo. O §lmoleiro§0 faz farinha de trigo e o pão rende três vezes mais.\n\nO §lmonjolo§0 é um pilão que a água bate sozinho: a farinha de mandioca e o café saem duas vezes mais rápido.\n\n§8Sem água, a roda e o monjolo param.",
+	"arraial.cronica.estrada_pronta": "%s terminou a estrada para %s: a tropa agora vai mais rápido e mais segura.",
+	"arraial.guia.rios.4": "§lPontes e estradas§0\n\nOnde a rua ou a estrada cruza água, o §lengenheiro§0 ergue uma ponte de tábuas um bloco acima do rio, com guarda-corpo e pilares de tora.\n\nEle também abre a §lestrada§0 para as duas vilas vizinhas mais próximas, até uns setenta blocos do Cruzeiro.\n\nCom a estrada pronta, a tropa para aquela vila chega um quarto mais rápido e corre metade do risco de assalto.\n\n§8A ponte gasta tábuas do Armazém."
 }

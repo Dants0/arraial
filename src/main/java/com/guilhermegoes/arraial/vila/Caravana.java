@@ -179,6 +179,9 @@ public final class Caravana {
 		boolean canoa = t.profissao() == Profissao.BARQUEIRO;
 		long duracao = canoa ? (long) Math.max(DIA / 3, Math.min(2 * DIA, dist / 700.0 * DIA))
 				: (long) Math.max(DIA / 2, Math.min(3 * DIA, dist / 400.0 * DIA));
+		if (!canoa && a.estradaPara(t.viagemDestino())) {
+			duracao = duracao * 3 / 4; // the road is open: a quarter quicker
+		}
 		if (t.profissao() == Profissao.TROPEIRO) {
 			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.tropa_partiu", t.nome(), d.nome));
 		} else if (canoa) {
@@ -208,6 +211,9 @@ public final class Caravana {
 		float risco = Math.max(0.03F, Economia.risco(meuId, destinoId, hoje) + 0.08F - 0.04F * soldados);
 		if (t.escoltada()) {
 			risco /= 4; // a player rides with the troop
+		}
+		if (a.estradaPara(destinoId)) {
+			risco /= 2; // an open road, with travellers on it: robbers keep away
 		}
 		boolean canoa = t.profissao() == Profissao.BARQUEIRO;
 		int antes = a.tesouro();

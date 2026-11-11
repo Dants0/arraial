@@ -422,7 +422,7 @@
 	"arraial.cacador.sem_caca": "no game nearby (letting the animals breed)",
 	"arraial.cacador.caca": "game",
 	"arraial.cacador.cacando": "hunting: %s",
-	"arraial.engenheiro.tudo_pronto": "streets, bridges and lights all done",
+	"arraial.engenheiro.tudo_pronto": "streets, bridges, roads and lights all in order",
 	"arraial.engenheiro.material": "fetching materials",
 	"arraial.engenheiro.falta": "missing materials (planks, fence or torch)",
 	"arraial.engenheiro.rua": "laying a street",
@@ -1310,5 +1310,7 @@
 	"arraial.jei.roda_dagua": "The mill wheel: it turns by itself while there is water under or beside it.",
 	"arraial.jei.monjolo": "A water-driven pestle: with water close by it pounds all day on its own. A village with a finished monjolo makes cassava flour twice as fast, and the coffee grower roasts twice the coffee without losing beans.",
 	"arraial.jei.farinha_trigo": "Ground at the water mill. Bake it in a furnace or smoker to get bread.",
-	"arraial.guia.rios.3": "§lWater mill and monjolo§0\n\nThe §lmill§0 stands on the river bank: the wheel turns in the water and the §lmillstone§0 grinds the wheat. The §lmiller§0 makes wheat flour and bread goes three times as far.\n\nThe §lmonjolo§0 is a pestle the water drives by itself: cassava flour and coffee come out twice as fast.\n\n§8Without water, wheel and monjolo stand still."
+	"arraial.guia.rios.3": "§lWater mill and monjolo§0\n\nThe §lmill§0 stands on the river bank: the wheel turns in the water and the §lmillstone§0 grinds the wheat. The §lmiller§0 makes wheat flour and bread goes three times as far.\n\nThe §lmonjolo§0 is a pestle the water drives by itself: cassava flour and coffee come out twice as fast.\n\n§8Without water, wheel and monjolo stand still.",
+	"arraial.cronica.estrada_pronta": "%s finished the road to %s: the troop now travels faster and safer.",
+	"arraial.guia.rios.4": "§lBridges and roads§0\n\nWhere a street or road crosses water, the §lengineer§0 builds a plank bridge one block above the river, with railings and log pillars.\n\nHe also opens the §lroad§0 towards the two nearest neighbouring villages, some seventy blocks out from the Cruzeiro.\n\nWith the road finished, the troop to that village arrives a quarter sooner and runs half the risk of robbery.\n\n§8Bridges use planks from the storehouse."
 }
