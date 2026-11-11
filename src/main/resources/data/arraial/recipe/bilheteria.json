@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_bars",
+    "P": "#minecraft:planks",
+    "R": "minecraft:rail"
+  },
+  "pattern": [
+    "III",
+    "PRP",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:bilheteria"
+  }
+}

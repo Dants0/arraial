@@ -63,7 +63,8 @@ public final class Prefeitura {
 			Map.entry(Profissao.ENTALHADOR, "oficina_entalhe"),
 			Map.entry(Profissao.BARQUEIRO, "trapiche"),
 			Map.entry(Profissao.ESTIVADOR, "porto"),
-			Map.entry(Profissao.MOLEIRO, "moinho"));
+			Map.entry(Profissao.MOLEIRO, "moinho"),
+			Map.entry(Profissao.FERROVIARIO, "estacao"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -303,6 +304,10 @@ public final class Prefeitura {
 			if (barroco && postos(level, vila, ModPois.BANCADA_ENTALHE) > 0 && obras(level, vila, "matriz") == 0) {
 				desejos.add("matriz");
 			}
+		}
+		// The railway reaches a Republican arraial of some size: the estação and its ferroviário.
+		if (arraial.era == Era.REPUBLICANA && n >= 10 && postos(level, vila, ModPois.BILHETERIA) == 0) {
+			desejos.add("estacao");
 		}
 		if (arraial.era == Era.REPUBLICANA && obras(level, vila, "chafariz") == 0) {
 			desejos.add("chafariz");

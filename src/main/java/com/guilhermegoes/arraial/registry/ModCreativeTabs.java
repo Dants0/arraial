@@ -83,6 +83,7 @@ public final class ModCreativeTabs {
 						output.accept(ModBlocks.MO);
 						output.accept(ModBlocks.RODA_DAGUA);
 						output.accept(ModBlocks.MONJOLO);
+						output.accept(ModBlocks.BILHETERIA);
 						output.accept(ModItems.CAFE_CEREJA);
 						output.accept(ModItems.CAFE_TORRADO);
 						output.accept(ModItems.CAFEZINHO);

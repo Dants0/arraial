@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=trem: two Republican villages with a station each; the train runs between them.
+		if ("trem".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			trem();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=ponte: the engenheiro opens the road to a neighbour across a river, with a bridge.
 		if ("ponte".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			ponte();
@@ -1194,6 +1203,97 @@ public final class Roteiro {
 	}
 
 	private static final String[] ESTADOS = {"", ""};
+
+	private static String ferroviarios(net.minecraft.server.level.ServerLevel level, int x, int z) {
+		StringBuilder b = new StringBuilder();
+		for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(x - 70, 100, z - 70, x + 70, 160, z + 70),
+				e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.FERROVIARIO)) {
+			b.append(m.nome()).append(" fase=").append(m.viagemFase()).append(" posto=").append(m.posto() == null ? "-" : m.posto().toShortString())
+					.append(" no trem=").append(m.isPassenger()).append(" carga=").append(m.cargaCopia()).append(" status=").append(m.status().getString()).append("; ");
+		}
+		return b.length() == 0 ? "nenhum" : b.toString();
+	}
+
+	/** A flat field and a village on it, in the Republican era, with a finished station and a ferroviário. */
+	private static void vilaComEstacao(int x0, int z0, String rotulo) {
+		passo(10, () -> cmd("tp @s " + (x0 + 50) + " 140 " + z0));
+		passo(200, () -> log("trem " + rotulo + ": chunks carregados"));
+		campoPlano(x0, z0);
+		passo(20, () -> cmd("tp @s " + (x0 + 50) + ".5 121 " + (z0 - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> cmd("time set 1000", "execute positioned " + (x0 + 50) + " 120 " + z0 + " run arraial era republicana"));
+		passo(40, () -> cmd("execute positioned " + (x0 + 50) + " 120 " + z0 + " run arraial obra_pronta estacao"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x0 + 50, 120, z0));
+			BlockPos k = blocoNaObra(level, v, "estacao", com.guilhermegoes.arraial.registry.ModBlocks.BILHETERIA);
+			log("trem " + rotulo + ": vila " + v.toShortString() + " bilheteria=" + (k == null ? "NAO" : k.toShortString()));
+			if (k != null) {
+				cmd("summon arraial:morador " + k.getX() + " " + (k.getY() + 1) + " " + (k.getZ() - 1) + " {Profissao:0,Visual:3}");
+			}
+		}));
+	}
+
+	/**
+	 * The railway: villages B and A on flat fields, both Republican with a station and a
+	 * ferroviário; A's ferroviário loads the wagons, the train pulls out (seen), the trip is cut
+	 * short, and the trade is logged.
+	 */
+	private static void trem() {
+		vilaComEstacao(300, 1600, "B");
+		vilaComEstacao(300, 1400, "A");
+		final int x = 350, z = 1400;
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.BREAD, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.COBBLESTONE, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_LOG, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.BRICKS, 64);
+		}));
+		passo(200, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos a = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos b = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, 1600));
+			log("trem A: " + ferroviarios(level, x, z) + " | B: " + ferroviarios(level, x, 1600) + " | ferroviario="
+					+ com.guilhermegoes.arraial.vila.Economia.ferroviario(com.guilhermegoes.arraial.vila.Economia.id(level, a), com.guilhermegoes.arraial.vila.Economia.id(level, b)));
+		}));
+		passo(10, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial tropa"));
+		passoAte(20, 1200, () -> {
+			var srv = mc().getSingleplayerServer();
+			return srv != null && !srv.overworld().getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class,
+					new net.minecraft.world.phys.AABB(x - 70, 100, z - 70, x + 70, 160, z + 70), e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.FERROVIARIO
+							&& (e.isPassenger() || e.viagemFase() >= 3)).isEmpty();
+		}, () -> servidor((srv, sp) -> log("trem A: embarque " + ferroviarios(sp.level(), x, z))));
+		passo(1, () -> verObra("estacao", 18));
+		passo(15, () -> foto("93_trem"));
+		passoAte(20, 1200, () -> {
+			var srv = mc().getSingleplayerServer();
+			return srv != null && !srv.overworld().getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class,
+					new net.minecraft.world.phys.AABB(x - 70, 100, z - 70, x + 70, 160, z + 70), e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.FERROVIARIO
+							&& e.viagemFase() == 3).isEmpty();
+		}, () -> servidor((srv, sp) -> {
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(x, 120, z));
+			if (sp.level().getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				log("trem A: partiu; tesouro=" + a.tesouro() + " | " + ferroviarios(sp.level(), x, z));
+			}
+		}));
+		passo(40, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial tropa"));
+		passo(400, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				StringBuilder cr = new StringBuilder();
+				var entradas = a.cronica();
+				for (int i = Math.max(0, entradas.size() - 3); i < entradas.size(); i++) {
+					cr.append(entradas.get(i).texto().getString()).append(" / ");
+				}
+				log("trem A: voltou; tesouro=" + a.tesouro() + " | " + ferroviarios(level, x, z) + " | cronica: " + cr);
+			}
+		}));
+		passo(10, () -> verObra("estacao", 20));
+		passo(30, () -> foto("94_estacao"));
+	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */
 	private static void voar(double x, double y, double z, float yaw, float pitch) {

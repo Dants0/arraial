@@ -158,6 +158,12 @@ public final class Economia {
 		return ia != null && ib != null && ia.oficios.getOrDefault("barqueiro", 0) > 0 && ib.oficios.getOrDefault("barqueiro", 0) > 0;
 	}
 
+	/** Both arraiais have a station with a ferroviário: goods can go by train. */
+	public static boolean ferroviario(String a, String b) {
+		Registro.Info ia = Registro.get(a), ib = Registro.get(b);
+		return ia != null && ib != null && ia.oficios.getOrDefault("ferroviario", 0) > 0 && ib.oficios.getOrDefault("ferroviario", 0) > 0;
+	}
+
 	// ---------------------------------------------------------------- prices
 
 	/**
@@ -185,7 +191,8 @@ public final class Economia {
 				continue; // nothing to spare there
 			}
 			double frete = base * (0.15 + dist / 1500.0) * (1 + risco(meu, e.getKey(), hoje) * 2) * (batida(meu, e.getKey()) ? 0.7 : 1.0) * (Territorio.tem(meu, e.getKey(), "comercio", hoje) ? 0.8 : 1.0)
-					* (fluvial(meu, e.getKey()) ? 0.6 : 1.0); // the river carries more for less
+					* (fluvial(meu, e.getKey()) ? 0.6 : 1.0) // the river carries more for less
+					* (ferroviario(meu, e.getKey()) ? 0.5 : 1.0); // and the railway even more
 			double la = v.precos.getOrDefault(item, base) + frete;
 			melhor = Math.min(melhor, la);
 		}

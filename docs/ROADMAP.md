@@ -59,7 +59,7 @@ Ordem escolhida pelo usuário: 1 → 3 → 4. Cada etapa compila, passa por uma 
 | 1B | **Porto e navio mercante** — vila no litoral ergue o porto; de tempos em tempos chega um navio que vende sal, ferro e tecido e compra açúcar, café, rapadura, couro e charque | ✅ |
 | 1C | **Moinho d'água e monjolo** — o monjolo pila café e mandioca mais rápido; o moinho mói trigo em farinha de trigo (base para o padeiro da etapa 3) | ✅ |
 | 1D | **Pontes e estradas** — o engenheiro ergue ponte de verdade onde a rua ou a estrada cruza água (deque um bloco acima, três de largura, guarda-corpo, pilares de tora) e abre a estrada para as duas vilas vizinhas mais próximas; estrada pronta = tropa um quarto mais rápida e com metade do risco de assalto | ✅ |
-| 1E | **Ferrovia (era Republicana)** — estação; vilas com estação trocam por trem: rápido, barato e seguro | ⏳ |
+| 1E | **Ferrovia (era Republicana)** — estação; vilas com estação trocam por trem: rápido, barato e seguro | ✅ |
 
 ### 3. Novos ofícios e cadeias (depois de 1)
 Ferreiro (ferramentas, ferradura, cravos), tecelão (algodão, pano, rede de dormir), padeiro (pão com farinha de trigo), carpinteiro, alfaiate.

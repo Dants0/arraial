@@ -266,6 +266,7 @@ public final class Pessoa {
 			case BARQUEIRO -> new ItemStack(Items.COOKED_SALMON, 8);
 			case ESTIVADOR -> new ItemStack(ModItems.SAL, 6);
 			case MOLEIRO -> new ItemStack(ModItems.FARINHA_TRIGO, 12);
+			case FERROVIARIO -> new ItemStack(Items.RAIL, 16);
 			default -> new ItemStack(ModItems.REIS, 12);
 		};
 	}

@@ -1312,5 +1312,18 @@
 	"arraial.jei.farinha_trigo": "Ground at the water mill. Bake it in a furnace or smoker to get bread.",
 	"arraial.guia.rios.3": "§lWater mill and monjolo§0\n\nThe §lmill§0 stands on the river bank: the wheel turns in the water and the §lmillstone§0 grinds the wheat. The §lmiller§0 makes wheat flour and bread goes three times as far.\n\nThe §lmonjolo§0 is a pestle the water drives by itself: cassava flour and coffee come out twice as fast.\n\n§8Without water, wheel and monjolo stand still.",
 	"arraial.cronica.estrada_pronta": "%s finished the road to %s: the troop now travels faster and safer.",
-	"arraial.guia.rios.4": "§lBridges and roads§0\n\nWhere a street or road crosses water, the §lengineer§0 builds a plank bridge one block above the river, with railings and log pillars.\n\nHe also opens the §lroad§0 towards the two nearest neighbouring villages, some seventy blocks out from the Cruzeiro.\n\nWith the road finished, the troop to that village arrives a quarter sooner and runs half the risk of robbery.\n\n§8Bridges use planks from the storehouse."
+	"arraial.guia.rios.4": "§lBridges and roads§0\n\nWhere a street or road crosses water, the §lengineer§0 builds a plank bridge one block above the river, with railings and log pillars.\n\nHe also opens the §lroad§0 towards the two nearest neighbouring villages, some seventy blocks out from the Cruzeiro.\n\nWith the road finished, the troop to that village arrives a quarter sooner and runs half the risk of robbery.\n\n§8Bridges use planks from the storehouse.",
+	"block.arraial.bilheteria": "Ticket Window",
+	"arraial.profissao.ferroviario.m": "Railwayman",
+	"arraial.profissao.ferroviario.f": "Railwaywoman",
+	"projeto.arraial.estacao": "Railway Station",
+	"arraial.fala.oficio.ferroviario.0": "The train waits for no one: the whistle blows at seven sharp.",
+	"arraial.fala.oficio.ferroviario.1": "With the rails, the village is next door to the capital.",
+	"arraial.ferroviario.carregando": "loading the wagons for %s",
+	"arraial.ferroviario.partindo": "the train is leaving for %s",
+	"arraial.ferroviario.chegando": "the train is back from %s",
+	"arraial.cronica.trem_partiu": "The train left the station for %s.",
+	"arraial.cronica.trem_voltou": "%s came back by train from %s: sold the load for %s réis and brought %s good(s).",
+	"arraial.jei.bilheteria": "Workstation of the RAILWAYMAN, at the station (Republican era). The train takes the storehouse surplus to villages that also have a station: the biggest load, the quickest trip and no robbery. Between two stations the regional freight is halved.",
+	"arraial.guia.rios.5": "§lStation and train§0\n\nIn the Republican era, a village of ten or more builds the §lstation§0: a brick house, a covered platform and a track.\n\nThe §lrailwayman§0 loads the wagons at the storehouse and the train leaves for villages that also have a station.\n\nThe train carries more than the troop and the canoe, arrives the same day and is never robbed.\n\n§8Between two stations freight costs half."
 }

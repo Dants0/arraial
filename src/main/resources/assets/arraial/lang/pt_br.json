@@ -1312,5 +1312,18 @@
 	"arraial.jei.farinha_trigo": "Moída no moinho d'água. Asse no forno ou no defumador para virar pão.",
 	"arraial.guia.rios.3": "§lMoinho d'água e monjolo§0\n\nO §lmoinho§0 se ergue na beira do rio: a roda gira na água e a §lmó§0 mói o trigo. O §lmoleiro§0 faz farinha de trigo e o pão rende três vezes mais.\n\nO §lmonjolo§0 é um pilão que a água bate sozinho: a farinha de mandioca e o café saem duas vezes mais rápido.\n\n§8Sem água, a roda e o monjolo param.",
 	"arraial.cronica.estrada_pronta": "%s terminou a estrada para %s: a tropa agora vai mais rápido e mais segura.",
-	"arraial.guia.rios.4": "§lPontes e estradas§0\n\nOnde a rua ou a estrada cruza água, o §lengenheiro§0 ergue uma ponte de tábuas um bloco acima do rio, com guarda-corpo e pilares de tora.\n\nEle também abre a §lestrada§0 para as duas vilas vizinhas mais próximas, até uns setenta blocos do Cruzeiro.\n\nCom a estrada pronta, a tropa para aquela vila chega um quarto mais rápido e corre metade do risco de assalto.\n\n§8A ponte gasta tábuas do Armazém."
+	"arraial.guia.rios.4": "§lPontes e estradas§0\n\nOnde a rua ou a estrada cruza água, o §lengenheiro§0 ergue uma ponte de tábuas um bloco acima do rio, com guarda-corpo e pilares de tora.\n\nEle também abre a §lestrada§0 para as duas vilas vizinhas mais próximas, até uns setenta blocos do Cruzeiro.\n\nCom a estrada pronta, a tropa para aquela vila chega um quarto mais rápido e corre metade do risco de assalto.\n\n§8A ponte gasta tábuas do Armazém.",
+	"block.arraial.bilheteria": "Bilheteria",
+	"arraial.profissao.ferroviario.m": "Ferroviário",
+	"arraial.profissao.ferroviario.f": "Ferroviária",
+	"projeto.arraial.estacao": "Estação Ferroviária",
+	"arraial.fala.oficio.ferroviario.0": "O trem não espera ninguém: apito às sete em ponto.",
+	"arraial.fala.oficio.ferroviario.1": "Com o trilho, a vila ficou do lado da capital.",
+	"arraial.ferroviario.carregando": "carregando os vagões para %s",
+	"arraial.ferroviario.partindo": "o trem vai sair para %s",
+	"arraial.ferroviario.chegando": "o trem voltou de %s",
+	"arraial.cronica.trem_partiu": "O trem partiu da estação para %s.",
+	"arraial.cronica.trem_voltou": "%s voltou de trem de %s: vendeu a carga por %s réis e trouxe %s mercadoria(s).",
+	"arraial.jei.bilheteria": "Posto do FERROVIÁRIO, na estação (era Republicana). O trem leva o excedente do Armazém para vilas que também têm estação: a maior carga, a viagem mais rápida e nenhum assalto. Entre duas estações o frete regional cai pela metade.",
+	"arraial.guia.rios.5": "§lEstação e trem§0\n\nNa era Republicana, vila com dez moradores ou mais ergue a §lestação§0: prédio de tijolo, plataforma coberta e trilho.\n\nO §lferroviário§0 carrega os vagões no Armazém e o trem parte para vilas que também têm estação.\n\nO trem leva mais que a tropa e a canoa, chega no mesmo dia e não sofre assalto.\n\n§8Entre duas estações o frete fica pela metade."
 }

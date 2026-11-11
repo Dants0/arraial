@@ -33,6 +33,7 @@ public final class Caravana {
 	private static final int CARGA_MAXIMA = 128;
 	/** A canoe carries more than a mule troop. */
 	public static final int CARGA_CANOA = 192;
+	public static final int CARGA_TREM = 256;
 
 	static String id(ServerLevel level, BlockPos pos) {
 		return Registro.id(level.dimension().identifier().toString(), pos);
@@ -41,6 +42,7 @@ public final class Caravana {
 	/** Morning: a tropeiro at home may set out. */
 	static void diario(ServerLevel level, ArraialBlockEntity a, List<MoradorEntity> moradores) {
 		barqueiro(level, a, moradores);
+		ferroviario(level, a, moradores);
 		MoradorEntity t = moradores.stream().filter(m -> m.profissao() == Profissao.TROPEIRO && m.posto() != null
 				&& m.viagemFase() == 0 && !m.comFome() && !m.doente()).findFirst().orElse(null);
 		if (t == null || level.getRandom().nextFloat() > 0.6F) {
@@ -70,20 +72,38 @@ public final class Caravana {
 		}
 	}
 
+	/** Morning: a ferroviário at home may send the train to another station. */
+	private static void ferroviario(ServerLevel level, ArraialBlockEntity a, List<MoradorEntity> moradores) {
+		MoradorEntity f = moradores.stream().filter(m -> m.profissao() == Profissao.FERROVIARIO && m.posto() != null
+				&& m.viagemFase() == 0 && !m.comFome() && !m.doente()).findFirst().orElse(null);
+		if (f == null || level.getRandom().nextFloat() > 0.7F) {
+			return;
+		}
+		String destino = destino(level, id(level, a.getBlockPos()), a.getBlockPos(), Profissao.FERROVIARIO);
+		if (destino != null) {
+			f.setViagem(1, destino, 0);
+		}
+	}
+
 	/** For the /arraial tropa command: set out today, whatever the dice say. */
 	public static void diarioForcado(ServerLevel level, ArraialBlockEntity a, MoradorEntity t) {
-		String destino = destino(level, id(level, a.getBlockPos()), a.getBlockPos(), t.profissao() == Profissao.BARQUEIRO);
+		String destino = destino(level, id(level, a.getBlockPos()), a.getBlockPos(), t.profissao());
 		if (destino != null) {
 			t.setViagem(1, destino, 0);
 		}
 	}
 
 	private static @Nullable String destino(ServerLevel level, String meu, BlockPos pos) {
-		return destino(level, meu, pos, false);
+		return destino(level, meu, pos, Profissao.TROPEIRO);
 	}
 
-	/** The best destination; by river, only arraiais that keep a canoe too. */
 	private static @Nullable String destino(ServerLevel level, String meu, BlockPos pos, boolean rio) {
+		return destino(level, meu, pos, rio ? Profissao.BARQUEIRO : Profissao.TROPEIRO);
+	}
+
+	/** The best destination; by river (or rail), only arraiais that keep a canoe (or a station) too. */
+	private static @Nullable String destino(ServerLevel level, String meu, BlockPos pos, Profissao quem) {
+		boolean rio = quem == Profissao.BARQUEIRO, trilho = quem == Profissao.FERROVIARIO;
 		Registro.Info eu = Registro.get(meu);
 		String dim = level.dimension().identifier().toString();
 		String melhor = null;
@@ -100,7 +120,8 @@ public final class Caravana {
 			if (rep < -30) {
 				continue; // not welcome there
 			}
-			if (rio ? !Economia.fluvial(meu, e.getKey()) || Economia.emGuerra(meu, e.getKey()) || Economia.embargo(meu, e.getKey())
+			if (rio || trilho ? !(rio ? Economia.fluvial(meu, e.getKey()) : Economia.ferroviario(meu, e.getKey()))
+					|| Economia.emGuerra(meu, e.getKey()) || Economia.embargo(meu, e.getKey())
 					: Economia.bloqueada(meu, e.getKey(), Vilas.dia(level))) {
 				continue; // the road is closed (robbers or war), or no canoe meets us there
 			}
@@ -176,16 +197,19 @@ public final class Caravana {
 			return;
 		}
 		double dist = Math.sqrt(d.posicao().distSqr(a.getBlockPos()));
-		boolean canoa = t.profissao() == Profissao.BARQUEIRO;
-		long duracao = canoa ? (long) Math.max(DIA / 3, Math.min(2 * DIA, dist / 700.0 * DIA))
+		boolean canoa = t.profissao() == Profissao.BARQUEIRO, trem = t.profissao() == Profissao.FERROVIARIO;
+		long duracao = trem ? (long) Math.max(DIA / 4, Math.min(DIA, dist / 1500.0 * DIA))
+				: canoa ? (long) Math.max(DIA / 3, Math.min(2 * DIA, dist / 700.0 * DIA))
 				: (long) Math.max(DIA / 2, Math.min(3 * DIA, dist / 400.0 * DIA));
-		if (!canoa && a.estradaPara(t.viagemDestino())) {
+		if (!canoa && !trem && a.estradaPara(t.viagemDestino())) {
 			duracao = duracao * 3 / 4; // the road is open: a quarter quicker
 		}
 		if (t.profissao() == Profissao.TROPEIRO) {
 			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.tropa_partiu", t.nome(), d.nome));
 		} else if (canoa) {
 			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.canoa_partiu", t.nome(), d.nome));
+		} else if (trem) {
+			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.trem_partiu", d.nome));
 		}
 		Comercio.partida(level, t);
 		BlockPos casa = t.posto() != null ? t.posto() : a.getBlockPos();
@@ -215,7 +239,7 @@ public final class Caravana {
 		if (a.estradaPara(destinoId)) {
 			risco /= 2; // an open road, with travellers on it: robbers keep away
 		}
-		boolean canoa = t.profissao() == Profissao.BARQUEIRO;
+		boolean canoa = t.profissao() == Profissao.BARQUEIRO, trem = t.profissao() == Profissao.FERROVIARIO;
 		int antes = a.tesouro();
 		boolean roubada = false;
 		if (d == null) {
@@ -226,7 +250,7 @@ public final class Caravana {
 			Component texto = Component.translatable("arraial.cronica.canoa_virou", t.nome(), d.nome);
 			Cronica.anotar(level, vila, texto);
 			Prefeitura.avisar(level, a, texto.copy().withStyle(ChatFormatting.GOLD));
-		} else if (!canoa && level.getRandom().nextFloat() < risco) {
+		} else if (!canoa && !trem && level.getRandom().nextFloat() < risco) {
 			// Caravana assaltada: the load is lost on the road.
 			Economia.roubo(meuId, destinoId, hoje);
 			roubada = true;
@@ -253,8 +277,8 @@ public final class Caravana {
 			negociar(level, a, t, meuId, destinoId, d, levou);
 		}
 		Comercio.pagarEscolta(level, a, t, Math.max(0, a.tesouro() - antes), roubada);
-		if (canoa && t.posto() != null) {
-			// The canoe comes back to the trapiche.
+		if ((canoa || trem) && t.posto() != null) {
+			// The canoe comes back to the trapiche, the train to the station.
 			BlockPos amarra = t.posto();
 			t.teleportTo(amarra.getX() + 0.5, amarra.getY() + 1, amarra.getZ() + 0.5);
 			t.setViagem(4, destinoId, 0);
@@ -310,7 +334,7 @@ public final class Caravana {
 		Registro.mudarReputacao(meuId, destinoId, 3);
 		int itens = comprou.values().stream().mapToInt(Integer::intValue).sum();
 		Cronica.anotar(level, a.getBlockPos(), Component.translatable(t.profissao() == Profissao.BARQUEIRO ? "arraial.cronica.canoa_voltou"
-				: "arraial.cronica.tropa_voltou", t.nome(), d.nome, pago, itens));
+				: t.profissao() == Profissao.FERROVIARIO ? "arraial.cronica.trem_voltou" : "arraial.cronica.tropa_voltou", t.nome(), d.nome, pago, itens));
 	}
 
 	/**

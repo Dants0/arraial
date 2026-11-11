@@ -532,6 +532,50 @@ public class GerarPlantas {
 				new String[] {" L.L ", " ... ", " ... ", " L.L "},
 				new String[] {" sss ", " sss ", " sss ", " sss "}));
 
+		// ---- Rios 1E: the estação (Republican era). A brick station house facing the town (doors on
+		// both sides), the bilheteria (ferroviário) in the front wall, a canopy over the platform on
+		// fence posts, and twenty-one blocks of track on a gravel bed.
+		Map<Character, String> estacao = new HashMap<>();
+		estacao.put('S', "minecraft:stone_bricks");
+		estacao.put('B', "minecraft:bricks");
+		estacao.put('G', "minecraft:gravel");
+		estacao.put('R', "minecraft:rail[shape=east_west,waterlogged=false]");
+		estacao.put('W', "minecraft:glass");
+		estacao.put('F', "minecraft:dark_oak_fence[east=false,north=false,south=false,waterlogged=false,west=false]");
+		estacao.put('s', "minecraft:stone_brick_slab[type=bottom,waterlogged=false]");
+		estacao.put('K', "arraial:bilheteria[facing=south]");
+		estacao.put('E', "minecraft:dark_oak_stairs[facing=north,half=bottom,shape=straight,waterlogged=false]");
+		estacao.put('b', "minecraft:barrel[facing=up,open=false]");
+		estacao.put('l', "arraial:lampiao[hanging=true,waterlogged=false]");
+		Grade gst = new Grade(21, 5, 7);
+		gst.caixa(4, 0, 0, 16, 0, 3, 'S');
+		gst.caixa(2, 0, 4, 18, 0, 5, 'S');
+		gst.caixa(0, 0, 6, 20, 0, 6, 'G');
+		gst.caixa(0, 1, 6, 20, 1, 6, 'R');
+		gst.caixa(0, 2, 6, 20, 3, 6, '.');
+		gst.caixa(4, 1, 0, 16, 3, 3, 'B');
+		gst.caixa(5, 1, 1, 15, 3, 2, '.');
+		gst.caixa(9, 1, 0, 11, 2, 0, '.');
+		gst.caixa(9, 1, 3, 11, 2, 3, '.');
+		gst.p(7, 1, 3, 'K');
+		gst.p(7, 2, 3, 'W');
+		gst.p(13, 2, 3, 'W');
+		gst.p(14, 2, 3, 'W');
+		gst.p(6, 2, 0, 'W');
+		gst.p(14, 2, 0, 'W');
+		gst.p(15, 1, 1, 'b');
+		gst.p(5, 1, 1, 'b');
+		gst.caixa(2, 1, 4, 18, 3, 5, '.');
+		gst.caixa(4, 1, 5, 4, 3, 5, 'F');
+		gst.caixa(10, 1, 5, 10, 3, 5, 'F');
+		gst.caixa(16, 1, 5, 16, 3, 5, 'F');
+		gst.p(12, 1, 4, 'E');
+		gst.p(13, 1, 4, 'E');
+		gst.p(7, 3, 4, 'l');
+		gst.p(13, 3, 4, 'l');
+		gst.caixa(3, 4, 0, 17, 4, 5, 's');
+		escrever(out.resolve("estacao.nbt"), estacao, gst.camadas());
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

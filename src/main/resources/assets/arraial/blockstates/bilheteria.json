@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arraial:block/bilheteria"
+    },
+    "facing=east": {
+      "model": "arraial:block/bilheteria",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arraial:block/bilheteria",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arraial:block/bilheteria",
+      "y": 270
+    }
+  }
+}

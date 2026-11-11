@@ -179,6 +179,7 @@ public final class PlanoDeObra {
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.MO, new Custo(Items.COBBLESTONE, 4)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.RODA_DAGUA, new Custo(Items.OAK_LOG, 2)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.MONJOLO, new Custo(Items.OAK_LOG, 2)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.BILHETERIA, new Custo(Items.OAK_LOG, 2)),
 			Map.entry(net.minecraft.world.level.block.Blocks.SPRUCE_STAIRS, new Custo(Items.OAK_PLANKS, 1)),
 			Map.entry(net.minecraft.world.level.block.Blocks.SPRUCE_PLANKS, new Custo(Items.OAK_PLANKS, 1)),
 			Map.entry(net.minecraft.world.level.block.Blocks.BARREL, new Custo(Items.OAK_PLANKS, 4)),
