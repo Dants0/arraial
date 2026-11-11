@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=north,fase=0": {
+      "model": "arraial:block/roda_dagua_0"
+    },
+    "facing=north,fase=1": {
+      "model": "arraial:block/roda_dagua_1"
+    },
+    "facing=north,fase=2": {
+      "model": "arraial:block/roda_dagua_2"
+    },
+    "facing=north,fase=3": {
+      "model": "arraial:block/roda_dagua_3"
+    },
+    "facing=east,fase=0": {
+      "model": "arraial:block/roda_dagua_0",
+      "y": 90
+    },
+    "facing=east,fase=1": {
+      "model": "arraial:block/roda_dagua_1",
+      "y": 90
+    },
+    "facing=east,fase=2": {
+      "model": "arraial:block/roda_dagua_2",
+      "y": 90
+    },
+    "facing=east,fase=3": {
+      "model": "arraial:block/roda_dagua_3",
+      "y": 90
+    },
+    "facing=south,fase=0": {
+      "model": "arraial:block/roda_dagua_0",
+      "y": 180
+    },
+    "facing=south,fase=1": {
+      "model": "arraial:block/roda_dagua_1",
+      "y": 180
+    },
+    "facing=south,fase=2": {
+      "model": "arraial:block/roda_dagua_2",
+      "y": 180
+    },
+    "facing=south,fase=3": {
+      "model": "arraial:block/roda_dagua_3",
+      "y": 180
+    },
+    "facing=west,fase=0": {
+      "model": "arraial:block/roda_dagua_0",
+      "y": 270
+    },
+    "facing=west,fase=1": {
+      "model": "arraial:block/roda_dagua_1",
+      "y": 270
+    },
+    "facing=west,fase=2": {
+      "model": "arraial:block/roda_dagua_2",
+      "y": 270
+    },
+    "facing=west,fase=3": {
+      "model": "arraial:block/roda_dagua_3",
+      "y": 270
+    }
+  }
+}

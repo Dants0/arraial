@@ -265,6 +265,7 @@ public final class Pessoa {
 			case ENTALHADOR -> new ItemStack(com.guilhermegoes.arraial.registry.ModBlocks.TALHA_DOURADA, 2);
 			case BARQUEIRO -> new ItemStack(Items.COOKED_SALMON, 8);
 			case ESTIVADOR -> new ItemStack(ModItems.SAL, 6);
+			case MOLEIRO -> new ItemStack(ModItems.FARINHA_TRIGO, 12);
 			default -> new ItemStack(ModItems.REIS, 12);
 		};
 	}

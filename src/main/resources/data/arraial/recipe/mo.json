@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": "minecraft:wheat",
+    "S": "minecraft:smooth_stone"
+  },
+  "pattern": [
+    " W ",
+    "SSS",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:mo"
+  }
+}

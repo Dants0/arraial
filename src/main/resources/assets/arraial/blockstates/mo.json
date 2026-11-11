@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arraial:block/mo"
+    },
+    "facing=east": {
+      "model": "arraial:block/mo",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arraial:block/mo",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arraial:block/mo",
+      "y": 270
+    }
+  }
+}

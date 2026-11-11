@@ -62,7 +62,8 @@ public final class Prefeitura {
 			Map.entry(Profissao.CAFEICULTOR, "cafezal"),
 			Map.entry(Profissao.ENTALHADOR, "oficina_entalhe"),
 			Map.entry(Profissao.BARQUEIRO, "trapiche"),
-			Map.entry(Profissao.ESTIVADOR, "porto"));
+			Map.entry(Profissao.ESTIVADOR, "porto"),
+			Map.entry(Profissao.MOLEIRO, "moinho"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -244,6 +245,15 @@ public final class Prefeitura {
 		// The river: a trapiche (and a barqueiro) once the arraial is established by the water.
 		if (n >= 7 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.AMARRA) == 0 && Vilas.temAgua(level, vila)) {
 			desejos.add("trapiche");
+		}
+		// The water at work: a monjolo pounds for the farinheiro and the cafeicultor; a moinho grinds
+		// the wheat once the arraial is established (farinha de trigo: more bread per sheaf).
+		if (n >= 6 && temAgua(level, vila) && obras(level, vila, "monjolo") == 0
+				&& moradores.stream().anyMatch(m -> m.profissao() == Profissao.FARINHEIRO || m.profissao() == Profissao.CAFEICULTOR)) {
+			desejos.add("monjolo");
+		}
+		if (n >= 8 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.MO) == 0 && temAgua(level, vila)) {
+			desejos.add("moinho");
 		}
 		// The sea: a Vila on the coast (deep water nearby) raises a porto, and the ships start to call.
 		if (n >= 9 && estagio.pelo(Estagio.VILA) && obras(level, vila, "porto") == 0 && Vilas.litoral(level, vila)) {

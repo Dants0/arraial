@@ -30,6 +30,8 @@ public class ArtesaoGoal extends OficioGoal {
 	private Receitas.@Nullable Receita receita;
 	private int lotes;
 	private int trabalho;
+	/** Ticks per batch this time (the monjolo halves the farinheiro's). */
+	private int ticksPorLote = TICKS_POR_LOTE;
 
 	public ArtesaoGoal(MoradorEntity morador) {
 		super(morador, Profissao.NENHUMA);
@@ -82,6 +84,8 @@ public class ArtesaoGoal extends OficioGoal {
 	public void start() {
 		fase = Fase.BUSCAR;
 		trabalho = 0;
+		ticksPorLote = morador.profissao() == Profissao.FARINHEIRO && morador.vila() != null
+				&& Vilas.obraPronta(level(), morador.vila(), "monjolo") != null ? TICKS_POR_LOTE / 2 : TICKS_POR_LOTE;
 	}
 
 	@Override
@@ -138,7 +142,7 @@ public class ArtesaoGoal extends OficioGoal {
 					bater();
 					level().playSound(null, posto, SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 0.6F, 1.0F);
 				}
-				if (trabalho >= TICKS_POR_LOTE * lotes) {
+				if (trabalho >= ticksPorLote * lotes) {
 					for (Map.Entry<Item, Integer> e : receita.entrada().entrySet()) {
 						morador.gastar(e.getKey(), e.getValue() * lotes);
 					}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "#minecraft:logs",
+    "B": "minecraft:bowl"
+  },
+  "pattern": [
+    "L  ",
+    "LLL",
+    "B  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:monjolo"
+  }
+}

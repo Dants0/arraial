@@ -38,7 +38,7 @@ public class GuiaItem extends Item {
 			new Capitulo("comercio", List.of("comercio.1", "comercio.2", "comercio.3", "comercio.4", "comercio.5")),
 			new Capitulo("itens", List.of("itens.1", "itens.2", "itens.3", "itens.4", "itens.5", "itens.6", "itens.7")),
 			new Capitulo("fauna", List.of("fauna.1", "fauna.2")),
-			new Capitulo("rios", List.of("rios.1", "rios.2")),
+			new Capitulo("rios", List.of("rios.1", "rios.2", "rios.3")),
 			new Capitulo("dicas", List.of("dicas.1", "dicas.2")));
 
 	public GuiaItem(Properties properties) {

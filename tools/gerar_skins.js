@@ -508,6 +508,13 @@ function skin(oficio, fem, v) {
       suspensorio(s, '#4A3A2A');
       gorro(s, '#9A2E2A');
       break;
+    case 'moleiro':
+      camisa(s, o, '#EDE8DA', { manga: 6, gola: 'redonda', botoes: false });
+      if (saia) vestido(s, o, '#EDE8DA', '#B8AE96', { manga: 6, avental: '#F6F3EA' }); else calca(s, o, '#B8AE96');
+      aventalFrente(s, '#F6F3EA', 6, true);
+      sujeira(s, '#FFFFFF', [CORPO, BRACO_D, BRACO_E, PERNA_D, PERNA_E], 2, 0.35, 77);
+      gorro(s, '#EDE8DA');
+      break;
     case 'mascate':
       camisa(s, o, '#C9862A', { manga: 8, punho: '#7A2E5A' });
       if (saia) vestido(s, o, '#C9862A', '#2F6A5A', { manga: 8 }); else calca(s, o, '#3F5A4A', { bota: true });
@@ -548,7 +555,7 @@ function previa(skins, cols, escala, arquivo) {
 
 // ------------------------------------------------------------------ main
 const OFICIOS = ['morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro', 'farinheiro', 'feirante',
-  'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes', 'mascate', 'mestre_engenho', 'cafeicultor', 'entalhador', 'barqueiro', 'estivador'];
+  'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes', 'mascate', 'mestre_engenho', 'cafeicultor', 'entalhador', 'barqueiro', 'estivador', 'moleiro'];
 const saida = process.argv[2];
 fs.mkdirSync(saida, { recursive: true });
 let n = 0;

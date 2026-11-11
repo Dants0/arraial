@@ -79,6 +79,8 @@ public final class ModItems {
 	public static final Item SAL = register("sal", Item::new, new Item.Properties());
 	/** Chita: printed cotton from overseas, the cloth of the festa junina. */
 	public static final Item CHITA = register("chita", Item::new, new Item.Properties());
+	/** Farinha de trigo: wheat ground at the moinho d'água; bakes into bread, two for one wheat. */
+	public static final Item FARINHA_TRIGO = register("farinha_trigo", Item::new, new Item.Properties());
 	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
 	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));

@@ -501,6 +501,37 @@ public class GerarPlantas {
 				mastro,
 				new String[] {"     ", "     ", "     ", "     ", "  R  ", "     ", "     ", "     ", "     ", "  R  ", "     ", "     ", "     "}));
 
+		// ---- Rios: the moinho d'água. A stone-and-plank mill on the bank with the mó (moleiro)
+		// inside; the axle goes through the back wall to the wheel standing over the water.
+		Map<Character, String> moinho = new HashMap<>();
+		moinho.put('C', "minecraft:cobblestone");
+		moinho.put('P', "minecraft:oak_planks");
+		moinho.put('L', "minecraft:oak_log[axis=z]");
+		moinho.put('s', "minecraft:oak_slab[type=bottom,waterlogged=false]");
+		moinho.put('b', "minecraft:barrel[facing=up,open=false]");
+		moinho.put('M', "arraial:mo[facing=south]");
+		moinho.put('R', "arraial:roda_dagua[facing=south,fase=0]");
+		moinho.put('l', "arraial:lampiao[hanging=false,waterlogged=false]");
+		escrever(out.resolve("moinho.nbt"), moinho, List.of(
+				new String[] {"CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "   R   "},
+				new String[] {"CPP.PPC", "Pb...bP", "P..M..P", "P.....P", "Pb...lP", "CPPLPPC", "       "},
+				new String[] {"CPP.PPC", "P.....P", ".......", "P.....P", "P.....P", "CPPPPPC", "       "},
+				new String[] {"CPPPPPC", "P.....P", "P.....P", "P.....P", "P.....P", "CPPPPPC", "       "},
+				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssssss", "sssssss", "       "}));
+
+		// ---- Rios: the monjolo. A little roofed deck half over the water; the beam's trough fills
+		// from the stream and the pestle pounds in the pilão under the roof.
+		Map<Character, String> monjolo = new HashMap<>();
+		monjolo.put('P', "minecraft:oak_planks");
+		monjolo.put('L', "minecraft:oak_log[axis=y]");
+		monjolo.put('s', "minecraft:oak_slab[type=bottom,waterlogged=false]");
+		monjolo.put('M', "arraial:monjolo[batendo=false,facing=north]");
+		escrever(out.resolve("monjolo.nbt"), monjolo, List.of(
+				new String[] {" PPP ", " PPP ", " PPP ", " PPP "},
+				new String[] {" L.L ", " ... ", " .M. ", " L.L "},
+				new String[] {" L.L ", " ... ", " ... ", " L.L "},
+				new String[] {" sss ", " sss ", " sss ", " sss "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

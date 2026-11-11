@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "ingredient": "arraial:farinha_trigo",
+  "result": {
+    "id": "minecraft:bread"
+  },
+  "experience": 0.2,
+  "cookingtime": 200
+}

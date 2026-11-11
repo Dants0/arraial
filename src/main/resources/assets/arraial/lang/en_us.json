@@ -1295,5 +1295,20 @@
 	"arraial.jei.guindaste": "Workstation of the STEVEDORE, at the end of the port's wharf. While a ship is in port, the stevedore takes the storehouse surplus (sugar, roasted coffee, rapadura, leather, charque) to the crane and comes back with the salt, iron and chita the village bought.",
 	"arraial.jei.sal": "Arrives on the merchant ship at the port. Three raw beef and a sack of salt make three charque at the crafting table.",
 	"arraial.jei.chita": "Printed cloth that arrives by ship. One chita and one string make eight festa bunting.",
-	"arraial.guia.rios.2": "§lPort and merchant ship§0\n\nA village on the coast (deep water nearby) builds a §lport§0: a stone warehouse and a long wharf with the stevedore's crane.\n\nNow and then a §lship§0 moors alongside the wharf. The captain sells salt, iron and chita and buys sugar, coffee, rapadura, leather and charque.\n\nThe §lstevedore§0 carries the storehouse surplus to the ship and brings back what the village bought.\n\n§8The ship sails at dusk."
+	"arraial.guia.rios.2": "§lPort and merchant ship§0\n\nA village on the coast (deep water nearby) builds a §lport§0: a stone warehouse and a long wharf with the stevedore's crane.\n\nNow and then a §lship§0 moors alongside the wharf. The captain sells salt, iron and chita and buys sugar, coffee, rapadura, leather and charque.\n\nThe §lstevedore§0 carries the storehouse surplus to the ship and brings back what the village bought.\n\n§8The ship sails at dusk.",
+	"item.arraial.farinha_trigo": "Wheat Flour",
+	"block.arraial.mo": "Millstone",
+	"block.arraial.roda_dagua": "Water Wheel",
+	"block.arraial.monjolo": "Monjolo",
+	"arraial.profissao.moleiro.m": "Miller",
+	"arraial.profissao.moleiro.f": "Miller",
+	"projeto.arraial.moinho": "Water Mill",
+	"projeto.arraial.monjolo": "Monjolo",
+	"arraial.fala.oficio.moleiro.0": "Water in the river, flour in the sack.",
+	"arraial.fala.oficio.moleiro.1": "Every sheaf that goes into the stones comes out as two of flour.",
+	"arraial.jei.mo": "Workstation of the MILLER, inside the water mill. The miller grinds the storehouse wheat into wheat flour (one sheaf makes two), and the farmer bakes a loaf from two flours: three times the bread per wheat.",
+	"arraial.jei.roda_dagua": "The mill wheel: it turns by itself while there is water under or beside it.",
+	"arraial.jei.monjolo": "A water-driven pestle: with water close by it pounds all day on its own. A village with a finished monjolo makes cassava flour twice as fast, and the coffee grower roasts twice the coffee without losing beans.",
+	"arraial.jei.farinha_trigo": "Ground at the water mill. Bake it in a furnace or smoker to get bread.",
+	"arraial.guia.rios.3": "§lWater mill and monjolo§0\n\nThe §lmill§0 stands on the river bank: the wheel turns in the water and the §lmillstone§0 grinds the wheat. The §lmiller§0 makes wheat flour and bread goes three times as far.\n\nThe §lmonjolo§0 is a pestle the water drives by itself: cassava flour and coffee come out twice as fast.\n\n§8Without water, wheel and monjolo stand still."
 }

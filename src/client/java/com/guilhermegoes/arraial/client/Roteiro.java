@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=moinho: a village on a river with a water mill and a monjolo.
+		if ("moinho".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			moinho();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=porto: a village on a deep lagoon, its porto, a ship calling and sailing.
 		if ("porto".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			porto();
@@ -1158,6 +1167,125 @@ public final class Roteiro {
 			}
 		}));
 		passo(20, () -> foto("82_trapiche_pedreiro"));
+	}
+
+	/** Where this block stands in the finished building of this project (or null). */
+	private static @org.jspecify.annotations.Nullable BlockPos blocoNaObra(net.minecraft.server.level.ServerLevel level, BlockPos vila, String projeto,
+			net.minecraft.world.level.block.Block bloco) {
+		BlockPos m = com.guilhermegoes.arraial.vila.Vilas.obraPronta(level, vila, projeto);
+		if (m == null || !(level.getBlockEntity(m) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c)) {
+			return null;
+		}
+		for (var e : c.plano(level).map(com.guilhermegoes.arraial.obra.PlanoDeObra::etapas).orElse(List.of())) {
+			if (e.state().is(bloco)) {
+				return e.pos();
+			}
+		}
+		return null;
+	}
+
+	private static final String[] ESTADOS = {"", ""};
+
+	/**
+	 * The water: a village on a river gets a finished moinho and monjolo; the wheel turns and the
+	 * monjolo pounds (block states change), an unemployed settler takes the mó and grinds the
+	 * armazém's wheat into farinha de trigo (no other food left, so the arraial wants bread).
+	 */
+	private static void moinho() {
+		final int x = 350, z = 1000;
+		// Go there first and let the chunks load before levelling the field.
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("moinho: chunks carregados"));
+		campoComRio(300, 1000);
+		passo(160, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta moinho"));
+		passo(40, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial obra_pronta monjolo"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos roda = blocoNaObra(level, v, "moinho", com.guilhermegoes.arraial.registry.ModBlocks.RODA_DAGUA);
+			BlockPos mo = blocoNaObra(level, v, "moinho", com.guilhermegoes.arraial.registry.ModBlocks.MO);
+			BlockPos monjolo = blocoNaObra(level, v, "monjolo", com.guilhermegoes.arraial.registry.ModBlocks.MONJOLO);
+			log("moinho: vila " + v.toShortString() + " roda=" + (roda == null ? "NAO" : roda.toShortString() + " " + level.getBlockState(roda))
+					+ " mo=" + (mo == null ? "NAO" : mo.toShortString()) + " monjolo=" + (monjolo == null ? "NAO" : monjolo.toShortString() + " " + level.getBlockState(monjolo)));
+			ESTADOS[0] = (roda == null ? "" : level.getBlockState(roda).toString()) + "|" + (monjolo == null ? "" : level.getBlockState(monjolo).toString());
+			if (mo != null) {
+				cmd("summon arraial:morador " + mo.getX() + " " + (mo.getY() + 1) + " " + (mo.getZ() + 1) + " {Profissao:0,Visual:1}");
+			}
+			// Only wheat in the armazém: the arraial wants bread, and with a moleiro, flour first.
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			int tirou = com.guilhermegoes.arraial.vila.Vilas.retirar(armazens, st -> st.has(net.minecraft.core.component.DataComponents.FOOD), 9999).stream()
+					.mapToInt(net.minecraft.world.item.ItemStack::getCount).sum();
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.WHEAT, 48);
+			log("moinho: tirei " + tirou + " de comida, pus 48 trigo");
+		}));
+		passo(7, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos roda = blocoNaObra(level, v, "moinho", com.guilhermegoes.arraial.registry.ModBlocks.RODA_DAGUA);
+			BlockPos monjolo = blocoNaObra(level, v, "monjolo", com.guilhermegoes.arraial.registry.ModBlocks.MONJOLO);
+			String agora = (roda == null ? "" : level.getBlockState(roda).toString()) + "|" + (monjolo == null ? "" : level.getBlockState(monjolo).toString());
+			log("moinho: antes " + ESTADOS[0] + " / depois " + agora + " -> roda gira=" + !ESTADOS[0].split("\\|", -1)[0].equals(agora.split("\\|", -1)[0]));
+			ESTADOS[1] = agora;
+		}));
+		// The monjolo strikes for a moment every couple of seconds: watch it for a while.
+		final int[] batidas = {0};
+		for (int i = 0; i < 30; i++) {
+			passo(3, () -> servidor((srv, sp) -> {
+				var level = sp.level();
+				BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+				BlockPos monjolo = blocoNaObra(level, v, "monjolo", com.guilhermegoes.arraial.registry.ModBlocks.MONJOLO);
+				if (monjolo != null && level.getBlockState(monjolo).getValue(com.guilhermegoes.arraial.obra.MonjoloBlock.BATENDO)) {
+					batidas[0]++;
+				}
+			}));
+		}
+		passo(1, () -> log("moinho: monjolo batendo em " + batidas[0] + " de 30 amostras"));
+		passo(10, () -> verObra("moinho", 14));
+		passo(30, () -> foto("86_moinho"));
+		passoAte(40, 2400, () -> {
+			var srv = mc().getSingleplayerServer();
+			if (srv == null) {
+				return false;
+			}
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(srv.overworld(), new BlockPos(x, 120, z));
+			return v != null && com.guilhermegoes.arraial.vila.Vilas.contar(com.guilhermegoes.arraial.vila.Vilas.armazens(srv.overworld(), v),
+					com.guilhermegoes.arraial.registry.ModItems.FARINHA_TRIGO) >= 4;
+		}, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			StringBuilder quem = new StringBuilder();
+			for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60),
+					e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.MOLEIRO || e.profissao() == com.guilhermegoes.arraial.npc.Profissao.ROCEIRO)) {
+				quem.append(m.profissao().name()).append(' ').append(m.nome()).append(" status=").append(m.status().getString())
+						.append(" carga=").append(m.cargaCopia()).append("; ");
+			}
+			log("moinho: trigo=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.WHEAT)
+					+ " farinha_trigo=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.FARINHA_TRIGO)
+					+ " pao=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.BREAD)
+					+ " monjolo pronto=" + (com.guilhermegoes.arraial.vila.Vilas.obraPronta(level, v, "monjolo") != null) + " | " + quem);
+		}));
+		passo(10, () -> verObra("moinho", 10));
+		passo(30, () -> foto("87_moinho_moleiro"));
+		passo(10, () -> verObra("monjolo", 7));
+		passo(30, () -> foto("88_monjolo"));
+		// From the river: the wheel and the monjolo up close.
+		passo(10, () -> servidor((srv, sp) -> {
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(x, 120, z));
+			BlockPos roda = blocoNaObra(sp.level(), v, "moinho", com.guilhermegoes.arraial.registry.ModBlocks.RODA_DAGUA);
+			if (roda != null) {
+				sp.teleportTo(sp.level(), roda.getX() + 3.5, roda.getY() + 2.5, roda.getZ() + 5.5, java.util.Set.of(), 150, 20, true);
+			}
+		}));
+		passo(30, () -> foto("89_roda_dagua"));
+		passo(10, () -> servidor((srv, sp) -> {
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(x, 120, z));
+			BlockPos m = blocoNaObra(sp.level(), v, "monjolo", com.guilhermegoes.arraial.registry.ModBlocks.MONJOLO);
+			if (m != null) {
+				sp.teleportTo(sp.level(), m.getX() + 0.5, m.getY() + 1.2, m.getZ() - 1.6, java.util.Set.of(), 0, 30, true);
+			}
+		}));
+		passo(30, () -> foto("90_monjolo_perto"));
 	}
 
 	/** A flat field with a deep lagoon (seven blocks of water) south of it, and a village. */

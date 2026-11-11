@@ -38,7 +38,8 @@ public enum Profissao {
 	ENTALHADOR("entalhador"),
 	/** The river trader: takes the canoe from the trapiche to other arraiais with a trapiche. */
 	BARQUEIRO("barqueiro"),
-	ESTIVADOR("estivador");
+	ESTIVADOR("estivador"),
+	MOLEIRO("moleiro");
 
 	private final String id;
 
@@ -78,6 +79,7 @@ public enum Profissao {
 			case ENTALHADOR -> ModBlocks.BANCADA_ENTALHE;
 			case BARQUEIRO -> ModBlocks.AMARRA;
 			case ESTIVADOR -> ModBlocks.GUINDASTE;
+			case MOLEIRO -> ModBlocks.MO;
 			default -> null;
 		};
 	}

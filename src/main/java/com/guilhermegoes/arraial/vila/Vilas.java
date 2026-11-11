@@ -83,6 +83,17 @@ public final class Vilas {
 		return false;
 	}
 
+	/** A finished building of this project in the arraial (its marker), or null. */
+	public static @org.jspecify.annotations.Nullable BlockPos obraPronta(ServerLevel level, BlockPos vila, String projeto) {
+		for (BlockPos p : com.guilhermegoes.arraial.obra.CanteiroBlockEntity.ativos(level)) {
+			if (p.closerThan(vila, RAIO + 8) && level.getBlockEntity(p) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c && c.concluida()
+					&& c.projeto().map(pr -> pr.id().equals(projeto)).orElse(false)) {
+				return p;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * On the coast (or a great lake): many columns around the Cruzeiro are open water at least three
 	 * deep, enough for a ship's keel.

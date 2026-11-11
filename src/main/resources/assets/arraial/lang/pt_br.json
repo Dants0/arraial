@@ -1295,5 +1295,20 @@
 	"arraial.jei.guindaste": "Posto do ESTIVADOR, no fim do cais do porto. Com navio no porto, o estivador leva o excedente do Armazém (açúcar, café torrado, rapadura, couro, charque) até o guindaste e volta com o sal, o ferro e a chita que a vila comprou.",
 	"arraial.jei.sal": "Chega pelo navio mercante ao porto. Três carnes cruas e um saco de sal viram três charques na bancada.",
 	"arraial.jei.chita": "Pano estampado que chega pelo navio. Uma chita e uma linha dão oito bandeirinhas de festa.",
-	"arraial.guia.rios.2": "§lPorto e navio mercante§0\n\nVila no litoral (água funda por perto) ergue um §lporto§0: armazém de pedra e um cais comprido com o guindaste do estivador.\n\nDe tempos em tempos um §lnavio§0 atraca ao lado do cais. O capitão vende sal, ferro e chita e compra açúcar, café, rapadura, couro e charque.\n\nO §lestivador§0 leva o excedente do Armazém ao navio e traz o que a vila comprou.\n\n§8O navio zarpa ao entardecer."
+	"arraial.guia.rios.2": "§lPorto e navio mercante§0\n\nVila no litoral (água funda por perto) ergue um §lporto§0: armazém de pedra e um cais comprido com o guindaste do estivador.\n\nDe tempos em tempos um §lnavio§0 atraca ao lado do cais. O capitão vende sal, ferro e chita e compra açúcar, café, rapadura, couro e charque.\n\nO §lestivador§0 leva o excedente do Armazém ao navio e traz o que a vila comprou.\n\n§8O navio zarpa ao entardecer.",
+	"item.arraial.farinha_trigo": "Farinha de Trigo",
+	"block.arraial.mo": "Mó",
+	"block.arraial.roda_dagua": "Roda d'Água",
+	"block.arraial.monjolo": "Monjolo",
+	"arraial.profissao.moleiro.m": "Moleiro",
+	"arraial.profissao.moleiro.f": "Moleira",
+	"projeto.arraial.moinho": "Moinho d'Água",
+	"projeto.arraial.monjolo": "Monjolo",
+	"arraial.fala.oficio.moleiro.0": "Água no rio, farinha no saco.",
+	"arraial.fala.oficio.moleiro.1": "Cada feixe de trigo que entra na mó vira dois de farinha.",
+	"arraial.jei.mo": "Posto do MOLEIRO, dentro do moinho d'água. O moleiro mói o trigo do Armazém em farinha de trigo (um feixe dá duas), e o roceiro assa um pão com duas farinhas: o trigo rende três vezes mais.",
+	"arraial.jei.roda_dagua": "A roda do moinho: gira sozinha enquanto tiver água embaixo ou ao lado.",
+	"arraial.jei.monjolo": "Pilão movido a água: com água por perto ele bate sozinho o dia todo. Vila com monjolo pronto faz farinha de mandioca duas vezes mais rápido, e o cafeicultor torra o dobro de café sem perder grão.",
+	"arraial.jei.farinha_trigo": "Moída no moinho d'água. Asse no forno ou no defumador para virar pão.",
+	"arraial.guia.rios.3": "§lMoinho d'água e monjolo§0\n\nO §lmoinho§0 se ergue na beira do rio: a roda gira na água e a §lmó§0 mói o trigo. O §lmoleiro§0 faz farinha de trigo e o pão rende três vezes mais.\n\nO §lmonjolo§0 é um pilão que a água bate sozinho: a farinha de mandioca e o café saem duas vezes mais rápido.\n\n§8Sem água, a roda e o monjolo param."
 }

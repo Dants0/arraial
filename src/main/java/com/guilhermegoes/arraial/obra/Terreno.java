@@ -28,7 +28,7 @@ public final class Terreno {
 
 	private static final int RAIO_MINIMO = 7;
 	/** Buildings that stand at the water's edge: the front on land, the back (a deck) over the water. */
-	public static final java.util.Set<String> NA_AGUA = java.util.Set.of("trapiche", "porto");
+	public static final java.util.Set<String> NA_AGUA = java.util.Set.of("trapiche", "porto", "moinho", "monjolo");
 	private static final int FOLGA = 2;
 
 	public static Optional<Lugar> procurar(ServerLevel level, BlockPos vila, Catalogo.Projeto projeto) {

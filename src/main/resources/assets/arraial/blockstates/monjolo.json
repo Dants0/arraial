@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "batendo=false,facing=north": {
+      "model": "arraial:block/monjolo_alto"
+    },
+    "batendo=true,facing=north": {
+      "model": "arraial:block/monjolo_batendo"
+    },
+    "batendo=false,facing=east": {
+      "model": "arraial:block/monjolo_alto",
+      "y": 90
+    },
+    "batendo=true,facing=east": {
+      "model": "arraial:block/monjolo_batendo",
+      "y": 90
+    },
+    "batendo=false,facing=south": {
+      "model": "arraial:block/monjolo_alto",
+      "y": 180
+    },
+    "batendo=true,facing=south": {
+      "model": "arraial:block/monjolo_batendo",
+      "y": 180
+    },
+    "batendo=false,facing=west": {
+      "model": "arraial:block/monjolo_alto",
+      "y": 270
+    },
+    "batendo=true,facing=west": {
+      "model": "arraial:block/monjolo_batendo",
+      "y": 270
+    }
+  }
+}

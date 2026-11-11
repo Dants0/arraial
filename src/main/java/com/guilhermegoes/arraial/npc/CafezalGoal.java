@@ -160,13 +160,16 @@ public class CafezalGoal extends OficioGoal {
 			bater();
 			level().sendParticles(ParticleTypes.SMOKE, t.getX() + 0.5, t.getY() + 0.5, t.getZ() + 0.5, 3, 0.3, 0.05, 0.3, 0.01);
 		}
-		if (++trabalho < TICKS_TORRA) {
+		// With a monjolo the coffee is hulled by the water: twice as fast, and nothing lost to the pilão.
+		boolean monjolo = morador.vila() != null && com.guilhermegoes.arraial.vila.Vilas.obraPronta(level(), morador.vila(), "monjolo") != null;
+		if (++trabalho < (monjolo ? TICKS_TORRA / 2 : TICKS_TORRA)) {
 			return;
 		}
 		// Keep a few cherries to plant while the cafezal is still small.
 		int guardar = pes() < PES ? Math.min(2, cerejas()) : 0;
-		int torrar = (cerejas() - guardar) / 2;
-		morador.gastar(ModItems.CAFE_CEREJA, torrar * 2);
+		int porTorrado = monjolo ? 1 : 2;
+		int torrar = (cerejas() - guardar) / porTorrado;
+		morador.gastar(ModItems.CAFE_CEREJA, torrar * porTorrado);
 		morador.guardar(ModItems.CAFE_TORRADO, torrar);
 		level().playSound(null, t, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.3F, 1.4F);
 		fase = Fase.ENTREGAR;

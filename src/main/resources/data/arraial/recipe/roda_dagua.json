@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "#minecraft:planks",
+    "L": "#minecraft:logs"
+  },
+  "pattern": [
+    "P P",
+    " L ",
+    "P P"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:roda_dagua"
+  }
+}

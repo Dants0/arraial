@@ -191,6 +191,16 @@ public final class ModBlocks {
 	public static final Block GUINDASTE = register("guindaste",
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("guindaste").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
 
+	/** Mó: the millstones of the moinho d'água, workstation of the moleiro. */
+	public static final Block MO = register("mo",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("mo").mapColor(MapColor.STONE).strength(2.5F).sound(SoundType.STONE).noOcclusion()));
+	/** Roda d'água: the mill's paddle wheel; it turns while it stands in water. */
+	public static final Block RODA_DAGUA = register("roda_dagua",
+			new com.guilhermegoes.arraial.obra.RodaDaguaBlock(props("roda_dagua").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+	/** Monjolo: the water-driven pestle that pounds farinha and coffee by itself. */
+	public static final Block MONJOLO = register("monjolo",
+			new com.guilhermegoes.arraial.obra.MonjoloBlock(props("monjolo").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+
 	/** Pedra-sabão: soapstone, the grey-green stone of the Baroque of Minas. */
 	public static final Block PEDRA_SABAO = register("pedra_sabao",
 			new Block(props("pedra_sabao").mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));

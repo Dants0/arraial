@@ -102,6 +102,12 @@ public final class Demanda {
 			bruto.merge(Items.BREAD, querComida + inv.getOrDefault(Items.BREAD, 0), Integer::sum);
 			urgencia.merge(Items.BREAD, comida < n ? URGENCIA_FOME : URGENCIA_PAO, Math::max);
 			// With a casa de farinha, farinha is the staple (cassava feeds far more people than wheat).
+			// With a moinho, the wheat goes to the mó first (two flours make a loaf: three times the bread).
+			if (moradores.stream().anyMatch(m -> m.profissao() == Profissao.MOLEIRO)) {
+				Item trigo = com.guilhermegoes.arraial.registry.ModItems.FARINHA_TRIGO;
+				bruto.merge(trigo, querComida * 2 + inv.getOrDefault(trigo, 0), Integer::sum);
+				urgencia.merge(trigo, (comida < n ? URGENCIA_FOME : URGENCIA_PAO) + 1, Math::max);
+			}
 			if (moradores.stream().anyMatch(m -> m.profissao() == Profissao.FARINHEIRO)) {
 				Item farinha = com.guilhermegoes.arraial.registry.ModItems.FARINHA;
 				bruto.merge(farinha, querComida + inv.getOrDefault(farinha, 0), Integer::sum);
