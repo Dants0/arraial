@@ -183,6 +183,10 @@ public final class ModBlocks {
 	public static final Block BANCADA_ENTALHE = register("bancada_entalhe",
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("bancada_entalhe").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
 
+	/** Amarra: the mooring post of the trapiche, workstation of the barqueiro. */
+	public static final Block AMARRA = register("amarra",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("amarra").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+
 	/** Pedra-sabão: soapstone, the grey-green stone of the Baroque of Minas. */
 	public static final Block PEDRA_SABAO = register("pedra_sabao",
 			new Block(props("pedra_sabao").mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));

@@ -236,7 +236,7 @@ public final class ComandoArraial {
 						}
 						ServerLevel level = c.getSource().getLevel();
 						for (var m : a.moradores(level)) {
-							if (m.profissao() == com.guilhermegoes.arraial.npc.Profissao.TROPEIRO) {
+							if (m.profissao() == com.guilhermegoes.arraial.npc.Profissao.TROPEIRO || m.profissao() == com.guilhermegoes.arraial.npc.Profissao.BARQUEIRO) {
 								if (m.viajando()) {
 									m.setViagem(3, m.viagemDestino(), level.getGameTime());
 								} else if (m.viagemFase() == 0) {

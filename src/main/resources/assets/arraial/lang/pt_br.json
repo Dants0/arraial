@@ -1255,5 +1255,21 @@
 	"arraial.jei.arara_spawn_egg": "Arara: vermelha, canindé ou azul, nas matas e no cerrado. Voa, empoleira e dança como papagaio (doma-se com sementes), mas é grande demais para o ombro.",
 	"arraial.guia.cap.fauna": "Fauna",
 	"arraial.guia.fauna.1": "§lBichos do Brasil§0\n\n§lCapivara§0: em bando na beira d'água das terras quentes. Mansa; cria-se com melancia, cana ou trigo.\n\n§lTamanduá-bandeira§0: sozinho no cerrado e nas planícies. Inofensivo; gosta de frutas silvestres.\n\n§lArara§0: nas matas e no cerrado; doma-se com sementes.",
-	"arraial.guia.fauna.2": "§lJacaré§0: na beira de rios e brejos. Em terra firme não incomoda, mas morde quem chega na margem e pega galinhas.\n\n§lOnça-pintada§0: na mata (e, rara, no cerrado). Foge de gente, mas caça capivaras, porcos, ovelhas e galinhas, até as do curral.\n\n§8Vila perto da mata: posto de guarda perto do cocho."
+	"arraial.guia.fauna.2": "§lJacaré§0: na beira de rios e brejos. Em terra firme não incomoda, mas morde quem chega na margem e pega galinhas.\n\n§lOnça-pintada§0: na mata (e, rara, no cerrado). Foge de gente, mas caça capivaras, porcos, ovelhas e galinhas, até as do curral.\n\n§8Vila perto da mata: posto de guarda perto do cocho.",
+	"block.arraial.amarra": "Amarra",
+	"arraial.profissao.barqueiro.m": "Barqueiro",
+	"arraial.profissao.barqueiro.f": "Barqueira",
+	"projeto.arraial.trapiche": "Trapiche",
+	"arraial.fala.oficio.barqueiro.0": "O rio é a estrada mais mansa que tem.",
+	"arraial.fala.oficio.barqueiro.1": "Canoa cheia, remo firme e olho no jacaré.",
+	"arraial.barqueiro.carregando": "carregando a canoa para %s",
+	"arraial.barqueiro.partindo": "descendo o rio para %s",
+	"arraial.barqueiro.chegando": "de volta de %s pelo rio",
+	"arraial.barqueiro.enchente": "rio cheio: a canoa fica amarrada",
+	"arraial.cronica.canoa_partiu": "%s desceu o rio de canoa para %s.",
+	"arraial.cronica.canoa_virou": "A canoa de %s virou numa corredeira a caminho de %s: metade da carga foi rio abaixo.",
+	"arraial.cronica.canoa_voltou": "%s voltou de canoa de %s: vendeu a carga por %s réis e trouxe %s mercadoria(s).",
+	"arraial.jei.amarra": "Posto do BARQUEIRO, no trapiche à beira d'água. O barqueiro leva de canoa o excedente do Armazém para vilas que também têm trapiche: mais carga e mais rápido que a tropa, sem salteadores. Na enchente a canoa fica amarrada.",
+	"arraial.guia.cap.rios": "Rios",
+	"arraial.guia.rios.1": "§lTrapiche e barqueiro§0\n\nArraial na beira d'água ergue um §ltrapiche§0: um deque sobre o rio com a amarra do barqueiro.\n\nO §lbarqueiro§0 leva de canoa o que sobra no Armazém para vilas que também têm trapiche. Leva mais que a tropa, chega antes e não tem salteador.\n\n§8Na enchente a canoa fica amarrada."
 }

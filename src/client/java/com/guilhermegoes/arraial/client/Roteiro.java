@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
  * into run/screenshots/arraial_*.png, logs the checks with [ROTEIRO] and closes the game.
  */
 public final class Roteiro {
-	private record Passo(int espera, Runnable acao, java.util.function.@org.jspecify.annotations.Nullable BooleanSupplier ate) {
+	private record Passo(int espera, Runnable acao, java.util.function.@org.jspecify.annotations.Nullable BooleanSupplier ate, int limite) {
 	}
 
 	private static final List<Passo> PASSOS = new ArrayList<>();
@@ -63,8 +63,12 @@ public final class Roteiro {
 				return;
 			}
 			var condicao = PASSOS.get(indice).ate();
+			int limite = PASSOS.get(indice).limite();
 			if (condicao != null && !condicao.getAsBoolean()) {
-				return;
+				if (limite <= 0 || contador < PASSOS.get(indice).espera() + limite) {
+					return;
+				}
+				log("passo " + indice + ": cansei de esperar (" + limite + " ticks), seguindo");
 			}
 			contador = 0;
 			try {
@@ -104,12 +108,17 @@ public final class Roteiro {
 	}
 
 	private static void passo(int espera, Runnable acao) {
-		PASSOS.add(new Passo(espera, acao, null));
+		PASSOS.add(new Passo(espera, acao, null, 0));
 	}
 
 	/** Waits at least {@code espera} ticks and then until {@code ate} holds, then runs {@code acao}. */
 	private static void passoAte(int espera, java.util.function.BooleanSupplier ate, Runnable acao) {
-		PASSOS.add(new Passo(espera, acao, ate));
+		PASSOS.add(new Passo(espera, acao, ate, 0));
+	}
+
+	/** Like {@link #passoAte}, but gives up waiting after {@code limite} ticks (logged) and runs the step anyway. */
+	private static void passoAte(int espera, int limite, java.util.function.BooleanSupplier ate, Runnable acao) {
+		PASSOS.add(new Passo(espera, acao, ate, limite));
 	}
 
 	private static String mao() {
@@ -176,6 +185,15 @@ public final class Roteiro {
 		// ARRAIAL_ROTEIRO_SO=fauna: the Brazilian fauna, posed and then let loose.
 		if ("fauna".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			fauna();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
+		// ARRAIAL_ROTEIRO_SO=rios: two villages on a river, a trapiche each, a canoe trip between them.
+		if ("rios".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			rios();
 			passo(20, () -> {
 				log("fim do roteiro");
 				mc().stop();
@@ -988,6 +1006,149 @@ public final class Roteiro {
 			}
 		}
 		return melhor;
+	}
+
+	/** A flat field crossed by a river (water 2 below the grass) at z0+25..z0+37, and a village north of it. */
+	private static void campoComRio(int x0, int z0) {
+		campoPlano(x0, z0);
+		passo(20, () -> cmd("fill " + x0 + " 116 " + (z0 + 25) + " " + (x0 + 99) + " 119 " + (z0 + 37) + " minecraft:water",
+				"fill " + x0 + " 120 " + (z0 + 25) + " " + (x0 + 99) + " 120 " + (z0 + 37) + " minecraft:air",
+				"fill " + x0 + " 115 " + (z0 + 25) + " " + (x0 + 99) + " 115 " + (z0 + 37) + " minecraft:sand"));
+		passo(10, () -> cmd("tp @s " + (x0 + 50) + ".5 121 " + (z0 - 24) + ".5 0 0", "arraial vila_nova luso"));
+	}
+
+	private static @org.jspecify.annotations.Nullable BlockPos trapicheDe(net.minecraft.server.level.ServerLevel level, int x, int z) {
+		BlockPos melhor = null;
+		for (BlockPos p : com.guilhermegoes.arraial.obra.CanteiroBlockEntity.ativos(level)) {
+			if (Math.abs(p.getX() - x) < 60 && Math.abs(p.getZ() - z) < 60 && level.getBlockEntity(p) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c
+					&& c.projeto().map(pr -> pr.id().equals("trapiche")).orElse(false) && c.concluida()) {
+				melhor = p;
+			}
+		}
+		return melhor;
+	}
+
+	private static String barqueiros(net.minecraft.server.level.ServerLevel level, int x, int z) {
+		StringBuilder b = new StringBuilder();
+		for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(x - 70, 100, z - 70, x + 70, 160, z + 70),
+				e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.BARQUEIRO)) {
+			b.append(m.nome()).append(" fase=").append(m.viagemFase()).append(" posto=").append(m.posto() == null ? "-" : m.posto().toShortString())
+					.append(" barco=").append(m.isPassenger()).append(" carga=").append(m.cargaCopia())
+					.append(" status=").append(m.status().getString()).append(" fome=").append(m.comFome()).append(" cansado=").append(m.pessoa().cansado())
+					.append(" pos=").append(m.blockPosition().toShortString()).append(" hora=").append(level.getOverworldClockTime() % 24000L)
+					.append(" claro=").append(level.isBrightOutside()).append(" objetivo=").append(m.goalAtual()).append("; ");
+		}
+		return b.length() == 0 ? "nenhum" : b.toString();
+	}
+
+	/**
+	 * Rivers: village B (downstream) gets a finished trapiche and a barqueiro; village A gets one
+	 * too, a full armazém and a second trapiche left for its pedreiro. A's barqueiro takes the
+	 * canoe to B (seen paddling), the trip is cut short, and the trade is logged.
+	 */
+	private static void rios() {
+		// Village B, first, so the registry knows its barqueiro before A looks for a partner.
+		campoComRio(300, 600);
+		passo(160, () -> cmd("execute positioned 350 120 600 run arraial obra_pronta trapiche"));
+		passo(40, () -> servidor((srv, sp) -> {
+			if (trapicheDe(sp.level(), 350, 600) == null) {
+				log("rios B: sem trapiche na 1a tentativa, refazendo o rio");
+				cmd("fill 300 116 625 399 119 637 minecraft:water", "fill 300 120 625 399 120 637 minecraft:air",
+						"execute positioned 350 120 600 run arraial obra_pronta trapiche");
+			}
+		}));
+		passo(40, () -> servidor((srv, sp) -> {
+			BlockPos t = trapicheDe(sp.level(), 350, 600);
+			log("rios B: trapiche " + (t == null ? "NAO construido" : t.toShortString()));
+			if (t != null) {
+				cmd("summon arraial:morador " + t.getX() + " " + (t.getY() + 1) + " " + t.getZ() + " {Profissao:0,Visual:2}");
+			}
+		}));
+		passo(200, () -> servidor((srv, sp) -> log("rios B: barqueiros " + barqueiros(sp.level(), 350, 600))));
+
+		// Village A.
+		campoComRio(300, 400);
+		passo(60, () -> cmd("execute positioned 350 120 400 run arraial obra_pronta trapiche"));
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos t = trapicheDe(level, 350, 400);
+			log("rios A: trapiche " + (t == null ? "NAO construido" : t.toShortString()));
+			if (t != null) {
+				cmd("summon arraial:morador " + t.getX() + " " + (t.getY() + 1) + " " + t.getZ() + " {Profissao:0,Visual:4,Feminino:1b}");
+			}
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(350, 120, 400));
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.BREAD, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.COBBLESTONE, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_LOG, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_PLANKS, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, com.guilhermegoes.arraial.registry.ModItems.FARINHA, 48);
+			// A second trapiche for the pedreiro to raise over the water.
+			var projeto = com.guilhermegoes.arraial.obra.Catalogo.porId("trapiche").orElseThrow();
+			var lugar = com.guilhermegoes.arraial.obra.Terreno.procurar(level, v, projeto);
+			log("rios A: lugar do 2o trapiche " + lugar.map(l -> l.marco().toShortString() + " " + l.frente()).orElse("NENHUM"));
+			lugar.ifPresent(l -> com.guilhermegoes.arraial.obra.Terreno.marcar(level, l, projeto, com.guilhermegoes.arraial.obra.Prioridade.NORMAL));
+		}));
+		passo(200, () -> servidor((srv, sp) -> log("rios A: barqueiros " + barqueiros(sp.level(), 350, 400)
+				+ " | fluvial=" + com.guilhermegoes.arraial.vila.Economia.fluvial(
+						com.guilhermegoes.arraial.vila.Economia.id(sp.level(), com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(350, 120, 400))),
+						com.guilhermegoes.arraial.vila.Economia.id(sp.level(), com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(350, 120, 600)))))));
+		passo(10, () -> verObra("trapiche", 12));
+		passo(40, () -> foto("80_trapiche"));
+		// The canoe trip.
+		passo(10, () -> cmd("execute positioned 350 120 400 run arraial tropa"));
+		passoAte(40, 1200, () -> {
+			var srv = mc().getSingleplayerServer();
+			return srv != null && !srv.overworld().getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class,
+					new net.minecraft.world.phys.AABB(280, 100, 330, 420, 160, 470), e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.BARQUEIRO
+							&& (e.isPassenger() || e.viagemFase() >= 3)).isEmpty();
+		}, () -> servidor((srv, sp) -> log("rios A: embarque " + barqueiros(sp.level(), 350, 400))));
+		passo(10, () -> verObra("trapiche", 14));
+		passo(20, () -> foto("81_canoa"));
+		passoAte(40, 1200, () -> {
+			var srv = mc().getSingleplayerServer();
+			return srv != null && !srv.overworld().getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class,
+					new net.minecraft.world.phys.AABB(280, 100, 330, 420, 160, 470), e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.BARQUEIRO
+							&& e.viagemFase() == 3).isEmpty();
+		}, () -> servidor((srv, sp) -> {
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(350, 120, 400));
+			if (sp.level().getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				log("rios A: partiu; tesouro antes da volta=" + a.tesouro() + " | " + barqueiros(sp.level(), 350, 400));
+			}
+		}));
+		// Cut the trip short: back now.
+		passo(40, () -> cmd("execute positioned 350 120 400 run arraial tropa"));
+		passo(400, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(350, 120, 400));
+			if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				StringBuilder cr = new StringBuilder();
+				var entradas = a.cronica();
+				for (int i = Math.max(0, entradas.size() - 4); i < entradas.size(); i++) {
+					cr.append(entradas.get(i).texto().getString()).append(" / ");
+				}
+				log("rios A: depois da volta tesouro=" + a.tesouro() + " | " + barqueiros(level, 350, 400) + " | cronica: " + cr);
+			}
+			for (BlockPos p : com.guilhermegoes.arraial.obra.CanteiroBlockEntity.ativos(level)) {
+				if (Math.abs(p.getX() - 350) < 60 && Math.abs(p.getZ() - 400) < 60 && level.getBlockEntity(p) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c
+						&& c.projeto().map(pr -> pr.id().equals("trapiche")).orElse(false) && !c.concluida()) {
+					int total = c.plano(level).map(pl -> pl.etapas().size()).orElse(1);
+					log("rios A: 2o trapiche pelo pedreiro " + (c.progresso() * 100 / Math.max(1, total)) + "%");
+				}
+			}
+		}));
+		passo(10, () -> cmd("time set 1000"));
+		passo(1200, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			for (BlockPos p : com.guilhermegoes.arraial.obra.CanteiroBlockEntity.ativos(level)) {
+				if (Math.abs(p.getX() - 350) < 60 && Math.abs(p.getZ() - 400) < 60 && level.getBlockEntity(p) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c
+						&& c.projeto().map(pr -> pr.id().equals("trapiche")).orElse(false)) {
+					int total = c.plano(level).map(pl -> pl.etapas().size()).orElse(1);
+					log("rios A: trapiche " + p.toShortString() + " " + (c.concluida() ? "pronto" : (c.progresso() * 100 / Math.max(1, total)) + "%"));
+				}
+			}
+		}));
+		passo(20, () -> foto("82_trapiche_pedreiro"));
 	}
 
 	/** Puts the camera on a diagonal above a finished building, looking at its middle. */

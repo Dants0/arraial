@@ -434,6 +434,22 @@ public class GerarPlantas {
 		gs.p(4, 12, 0, 'f');
 		escrever(out.resolve("missao.nbt"), missao, gs.camadas());
 
+		// ---- Rios: the trapiche. A shed on the bank (z 0-2) and a deck out over the water (z 3-9);
+		// ' ' leaves the river alone around the deck. The amarra (barqueiro) stands near the end.
+		Map<Character, String> trapiche = new HashMap<>();
+		trapiche.put('P', "minecraft:oak_planks");
+		trapiche.put('L', "minecraft:oak_log[axis=y]");
+		trapiche.put('F', "minecraft:oak_fence[east=false,north=false,south=false,waterlogged=false,west=false]");
+		trapiche.put('s', "minecraft:oak_slab[type=bottom,waterlogged=false]");
+		trapiche.put('b', "minecraft:barrel[facing=up,open=false]");
+		trapiche.put('A', "arraial:amarra[facing=south]");
+		trapiche.put('l', "arraial:lampiao[hanging=false,waterlogged=false]");
+		escrever(out.resolve("trapiche.nbt"), trapiche, List.of(
+				new String[] {"PPPPP", "PPPPP", "PPPPP", " PPP ", " PPP ", " PPP ", " PPP ", " PPP ", " PPP ", " PPP "},
+				new String[] {"L...L", "b....", "L...L", " F.F ", " F.F ", " F.F ", " F.F ", " F.F ", " A.F ", " ... "},
+				new String[] {"L...L", ".....", "L...L", "     ", "     ", "     ", "     ", "     ", "   l ", "     "},
+				new String[] {"sssss", "sssss", "sssss", "     ", "     ", "     ", "     ", "     ", "     ", "     "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

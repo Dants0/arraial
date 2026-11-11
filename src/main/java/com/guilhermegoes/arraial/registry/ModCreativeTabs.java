@@ -78,6 +78,7 @@ public final class ModCreativeTabs {
 						output.accept(ModBlocks.MOENDA);
 						output.accept(ModBlocks.TERREIRO);
 						output.accept(ModBlocks.BANCADA_ENTALHE);
+						output.accept(ModBlocks.AMARRA);
 						output.accept(ModItems.CAFE_CEREJA);
 						output.accept(ModItems.CAFE_TORRADO);
 						output.accept(ModItems.CAFEZINHO);

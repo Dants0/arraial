@@ -327,6 +327,7 @@ public class MoradorEntity extends PathfinderMob {
 		goalSelector.addGoal(3, new CavarGoal(this, Profissao.CAVOUQUEIRO));
 		goalSelector.addGoal(3, new PrefeitoGoal(this));
 		goalSelector.addGoal(3, new TropeiroGoal(this));
+		goalSelector.addGoal(3, new BarqueiroGoal(this));
 		goalSelector.addGoal(3, new FeiranteGoal(this));
 		goalSelector.addGoal(3, new PescadorGoal(this));
 		goalSelector.addGoal(3, new CacadorGoal(this));
@@ -619,6 +620,12 @@ public class MoradorEntity extends PathfinderMob {
 		setInvisible(fora);
 		setPermanentlyInvulnerable(fora);
 		atualizarPlaca();
+	}
+
+	/** The goals running right now, by class name (for test logs). */
+	public String goalAtual() {
+		return goalSelector.getAvailableGoals().stream().filter(net.minecraft.world.entity.ai.goal.WrappedGoal::isRunning)
+				.map(g -> g.getGoal().getClass().getSimpleName()).collect(java.util.stream.Collectors.joining(","));
 	}
 
 	public boolean viajando() {

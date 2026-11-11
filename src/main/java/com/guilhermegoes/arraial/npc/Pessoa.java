@@ -263,6 +263,7 @@ public final class Pessoa {
 			case MESTRE_ENGENHO -> new ItemStack(ModItems.RAPADURA, 8);
 			case CAFEICULTOR -> new ItemStack(ModItems.CAFE_TORRADO, 6);
 			case ENTALHADOR -> new ItemStack(com.guilhermegoes.arraial.registry.ModBlocks.TALHA_DOURADA, 2);
+			case BARQUEIRO -> new ItemStack(Items.COOKED_SALMON, 8);
 			default -> new ItemStack(ModItems.REIS, 12);
 		};
 	}

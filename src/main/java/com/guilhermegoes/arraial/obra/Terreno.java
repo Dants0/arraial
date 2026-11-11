@@ -27,6 +27,8 @@ public final class Terreno {
 	}
 
 	private static final int RAIO_MINIMO = 7;
+	/** Buildings that stand at the water's edge: the front on land, the back (a deck) over the water. */
+	public static final java.util.Set<String> NA_AGUA = java.util.Set.of("trapiche");
 	private static final int FOLGA = 2;
 
 	public static Optional<Lugar> procurar(ServerLevel level, BlockPos vila, Catalogo.Projeto projeto) {
@@ -51,6 +53,9 @@ public final class Terreno {
 		}
 		final BoundingBox muro = dentro;
 		ocupadas.add(BoundingBox.fromCorners(vila, vila).inflatedBy(3));
+		if (NA_AGUA.contains(projeto.id())) {
+			return beiraDagua(level, vila, projeto, ocupadas, muro);
+		}
 
 		double inicio = level.getRandom().nextDouble() * Math.PI * 2;
 		for (int raio = RAIO_MINIMO; raio <= Vilas.RAIO - 10; raio += 3) {
@@ -101,6 +106,100 @@ public final class Terreno {
 					return false; // too steep, a hole, water, or something built
 				}
 			}
+		}
+		for (BlockPos p : BlockPos.betweenClosed(area.minX(), chaoY + 1, area.minZ(), area.maxX(), area.maxY(), area.maxZ())) {
+			BlockState s = level.getBlockState(p);
+			if (!livre(s) && !chao(s)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * A spot on the bank: the marker on dry ground and, in one of the four directions, the deck of
+	 * the plan reaching out over open water (whatever side of the Cruzeiro the river runs).
+	 */
+	private static Optional<Lugar> beiraDagua(ServerLevel level, BlockPos vila, Catalogo.Projeto projeto, List<BoundingBox> ocupadas,
+			@org.jspecify.annotations.Nullable BoundingBox muro) {
+		double inicio = level.getRandom().nextDouble() * Math.PI * 2;
+		for (int raio = RAIO_MINIMO; raio <= Vilas.RAIO - 6; raio += 2) {
+			int passos = Math.max(12, raio * 2);
+			for (int i = 0; i < passos; i++) {
+				double a = inicio + i * Math.PI * 2 / passos;
+				BlockPos marco = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+						vila.offset((int) Math.round(Math.cos(a) * raio), 0, (int) Math.round(Math.sin(a) * raio)));
+				if (!level.isLoaded(marco) || !livre(level.getBlockState(marco)) || !chao(level.getBlockState(marco.below()))) {
+					continue;
+				}
+				for (Direction frente : Direction.Plane.HORIZONTAL) {
+					if (serveNaBeira(level, vila, projeto, marco, frente, ocupadas, muro)) {
+						return Optional.of(new Lugar(marco, frente));
+					}
+				}
+			}
+		}
+		return Optional.empty();
+	}
+
+	private static boolean serveNaBeira(ServerLevel level, BlockPos vila, Catalogo.Projeto projeto, BlockPos marco, Direction frente,
+			List<BoundingBox> ocupadas, @org.jspecify.annotations.Nullable BoundingBox muro) {
+		// Water must be right there in that direction before a plan is worth making.
+		BlockPos ponta = marco.relative(frente, 8);
+		if (!level.isLoaded(ponta) || !level.getFluidState(level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, ponta).below())
+				.is(net.minecraft.tags.FluidTags.WATER)) {
+			return false;
+		}
+		PlanoDeObra plano = PlanoDeObra.criar(level, projeto, marco, frente).orElse(null);
+		if (plano == null) {
+			return false;
+		}
+		BoundingBox area = plano.area();
+		if (muro != null && !(muro.isInside(new BlockPos(area.minX(), area.minY(), area.minZ()))
+				&& muro.isInside(new BlockPos(area.maxX(), area.maxY(), area.maxZ())))) {
+			return false;
+		}
+		for (BoundingBox o : ocupadas) {
+			if (o.intersects(area)) {
+				return false;
+			}
+		}
+		int chaoY = marco.getY() - 1;
+		int fundo = 0;
+		for (int x = area.minX(); x <= area.maxX(); x++) {
+			for (int z = area.minZ(); z <= area.maxZ(); z++) {
+				fundo = Math.max(fundo, (x - marco.getX()) * frente.getStepX() + (z - marco.getZ()) * frente.getStepZ());
+			}
+		}
+		int agua = 0, total = 0;
+		for (int x = area.minX(); x <= area.maxX(); x++) {
+			for (int z = area.minZ(); z <= area.maxZ(); z++) {
+				BlockPos coluna = new BlockPos(x, chaoY, z);
+				if (!coluna.closerThan(vila, Vilas.RAIO + 4) || !level.isLoaded(coluna)) {
+					return false;
+				}
+				int d = (x - marco.getX()) * frente.getStepX() + (z - marco.getZ()) * frente.getStepZ();
+				int topo = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+				BlockPos cima = new BlockPos(x, topo, z);
+				boolean molhada = level.getFluidState(cima).is(net.minecraft.tags.FluidTags.WATER) && topo <= chaoY && topo >= chaoY - 2;
+				boolean seca = chao(level.getBlockState(cima)) && Math.abs(topo - chaoY) <= 2;
+				if (d <= 1 && !seca) {
+					return false; // the landing stands on the bank
+				}
+				if (d >= fundo && !molhada) {
+					return false; // and the end of the deck over the water
+				}
+				if (!seca && !molhada) {
+					return false;
+				}
+				total++;
+				if (molhada) {
+					agua++;
+				}
+			}
+		}
+		if (agua * 10 < total * 3) {
+			return false;
 		}
 		for (BlockPos p : BlockPos.betweenClosed(area.minX(), chaoY + 1, area.minZ(), area.maxX(), area.maxY(), area.maxZ())) {
 			BlockState s = level.getBlockState(p);

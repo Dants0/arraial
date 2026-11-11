@@ -152,6 +152,12 @@ public final class Economia {
 		rota(b, a).viagens++;
 	}
 
+	/** Both arraiais keep a canoe (a barqueiro at a trapiche): goods can go by the river. */
+	public static boolean fluvial(String a, String b) {
+		Registro.Info ia = Registro.get(a), ib = Registro.get(b);
+		return ia != null && ib != null && ia.oficios.getOrDefault("barqueiro", 0) > 0 && ib.oficios.getOrDefault("barqueiro", 0) > 0;
+	}
+
 	// ---------------------------------------------------------------- prices
 
 	/**
@@ -178,7 +184,8 @@ public final class Economia {
 			if (v.estoque.getOrDefault(item, 0) < 24) {
 				continue; // nothing to spare there
 			}
-			double frete = base * (0.15 + dist / 1500.0) * (1 + risco(meu, e.getKey(), hoje) * 2) * (batida(meu, e.getKey()) ? 0.7 : 1.0) * (Territorio.tem(meu, e.getKey(), "comercio", hoje) ? 0.8 : 1.0);
+			double frete = base * (0.15 + dist / 1500.0) * (1 + risco(meu, e.getKey(), hoje) * 2) * (batida(meu, e.getKey()) ? 0.7 : 1.0) * (Territorio.tem(meu, e.getKey(), "comercio", hoje) ? 0.8 : 1.0)
+					* (fluvial(meu, e.getKey()) ? 0.6 : 1.0); // the river carries more for less
 			double la = v.precos.getOrDefault(item, base) + frete;
 			melhor = Math.min(melhor, la);
 		}

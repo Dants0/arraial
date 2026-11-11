@@ -1255,5 +1255,21 @@
 	"arraial.jei.arara_spawn_egg": "Macaw: red, blue-and-yellow or hyacinth, in jungles and savannas. Flies, perches and dances like a parrot (tame it with seeds), but it is too big for your shoulder.",
 	"arraial.guia.cap.fauna": "Wildlife",
 	"arraial.guia.fauna.1": "§lAnimals of Brazil§0\n\n§lCapybara§0: in groups by the water in warm lands. Tame; breed with melon, sugar cane or wheat.\n\n§lGiant anteater§0: alone in savannas and plains. Harmless; likes berries.\n\n§lMacaw§0: in jungles and savannas; tame with seeds.",
-	"arraial.guia.fauna.2": "§lCaiman§0: on riverbanks and in swamps. Harmless on dry land, but it bites whoever comes to the bank and takes chickens.\n\n§lJaguar§0: in the jungle (and, rarely, the savanna). Avoids people, but hunts capybaras, pigs, sheep and chickens, even in the corral.\n\n§8Village near the jungle: a guard post by the cocho."
+	"arraial.guia.fauna.2": "§lCaiman§0: on riverbanks and in swamps. Harmless on dry land, but it bites whoever comes to the bank and takes chickens.\n\n§lJaguar§0: in the jungle (and, rarely, the savanna). Avoids people, but hunts capybaras, pigs, sheep and chickens, even in the corral.\n\n§8Village near the jungle: a guard post by the cocho.",
+	"block.arraial.amarra": "Mooring Post",
+	"arraial.profissao.barqueiro.m": "Boatman",
+	"arraial.profissao.barqueiro.f": "Boatwoman",
+	"projeto.arraial.trapiche": "Trapiche (Jetty)",
+	"arraial.fala.oficio.barqueiro.0": "The river is the gentlest road there is.",
+	"arraial.fala.oficio.barqueiro.1": "Full canoe, steady paddle, and an eye out for caimans.",
+	"arraial.barqueiro.carregando": "loading the canoe for %s",
+	"arraial.barqueiro.partindo": "going down the river to %s",
+	"arraial.barqueiro.chegando": "back from %s by the river",
+	"arraial.barqueiro.enchente": "the river is in flood: the canoe stays moored",
+	"arraial.cronica.canoa_partiu": "%s took the canoe down the river to %s.",
+	"arraial.cronica.canoa_virou": "%s's canoe tipped over in the rapids on the way to %s: half the load went down the river.",
+	"arraial.cronica.canoa_voltou": "%s came back by canoe from %s: sold the load for %s réis and brought %s good(s).",
+	"arraial.jei.amarra": "BOATMAN's workstation, on the jetty at the water's edge. The boatman takes the armazém's surplus by canoe to villages that also have a jetty: more cargo and faster than the mule troop, and no robbers. During a flood the canoe stays moored.",
+	"arraial.guia.cap.rios": "Rivers",
+	"arraial.guia.rios.1": "§lJetty and boatman§0\n\nAn arraial by the water builds a §ltrapiche§0: a jetty over the river with the boatman's mooring post.\n\nThe §lboatman§0 takes the armazém's surplus by canoe to villages that also have a jetty. More cargo than the mule troop, faster, and no robbers.\n\n§8During a flood the canoe stays moored."
 }

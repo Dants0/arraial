@@ -70,6 +70,19 @@ public final class Vilas {
 	 * True inside an arraial's territory, near its level (20 blocks up or down): no monster spawns
 	 * naturally there (see MobSpawnMixin). Cheap: no block entity lookups, it runs on every spawn try.
 	 */
+	/** Open water somewhere in the arraial (a few sampled spots): pesqueiro, engenho, trapiche. */
+	public static boolean temAgua(ServerLevel level, BlockPos vila) {
+		for (int dx = -RAIO + 8; dx <= RAIO - 8; dx += 8) {
+			for (int dz = -RAIO + 8; dz <= RAIO - 8; dz += 8) {
+				BlockPos p = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, vila.offset(dx, 0, dz)).below();
+				if (level.isLoaded(p) && level.getFluidState(p).is(net.minecraft.tags.FluidTags.WATER)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public static boolean protegido(ServerLevel level, BlockPos pos) {
 		for (BlockPos centro : ativas(level)) {
 			double dx = centro.getX() - pos.getX(), dz = centro.getZ() - pos.getZ();

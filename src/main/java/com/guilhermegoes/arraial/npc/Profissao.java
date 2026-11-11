@@ -35,7 +35,9 @@ public enum Profissao {
 	/** The cafezal: picks the coffee and dries and roasts it on the terreiro. */
 	CAFEICULTOR("cafeicultor"),
 	/** The Baroque carver: gilded talha and soapstone for the Matriz. */
-	ENTALHADOR("entalhador");
+	ENTALHADOR("entalhador"),
+	/** The river trader: takes the canoe from the trapiche to other arraiais with a trapiche. */
+	BARQUEIRO("barqueiro");
 
 	private final String id;
 
@@ -73,6 +75,7 @@ public enum Profissao {
 			case MESTRE_ENGENHO -> ModBlocks.MOENDA;
 			case CAFEICULTOR -> ModBlocks.TERREIRO;
 			case ENTALHADOR -> ModBlocks.BANCADA_ENTALHE;
+			case BARQUEIRO -> ModBlocks.AMARRA;
 			default -> null;
 		};
 	}

@@ -60,7 +60,8 @@ public final class Prefeitura {
 			Map.entry(Profissao.RELACOES, "cartorio"),
 			Map.entry(Profissao.MESTRE_ENGENHO, "engenho"),
 			Map.entry(Profissao.CAFEICULTOR, "cafezal"),
-			Map.entry(Profissao.ENTALHADOR, "oficina_entalhe"));
+			Map.entry(Profissao.ENTALHADOR, "oficina_entalhe"),
+			Map.entry(Profissao.BARQUEIRO, "trapiche"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -238,6 +239,10 @@ public final class Prefeitura {
 		}
 		if (n >= 6 && postos(level, vila, ModPois.COVO) == 0 && temAgua(level, vila)) {
 			desejos.add("pesqueiro");
+		}
+		// The river: a trapiche (and a barqueiro) once the arraial is established by the water.
+		if (n >= 7 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.AMARRA) == 0 && Vilas.temAgua(level, vila)) {
+			desejos.add("trapiche");
 		}
 		if (n >= 7 && postos(level, vila, ModPois.VARAL_CACA) == 0) {
 			desejos.add("rancho_cacador");
@@ -500,15 +505,7 @@ public final class Prefeitura {
 
 	/** Open water somewhere in the arraial (a few sampled spots), for a pesqueiro. */
 	private static boolean temAgua(ServerLevel level, BlockPos vila) {
-		for (int dx = -Vilas.RAIO + 8; dx <= Vilas.RAIO - 8; dx += 8) {
-			for (int dz = -Vilas.RAIO + 8; dz <= Vilas.RAIO - 8; dz += 8) {
-				BlockPos p = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, vila.offset(dx, 0, dz)).below();
-				if (level.isLoaded(p) && level.getFluidState(p).is(net.minecraft.tags.FluidTags.WATER)) {
-					return true;
-				}
-			}
-		}
-		return false;
+		return Vilas.temAgua(level, vila);
 	}
 
 	/** Finished (or started) buildings of a given project inside the arraial. */

@@ -31,6 +31,8 @@ import org.jspecify.annotations.Nullable;
 public final class Caravana {
 	private static final long DIA = 24000L;
 	private static final int CARGA_MAXIMA = 128;
+	/** A canoe carries more than a mule troop. */
+	public static final int CARGA_CANOA = 192;
 
 	static String id(ServerLevel level, BlockPos pos) {
 		return Registro.id(level.dimension().identifier().toString(), pos);
@@ -38,6 +40,7 @@ public final class Caravana {
 
 	/** Morning: a tropeiro at home may set out. */
 	static void diario(ServerLevel level, ArraialBlockEntity a, List<MoradorEntity> moradores) {
+		barqueiro(level, a, moradores);
 		MoradorEntity t = moradores.stream().filter(m -> m.profissao() == Profissao.TROPEIRO && m.posto() != null
 				&& m.viagemFase() == 0 && !m.comFome() && !m.doente()).findFirst().orElse(null);
 		if (t == null || level.getRandom().nextFloat() > 0.6F) {
@@ -50,15 +53,37 @@ public final class Caravana {
 		}
 	}
 
+	/** Morning: a barqueiro at home may take the canoe down the river (not while it floods). */
+	private static void barqueiro(ServerLevel level, ArraialBlockEntity a, List<MoradorEntity> moradores) {
+		MoradorEntity b = moradores.stream().filter(m -> m.profissao() == Profissao.BARQUEIRO && m.posto() != null
+				&& m.viagemFase() == 0 && !m.comFome() && !m.doente()).findFirst().orElse(null);
+		if (b == null || level.getRandom().nextFloat() > 0.6F) {
+			return;
+		}
+		if (a.crise.tipo() == Crise.Tipo.ENCHENTE) {
+			b.setStatus(Component.translatable("arraial.barqueiro.enchente"));
+			return;
+		}
+		String destino = destino(level, id(level, a.getBlockPos()), a.getBlockPos(), true);
+		if (destino != null) {
+			b.setViagem(1, destino, 0);
+		}
+	}
+
 	/** For the /arraial tropa command: set out today, whatever the dice say. */
 	public static void diarioForcado(ServerLevel level, ArraialBlockEntity a, MoradorEntity t) {
-		String destino = destino(level, id(level, a.getBlockPos()), a.getBlockPos());
+		String destino = destino(level, id(level, a.getBlockPos()), a.getBlockPos(), t.profissao() == Profissao.BARQUEIRO);
 		if (destino != null) {
 			t.setViagem(1, destino, 0);
 		}
 	}
 
 	private static @Nullable String destino(ServerLevel level, String meu, BlockPos pos) {
+		return destino(level, meu, pos, false);
+	}
+
+	/** The best destination; by river, only arraiais that keep a canoe too. */
+	private static @Nullable String destino(ServerLevel level, String meu, BlockPos pos, boolean rio) {
 		Registro.Info eu = Registro.get(meu);
 		String dim = level.dimension().identifier().toString();
 		String melhor = null;
@@ -75,8 +100,9 @@ public final class Caravana {
 			if (rep < -30) {
 				continue; // not welcome there
 			}
-			if (Economia.bloqueada(meu, e.getKey(), Vilas.dia(level))) {
-				continue; // the road is closed (robbers or war)
+			if (rio ? !Economia.fluvial(meu, e.getKey()) || Economia.emGuerra(meu, e.getKey()) || Economia.embargo(meu, e.getKey())
+					: Economia.bloqueada(meu, e.getKey(), Vilas.dia(level))) {
+				continue; // the road is closed (robbers or war), or no canoe meets us there
 			}
 			double n = rep * 10 - Math.sqrt(v.posicao().distSqr(pos)) / 50 + (v.crise.isEmpty() ? 0 : 200);
 			if (n > nota) {
@@ -89,6 +115,10 @@ public final class Caravana {
 
 	/** The surplus worth taking: what the arraial has beyond its needs and a reserve. */
 	public static Map<Item, Integer> carga(ServerLevel level, ArraialBlockEntity a, int moradores) {
+		return carga(level, a, moradores, CARGA_MAXIMA);
+	}
+
+	public static Map<Item, Integer> carga(ServerLevel level, ArraialBlockEntity a, int moradores, int maximo) {
 		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, a.getBlockPos());
 		Map<Item, Integer> inv = Vilas.inventario(armazens);
 		Demanda.Resultado demanda = Demanda.calcular(level, a.getBlockPos());
@@ -97,8 +127,8 @@ public final class Caravana {
 		for (Feira.Mercadoria m : Feira.TABELA) {
 			int reserva = m.item().components().has(DataComponents.FOOD) ? moradores * 4 : 16;
 			int sobra = inv.getOrDefault(m.item(), 0) - demanda.reservado().getOrDefault(m.item(), 0) - reserva;
-			if (sobra > 8 && total < CARGA_MAXIMA) {
-				int leva = Math.min(Math.min(sobra / 2, 32), CARGA_MAXIMA - total);
+			if (sobra > 8 && total < maximo) {
+				int leva = Math.min(Math.min(sobra / 2, maximo / 4), maximo - total);
 				carga.put(m.item(), leva);
 				total += leva;
 			}
@@ -120,6 +150,23 @@ public final class Caravana {
 		return level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, alvo);
 	}
 
+	/** Open water (with air above) nearest to {@code centro}, where a canoe can be put in. */
+	public static @Nullable BlockPos aguaPerto(ServerLevel level, BlockPos centro, int raio) {
+		BlockPos melhor = null;
+		double d = Double.MAX_VALUE;
+		for (BlockPos p : BlockPos.betweenClosed(centro.offset(-raio, -3, -raio), centro.offset(raio, 1, raio))) {
+			if (level.getFluidState(p).is(net.minecraft.tags.FluidTags.WATER) && level.getFluidState(p).isSource()
+					&& level.getBlockState(p.above()).isAir()) {
+				double x = p.distSqr(centro);
+				if (x < d) {
+					d = x;
+					melhor = p.immutable();
+				}
+			}
+		}
+		return melhor;
+	}
+
 	/** The tropeiro reached the edge of the arraial: the troop is on the road. */
 	public static void partir(ServerLevel level, MoradorEntity t) {
 		ArraialBlockEntity a = t.arraial();
@@ -129,9 +176,13 @@ public final class Caravana {
 			return;
 		}
 		double dist = Math.sqrt(d.posicao().distSqr(a.getBlockPos()));
-		long duracao = (long) Math.max(DIA / 2, Math.min(3 * DIA, dist / 400.0 * DIA));
+		boolean canoa = t.profissao() == Profissao.BARQUEIRO;
+		long duracao = canoa ? (long) Math.max(DIA / 3, Math.min(2 * DIA, dist / 700.0 * DIA))
+				: (long) Math.max(DIA / 2, Math.min(3 * DIA, dist / 400.0 * DIA));
 		if (t.profissao() == Profissao.TROPEIRO) {
 			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.tropa_partiu", t.nome(), d.nome));
+		} else if (canoa) {
+			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.canoa_partiu", t.nome(), d.nome));
 		}
 		Comercio.partida(level, t);
 		BlockPos casa = t.posto() != null ? t.posto() : a.getBlockPos();
@@ -158,11 +209,18 @@ public final class Caravana {
 		if (t.escoltada()) {
 			risco /= 4; // a player rides with the troop
 		}
+		boolean canoa = t.profissao() == Profissao.BARQUEIRO;
 		int antes = a.tesouro();
 		boolean roubada = false;
 		if (d == null) {
 			levou.forEach(t::guardar);
-		} else if (level.getRandom().nextFloat() < risco) {
+		} else if (canoa && level.getRandom().nextFloat() < 0.03F) {
+			// No robbers on the river, but a canoe can tip over in the rapids: half the load is lost.
+			levou.forEach((i, n) -> t.guardar(i, n / 2));
+			Component texto = Component.translatable("arraial.cronica.canoa_virou", t.nome(), d.nome);
+			Cronica.anotar(level, vila, texto);
+			Prefeitura.avisar(level, a, texto.copy().withStyle(ChatFormatting.GOLD));
+		} else if (!canoa && level.getRandom().nextFloat() < risco) {
 			// Caravana assaltada: the load is lost on the road.
 			Economia.roubo(meuId, destinoId, hoje);
 			roubada = true;
@@ -189,6 +247,13 @@ public final class Caravana {
 			negociar(level, a, t, meuId, destinoId, d, levou);
 		}
 		Comercio.pagarEscolta(level, a, t, Math.max(0, a.tesouro() - antes), roubada);
+		if (canoa && t.posto() != null) {
+			// The canoe comes back to the trapiche.
+			BlockPos amarra = t.posto();
+			t.teleportTo(amarra.getX() + 0.5, amarra.getY() + 1, amarra.getZ() + 0.5);
+			t.setViagem(4, destinoId, 0);
+			return;
+		}
 		BlockPos borda = borda(level, vila, destinoId);
 		t.teleportTo(borda.getX() + 0.5, borda.getY(), borda.getZ() + 0.5);
 		t.setViagem(4, destinoId, 0);
@@ -238,7 +303,8 @@ public final class Caravana {
 		comprou.forEach(t::guardar);
 		Registro.mudarReputacao(meuId, destinoId, 3);
 		int itens = comprou.values().stream().mapToInt(Integer::intValue).sum();
-		Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.tropa_voltou", t.nome(), d.nome, pago, itens));
+		Cronica.anotar(level, a.getBlockPos(), Component.translatable(t.profissao() == Profissao.BARQUEIRO ? "arraial.cronica.canoa_voltou"
+				: "arraial.cronica.tropa_voltou", t.nome(), d.nome, pago, itens));
 	}
 
 	/**

@@ -46,3 +46,23 @@ Ordem de implementação (cada fase compila, é testada no servidor e vira commi
 | F | **Cultura** — tradições por bioma e economia, bandeira e símbolo de cada vila, festivais próprios, cerimônias, intercâmbio cultural, reconhecimento cultural do jogador | ✅ feito |
 | G | **Vida pessoal** — necessidades (comida, descanso, convívio), personalidade e preferências, lazer, amizades e rivalidades, objetivos individuais, pequenas missões sociais | ✅ feito |
 | H | **Ruínas e ocupação** — vila abandonada vira ruína (deterioração), bandidos ocupam construções abandonadas (esconderijo), jogador pode restaurar; base abandonada do jogador também | ✅ feito |
+
+## Pedido de 2026-11-11: expansão "rios, ofícios e instituições"
+
+Ordem escolhida pelo usuário: 1 → 3 → 4. Cada etapa compila, passa por uma bateria curta no roteiro e vira commit.
+
+### 1. Rios, portos e caminhos
+
+| Etapa | Conteúdo | Estado |
+|---|---|---|
+| 1A | **Trapiche e barqueiro** — ofício barqueiro (posto: amarra), trapiche erguido na beira d'água (deque sobre o rio), viagens de canoa entre vilas com trapiche: mais carga, mais rápidas, sem salteador; enchente prende a canoa; frete fluvial barateia o preço regional | ✅ |
+| 1B | **Porto e navio mercante** — vila no litoral ergue o porto; de tempos em tempos chega um navio que vende sal, ferro e tecido e compra açúcar, café, rapadura, couro e charque | ⏳ |
+| 1C | **Moinho d'água e monjolo** — o monjolo pila café e mandioca mais rápido; o moinho mói trigo em farinha de trigo (base para o padeiro da etapa 3) | ⏳ |
+| 1D | **Ponte** — o engenheiro lança ponte onde a estrada cruza água | ⏳ |
+| 1E | **Ferrovia (era Republicana)** — estação; vilas com estação trocam por trem: rápido, barato e seguro | ⏳ |
+
+### 3. Novos ofícios e cadeias (depois de 1)
+Ferreiro (ferramentas, ferradura, cravos), tecelão (algodão, pano, rede de dormir), padeiro (pão com farinha de trigo), carpinteiro, alfaiate.
+
+### 4. Instituições (depois de 3)
+Igreja com padre (missa, batizado, casamento), escola com professor, cadeia e delegado (julgamentos), Santa Casa.
