@@ -276,7 +276,8 @@ const TXT = {
 			colonos: 'Chama uma caravana de colonos para fundar um povoado na sua frente.', vila_nova: 'Cria uma vila autônoma vizinha.',
 			crise: 'Inicia ou encerra uma crise (seca, enchente, praga, salteadores, epidemia, incêndio).', festa: 'Começa uma festa agora.',
 			era: 'Muda a era da vila e reforma as casas no novo estilo.', guerra: 'Faz uma rixa entre duas vilas virar guerra.',
-			avancar: 'Avança dias nas vilas distantes (que não estão carregadas).', tropa: 'Manda o tropeiro pegar a estrada.',
+			avancar: 'Avança dias nas vilas distantes (que não estão carregadas).', tropa: 'Manda o tropeiro (ou o barqueiro, ou o ferroviário) viajar agora; de novo, faz ele voltar.',
+			navio: 'Faz o navio mercante atracar no porto da vila agora; de novo, faz ele zarpar.',
 			mascate: 'Chama um mascate.', conselho: 'Mostra o conselho e as propostas em votação.'
 		},
 		faq: [
@@ -325,7 +326,8 @@ const TXT = {
 			colonos: 'Calls a caravan of settlers to found a hamlet in front of you.', vila_nova: 'Creates a neighbouring autonomous village.',
 			crise: 'Starts or ends a crisis (drought, flood, pests, highwaymen, epidemic, fire).', festa: 'Starts a festa now.',
 			era: 'Changes the village era and reforms the houses in the new style.', guerra: 'Turns a feud between two villages into war.',
-			avancar: 'Advances days in distant (unloaded) villages.', tropa: 'Sends the muleteer on the road.',
+			avancar: 'Advances days in distant (unloaded) villages.', tropa: 'Sends the muleteer (or the boatman, or the railwayman) on a trip now; run it again to bring them back.',
+			navio: 'Brings the merchant ship into the village port now; run it again to make it sail.',
 			mascate: 'Calls a peddler.', conselho: 'Shows the council and the proposals being voted.'
 		},
 		faq: [
@@ -355,7 +357,9 @@ const ESTAGIOS = ['povoado', 'arraial', 'vila', 'vila_prospera', 'cidade'];
 const ITENS = Object.keys(LANG.pt).filter(k => /^(block|item)\.arraial\.[a-z_]+$/.test(k)).map(k => ({ id: k.split('.')[2], bloco: k.startsWith('block') }))
 	.filter(x => !x.id.endsWith('_spawn_egg') && !['mandioca', 'cafeeiro'].includes(x.id) || !x.bloco && x.id === 'mandioca');
 const FAUNA = ['capivara', 'tamandua', 'jacare', 'onca', 'arara'];
-const CAPITULOS = [['inicio', 6], ['meio', 11], ['fim', 13], ['comercio', 5], ['dicas', 2]];
+// The guide's chapters, read from the mod itself (GuiaItem), so the wiki never falls behind the book.
+const CAPITULOS = [...fs.readFileSync(path.join(__dirname, '..', 'src', 'main', 'java', 'com', 'guilhermegoes', 'arraial', 'vila', 'GuiaItem.java'), 'utf8')
+	.matchAll(/new Capitulo\("([a-z_]+)", List\.of\(([^)]*)\)\)/g)].map(m => [m[1], m[2].split(',').length]);
 const CONFIGS = Object.keys(LANG.pt).filter(k => /^arraial\.config\.[a-z_]+$/.test(k) && !['titulo', 'servidor'].includes(k.split('.')[2])).map(k => k.split('.')[2]);
 
 // ---------------------------------------------------------------- page
