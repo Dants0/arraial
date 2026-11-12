@@ -26,8 +26,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Marco da Obra. Place it facing where the building should go, right-click it
- * with the Livro de Projetos to pick a project, and put a chest next to it.
+ * Marco da Obra. Place it facing where the building should go, right-click it with the Livro de
+ * Projetos to open the catalog and pick a project, and put a chest next to it.
  * Right-click with an empty hand to see progress and missing materials.
  */
 public class CanteiroBlock extends HorizontalDirectionalBlock implements EntityBlock {
@@ -66,20 +66,17 @@ public class CanteiroBlock extends HorizontalDirectionalBlock implements EntityB
 			return InteractionResult.SUCCESS;
 		}
 
-		// The book carries the choice (picked by right-clicking in the air); the marker only receives it.
-		Catalogo.Projeto novo = LivroDeProjetosItem.selecionado(stack).orElse(null);
-		if (novo == null) {
-			player.sendOverlayMessage(Component.translatable("arraial.livro.escolha_primeiro").withStyle(ChatFormatting.YELLOW));
-			return InteractionResult.SUCCESS;
+		// The book opens the catalog on this marker; picking a project there builds it here (see LivroDeProjetosItem).
+		if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+			LivroDeProjetosItem.abrir(sp, stack, pos);
 		}
-		if (canteiro.projeto().map(novo::equals).orElse(false)) {
-			relatorio(server, player, canteiro);
-			return InteractionResult.SUCCESS;
-		}
-		canteiro.escolherProjeto(novo);
-		// The player is the one in charge: their sites go before the prefeito's routine ones.
-		canteiro.setPrioridade(Prioridade.ALTA);
+		return InteractionResult.SUCCESS;
+	}
 
+	/** Hands the marker a project (the player's sites go before the prefeito's routine ones) and reports. */
+	static void aplicar(ServerLevel server, Player player, CanteiroBlockEntity canteiro, Catalogo.Projeto novo) {
+		canteiro.escolherProjeto(novo);
+		canteiro.setPrioridade(Prioridade.ALTA);
 		MutableComponent msg = Component.translatable("arraial.canteiro.projeto", novo.nome().copy().withStyle(ChatFormatting.GOLD));
 		canteiro.plano(server).ifPresentOrElse(
 				plano -> msg.append(Component.translatable("arraial.canteiro.tamanho",
@@ -88,7 +85,6 @@ public class CanteiroBlock extends HorizontalDirectionalBlock implements EntityB
 				() -> msg.append(Component.translatable("arraial.canteiro.sem_arquivo").withStyle(ChatFormatting.RED)));
 		player.sendOverlayMessage(msg);
 		relatorio(server, player, canteiro);
-		return InteractionResult.SUCCESS;
 	}
 
 	@Override

@@ -352,7 +352,7 @@ const PROFISSOES = [
 	['cafeicultor', 'terreiro'], ['entalhador', 'bancada_entalhe'], ['barqueiro', 'amarra'],
 	['estivador', 'guindaste'], ['moleiro', 'mo'], ['ferroviario', 'bilheteria'], ['mascate', null]
 ];
-const PROJETOS = Object.keys(LANG.pt).filter(k => k.startsWith('projeto.arraial.')).map(k => k.split('.')[2]);
+const PROJETOS = Object.keys(LANG.pt).filter(k => /^projeto\.arraial\.[a-z_]+$/.test(k)).map(k => k.split('.')[2]);
 const ESTAGIOS = ['povoado', 'arraial', 'vila', 'vila_prospera', 'cidade'];
 const ITENS = Object.keys(LANG.pt).filter(k => /^(block|item)\.arraial\.[a-z_]+$/.test(k)).map(k => ({ id: k.split('.')[2], bloco: k.startsWith('block') }))
 	.filter(x => !x.id.endsWith('_spawn_egg') && !['mandioca', 'cafeeiro'].includes(x.id) || !x.bloco && x.id === 'mandioca');

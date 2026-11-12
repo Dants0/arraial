@@ -529,6 +529,11 @@ public final class Prefeitura {
 	}
 
 	/** Finished (or started) buildings of a given project inside the arraial. */
+	/** How many buildings of this project the arraial has (finished or going up). */
+	public static int contarObras(ServerLevel level, BlockPos vila, String id) {
+		return obras(level, vila, id);
+	}
+
 	static int obras(ServerLevel level, BlockPos vila, String id) {
 		int n = 0;
 		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {

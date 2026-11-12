@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=livro: the Livro de Projetos screen, opened on a Marco da Obra.
+		if ("livro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			livro();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=trem: two Republican villages with a station each; the train runs between them.
 		if ("trem".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			trem();
@@ -1293,6 +1302,76 @@ public final class Roteiro {
 		}));
 		passo(10, () -> verObra("estacao", 20));
 		passo(30, () -> foto("94_estacao"));
+	}
+
+	/**
+	 * The Livro de Projetos: a village with some materials in the armazém, a Marco da Obra, the book
+	 * opened on it (photo), a search (photo), "Build here" (the marker gets the project, the outline).
+	 */
+	private static void livro() {
+		final int x = 350, z = 1800;
+		final BlockPos marco = new BlockPos(x, 121, z - 34);
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("livro: chunks carregados"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_PLANKS, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_LOG, 32);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.COBBLESTONE, 64);
+			cmd("setblock " + marco.getX() + " " + marco.getY() + " " + marco.getZ() + " arraial:canteiro[facing=north]",
+					"item replace entity @s weapon.mainhand with arraial:livro_de_projetos",
+					"tp @s " + x + ".5 121 " + (marco.getZ() + 3) + ".5 180 20", "time set 1000");
+		}));
+		passo(20, () -> servidor((srv, sp) -> com.guilhermegoes.arraial.obra.LivroDeProjetosItem.abrir(sp, sp.getMainHandItem(), marco)));
+		passo(20, () -> log("livro: tela aberta=" + (mc().gui.screen() instanceof TelaLivro t ? t.testarEscolhido() : "NAO")));
+		passo(10, () -> foto("95_livro"));
+		passo(10, () -> {
+			if (mc().gui.screen() instanceof TelaLivro t) {
+				t.testarBusca("moinho");
+				log("livro: busca 'moinho' -> " + t.testarEscolhido());
+			}
+		});
+		passo(10, () -> foto("96_livro_busca"));
+		passo(10, () -> {
+			if (mc().gui.screen() instanceof TelaLivro t) {
+				t.testarBusca("estacao");
+				log("livro: busca 'estacao' (sem acento) -> " + t.testarEscolhido());
+			}
+		});
+		passo(10, () -> foto("97_livro_estacao"));
+		passo(10, () -> {
+			if (mc().gui.screen() instanceof TelaLivro t) {
+				t.testarBusca("casebre");
+				log("livro: busca 'casebre' -> " + t.testarEscolhido());
+				t.testarConfirmar();
+			}
+		});
+		passo(5, () -> voar(marco.getX() + 0.5, marco.getY() + 12, marco.getZ() + 8.5, 180, 55));
+		passo(8, () -> foto("98_livro_contorno"));
+		passo(10, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			if (level.getBlockEntity(marco) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c) {
+				log("livro: marco com projeto " + c.projeto().map(com.guilhermegoes.arraial.obra.Catalogo.Projeto::id).orElse("NENHUM")
+						+ " prioridade=" + c.prioridade() + " | livro na mao=" + sp.getMainHandItem().getHoverName().getString()
+						+ " | tela fechada=" + (mc().gui.screen() == null));
+			} else {
+				log("livro: marco NAO encontrado");
+			}
+		}));
+		// Opened in the air (no marker): "Choose" keeps the choice in the book.
+		passo(10, () -> servidor((srv, sp) -> com.guilhermegoes.arraial.obra.LivroDeProjetosItem.abrir(sp, sp.getMainHandItem(), null)));
+		passo(20, () -> foto("99_livro_no_ar"));
+		passo(10, () -> {
+			if (mc().gui.screen() instanceof TelaLivro t) {
+				t.testarBusca("porto");
+				t.testarConfirmar();
+			}
+		});
+		passo(20, () -> servidor((srv, sp) -> log("livro: no ar escolheu -> livro=" + sp.getMainHandItem().getHoverName().getString())));
 	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */

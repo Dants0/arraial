@@ -35,6 +35,30 @@ public final class Rede {
 		}
 	}
 
+	/** Opens the Livro de Projetos (the catalog of buildings), on a Marco da Obra or in the air. */
+	public record AbrirLivro(LivroDados dados) implements CustomPacketPayload {
+		public static final Type<AbrirLivro> TYPE = new Type<>(Arraial.id("livro_projetos"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, AbrirLivro> CODEC = StreamCodec.of((b, p) -> p.dados().escrever(b),
+				b -> new AbrirLivro(LivroDados.ler(b)));
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
+	/** The player picked {@code projeto} in the book; {@code marco} is the Marco da Obra to build it on (or Long.MIN_VALUE). */
+	public record EscolherProjeto(String projeto, long marco) implements CustomPacketPayload {
+		public static final Type<EscolherProjeto> TYPE = new Type<>(Arraial.id("escolher_projeto"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, EscolherProjeto> CODEC = StreamCodec.composite(
+				ByteBufCodecs.STRING_UTF8, EscolherProjeto::projeto, ByteBufCodecs.LONG, EscolherProjeto::marco, EscolherProjeto::new);
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
+
 	/** A village the player knows, for the minimap (see VilasConhecidas). */
 	public record VilaMapa(String id, String nome, int x, int y, int z, String dimensao, String cor, boolean hispano, boolean abandonada) {
 	}
@@ -75,6 +99,10 @@ public final class Rede {
 		PayloadTypeRegistry.clientboundPlay().register(AbrirTela.TYPE, AbrirTela.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(Acao.TYPE, Acao.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(Acao.TYPE, (p, ctx) -> Chancelaria.agir(ctx.player(), p));
+		PayloadTypeRegistry.clientboundPlay().register(AbrirLivro.TYPE, AbrirLivro.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(EscolherProjeto.TYPE, EscolherProjeto.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(EscolherProjeto.TYPE,
+				(p, ctx) -> com.guilhermegoes.arraial.obra.LivroDeProjetosItem.escolher(ctx.player(), p.projeto(), p.marco()));
 	}
 
 	private Rede() {
