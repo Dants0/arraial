@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=bugs: the curral gate, the prefeito's roças, duplicate trades.
+		if ("bugs".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			bugs();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=livro: the Livro de Projetos screen, opened on a Marco da Obra.
 		if ("livro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			livro();
@@ -1372,6 +1381,105 @@ public final class Roteiro {
 			}
 		});
 		passo(20, () -> servidor((srv, sp) -> log("livro: no ar escolheu -> livro=" + sp.getMainHandItem().getHoverName().getString())));
+	}
+
+	private static final int[] PORTAO = {0, -1};
+
+	/** The professions of a village, counted ("ROCEIRO=2 PASTOR=1 ..."). */
+	private static String oficios(net.minecraft.server.level.ServerLevel level, BlockPos v) {
+		java.util.Map<String, Integer> m = new java.util.TreeMap<>();
+		for (var e : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60),
+				x -> v.equals(x.vila()) && !x.crianca())) {
+			m.merge(e.profissao().name(), 1, Integer::sum);
+		}
+		long livres = level.getPoiManager().findAll(com.guilhermegoes.arraial.registry.ModPois::ePosto, x -> true, v, 48,
+				net.minecraft.world.entity.ai.village.poi.PoiManager.Occupancy.HAS_SPACE).count();
+		return m + " postos livres=" + livres;
+	}
+
+	/**
+	 * The bugs found in play: (1) the pastor opening and shutting the curral gate in a loop, (2) the
+	 * prefeito ordering roça after roça, (3) two in a trade while another posto stands empty.
+	 */
+	private static void bugs() {
+		final int x = 350, z = 2000;
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("bugs: chunks carregados"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta roca"));
+		passo(40, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial obra_pronta roca"));
+		passo(40, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial obra_pronta curral"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			// Little food (a couple of days, not hunger): the old prefeito ordered roças at this point.
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.retirar(armazens, st -> st.has(net.minecraft.core.component.DataComponents.FOOD), 9999);
+			int n = level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60), m -> v.equals(m.vila())).size();
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.BREAD, n * 2 + 2);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.WHEAT, 32);
+			for (int i = 0; i < 3; i++) {
+				cmd("summon arraial:morador " + x + " 121 " + (z + 3) + " {Profissao:0,Visual:" + i + "}");
+			}
+			log("bugs: vila " + v.toShortString() + " moradores=" + n + " obras=" + com.guilhermegoes.arraial.vila.Prefeitura.existentes(level, v));
+		}));
+		passo(300, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			log("bugs: oficios antes da olaria " + oficios(level, v));
+			// A building whose trade nobody has, after everyone already has a job.
+			cmd("execute positioned " + x + " 120 " + z + " run arraial obra_pronta olaria");
+			BlockPos m = com.guilhermegoes.arraial.vila.Vilas.obraPronta(level, v, "curral");
+			if (m != null && level.getBlockEntity(m) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity c) {
+				for (var e : c.plano(level).map(com.guilhermegoes.arraial.obra.PlanoDeObra::etapas).orElse(List.of())) {
+					if (e.state().getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock) {
+						PORTAO[0] = 0;
+						PORTAO[1] = -1;
+						ESTADOS[0] = e.pos().getX() + "," + e.pos().getY() + "," + e.pos().getZ();
+					}
+				}
+			}
+		}));
+		// Watch the gate for a minute: count how often it flips.
+		for (int i = 0; i < 240; i++) {
+			passo(5, () -> servidor((srv, sp) -> {
+				String[] p = ESTADOS[0].split(",");
+				if (p.length != 3) {
+					return;
+				}
+				var st = sp.level().getBlockState(new BlockPos(Integer.parseInt(p[0]), Integer.parseInt(p[1]), Integer.parseInt(p[2])));
+				if (st.getBlock() instanceof net.minecraft.world.level.block.FenceGateBlock) {
+					int aberto = st.getValue(net.minecraft.world.level.block.FenceGateBlock.OPEN) ? 1 : 0;
+					if (PORTAO[1] != -1 && PORTAO[1] != aberto) {
+						PORTAO[0]++;
+					}
+					PORTAO[1] = aberto;
+				}
+			}));
+		}
+		passo(1, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			log("bugs: portao do curral mudou " + PORTAO[0] + " vezes em 1 minuto");
+			log("bugs: oficios depois de 1 min " + oficios(level, v) + " | obras=" + com.guilhermegoes.arraial.vila.Prefeitura.existentes(level, v));
+		}));
+		passo(600, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			StringBuilder cr = new StringBuilder();
+			if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				var entradas = a.cronica();
+				for (int i = Math.max(0, entradas.size() - 6); i < entradas.size(); i++) {
+					cr.append(entradas.get(i).texto().getString()).append(" / ");
+				}
+				log("bugs: pedido do prefeito='" + a.pedido().getString() + "'");
+			}
+			log("bugs: oficios depois de 1,5 min " + oficios(level, v) + " | obras=" + com.guilhermegoes.arraial.vila.Prefeitura.existentes(level, v)
+					+ " | cronica: " + cr);
+		}));
+		passo(10, () -> verObra("curral", 12));
+		passo(30, () -> foto("100_curral"));
 	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */

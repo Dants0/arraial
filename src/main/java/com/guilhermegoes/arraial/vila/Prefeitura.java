@@ -350,6 +350,16 @@ public final class Prefeitura {
 			urgentes.add(votada);
 		}
 		desejos.removeIf(d -> emObra.contains(d) || (d.equals("casa") && (emObra.contains("casebre") || emObra.contains("rancho"))));
+		// Only what the arraial does not have yet (it used to pile up roças); a voted building it already has is done with.
+		Map<String, Integer> existentes = existentes(level, vila);
+		desejos.removeIf(d -> {
+			if (repetir(d, existentes, comida, n)) {
+				return false;
+			}
+			arraial.politica.obraIniciada(d);
+			urgentes.remove(d);
+			return true;
+		});
 		if (!ativas.isEmpty()) {
 			desejos.removeIf(d -> !urgentes.contains(d));
 		}
@@ -529,6 +539,28 @@ public final class Prefeitura {
 	}
 
 	/** Finished (or started) buildings of a given project inside the arraial. */
+	/** Every project the arraial has (finished or going up), with how many: what the prefeito does not need to ask for. */
+	public static Map<String, Integer> existentes(ServerLevel level, BlockPos vila) {
+		Map<String, Integer> m = new java.util.HashMap<>();
+		for (BlockPos p : CanteiroBlockEntity.ativos(level)) {
+			if (p.closerThan(vila, Vilas.RAIO) && level.getBlockEntity(p) instanceof CanteiroBlockEntity c) {
+				c.projeto().ifPresent(pr -> m.merge(pr.id(), 1, Integer::sum));
+			}
+		}
+		return m;
+	}
+
+	/**
+	 * Whether the arraial still needs another {@code desejo} although it has one: only houses (one per
+	 * family), and a second roça when hunger is real (less than a day of food) and none is going up.
+	 */
+	static boolean repetir(String desejo, Map<String, Integer> existentes, int comida, int n) {
+		if (existentes.getOrDefault(desejo, 0) == 0 || desejo.equals("casa")) {
+			return true;
+		}
+		return desejo.equals("roca") && comida < n;
+	}
+
 	/** How many buildings of this project the arraial has (finished or going up). */
 	public static int contarObras(ServerLevel level, BlockPos vila, String id) {
 		return obras(level, vila, id);

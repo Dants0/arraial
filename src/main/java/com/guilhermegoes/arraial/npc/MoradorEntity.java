@@ -856,18 +856,23 @@ public class MoradorEntity extends PathfinderMob {
 			setProfissao(Profissao.NENHUMA);
 		}
 		if (p == Profissao.NENHUMA && vila != null && gabinete == null && !crianca) {
-			level.getPoiManager()
-					.take(ModPois::ePosto, (h, pos) -> true, vila, Vilas.RAIO)
-					.ifPresent(pos -> {
-						Profissao nova = Profissao.doPosto(level.getBlockState(pos).getBlock());
-						if (nova != null) {
-							posto = pos.immutable();
-							setProfissao(nova);
-							Cronica.anotar(level, vila, Component.translatable("arraial.cronica.profissao", nome(), titulo()));
-						} else {
-							level.getPoiManager().release(pos);
-						}
-					});
+			BlockPos livre = postoLivre(level, null);
+			if (livre != null) {
+				assumir(level, livre, false);
+			}
+		} else if (vila != null && posto != null && p != Profissao.SOLDADO && gabinete == null && viagemFase == 0
+				&& (tickCount + getId()) % 600 == 0) {
+			// Two or more in this trade while another posto stands empty (a trade nobody does): move over.
+			BlockPos livre = postoLivre(level, p);
+			if (livre != null) {
+				BlockPos antigo = posto;
+				Profissao oficio = Profissao.doPosto(level.getBlockState(livre).getBlock());
+				if (oficio != null && oficio != p && contarOficio(level, p) >= 2 && contarOficio(level, oficio) == 0) {
+					soltar(level, antigo);
+					posto = null;
+					assumir(level, livre, true);
+				}
+			}
 		}
 
 		comer(level);
@@ -882,6 +887,66 @@ public class MoradorEntity extends PathfinderMob {
 			}
 			setStatus(s);
 		}
+	}
+
+	/** How many moradores of this arraial work in this trade. */
+	private int contarOficio(ServerLevel level, Profissao oficio) {
+		BlockPos v = vila;
+		return v == null ? 0 : level.getEntitiesOfClass(MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(Vilas.RAIO),
+				m -> v.equals(m.vila()) && m.profissao() == oficio && !m.crianca).size();
+	}
+
+	/**
+	 * The free workstation to take: the trade the arraial has fewest of (none, ideally), the nearest
+	 * among equals. With {@code alemDe} set, only a trade nobody does yet (for a duplicate to move to).
+	 */
+	private @Nullable BlockPos postoLivre(ServerLevel level, @Nullable Profissao alemDe) {
+		BlockPos v = vila;
+		if (v == null) {
+			return null;
+		}
+		List<BlockPos> livres = level.getPoiManager().findAll(ModPois::ePosto, x -> true, v, Vilas.RAIO,
+				net.minecraft.world.entity.ai.village.poi.PoiManager.Occupancy.HAS_SPACE).toList();
+		if (livres.isEmpty()) {
+			return null;
+		}
+		java.util.Map<Profissao, Integer> quantos = new java.util.EnumMap<>(Profissao.class);
+		for (MoradorEntity m : level.getEntitiesOfClass(MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(Vilas.RAIO),
+				m -> v.equals(m.vila()) && !m.crianca)) {
+			quantos.merge(m.profissao(), 1, Integer::sum);
+		}
+		BlockPos melhor = null;
+		int menos = Integer.MAX_VALUE;
+		double perto = Double.MAX_VALUE;
+		for (BlockPos pos : livres) {
+			Profissao oficio = Profissao.doPosto(level.getBlockState(pos).getBlock());
+			if (oficio == null || alemDe != null && (oficio == alemDe || quantos.getOrDefault(oficio, 0) > 0)) {
+				continue;
+			}
+			int q = quantos.getOrDefault(oficio, 0);
+			double d = pos.distSqr(blockPosition());
+			if (q < menos || q == menos && d < perto) {
+				menos = q;
+				perto = d;
+				melhor = pos.immutable();
+			}
+		}
+		return melhor;
+	}
+
+	/** Takes that workstation (and its trade). */
+	private void assumir(ServerLevel level, BlockPos alvo, boolean mudou) {
+		BlockPos v = vila;
+		level.getPoiManager().take(ModPois::ePosto, (h, pos) -> pos.equals(alvo), alvo, 1).ifPresent(pos -> {
+			Profissao nova = Profissao.doPosto(level.getBlockState(pos).getBlock());
+			if (nova == null) {
+				level.getPoiManager().release(pos);
+				return;
+			}
+			posto = pos.immutable();
+			setProfissao(nova);
+			Cronica.anotar(level, v, Component.translatable(mudou ? "arraial.cronica.mudou_oficio" : "arraial.cronica.profissao", nome(), titulo()));
+		});
 	}
 
 	/**

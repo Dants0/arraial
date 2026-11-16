@@ -322,15 +322,28 @@ public final class Politica {
 						case OFICIOS -> Tipo.OBRA;
 						default -> e.imposto() > 0 ? Tipo.IMPOSTO_MENOS : Tipo.NOVA_ELEICAO;
 					};
+					String obra = exige == Tipo.OBRA ? obraDesejada(level, a, e) : "";
+					if (exige == Tipo.OBRA && obra.isEmpty()) {
+						exige = e.imposto() > 0 ? Tipo.IMPOSTO_MENOS : Tipo.NOVA_ELEICAO; // nothing left to build: they want something else
+					}
 					MoradorEntity rep = conselho(moradores).get(g);
-					p.abrir(exige, exige == Tipo.OBRA ? obraDesejada(e) : "", null, rep == null ? "" : rep.nome(), hoje);
+					p.abrir(exige, obra, null, rep == null ? "" : rep.nome(), hoje);
 				}
 			}
 		}
 	}
 
-	private static String obraDesejada(Estado e) {
-		return e.semCasa() > 0 ? "casa" : e.comidaPorCabeca() < 2 ? "roca" : !e.muralha() ? "guarita" : "poco";
+	/** What the council would build: the most pressing thing the arraial does not have yet ("" for nothing). */
+	private static String obraDesejada(ServerLevel level, ArraialBlockEntity a, Estado e) {
+		Map<String, Integer> tem = Prefeitura.existentes(level, a.getBlockPos());
+		int n = Math.max(1, a.moradores(level).size());
+		int comida = (int) (e.comidaPorCabeca() * n);
+		for (String o : List.of(e.semCasa() > 0 ? "casa" : "", e.comidaPorCabeca() < 2 ? "roca" : "", !e.muralha() ? "guarita" : "", "poco")) {
+			if (!o.isEmpty() && Prefeitura.repetir(o, tem, comida, n)) {
+				return o;
+			}
+		}
+		return "";
 	}
 
 	/** The council puts forward what the arraial needs most. */
@@ -354,14 +367,15 @@ public final class Politica {
 		if (e.comidaPorCabeca() >= 4 && e.tesouro() >= CUSTO_FESTA + 6 && e.satisfacao() >= 50 && e.diasSemFesta() > 5) {
 			opcoes.add(Tipo.FESTA);
 		}
-		if (e.semCasa() > 0 || e.comidaPorCabeca() < 1.5) {
+		String obra = obraDesejada(level, a, e);
+		if (!obra.isEmpty() && (e.semCasa() > 0 || e.comidaPorCabeca() < 1.5)) {
 			opcoes.add(Tipo.OBRA);
 		}
 		if (opcoes.isEmpty()) {
 			return;
 		}
 		Tipo t = opcoes.get(level.getRandom().nextInt(opcoes.size()));
-		String alvo = t == Tipo.OBRA ? obraDesejada(e) : "";
+		String alvo = t == Tipo.OBRA ? obra : "";
 		// Proposed by the councillor whose group gains most.
 		Map<Grupo, MoradorEntity> conselho = conselho(moradores);
 		MoradorEntity autor = conselho.entrySet().stream().max(Comparator.comparingDouble(en -> interesse(en.getKey(), t, alvo, e)))

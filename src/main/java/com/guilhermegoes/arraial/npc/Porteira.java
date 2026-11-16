@@ -19,6 +19,14 @@ import org.jspecify.annotations.Nullable;
  */
 final class Porteira {
 	private static final int RAIO = 8;
+	/** Ticks a morador leaves the gates alone after opening one did not get him to his goal. */
+	private static final int DESISTE = 600;
+
+	/** Opening a gate did not open the way to this destination (e.g. a trough set in the fence): don't try again for a while. */
+	private record Inutil(BlockPos destino, long ate) {
+	}
+
+	private static final java.util.Map<java.util.UUID, Inutil> INUTEIS = new java.util.concurrent.ConcurrentHashMap<>();
 
 	/**
 	 * Walks {@code quem} towards {@code pos}, going through a gate when the way is fenced off (a
@@ -31,7 +39,13 @@ final class Porteira {
 		var nav = quem.getNavigation();
 		int espera = 20;
 		net.minecraft.world.level.pathfinder.Path caminho = nav.createPath(pos, 1);
-		if (caminho != null && !caminho.canReach()) {
+		Inutil inutil = INUTEIS.get(quem.getUUID());
+		if (inutil != null && level.getGameTime() > inutil.ate()) {
+			INUTEIS.remove(quem.getUUID());
+			inutil = null;
+		}
+		boolean desistiu = inutil != null && inutil.destino().closerThan(pos, 4);
+		if (caminho != null && !caminho.canReach() && !desistiu) {
 			BlockPos portao = procurar(level, pos, quem.blockPosition());
 			if (portao == null) {
 				portao = procurar(level, quem.blockPosition(), quem.blockPosition()); // fenced in, going out
@@ -44,6 +58,10 @@ final class Porteira {
 					abrir(level, portao, quem);
 					caminho = nav.createPath(pos, 1);
 					espera = 5;
+					if (caminho == null || !caminho.canReach()) {
+						// Even with the gate open the place cannot be reached: stop opening and shutting it in a loop.
+						INUTEIS.put(quem.getUUID(), new Inutil(pos.immutable(), level.getGameTime() + DESISTE));
+					}
 				} else {
 					caminho = nav.createPath(portao, 1);
 					espera = 10;

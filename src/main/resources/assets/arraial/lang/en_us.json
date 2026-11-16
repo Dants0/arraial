@@ -1379,5 +1379,6 @@
 	"projeto.arraial.matriz.desc": "The Baroque mother church with gilded woodwork. The great church of a rich town.",
 	"projeto.arraial.missao.desc": "The Spanish mission church, of adobe with a bell gable.",
 	"projeto.arraial.guarita.desc": "The soldier's post, watching the village against highwaymen and monsters.",
-	"projeto.arraial.muralha.desc": "A wooden palisade around the village. Keeps the night and the highwaymen outside."
+	"projeto.arraial.muralha.desc": "A wooden palisade around the village. Keeps the night and the highwaymen outside.",
+	"arraial.cronica.mudou_oficio": "%s left a crowded trade for an empty workstation: now a %s."
 }

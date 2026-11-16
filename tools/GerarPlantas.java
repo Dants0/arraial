@@ -124,7 +124,7 @@ public class GerarPlantas {
 		// Curral: a fenced pen with the pastor's trough.
 		escrever(out.resolve("curral.nbt"), madeira, List.of(
 				new String[] {"       ", "       ", "       ", "       ", "       ", "       ", "       "},
-				new String[] {"fffgfff", "f.....f", "f.....f", "f.....f", "f.....f", "f..h..f", "fffffff"}));
+				new String[] {"fffgfff", "f.....f", "f.....f", "f..h..f", "f.....f", "f.....f", "fffffff"}));
 
 		// Barreira and Pedreira: the digging posts. The pit opens in front of them (the '.' area).
 		escrever(out.resolve("barreira.nbt"), madeira, List.of(

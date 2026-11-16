@@ -1379,5 +1379,6 @@
 	"projeto.arraial.matriz.desc": "Igreja Matriz barroca, com talha dourada. A grande igreja de uma vila rica.",
 	"projeto.arraial.missao.desc": "Igreja da missão espanhola, de adobe e com espadanha.",
 	"projeto.arraial.guarita.desc": "Posto do soldado, que vigia a vila contra salteadores e monstros.",
-	"projeto.arraial.muralha.desc": "Paliçada de madeira em volta da vila. Segura a noite e os salteadores do lado de fora."
+	"projeto.arraial.muralha.desc": "Paliçada de madeira em volta da vila. Segura a noite e os salteadores do lado de fora.",
+	"arraial.cronica.mudou_oficio": "%s deixou o ofício repetido e assumiu um posto vazio: agora é %s."
 }
