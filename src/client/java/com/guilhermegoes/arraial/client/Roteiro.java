@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=ferreiro: the smithy, ore into bars into rails for a station going up.
+		if ("ferreiro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			ferreiro();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=bugs: the curral gate, the prefeito's roças, duplicate trades.
 		if ("bugs".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			bugs();
@@ -1480,6 +1489,56 @@ public final class Roteiro {
 		}));
 		passo(10, () -> verObra("curral", 12));
 		passo(30, () -> foto("100_curral"));
+	}
+
+	/**
+	 * The ferreiro: a village with a finished ferraria and a newcomer to take the forja; raw iron and
+	 * charcoal in the armazém, and a station marked out (it needs rails): the ferreiro smelts the ore
+	 * and forges the rails.
+	 */
+	private static void ferreiro() {
+		final int x = 350, z = 2200;
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("ferreiro: chunks carregados"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta ferraria"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos forja = blocoNaObra(level, v, "ferraria", com.guilhermegoes.arraial.registry.ModBlocks.FORJA);
+			log("ferreiro: forja=" + (forja == null ? "NAO" : forja.toShortString()));
+			if (forja != null) {
+				cmd("summon arraial:morador " + forja.getX() + " " + (forja.getY() + 1) + " " + (forja.getZ() + 2) + " {Profissao:0,Visual:5}");
+			}
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.RAW_IRON, 24);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.CHARCOAL, 16);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.STICK, 16);
+			var projeto = com.guilhermegoes.arraial.obra.Catalogo.porId("estacao").orElseThrow();
+			var lugar = com.guilhermegoes.arraial.obra.Terreno.procurar(level, v, projeto);
+			log("ferreiro: estacao marcada em " + lugar.map(l -> l.marco().toShortString()).orElse("NENHUM LUGAR"));
+			lugar.ifPresent(l -> com.guilhermegoes.arraial.obra.Terreno.marcar(level, l, projeto, com.guilhermegoes.arraial.obra.Prioridade.NORMAL));
+		}));
+		for (int i = 0; i < 4; i++) {
+			passo(600, () -> servidor((srv, sp) -> {
+				var level = sp.level();
+				BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+				var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+				StringBuilder fer = new StringBuilder();
+				for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60),
+						e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.FERREIRO)) {
+					fer.append(m.nome()).append(" status=").append(m.status().getString()).append(" carga=").append(m.cargaCopia()).append("; ");
+				}
+				log("ferreiro: armazem ferro_bruto=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.RAW_IRON)
+						+ " barras=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.IRON_INGOT)
+						+ " trilhos=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.RAIL)
+						+ " carvao=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.CHARCOAL)
+						+ " | " + (fer.length() == 0 ? "sem ferreiro" : fer.toString()));
+			}));
+		}
+		passo(10, () -> verObra("ferraria", 9));
+		passo(30, () -> foto("101_ferraria"));
 	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */

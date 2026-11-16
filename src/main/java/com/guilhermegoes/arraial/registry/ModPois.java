@@ -31,10 +31,11 @@ public final class ModPois {
 	public static final PoiType GUINDASTE = PoiHelper.register(Arraial.id("guindaste"), 1, 1, ModBlocks.GUINDASTE);
 	public static final PoiType MO = PoiHelper.register(Arraial.id("mo"), 1, 1, ModBlocks.MO);
 	public static final PoiType BILHETERIA = PoiHelper.register(Arraial.id("bilheteria"), 1, 1, ModBlocks.BILHETERIA);
+	public static final PoiType FORJA = PoiHelper.register(Arraial.id("forja"), 1, 1, ModBlocks.FORJA);
 
 	private static final Set<PoiType> POSTOS = Set.of(CEPO, BALAIO, FORNO_OLARIA, POSTO_GUARDA, COCHO, GAMELA, BANCADA_CANTEIRO,
 			FORNO_FARINHA, BANCA_FEIRA, CANGALHA, BALCAO_BOTICA,
-			COVO, VARAL_CACA, PRANCHETA, ESCRIVANINHA, MOENDA, TERREIRO, BANCADA_ENTALHE, AMARRA, GUINDASTE, MO, BILHETERIA);
+			COVO, VARAL_CACA, PRANCHETA, ESCRIVANINHA, MOENDA, TERREIRO, BANCADA_ENTALHE, AMARRA, GUINDASTE, MO, BILHETERIA, FORJA);
 
 	public static boolean ePosto(Holder<PoiType> tipo) {
 		return POSTOS.contains(tipo.value());
@@ -65,6 +66,7 @@ public final class ModPois {
 			case ESTIVADOR -> GUINDASTE;
 			case MOLEIRO -> MO;
 			case FERROVIARIO -> BILHETERIA;
+			case FERREIRO -> FORJA;
 			default -> null;
 		};
 	}

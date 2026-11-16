@@ -53,6 +53,19 @@ public final class Estoque {
 		if (oficios.contains(Profissao.PASTOR)) {
 			metas.put(Items.BED.red(), 1);
 		}
+		if (oficios.contains(Profissao.FERREIRO)) {
+			// Horseshoes for the troop's next trip, and iron armour for every soldado.
+			if (oficios.contains(Profissao.TROPEIRO)) {
+				metas.put(com.guilhermegoes.arraial.registry.ModItems.FERRADURA, 8);
+			}
+			int soldados = level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(vila).inflate(com.guilhermegoes.arraial.vila.Vilas.RAIO),
+					m -> vila.equals(m.vila()) && m.profissao() == Profissao.SOLDADO).size();
+			if (soldados > 0) {
+				metas.put(Items.IRON_CHESTPLATE, soldados);
+				metas.put(Items.IRON_LEGGINGS, soldados);
+				metas.put(Items.IRON_BOOTS, soldados);
+			}
+		}
 		return metas;
 	}
 

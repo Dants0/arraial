@@ -84,6 +84,7 @@ public final class ModCreativeTabs {
 						output.accept(ModBlocks.RODA_DAGUA);
 						output.accept(ModBlocks.MONJOLO);
 						output.accept(ModBlocks.BILHETERIA);
+						output.accept(ModBlocks.FORJA);
 						output.accept(ModItems.CAFE_CEREJA);
 						output.accept(ModItems.CAFE_TORRADO);
 						output.accept(ModItems.CAFEZINHO);
@@ -92,6 +93,7 @@ public final class ModCreativeTabs {
 						output.accept(ModItems.SAL);
 						output.accept(ModItems.CHITA);
 						output.accept(ModItems.FARINHA_TRIGO);
+						output.accept(ModItems.FERRADURA);
 						if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("farmersdelight")) {
 							output.accept(ModItems.BAIAO_DE_DOIS);
 							output.accept(ModItems.MOQUECA);

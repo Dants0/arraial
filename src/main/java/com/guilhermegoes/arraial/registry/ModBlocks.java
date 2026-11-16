@@ -205,6 +205,11 @@ public final class ModBlocks {
 	public static final Block BILHETERIA = register("bilheteria",
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("bilheteria").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
 
+	/** Forja: the smithy's hearth, workstation of the ferreiro (its coals glow). */
+	public static final Block FORJA = register("forja",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("forja").mapColor(MapColor.COLOR_RED).strength(3.0F).sound(SoundType.STONE)
+					.lightLevel(s -> 9).noOcclusion().requiresCorrectToolForDrops()));
+
 	/** Pedra-sabão: soapstone, the grey-green stone of the Baroque of Minas. */
 	public static final Block PEDRA_SABAO = register("pedra_sabao",
 			new Block(props("pedra_sabao").mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));

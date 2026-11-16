@@ -1380,5 +1380,16 @@
 	"projeto.arraial.missao.desc": "Igreja da missão espanhola, de adobe e com espadanha.",
 	"projeto.arraial.guarita.desc": "Posto do soldado, que vigia a vila contra salteadores e monstros.",
 	"projeto.arraial.muralha.desc": "Paliçada de madeira em volta da vila. Segura a noite e os salteadores do lado de fora.",
-	"arraial.cronica.mudou_oficio": "%s deixou o ofício repetido e assumiu um posto vazio: agora é %s."
+	"arraial.cronica.mudou_oficio": "%s deixou o ofício repetido e assumiu um posto vazio: agora é %s.",
+	"block.arraial.forja": "Forja",
+	"item.arraial.ferradura": "Ferradura",
+	"arraial.profissao.ferreiro.m": "Ferreiro",
+	"arraial.profissao.ferreiro.f": "Ferreira",
+	"projeto.arraial.ferraria": "Ferraria",
+	"projeto.arraial.ferraria.desc": "Forja do ferreiro: funde o minério da pedreira e faz trilhos, grades, ferraduras e armaduras para os soldados.",
+	"arraial.fala.oficio.ferreiro.0": "Malhar o ferro enquanto está quente!",
+	"arraial.fala.oficio.ferreiro.1": "Burro bem ferrado chega mais longe.",
+	"arraial.jei.forja": "Posto do FERREIRO, na ferraria. Ele funde o ferro bruto da pedreira (com carvão), e conforme a vila precisa faz trilhos, grades, ferraduras e armaduras de ferro para os soldados.",
+	"arraial.jei.ferradura": "Feita pelo ferreiro. Com 4 ferraduras no Armazém, a próxima viagem da tropa sai 15% mais rápida (os burros vão ferrados).",
+	"arraial.guia.oficios.9": "§lFerreiro§0\n\nVila estabelecida com ferro chegando ergue a §lferraria§0. O §lferreiro§0 funde o ferro bruto que o cavouqueiro tira da pedreira, usando carvão do lenhador.\n\nEle faz trilhos para a estação, grades, §lferraduras§0 (tropa 15% mais rápida) e armaduras de ferro para os soldados."
 }

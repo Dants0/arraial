@@ -64,7 +64,8 @@ public final class Prefeitura {
 			Map.entry(Profissao.BARQUEIRO, "trapiche"),
 			Map.entry(Profissao.ESTIVADOR, "porto"),
 			Map.entry(Profissao.MOLEIRO, "moinho"),
-			Map.entry(Profissao.FERROVIARIO, "estacao"));
+			Map.entry(Profissao.FERROVIARIO, "estacao"),
+			Map.entry(Profissao.FERREIRO, "ferraria"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -246,6 +247,11 @@ public final class Prefeitura {
 		// The river: a trapiche (and a barqueiro) once the arraial is established by the water.
 		if (n >= 7 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.AMARRA) == 0 && Vilas.temAgua(level, vila)) {
 			desejos.add("trapiche");
+		}
+		// The smithy: once the arraial is established and iron comes in (a Vila, or ore from the pedreira).
+		if (n >= 8 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.FORJA) == 0 && (estagio.pelo(Estagio.VILA)
+				|| Vilas.contar(Vilas.armazens(level, vila), s -> s.is(net.minecraft.world.item.Items.IRON_INGOT) || s.is(net.minecraft.world.item.Items.RAW_IRON)) >= 6)) {
+			desejos.add("ferraria");
 		}
 		// The water at work: a monjolo pounds for the farinheiro and the cafeicultor; a moinho grinds
 		// the wheat once the arraial is established (farinha de trigo: more bread per sheaf).

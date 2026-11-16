@@ -204,6 +204,9 @@ public final class Caravana {
 		if (!canoa && !trem && a.estradaPara(t.viagemDestino())) {
 			duracao = duracao * 3 / 4; // the road is open: a quarter quicker
 		}
+		if (t.profissao() == Profissao.TROPEIRO && Vilas.retirar(Vilas.armazens(level, a.getBlockPos()), com.guilhermegoes.arraial.registry.ModItems.FERRADURA, 4) == 4) {
+			duracao = duracao * 85 / 100; // the mules newly shod by the ferreiro
+		}
 		if (t.profissao() == Profissao.TROPEIRO) {
 			Cronica.anotar(level, a.getBlockPos(), Component.translatable("arraial.cronica.tropa_partiu", t.nome(), d.nome));
 		} else if (canoa) {

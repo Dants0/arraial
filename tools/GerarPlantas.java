@@ -576,6 +576,27 @@ public class GerarPlantas {
 		gst.caixa(3, 4, 0, 17, 4, 5, 's');
 		escrever(out.resolve("estacao.nbt"), estacao, gst.camadas());
 
+		// ---- Trilha 3A: the ferraria. An open smithy on log posts: the forja (ferreiro) against a
+		// brick back wall with its chimney, an anvil, a quenching cauldron and a barrel of iron.
+		Map<Character, String> ferraria = new HashMap<>();
+		ferraria.put('C', "minecraft:cobblestone");
+		ferraria.put('L', "minecraft:oak_log[axis=y]");
+		ferraria.put('B', "minecraft:bricks");
+		ferraria.put('s', "minecraft:oak_slab[type=bottom,waterlogged=false]");
+		ferraria.put('F', "arraial:forja[facing=south]");
+		ferraria.put('a', "minecraft:anvil[facing=east]");
+		ferraria.put('w', "minecraft:water_cauldron[level=3]");
+		ferraria.put('b', "minecraft:barrel[facing=up,open=false]");
+		ferraria.put('l', "arraial:lampiao[hanging=true,waterlogged=false]");
+		escrever(out.resolve("ferraria.nbt"), ferraria, List.of(
+				new String[] {"CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC", "CCCCCCC"},
+				new String[] {"L.....L", ".......", ".a...b.", ".......", "..wF...", "LBBBBBL"},
+				new String[] {"L.....L", ".......", ".......", ".......", ".......", "LBBBBBL"},
+				new String[] {"L.....L", ".......", "...l...", ".......", ".......", "LBBBBBL"},
+				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssBsss", "sssssss"},
+				new String[] {"       ", "       ", "       ", "       ", "   B   ", "       "},
+				new String[] {"       ", "       ", "       ", "       ", "   B   ", "       "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

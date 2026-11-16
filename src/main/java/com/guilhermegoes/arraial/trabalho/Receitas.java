@@ -87,6 +87,16 @@ public final class Receitas {
 		// Entalhador: gilded talha for the Matriz (planks and gold leaf).
 		add(Profissao.ENTALHADOR, com.guilhermegoes.arraial.registry.ModBlocks.TALHA_DOURADA.asItem(), 2, Map.of(Items.OAK_PLANKS, 2, Items.GOLD_NUGGET, 1));
 
+		// Ferreiro: smelts the pedreira's ore (with the lenhador's charcoal), and makes rails, bars,
+		// horseshoes for the troop and armour for the soldados.
+		add(Profissao.FERREIRO, Items.IRON_INGOT, 2, Map.of(Items.RAW_IRON, 2, Items.CHARCOAL, 1));
+		add(Profissao.FERREIRO, Items.RAIL, 16, Map.of(Items.IRON_INGOT, 6, Items.STICK, 1));
+		add(Profissao.FERREIRO, Items.IRON_BARS, 16, Map.of(Items.IRON_INGOT, 6));
+		add(Profissao.FERREIRO, com.guilhermegoes.arraial.registry.ModItems.FERRADURA, 4, Map.of(Items.IRON_INGOT, 1));
+		add(Profissao.FERREIRO, Items.IRON_CHESTPLATE, 1, Map.of(Items.IRON_INGOT, 8));
+		add(Profissao.FERREIRO, Items.IRON_LEGGINGS, 1, Map.of(Items.IRON_INGOT, 7));
+		add(Profissao.FERREIRO, Items.IRON_BOOTS, 1, Map.of(Items.IRON_INGOT, 4));
+
 		// Moleiro: the moinho d'água grinds one sheaf into two portions of farinha de trigo.
 		add(Profissao.MOLEIRO, com.guilhermegoes.arraial.registry.ModItems.FARINHA_TRIGO, 2, Map.of(Items.WHEAT, 1));
 

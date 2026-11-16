@@ -1380,5 +1380,16 @@
 	"projeto.arraial.missao.desc": "The Spanish mission church, of adobe with a bell gable.",
 	"projeto.arraial.guarita.desc": "The soldier's post, watching the village against highwaymen and monsters.",
 	"projeto.arraial.muralha.desc": "A wooden palisade around the village. Keeps the night and the highwaymen outside.",
-	"arraial.cronica.mudou_oficio": "%s left a crowded trade for an empty workstation: now a %s."
+	"arraial.cronica.mudou_oficio": "%s left a crowded trade for an empty workstation: now a %s.",
+	"block.arraial.forja": "Forge",
+	"item.arraial.ferradura": "Horseshoe",
+	"arraial.profissao.ferreiro.m": "Blacksmith",
+	"arraial.profissao.ferreiro.f": "Blacksmith",
+	"projeto.arraial.ferraria": "Smithy",
+	"projeto.arraial.ferraria.desc": "The blacksmith's forge: smelts the quarry's ore and makes rails, bars, horseshoes and armour for the soldiers.",
+	"arraial.fala.oficio.ferreiro.0": "Strike while the iron is hot!",
+	"arraial.fala.oficio.ferreiro.1": "A well-shod mule goes further.",
+	"arraial.jei.forja": "Workstation of the BLACKSMITH, at the smithy. They smelt the quarry's raw iron (with charcoal) and, as the village needs, make rails, iron bars, horseshoes and iron armour for the soldiers.",
+	"arraial.jei.ferradura": "Made by the blacksmith. With 4 horseshoes in the storehouse, the troop's next trip is 15% faster (the mules go shod).",
+	"arraial.guia.oficios.9": "§lBlacksmith§0\n\nAn established village with iron coming in builds the §lsmithy§0. The §lblacksmith§0 smelts the raw iron the quarryman digs, with the woodcutter's charcoal.\n\nThey make rails for the station, iron bars, §lhorseshoes§0 (troop 15% faster) and iron armour for the soldiers."
 }

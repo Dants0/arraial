@@ -42,6 +42,7 @@ public final class LivroDados {
 			Map.entry("barreira", "producao"), Map.entry("pedreira", "producao"), Map.entry("casa_de_farinha", "producao"),
 			Map.entry("pesqueiro", "producao"), Map.entry("rancho_cacador", "producao"), Map.entry("engenho", "producao"),
 			Map.entry("cafezal", "producao"), Map.entry("oficina_entalhe", "producao"), Map.entry("moinho", "producao"), Map.entry("monjolo", "producao"),
+			Map.entry("ferraria", "producao"),
 			Map.entry("feira", "comercio"), Map.entry("rancho_tropeiro", "comercio"), Map.entry("trapiche", "comercio"),
 			Map.entry("porto", "comercio"), Map.entry("estacao", "comercio"),
 			Map.entry("poco", "civico"), Map.entry("prefeitura", "civico"), Map.entry("botica", "civico"), Map.entry("cartorio", "civico"),

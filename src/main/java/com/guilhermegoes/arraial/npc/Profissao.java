@@ -40,7 +40,8 @@ public enum Profissao {
 	BARQUEIRO("barqueiro"),
 	ESTIVADOR("estivador"),
 	MOLEIRO("moleiro"),
-	FERROVIARIO("ferroviario");
+	FERROVIARIO("ferroviario"),
+	FERREIRO("ferreiro");
 
 	private final String id;
 
@@ -82,6 +83,7 @@ public enum Profissao {
 			case ESTIVADOR -> ModBlocks.GUINDASTE;
 			case MOLEIRO -> ModBlocks.MO;
 			case FERROVIARIO -> ModBlocks.BILHETERIA;
+			case FERREIRO -> ModBlocks.FORJA;
 			default -> null;
 		};
 	}
