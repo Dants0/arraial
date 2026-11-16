@@ -13,7 +13,7 @@ Fabric · Minecraft 26.3 · <a href="https://arraial.dantas-dev.com">Wiki</a> ·
 Funde um arraial com o **Cruzeiro**, contrate um pedreiro e veja o povoado crescer sozinho: os moradores constroem casas, plantam, criam, comerciam, fazem festa, votam, brigam por terra e atravessam três eras de arquitetura, do Povoado de taipa até a Cidade caiada.
 
 ### O que tem
-- **23 ofícios** com posto de trabalho próprio: pedreiro, lenhador, roceiro, oleiro, barreiro, cavouqueiro, pastor (vaqueiro), pescador, caçador, farinheiro, feirante, tropeiro, boticário, soldado, engenheiro, relações públicas, mestre de engenho, cafeicultor, entalhador, barqueiro, estivador, moleiro e ferroviário.
+- **28 ofícios** com posto de trabalho próprio: pedreiro, lenhador, roceiro, oleiro, barreiro, cavouqueiro, pastor (vaqueiro), pescador, caçador, farinheiro, feirante, tropeiro, boticário, soldado, engenheiro, relações públicas, mestre de engenho, cafeicultor, entalhador, barqueiro, estivador, moleiro, ferroviário, ferreiro, carpinteiro, padeiro, tecelão e alfaiate.
 - **Obras** escolhidas no Livro de Projetos e erguidas bloco a bloco com o material do Armazém. O prefeito pede obras sozinho.
 - **Estágios:** Povoado → Arraial → Vila → Vila próspera → Cidade.
 - **Economia:** réis, banca de feira com preço por oferta e procura, mascates, encomendas, tropeiros entre vilas, estradas batidas e contratos.
@@ -68,7 +68,7 @@ A criação do Arraial (sistemas, testes, bastidores) está sendo documentada no
 Found an arraial with the **Cruzeiro**, hire a builder and watch the settlement grow on its own. Its villagers build houses, farm, herd, trade, hold festas, vote, quarrel over land, and pass through three eras of architecture, from a mud-hut Povoado to a whitewashed Cidade.
 
 ### Features
-- **23 trades**, each with its own workstation.
+- **28 trades**, each with its own workstation.
 - **Construction projects** built block by block from the storehouse. The mayor orders works on their own.
 - **Stages:** Povoado → Arraial → Vila → Prosperous Vila → Cidade.
 - **Economy:** réis, a market stall with supply-and-demand prices, peddlers, orders, muleteers between villages, beaten roads and contracts.
