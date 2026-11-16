@@ -53,6 +53,13 @@ public final class Estoque {
 		if (oficios.contains(Profissao.PASTOR)) {
 			metas.put(Items.BED.red(), 1);
 		}
+		if (oficios.contains(Profissao.CARPINTEIRO)) {
+			metas.put(Items.BARREL, 2);
+			metas.put(Items.LADDER, 4);
+		}
+		if (oficios.contains(Profissao.PADEIRO)) {
+			metas.put(com.guilhermegoes.arraial.registry.ModItems.PAO_DE_QUEIJO, 4 + n);
+		}
 		if (oficios.contains(Profissao.FERREIRO)) {
 			// Horseshoes for the troop's next trip, and iron armour for every soldado.
 			if (oficios.contains(Profissao.TROPEIRO)) {

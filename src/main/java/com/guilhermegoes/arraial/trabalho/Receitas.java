@@ -49,6 +49,15 @@ public final class Receitas {
 			add(Profissao.LENHADOR, Items.STICK, 4, Map.of(m.tabua(), 2));
 			add(Profissao.LENHADOR, Items.CHARCOAL, 1, Map.of(m.tora(), 2));
 			add(Profissao.LENHADOR, Items.CHEST, 1, Map.of(m.tabua(), 8));
+			// Carpinteiro: the same joinery as the lenhador (whoever is free makes it), and barrels and workbenches.
+			add(Profissao.CARPINTEIRO, m.porta(), 3, Map.of(m.tabua(), 6));
+			add(Profissao.CARPINTEIRO, m.cerca(), 3, Map.of(m.tabua(), 4, Items.STICK, 2));
+			add(Profissao.CARPINTEIRO, m.laje(), 6, Map.of(m.tabua(), 3));
+			add(Profissao.CARPINTEIRO, m.escada(), 4, Map.of(m.tabua(), 6));
+			add(Profissao.CARPINTEIRO, m.portao(), 1, Map.of(m.tabua(), 2, Items.STICK, 4));
+			add(Profissao.CARPINTEIRO, Items.CHEST, 1, Map.of(m.tabua(), 8));
+			add(Profissao.CARPINTEIRO, Items.BARREL, 1, Map.of(m.tabua(), 6, m.laje(), 2));
+			add(Profissao.CARPINTEIRO, Items.CRAFTING_TABLE, 1, Map.of(m.tabua(), 4));
 			// Any wool will do for the red bed: it is dyed with urucum anyway.
 			for (Item la : lans()) {
 				add(Profissao.PASTOR, Items.BED.red(), 1, Map.of(la, 3, m.tabua(), 3));
@@ -96,6 +105,15 @@ public final class Receitas {
 		add(Profissao.FERREIRO, Items.IRON_CHESTPLATE, 1, Map.of(Items.IRON_INGOT, 8));
 		add(Profissao.FERREIRO, Items.IRON_LEGGINGS, 1, Map.of(Items.IRON_INGOT, 7));
 		add(Profissao.FERREIRO, Items.IRON_BOOTS, 1, Map.of(Items.IRON_INGOT, 4));
+
+		// Carpinteiro: ladders from sticks.
+		add(Profissao.CARPINTEIRO, Items.LADDER, 3, Map.of(Items.STICK, 7));
+
+		// Padeiro: bread (from wheat, or from the mill's flour) and pão de queijo (cassava flour, cheese, egg).
+		add(Profissao.PADEIRO, Items.BREAD, 1, Map.of(com.guilhermegoes.arraial.registry.ModItems.FARINHA_TRIGO, 2));
+		add(Profissao.PADEIRO, Items.BREAD, 1, Map.of(Items.WHEAT, 3));
+		add(Profissao.PADEIRO, com.guilhermegoes.arraial.registry.ModItems.PAO_DE_QUEIJO, 4, Map.of(com.guilhermegoes.arraial.registry.ModItems.FARINHA, 2,
+				com.guilhermegoes.arraial.registry.ModItems.QUEIJO_COALHO, 1, Items.EGG, 1));
 
 		// Moleiro: the moinho d'água grinds one sheaf into two portions of farinha de trigo.
 		add(Profissao.MOLEIRO, com.guilhermegoes.arraial.registry.ModItems.FARINHA_TRIGO, 2, Map.of(Items.WHEAT, 1));

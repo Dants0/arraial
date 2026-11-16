@@ -65,7 +65,9 @@ public final class Prefeitura {
 			Map.entry(Profissao.ESTIVADOR, "porto"),
 			Map.entry(Profissao.MOLEIRO, "moinho"),
 			Map.entry(Profissao.FERROVIARIO, "estacao"),
-			Map.entry(Profissao.FERREIRO, "ferraria"));
+			Map.entry(Profissao.FERREIRO, "ferraria"),
+			Map.entry(Profissao.CARPINTEIRO, "carpintaria"),
+			Map.entry(Profissao.PADEIRO, "padaria"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -252,6 +254,13 @@ public final class Prefeitura {
 		if (n >= 8 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.FORJA) == 0 && (estagio.pelo(Estagio.VILA)
 				|| Vilas.contar(Vilas.armazens(level, vila), s -> s.is(net.minecraft.world.item.Items.IRON_INGOT) || s.is(net.minecraft.world.item.Items.RAW_IRON)) >= 6)) {
 			desejos.add("ferraria");
+		}
+		// The carpintaria takes the joinery off the lenhador's hands; the padaria bakes for a bigger arraial.
+		if (n >= 8 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.BANCADA_CARPINTEIRO) == 0 && postos(level, vila, ModPois.CEPO) > 0) {
+			desejos.add("carpintaria");
+		}
+		if (n >= 9 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.FORNO_PAO) == 0) {
+			desejos.add("padaria");
 		}
 		// The water at work: a monjolo pounds for the farinheiro and the cafeicultor; a moinho grinds
 		// the wheat once the arraial is established (farinha de trigo: more bread per sheaf).

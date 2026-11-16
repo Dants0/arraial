@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=oficinas: the carpintaria and the padaria at work.
+		if ("oficinas".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			oficinas();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=ferreiro: the smithy, ore into bars into rails for a station going up.
 		if ("ferreiro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			ferreiro();
@@ -1539,6 +1548,64 @@ public final class Roteiro {
 		}
 		passo(10, () -> verObra("ferraria", 9));
 		passo(30, () -> foto("101_ferraria"));
+	}
+
+	/**
+	 * Carpinteiro and padeiro: a village with a finished carpintaria and padaria and two newcomers;
+	 * no food but wheat, cassava flour, cheese and eggs (the arraial wants bread, the padeiro makes
+	 * it and pão de queijo); planks and sticks (the carpinteiro makes barrels and ladders).
+	 */
+	private static void oficinas() {
+		final int x = 350, z = 2400;
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("oficinas: chunks carregados"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta carpintaria"));
+		passo(40, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial obra_pronta padaria"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos banca = blocoNaObra(level, v, "carpintaria", com.guilhermegoes.arraial.registry.ModBlocks.BANCADA_CARPINTEIRO);
+			BlockPos forno = blocoNaObra(level, v, "padaria", com.guilhermegoes.arraial.registry.ModBlocks.FORNO_PAO);
+			log("oficinas: bancada=" + (banca == null ? "NAO" : banca.toShortString()) + " forno=" + (forno == null ? "NAO" : forno.toShortString()));
+			for (BlockPos p : new BlockPos[] {banca, forno}) {
+				if (p != null) {
+					cmd("summon arraial:morador " + p.getX() + " " + (p.getY() + 1) + " " + (p.getZ() + 2) + " {Profissao:0,Visual:1}");
+				}
+			}
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.retirar(armazens, st -> st.has(net.minecraft.core.component.DataComponents.FOOD)
+					&& !st.is(com.guilhermegoes.arraial.registry.ModItems.FARINHA) && !st.is(com.guilhermegoes.arraial.registry.ModItems.QUEIJO_COALHO), 9999);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.WHEAT, 48);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, com.guilhermegoes.arraial.registry.ModItems.FARINHA, 16);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, com.guilhermegoes.arraial.registry.ModItems.QUEIJO_COALHO, 8);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.EGG, 8);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_PLANKS, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.STICK, 32);
+		}));
+		for (int i = 0; i < 4; i++) {
+			passo(600, () -> servidor((srv, sp) -> {
+				var level = sp.level();
+				BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+				var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+				StringBuilder q = new StringBuilder();
+				for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60),
+						e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.CARPINTEIRO || e.profissao() == com.guilhermegoes.arraial.npc.Profissao.PADEIRO)) {
+					q.append(m.profissao().name()).append(' ').append(m.nome()).append(" status=").append(m.status().getString()).append("; ");
+				}
+				log("oficinas: pao=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.BREAD)
+						+ " pao_de_queijo=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.PAO_DE_QUEIJO)
+						+ " trigo=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.WHEAT)
+						+ " barris=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.BARREL)
+						+ " escadas_mao=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.LADDER)
+						+ " | " + (q.length() == 0 ? "ninguem" : q.toString()));
+			}));
+		}
+		passo(10, () -> verObra("padaria", 10));
+		passo(30, () -> foto("102_padaria"));
+		passo(10, () -> verObra("carpintaria", 10));
+		passo(30, () -> foto("103_carpintaria"));
 	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */

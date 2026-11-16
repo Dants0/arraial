@@ -98,4 +98,52 @@ grade(path.join(TI, 'ferradura.png'), [
 { a: '#4A4E52', b: '#A8ADB2', c: '#2A2C2E' });
 itemSimples('ferradura');
 
+// ================================================================== 3B: carpinteiro e padeiro
+// Bancada de carpinteiro: a heavy workbench with a plank in the vise and a saw on top.
+posto('bancada_carpinteiro', { tampo: 'minecraft:block/stripped_spruce_log', perna: 'minecraft:block/spruce_log', tabua: 'minecraft:block/oak_planks',
+  serra: 'minecraft:block/iron_block', cabo: 'minecraft:block/dark_oak_planks', particle: 'minecraft:block/stripped_spruce_log' }, [
+  caixa([0, 10, 2], [16, 13, 14], '#tampo'),
+  caixa([1, 0, 3], [3, 10, 5], '#perna'), caixa([13, 0, 3], [15, 10, 5], '#perna'),
+  caixa([1, 0, 11], [3, 10, 13], '#perna'), caixa([13, 0, 11], [15, 10, 13], '#perna'),
+  caixa([1, 3, 4], [15, 4, 12], '#tabua'),
+  caixa([2, 13, 8], [12, 14, 13], '#tabua'),
+  caixa([4, 13, 4], [13, 13.5, 6], '#serra'), caixa([13, 13, 3.5], [15, 15, 6.5], '#cabo')]);
+json(path.join(RC, 'bancada_carpinteiro.json'), shaped('bancada_carpinteiro', ['III', 'SSS', 'L L'],
+  { I: 'minecraft:iron_ingot', S: '#minecraft:wooden_slabs', L: '#minecraft:logs' }));
+tag(path.join(MINEAVEL, 'axe.json'), ['arraial:bancada_carpinteiro']);
+
+// Forno de pão: the clay dome oven of the padaria, embers glowing in its mouth.
+posto('forno_pao', { base: 'minecraft:block/cobblestone', barro: 'minecraft:block/terracotta', brasa: 'minecraft:block/magma',
+  boca: 'minecraft:block/black_concrete', particle: 'minecraft:block/terracotta' }, [
+  caixa([0, 0, 0], [16, 6, 16], '#base'),
+  caixa([1, 6, 2], [15, 11, 15], '#barro'),
+  caixa([3, 11, 4], [13, 14, 13], '#barro'),
+  caixa([5, 14, 6], [11, 15, 11], '#barro'),
+  caixa([5, 6, 1], [11, 10, 2], '#boca'),
+  caixa([6, 6, 1.5], [10, 7, 2.5], '#brasa')]);
+json(path.join(RC, 'forno_pao.json'), shaped('forno_pao', [' T ', 'TCT', 'BBB'],
+  { T: 'minecraft:terracotta', C: 'minecraft:charcoal', B: 'minecraft:cobblestone' }));
+tag(path.join(MINEAVEL, 'pickaxe.json'), ['arraial:forno_pao']);
+
+// Pão de queijo: a little basket of golden cheese breads.
+grade(path.join(TI, 'pao_de_queijo.png'), [
+  '................',
+  '................',
+  '.....aaa..aaa...',
+  '....abbbaabbba..',
+  '....abcbbabcba..',
+  '....abbbaabbba..',
+  '..aaaaaaaaaaaa..',
+  '..abbbaabbbaa...',
+  '..abcbbabcba....',
+  '..abbbaabbba....',
+  '.ddddddddddddd..',
+  '.deedeedeedeed..',
+  '..dddddddddddd..',
+  '...ddddddddddd..',
+  '................',
+  '................'],
+{ a: '#B8862A', b: '#E8B84A', c: '#F6DC8A', d: '#8A5A2A', e: '#B07A3A' });
+itemSimples('pao_de_queijo');
+
 console.log('recursos dos oficios gerados');

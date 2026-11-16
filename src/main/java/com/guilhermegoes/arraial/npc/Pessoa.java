@@ -268,6 +268,8 @@ public final class Pessoa {
 			case MOLEIRO -> new ItemStack(ModItems.FARINHA_TRIGO, 12);
 			case FERROVIARIO -> new ItemStack(Items.RAIL, 16);
 			case FERREIRO -> new ItemStack(ModItems.FERRADURA, 4);
+			case CARPINTEIRO -> new ItemStack(Items.BARREL, 2);
+			case PADEIRO -> new ItemStack(ModItems.PAO_DE_QUEIJO, 8);
 			default -> new ItemStack(ModItems.REIS, 12);
 		};
 	}

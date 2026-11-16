@@ -527,6 +527,19 @@ function skin(oficio, fem, v) {
       aventalFrente(s, '#6B4A2A', 9, true);
       sujeira(s, '#1E1A18', [CORPO, BRACO_D, BRACO_E], 3, 0.45, 91);
       break;
+    case 'carpinteiro':
+      camisa(s, o, '#B8A07A', { manga: 6, arregacada: true, gola: 'v', xadrez: '#8A6E4A' });
+      if (saia) vestido(s, o, '#B8A07A', '#5A4632', { manga: 6, avental: '#8A6A44' }); else calca(s, o, '#5A4632');
+      aventalFrente(s, '#8A6A44', 7, false);
+      lapis(s);
+      chapeuPalha(s, '#5A4632');
+      break;
+    case 'padeiro':
+      camisa(s, o, '#F2EEE4', { manga: 6, gola: 'redonda', botoes: true });
+      if (saia) vestido(s, o, '#F2EEE4', '#D8CFBC', { manga: 6, avental: '#FAF7F0' }); else calca(s, o, '#D8CFBC');
+      aventalFrente(s, '#FAF7F0', 9, true);
+      gorro(s, '#FAF7F0');
+      break;
     case 'mascate':
       camisa(s, o, '#C9862A', { manga: 8, punho: '#7A2E5A' });
       if (saia) vestido(s, o, '#C9862A', '#2F6A5A', { manga: 8 }); else calca(s, o, '#3F5A4A', { bota: true });
@@ -567,7 +580,7 @@ function previa(skins, cols, escala, arquivo) {
 
 // ------------------------------------------------------------------ main
 const OFICIOS = ['morador', 'pedreiro', 'lenhador', 'roceiro', 'oleiro', 'soldado', 'pastor', 'barreiro', 'cavouqueiro', 'farinheiro', 'feirante',
-  'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes', 'mascate', 'mestre_engenho', 'cafeicultor', 'entalhador', 'barqueiro', 'estivador', 'moleiro', 'ferroviario', 'ferreiro'];
+  'tropeiro', 'boticario', 'pescador', 'cacador', 'engenheiro', 'relacoes', 'mascate', 'mestre_engenho', 'cafeicultor', 'entalhador', 'barqueiro', 'estivador', 'moleiro', 'ferroviario', 'ferreiro', 'carpinteiro', 'padeiro'];
 const saida = process.argv[2];
 fs.mkdirSync(saida, { recursive: true });
 let n = 0;

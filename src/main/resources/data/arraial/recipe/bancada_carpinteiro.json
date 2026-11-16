@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "#minecraft:wooden_slabs",
+    "L": "#minecraft:logs"
+  },
+  "pattern": [
+    "III",
+    "SSS",
+    "L L"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:bancada_carpinteiro"
+  }
+}

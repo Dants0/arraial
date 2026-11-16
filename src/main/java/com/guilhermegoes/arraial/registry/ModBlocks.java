@@ -210,6 +210,14 @@ public final class ModBlocks {
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("forja").mapColor(MapColor.COLOR_RED).strength(3.0F).sound(SoundType.STONE)
 					.lightLevel(s -> 9).noOcclusion().requiresCorrectToolForDrops()));
 
+	/** Bancada de carpinteiro: the carpintaria's workbench, workstation of the carpinteiro. */
+	public static final Block BANCADA_CARPINTEIRO = register("bancada_carpinteiro",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("bancada_carpinteiro").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+	/** Forno de pão: the padaria's clay dome oven, workstation of the padeiro (its embers glow). */
+	public static final Block FORNO_PAO = register("forno_pao",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("forno_pao").mapColor(MapColor.TERRACOTTA_ORANGE).strength(2.5F).sound(SoundType.STONE)
+					.lightLevel(s -> 8).noOcclusion().requiresCorrectToolForDrops()));
+
 	/** Pedra-sabão: soapstone, the grey-green stone of the Baroque of Minas. */
 	public static final Block PEDRA_SABAO = register("pedra_sabao",
 			new Block(props("pedra_sabao").mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));

@@ -597,6 +597,42 @@ public class GerarPlantas {
 				new String[] {"       ", "       ", "       ", "       ", "   B   ", "       "},
 				new String[] {"       ", "       ", "       ", "       ", "   B   ", "       "}));
 
+		// ---- Trilha 3B: the carpintaria. An open shed: the bancada (carpinteiro) at the back between
+		// a pile of logs and a barrel, a crafting table at the side.
+		Map<Character, String> carpintaria = new HashMap<>();
+		carpintaria.put('P', "minecraft:oak_planks");
+		carpintaria.put('L', "minecraft:oak_log[axis=y]");
+		carpintaria.put('w', "minecraft:oak_log[axis=x]");
+		carpintaria.put('s', "minecraft:oak_slab[type=bottom,waterlogged=false]");
+		carpintaria.put('K', "arraial:bancada_carpinteiro[facing=south]");
+		carpintaria.put('c', "minecraft:crafting_table");
+		carpintaria.put('b', "minecraft:barrel[facing=up,open=false]");
+		carpintaria.put('l', "arraial:lampiao[hanging=true,waterlogged=false]");
+		escrever(out.resolve("carpintaria.nbt"), carpintaria, List.of(
+				new String[] {"PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP"},
+				new String[] {"L.....L", ".......", "c......", ".......", "ww.K..b", "LPPPPPL"},
+				new String[] {"L.....L", ".......", ".......", ".......", "ww.....", "LPPPPPL"},
+				new String[] {"L.....L", ".......", "...l...", ".......", ".......", "LPPPPPL"},
+				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssssss", "sssssss"}));
+
+		// ---- Trilha 3B: the padaria. A small plank house with the clay oven (padeiro) at the back
+		// under its chimney, and barrels of flour.
+		Map<Character, String> padaria = new HashMap<>();
+		padaria.put('P', "minecraft:oak_planks");
+		padaria.put('L', "minecraft:oak_log[axis=y]");
+		padaria.put('B', "minecraft:bricks");
+		padaria.put('s', "minecraft:oak_slab[type=bottom,waterlogged=false]");
+		padaria.put('F', "arraial:forno_pao[facing=south]");
+		padaria.put('b', "minecraft:barrel[facing=up,open=false]");
+		padaria.put('l', "arraial:lampiao[hanging=true,waterlogged=false]");
+		escrever(out.resolve("padaria.nbt"), padaria, List.of(
+				new String[] {"PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP"},
+				new String[] {"LPP.PPL", "P.....P", "P.....P", "Pb...bP", "P..F..P", "LPPPPPL"},
+				new String[] {"LPP.PPL", "P.....P", ".......", "P.....P", "P.....P", "LPPPPPL"},
+				new String[] {"LPPPPPL", "P.....P", "P..l..P", "P.....P", "P.....P", "LPPPPPL"},
+				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssBsss", "sssssss"},
+				new String[] {"       ", "       ", "       ", "       ", "   B   ", "       "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 
