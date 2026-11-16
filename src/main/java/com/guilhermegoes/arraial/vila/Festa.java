@@ -236,7 +236,9 @@ public final class Festa {
 				texto = Component.translatable("arraial.cronica.festa_interrompida", t.nome(a));
 			} else {
 				boolean enfeitada = bandeirinhas(level, a.getBlockPos()) >= 4;
-				int bonus = 4 + (f.farta ? 4 : 0) + (enfeitada ? 3 : 0) + (gente >= 5 ? 2 : 0)
+				// Dressed for the festa: chita clothes from the alfaiate for a good part of the people.
+				boolean trajada = Vilas.contar(Vilas.armazens(level, a.getBlockPos()), com.guilhermegoes.arraial.registry.ModItems.ROUPA_FESTA) >= Math.max(2, gente / 3);
+				int bonus = 4 + (f.farta ? 4 : 0) + (enfeitada ? 3 : 0) + (trajada ? 3 : 0) + (gente >= 5 ? 2 : 0)
 						+ (Cultura.costume(level, a, "festeiros") ? 3 : 0)
 						+ (Cultura.costume(level, a, "devotos") && f.estilo() == Cultura.Estilo.PROCISSAO ? 3 : 0);
 				Satisfacao.agradar(level, a.getBlockPos(), bonus);

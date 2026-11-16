@@ -60,6 +60,16 @@ public final class Estoque {
 		if (oficios.contains(Profissao.PADEIRO)) {
 			metas.put(com.guilhermegoes.arraial.registry.ModItems.PAO_DE_QUEIJO, 4 + n);
 		}
+		if (oficios.contains(Profissao.TECELAO)) {
+			metas.put(Items.STRING, 8);
+			metas.put(com.guilhermegoes.arraial.registry.ModBlocks.REDE.asItem(), 1);
+		}
+		if (oficios.contains(Profissao.ALFAIATE)) {
+			metas.put(com.guilhermegoes.arraial.registry.ModItems.ROUPA_FESTA, Math.max(2, n / 2));
+			if (oficios.contains(Profissao.PASTOR)) {
+				metas.put(com.guilhermegoes.arraial.registry.ModItems.CHAPEU_COURO, 1); // the vaqueiro's hat
+			}
+		}
 		if (oficios.contains(Profissao.FERREIRO)) {
 			// Horseshoes for the troop's next trip, and iron armour for every soldado.
 			if (oficios.contains(Profissao.TROPEIRO)) {

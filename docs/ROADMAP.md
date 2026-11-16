@@ -62,7 +62,15 @@ Ordem escolhida pelo usuário: 1 → 3 → 4. Cada etapa compila, passa por uma 
 | 1E | **Ferrovia (era Republicana)** — estação; vilas com estação trocam por trem: rápido, barato e seguro | ✅ |
 
 ### 3. Novos ofícios e cadeias (depois de 1)
-Ferreiro (ferramentas, ferradura, cravos), tecelão (algodão, pano, rede de dormir), padeiro (pão com farinha de trigo), carpinteiro, alfaiate.
+Nenhum ofício existente perde receitas: os novos somam.
+
+| Etapa | Conteúdo | Estado |
+|---|---|---|
+| 3A | **Ferreiro** (forja, ferraria) — funde o ferro bruto da pedreira com carvão; trilhos, grades, ferraduras (tropa 15% mais rápida) e armaduras de ferro para os soldados | ✅ |
+| 3B | **Carpinteiro** (bancada, carpintaria) e **padeiro** (forno de barro, padaria) — marcenaria das obras junto com o lenhador, barris e escadas; pão e pão de queijo | ✅ |
+| 3C | **Tecelão** (tear, tecelagem com algodoal) e **alfaiate** (mesa, alfaiataria) — algodão, linha, pano, rede de dormir; roupa de festa (festa +3 de satisfação) e couro do vaqueiro | ✅ |
+
+Correções do mesmo pedido (16/11): portão do curral em loop, cocho no centro do curral, prefeito só pede obra que a vila não tem, desempregado escolhe o ofício que falta e repetidos mudam para posto vazio.
 
 ### 4. Instituições (depois de 3)
 Igreja com padre (missa, batizado, casamento), escola com professor, cadeia e delegado (julgamentos), Santa Casa.

@@ -115,6 +115,21 @@ public final class Receitas {
 		add(Profissao.PADEIRO, com.guilhermegoes.arraial.registry.ModItems.PAO_DE_QUEIJO, 4, Map.of(com.guilhermegoes.arraial.registry.ModItems.FARINHA, 2,
 				com.guilhermegoes.arraial.registry.ModItems.QUEIJO_COALHO, 1, Items.EGG, 1));
 
+		// Tecelão: thread and cloth at the tear (from cotton, or from wool), and hammocks.
+		add(Profissao.TECELAO, Items.STRING, 2, Map.of(com.guilhermegoes.arraial.registry.ModItems.ALGODAO, 1));
+		add(Profissao.TECELAO, com.guilhermegoes.arraial.registry.ModItems.PANO, 1, Map.of(com.guilhermegoes.arraial.registry.ModItems.ALGODAO, 3));
+		add(Profissao.TECELAO, com.guilhermegoes.arraial.registry.ModItems.PANO, 1, Map.of(Items.WOOL.white(), 1));
+		add(Profissao.TECELAO, com.guilhermegoes.arraial.registry.ModBlocks.REDE.asItem(), 1, Map.of(com.guilhermegoes.arraial.registry.ModItems.PANO, 3, Items.STRING, 2));
+
+		// Alfaiate: festa clothes (chita, or plain cloth dyed red) and the vaqueiro's leathers.
+		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.ROUPA_FESTA, 1, Map.of(com.guilhermegoes.arraial.registry.ModItems.CHITA, 1,
+				com.guilhermegoes.arraial.registry.ModItems.PANO, 1));
+		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.ROUPA_FESTA, 1, Map.of(com.guilhermegoes.arraial.registry.ModItems.PANO, 2, Items.DYE.red(), 1));
+		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.CHAPEU_COURO, 1, Map.of(Items.LEATHER, 3));
+		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.GIBAO, 1, Map.of(Items.LEATHER, 5));
+		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.PERNEIRA, 1, Map.of(Items.LEATHER, 4));
+		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.ALPERCATAS, 1, Map.of(Items.LEATHER, 2));
+
 		// Moleiro: the moinho d'água grinds one sheaf into two portions of farinha de trigo.
 		add(Profissao.MOLEIRO, com.guilhermegoes.arraial.registry.ModItems.FARINHA_TRIGO, 2, Map.of(Items.WHEAT, 1));
 

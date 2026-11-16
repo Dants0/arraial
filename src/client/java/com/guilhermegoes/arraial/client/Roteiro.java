@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=tecidos: the tecelagem (cotton, cloth) and the alfaiataria (festa clothes).
+		if ("tecidos".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			tecidos();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=oficinas: the carpintaria and the padaria at work.
 		if ("oficinas".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			oficinas();
@@ -1606,6 +1615,72 @@ public final class Roteiro {
 		passo(30, () -> foto("102_padaria"));
 		passo(10, () -> verObra("carpintaria", 10));
 		passo(30, () -> foto("103_carpintaria"));
+	}
+
+	/**
+	 * Tecelão and alfaiate: a village with a finished tecelagem (cotton planted) and alfaiataria,
+	 * two newcomers, some cotton and chita in the armazém; the cotton grows fast (random ticks up),
+	 * the tecelão picks, plants and weaves, the alfaiate sews festa clothes.
+	 */
+	private static void tecidos() {
+		final int x = 350, z = 2600;
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("tecidos: chunks carregados"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> cmd("time set 1000", "gamerule random_tick_speed 60", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta tecelagem"));
+		passo(40, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial obra_pronta alfaiataria"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos tear = blocoNaObra(level, v, "tecelagem", com.guilhermegoes.arraial.registry.ModBlocks.TEAR);
+			BlockPos mesa = blocoNaObra(level, v, "alfaiataria", com.guilhermegoes.arraial.registry.ModBlocks.MESA_ALFAIATE);
+			log("tecidos: tear=" + (tear == null ? "NAO" : tear.toShortString()) + " mesa=" + (mesa == null ? "NAO" : mesa.toShortString()));
+			for (BlockPos p : new BlockPos[] {tear, mesa}) {
+				if (p != null) {
+					cmd("summon arraial:morador " + p.getX() + " " + (p.getY() + 1) + " " + (p.getZ() - 1) + " {Profissao:0,Visual:4,Feminino:1b}");
+				}
+			}
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, com.guilhermegoes.arraial.registry.ModItems.ALGODAO, 12);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, com.guilhermegoes.arraial.registry.ModItems.CHITA, 8);
+		}));
+		for (int i = 0; i < 5; i++) {
+			passo(600, () -> servidor((srv, sp) -> {
+				var level = sp.level();
+				BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+				var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+				BlockPos tear = blocoNaObra(level, v, "tecelagem", com.guilhermegoes.arraial.registry.ModBlocks.TEAR);
+				int pes = 0, maduros = 0;
+				if (tear != null) {
+					for (BlockPos p : BlockPos.betweenClosed(tear.offset(-10, -2, -10), tear.offset(10, 2, 10))) {
+						var st = level.getBlockState(p);
+						if (st.is(com.guilhermegoes.arraial.registry.ModBlocks.ALGODOEIRO)) {
+							pes++;
+							if (com.guilhermegoes.arraial.trabalho.AlgodoeiroBlock.maduro(st)) {
+								maduros++;
+							}
+						}
+					}
+				}
+				StringBuilder q = new StringBuilder();
+				for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60),
+						e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.TECELAO || e.profissao() == com.guilhermegoes.arraial.npc.Profissao.ALFAIATE)) {
+					q.append(m.profissao().name()).append(' ').append(m.nome()).append(" status=").append(m.status().getString()).append(" carga=").append(m.cargaCopia()).append("; ");
+				}
+				log("tecidos: algodoeiros=" + pes + " (maduros " + maduros + ") algodao=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.ALGODAO)
+						+ " pano=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.PANO)
+						+ " linha=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, net.minecraft.world.item.Items.STRING)
+						+ " redes=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModBlocks.REDE.asItem())
+						+ " roupa_festa=" + com.guilhermegoes.arraial.vila.Vilas.contar(armazens, com.guilhermegoes.arraial.registry.ModItems.ROUPA_FESTA)
+						+ " | " + (q.length() == 0 ? "ninguem" : q.toString()));
+			}));
+		}
+		passo(10, () -> cmd("gamerule random_tick_speed 3"));
+		passo(10, () -> verObra("tecelagem", 11));
+		passo(30, () -> foto("104_tecelagem"));
+		passo(10, () -> verObra("alfaiataria", 9));
+		passo(30, () -> foto("105_alfaiataria"));
 	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */

@@ -43,7 +43,9 @@ public enum Profissao {
 	FERROVIARIO("ferroviario"),
 	FERREIRO("ferreiro"),
 	CARPINTEIRO("carpinteiro"),
-	PADEIRO("padeiro");
+	PADEIRO("padeiro"),
+	TECELAO("tecelao"),
+	ALFAIATE("alfaiate");
 
 	private final String id;
 
@@ -88,6 +90,8 @@ public enum Profissao {
 			case FERREIRO -> ModBlocks.FORJA;
 			case CARPINTEIRO -> ModBlocks.BANCADA_CARPINTEIRO;
 			case PADEIRO -> ModBlocks.FORNO_PAO;
+			case TECELAO -> ModBlocks.TEAR;
+			case ALFAIATE -> ModBlocks.MESA_ALFAIATE;
 			default -> null;
 		};
 	}

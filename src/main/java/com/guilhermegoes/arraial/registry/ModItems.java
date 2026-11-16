@@ -86,6 +86,13 @@ public final class ModItems {
 	/** Pão de queijo: the padeiro's cheese bread (cassava flour, queijo coalho and egg). */
 	public static final Item PAO_DE_QUEIJO = register("pao_de_queijo", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.6F).build()));
+	/** Algodão: a cotton boll; planted, it grows into an algodoeiro. */
+	public static final Item ALGODAO = register("algodao",
+			p -> new net.minecraft.world.item.BlockItem(ModBlocks.ALGODOEIRO, p), new Item.Properties().useItemDescriptionPrefix());
+	/** Pano: cotton cloth woven by the tecelão. */
+	public static final Item PANO = register("pano", Item::new, new Item.Properties());
+	/** Roupa de festa: a chita dress made by the alfaiate; a well-dressed arraial enjoys its festas more. */
+	public static final Item ROUPA_FESTA = register("roupa_festa", Item::new, new Item.Properties().stacksTo(16));
 	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
 	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));

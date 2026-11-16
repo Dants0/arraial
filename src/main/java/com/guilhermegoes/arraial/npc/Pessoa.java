@@ -270,6 +270,8 @@ public final class Pessoa {
 			case FERREIRO -> new ItemStack(ModItems.FERRADURA, 4);
 			case CARPINTEIRO -> new ItemStack(Items.BARREL, 2);
 			case PADEIRO -> new ItemStack(ModItems.PAO_DE_QUEIJO, 8);
+			case TECELAO -> new ItemStack(com.guilhermegoes.arraial.registry.ModBlocks.REDE, 1);
+			case ALFAIATE -> new ItemStack(ModItems.ROUPA_FESTA, 1);
 			default -> new ItemStack(ModItems.REIS, 12);
 		};
 	}

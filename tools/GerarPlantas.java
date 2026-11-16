@@ -633,6 +633,37 @@ public class GerarPlantas {
 				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssBsss", "sssssss"},
 				new String[] {"       ", "       ", "       ", "       ", "   B   ", "       "}));
 
+		// ---- Trilha 3C: the tecelagem. An open shed with the tear (tecelão) and, behind it, the first
+		// rows of cotton (the tecelão keeps planting around the posto as the field grows).
+		Map<Character, String> tecelagem = new HashMap<>();
+		tecelagem.put('P', "minecraft:oak_planks");
+		tecelagem.put('L', "minecraft:oak_log[axis=y]");
+		tecelagem.put('s', "minecraft:oak_slab[type=bottom,waterlogged=false]");
+		tecelagem.put('T', "arraial:tear[facing=south]");
+		tecelagem.put('b', "minecraft:barrel[facing=up,open=false]");
+		tecelagem.put('d', "minecraft:dirt");
+		tecelagem.put('a', "arraial:algodoeiro[age=0]");
+		tecelagem.put('l', "arraial:lampiao[hanging=true,waterlogged=false]");
+		escrever(out.resolve("tecelagem.nbt"), tecelagem, List.of(
+				new String[] {"PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "ddddddd", "ddddddd", "ddddddd", "ddddddd"},
+				new String[] {"L.....L", ".......", "b.....b", ".......", "L..T..L", ".......", "a.a.a.a", ".......", "a.a.a.a"},
+				new String[] {"L.....L", ".......", ".......", ".......", "L.....L", ".......", ".......", ".......", "......."},
+				new String[] {"L.....L", ".......", "...l...", ".......", "L.....L", "       ", "       ", "       ", "       "},
+				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssssss", "       ", "       ", "       ", "       "}));
+
+		// ---- Trilha 3C: the alfaiataria. A small plank house with the tailor's table (alfaiate)
+		// in the middle, barrels of cloth along the walls.
+		Map<Character, String> alfaiataria = new HashMap<>(tecelagem);
+		alfaiataria.put('M', "arraial:mesa_alfaiate[facing=south]");
+		alfaiataria.put('w', "minecraft:white_wool");
+		alfaiataria.put('r', "minecraft:red_wool");
+		escrever(out.resolve("alfaiataria.nbt"), alfaiataria, List.of(
+				new String[] {"PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP", "PPPPPPP"},
+				new String[] {"LPP.PPL", "P.....P", "Pb...bP", "P..M..P", "Pwr.rwP", "LPPPPPL"},
+				new String[] {"LPP.PPL", "P.....P", ".......", "P.....P", "P.....P", "LPPPPPL"},
+				new String[] {"LPPPPPL", "P.....P", "P..l..P", "P.....P", "P.....P", "LPPPPPL"},
+				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssssss", "sssssss"}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

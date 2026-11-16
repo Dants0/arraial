@@ -23,6 +23,9 @@
     "arraial:roda_dagua",
     "arraial:monjolo",
     "arraial:bilheteria",
-    "arraial:bancada_carpinteiro"
+    "arraial:bancada_carpinteiro",
+    "arraial:tear",
+    "arraial:mesa_alfaiate",
+    "arraial:rede"
   ]
 }

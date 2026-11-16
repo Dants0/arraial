@@ -67,7 +67,9 @@ public final class Prefeitura {
 			Map.entry(Profissao.FERROVIARIO, "estacao"),
 			Map.entry(Profissao.FERREIRO, "ferraria"),
 			Map.entry(Profissao.CARPINTEIRO, "carpintaria"),
-			Map.entry(Profissao.PADEIRO, "padaria"));
+			Map.entry(Profissao.PADEIRO, "padaria"),
+			Map.entry(Profissao.TECELAO, "tecelagem"),
+			Map.entry(Profissao.ALFAIATE, "alfaiataria"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -261,6 +263,13 @@ public final class Prefeitura {
 		}
 		if (n >= 9 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.FORNO_PAO) == 0) {
 			desejos.add("padaria");
+		}
+		// Cloth: a tecelagem (cotton, pano, redes) once established; the alfaiataria for a Vila (festa clothes).
+		if (n >= 8 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.TEAR) == 0) {
+			desejos.add("tecelagem");
+		}
+		if (n >= 10 && estagio.pelo(Estagio.VILA) && postos(level, vila, ModPois.MESA_ALFAIATE) == 0) {
+			desejos.add("alfaiataria");
 		}
 		// The water at work: a monjolo pounds for the farinheiro and the cafeicultor; a moinho grinds
 		// the wheat once the arraial is established (farinha de trigo: more bread per sheaf).

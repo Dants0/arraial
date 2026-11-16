@@ -218,6 +218,20 @@ public final class ModBlocks {
 			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("forno_pao").mapColor(MapColor.TERRACOTTA_ORANGE).strength(2.5F).sound(SoundType.STONE)
 					.lightLevel(s -> 8).noOcclusion().requiresCorrectToolForDrops()));
 
+	/** Algodoeiro: the cotton bush (no item of its own: it is planted from a boll). */
+	public static final Block ALGODOEIRO = registerSemItem("algodoeiro",
+			new com.guilhermegoes.arraial.trabalho.AlgodoeiroBlock(props("algodoeiro").mapColor(MapColor.PLANT).noCollision().randomTicks()
+					.sound(SoundType.SWEET_BERRY_BUSH).pushReaction(net.minecraft.world.level.material.PushReaction.POPPED)));
+	/** Tear: the hand loom of the tecelagem, workstation of the tecelão. */
+	public static final Block TEAR = register("tear",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("tear").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+	/** Mesa de alfaiate: the tailor's cutting table, workstation of the alfaiate. */
+	public static final Block MESA_ALFAIATE = register("mesa_alfaiate",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("mesa_alfaiate").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+	/** Rede de dormir: a striped hammock (decorative). */
+	public static final Block REDE = register("rede",
+			new com.guilhermegoes.arraial.obra.RedeBlock(props("rede").mapColor(MapColor.WOOL).strength(0.8F).sound(SoundType.WOOL).noOcclusion()));
+
 	/** Pedra-sabão: soapstone, the grey-green stone of the Baroque of Minas. */
 	public static final Block PEDRA_SABAO = register("pedra_sabao",
 			new Block(props("pedra_sabao").mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));

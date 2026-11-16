@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": "#minecraft:wool",
+    "T": "minecraft:shears",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "WT ",
+    "PPP",
+    "P P"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:mesa_alfaiate"
+  }
+}
