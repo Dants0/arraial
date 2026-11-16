@@ -356,7 +356,7 @@ const PROFISSOES = [
 const PROJETOS = Object.keys(LANG.pt).filter(k => /^projeto\.arraial\.[a-z_]+$/.test(k)).map(k => k.split('.')[2]);
 const ESTAGIOS = ['povoado', 'arraial', 'vila', 'vila_prospera', 'cidade'];
 const ITENS = Object.keys(LANG.pt).filter(k => /^(block|item)\.arraial\.[a-z_]+$/.test(k)).map(k => ({ id: k.split('.')[2], bloco: k.startsWith('block') }))
-	.filter(x => !x.id.endsWith('_spawn_egg') && !['mandioca', 'cafeeiro'].includes(x.id) || !x.bloco && x.id === 'mandioca');
+	.filter(x => !x.id.endsWith('_spawn_egg') && !['mandioca', 'cafeeiro', 'algodoeiro'].includes(x.id) || !x.bloco && x.id === 'mandioca');
 const FAUNA = ['capivara', 'tamandua', 'jacare', 'onca', 'arara'];
 // The guide's chapters, read from the mod itself (GuiaItem), so the wiki never falls behind the book.
 const CAPITULOS = [...fs.readFileSync(path.join(__dirname, '..', 'src', 'main', 'java', 'com', 'guilhermegoes', 'arraial', 'vila', 'GuiaItem.java'), 'utf8')
