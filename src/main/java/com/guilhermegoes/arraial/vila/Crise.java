@@ -193,7 +193,7 @@ public final class Crise {
 		boolean tempoSeco = Calendario.tempoDaSeca(hoje);
 		int seca = roca && !level.isRaining() ? (tempoSeco ? 4 : 1) : 0;
 		int enchente = roca && level.isRaining() ? (tempoSeco ? 1 : 4) : 0;
-		int praga = roca ? 2 : 0;
+		int praga = roca ? (Bichos.tamanduas(level, arraial.getBlockPos()) > 0 ? 1 : 2) : 0; // tamanduás eat the ants
 		int salteadores = (moradores >= 8 ? 3 : 2) + Diplomacia.peso(level, arraial.getBlockPos());
 		int epidemia = moradores >= 6 ? 1 : 0;
 		int incendio = !level.isRaining() ? 1 : 0;
@@ -220,7 +220,8 @@ public final class Crise {
 		c.perdas = 0;
 		c.fim = agora + switch (tipo) {
 			case SECA -> (3 + r.nextInt(3)) * DIA;
-			case PRAGA -> (2 + r.nextInt(2)) * DIA / (galinhas(level, arraial.getBlockPos()) >= 4 ? 2 : 1);
+			case PRAGA -> (2 + r.nextInt(2)) * DIA / (galinhas(level, arraial.getBlockPos()) >= 4 ? 2 : 1)
+					/ (Bichos.tamanduas(level, arraial.getBlockPos()) > 0 ? 2 : 1);
 			case ENCHENTE -> DIA / 2;
 			case SALTEADORES -> DIA + DIA / 2; // a safety net: the raid ends at dawn
 			case EPIDEMIA -> 4 * DIA;
@@ -230,7 +231,7 @@ public final class Crise {
 		BlockPos vila = arraial.getBlockPos();
 		String extra = switch (tipo) {
 			case SECA -> Prefeitura.obras(level, vila, "poco") > 0 ? "_poco" : "";
-			case PRAGA -> galinhas(level, vila) >= 4 ? "_galinhas" : "";
+			case PRAGA -> Bichos.tamanduas(level, vila) > 0 ? "_tamandua" : galinhas(level, vila) >= 4 ? "_galinhas" : "";
 			default -> "";
 		};
 		Cronica.anotar(level, vila, Component.translatable("arraial.cronica.crise." + tipo.id() + extra));

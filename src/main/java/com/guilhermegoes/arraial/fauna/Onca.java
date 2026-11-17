@@ -79,10 +79,19 @@ public class Onca extends Animal {
 	public boolean doHurtTarget(ServerLevel level, Entity alvo) {
 		boolean feriu = super.doHurtTarget(level, alvo);
 		if (feriu && alvo instanceof LivingEntity l && !l.isAlive() && presa(l)) {
+			com.guilhermegoes.arraial.vila.Bichos.oncaMatou(level, this, l);
 			saciada = 6000 + getRandom().nextInt(6000);   // fed for a good while
 			setTarget(null);
 		}
 		return feriu;
+	}
+
+	@Override
+	public void die(DamageSource causa) {
+		if (level() instanceof ServerLevel server) {
+			com.guilhermegoes.arraial.vila.Bichos.oncaMorreu(server, this, causa);
+		}
+		super.die(causa);
 	}
 
 	@Override

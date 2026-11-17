@@ -51,7 +51,8 @@ public final class Navio {
 			"Estrela do Norte", "Santa Rita", "Princesa do Atlântico", "Boa Esperança"};
 
 	/** What the ship buys (the colony's exports), with its premium over the base price. */
-	public static final List<Item> EXPORTA = List.of(Items.SUGAR, ModItems.CAFE_TORRADO, ModItems.RAPADURA, Items.LEATHER, ModItems.CHARQUE);
+	public static final List<Item> EXPORTA = List.of(Items.SUGAR, ModItems.CAFE_TORRADO, ModItems.RAPADURA, Items.LEATHER, ModItems.CHARQUE,
+			ModItems.COURO_JACARE, ModItems.PELE_ONCA);
 	/** What the ship brings. */
 	public static final List<Item> IMPORTA = List.of(ModItems.SAL, Items.IRON_INGOT, ModItems.CHITA);
 	private static final double PREMIO = 1.3;

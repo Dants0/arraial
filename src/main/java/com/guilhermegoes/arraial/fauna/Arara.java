@@ -15,6 +15,15 @@ public class Arara extends Parrot {
 	}
 
 	@Override
+	public void aiStep() {
+		super.aiStep();
+		// Now and then a feather falls (about every seven minutes).
+		if (level() instanceof net.minecraft.server.level.ServerLevel server && !isBaby() && getRandom().nextInt(8400) == 0) {
+			spawnAtLocation(server, com.guilhermegoes.arraial.registry.ModItems.PENA_ARARA);
+		}
+	}
+
+	@Override
 	public boolean canSitOnShoulder() {
 		return false;
 	}

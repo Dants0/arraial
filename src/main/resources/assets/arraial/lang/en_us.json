@@ -1440,5 +1440,17 @@
 	"arraial.jei.algodao": "Picked from the cotton bush. Planted on dirt it grows into a cotton bush. Two cotton make a string at the crafting table; the weaver weaves three into a cloth.",
 	"arraial.jei.pano": "Woven by the weaver (from cotton or wool). Goes into the tailor's festa clothes and into hammocks.",
 	"arraial.jei.roupa_festa": "Made by the tailor from chita and cloth. With festa clothes in the storehouse for a good part of the people, festas give more satisfaction.",
-	"arraial.guia.oficios.11": "§lWeaver and tailor§0\n\nAt the §lweaving shed§0 the §lweaver§0 plants cotton around the loom, picks it and weaves: three bolls make a §lcloth§0. They also make thread and §lhammocks§0.\n\nAt the §ltailor's shop§0 (Vila) the §ltailor§0 makes §lfesta clothes§0 from chita and cloth. Well-dressed people enjoy the festa more (more satisfaction)."
+	"arraial.guia.oficios.11": "§lWeaver and tailor§0\n\nAt the §lweaving shed§0 the §lweaver§0 plants cotton around the loom, picks it and weaves: three bolls make a §lcloth§0. They also make thread and §lhammocks§0.\n\nAt the §ltailor's shop§0 (Vila) the §ltailor§0 makes §lfesta clothes§0 from chita and cloth. Well-dressed people enjoy the festa more (more satisfaction).",
+	"item.arraial.couro_jacare": "Caiman Hide",
+	"item.arraial.pena_arara": "Macaw Feather",
+	"item.arraial.pele_onca": "Jaguar Pelt",
+	"block.arraial.tapete_onca": "Jaguar Pelt Rug",
+	"arraial.cronica.onca_rondando": "A jaguar killed %s near %s! The hunter and the soldiers have gone after it.",
+	"arraial.cronica.onca_abatida": "%s brought down the jaguar that was prowling the village. The people breathed again.",
+	"arraial.cronica.onca_sumiu": "The jaguar that prowled the village fell far from anyone's eyes.",
+	"arraial.cronica.crise.praga_tamandua": "A plague appeared in the fields, but the village's anteaters are eating the termites and ants.",
+	"arraial.jei.couro_jacare": "The caiman's scaled hide, from the hunter or from you. The ship pays dearly for it, and the tailor makes fine hats and sandals from it.",
+	"arraial.jei.pena_arara": "Macaws drop feathers now and then. Three feathers and a string make eight festa bunting.",
+	"arraial.jei.pele_onca": "The jaguar's coat. Lay it on the floor as a trophy rug, or sell it dearly to the ship and at the market.",
+	"arraial.guia.fauna.3": "§lThe animals and the village§0\n\n§lCapybaras§0 and §lcaimans§0 are the hunter's game: meat, leather and the caiman hide the ship pays dearly for.\n\n§lAnteaters§0 in the village's land eat the termites and ants: the plague is rarer and shorter.\n\nA §ljaguar§0 that kills an animal near the village is hunted by the soldiers and the hunter. Brought down, it leaves its §lpelt§0 (a rug) and relief.\n\n§lMacaws§0 cheer the village up and drop §lfeathers§0 for bunting."
 }

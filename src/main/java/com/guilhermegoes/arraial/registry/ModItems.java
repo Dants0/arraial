@@ -93,6 +93,13 @@ public final class ModItems {
 	public static final Item PANO = register("pano", Item::new, new Item.Properties());
 	/** Roupa de festa: a chita dress made by the alfaiate; a well-dressed arraial enjoys its festas more. */
 	public static final Item ROUPA_FESTA = register("roupa_festa", Item::new, new Item.Properties().stacksTo(16));
+	/** Couro de jacaré: the caiman's scaled hide, a luxury the ships pay well for. */
+	public static final Item COURO_JACARE = register("couro_jacare", Item::new, new Item.Properties());
+	/** Pena de arara: a macaw feather (they drop now and then); three make festa bunting. */
+	public static final Item PENA_ARARA = register("pena_arara", Item::new, new Item.Properties());
+	/** Pele de onça: the jaguar's coat; laid on the floor it is a rug. */
+	public static final Item PELE_ONCA = register("pele_onca",
+			p -> new net.minecraft.world.item.BlockItem(ModBlocks.TAPETE_ONCA, p), new Item.Properties().useItemDescriptionPrefix());
 	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
 	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));

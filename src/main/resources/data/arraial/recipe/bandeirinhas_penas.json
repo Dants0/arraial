@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "arraial:pena_arara",
+    "arraial:pena_arara",
+    "arraial:pena_arara",
+    "minecraft:string"
+  ],
+  "result": {
+    "count": 8,
+    "id": "arraial:bandeirinhas"
+  }
+}

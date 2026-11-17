@@ -81,6 +81,9 @@ public class CacadorGoal extends OficioGoal {
 				|| (a instanceof TamableAnimal t && t.isTame())) {
 			return false;
 		}
+		if (a instanceof com.guilhermegoes.arraial.fauna.Onca) {
+			return vila != null && com.guilhermegoes.arraial.vila.Bichos.rondando(level, vila);
+		}
 		// The curral's herd: anything grazing near a cocho.
 		if (vila != null && level.getPoiManager().findAll(h -> h.value() == ModPois.COCHO, p -> true, a.blockPosition(), 14,
 				PoiManager.Occupancy.ANY).findAny().isPresent()) {
@@ -88,7 +91,8 @@ public class CacadorGoal extends OficioGoal {
 		}
 		return a.getType() == net.minecraft.world.entity.EntityTypes.COW || a.getType() == net.minecraft.world.entity.EntityTypes.PIG
 				|| a.getType() == net.minecraft.world.entity.EntityTypes.SHEEP || a.getType() == net.minecraft.world.entity.EntityTypes.CHICKEN
-				|| a.getType() == net.minecraft.world.entity.EntityTypes.RABBIT || a.getType() == net.minecraft.world.entity.EntityTypes.GOAT;
+				|| a.getType() == net.minecraft.world.entity.EntityTypes.RABBIT || a.getType() == net.minecraft.world.entity.EntityTypes.GOAT
+				|| a.getType() == com.guilhermegoes.arraial.registry.ModEntities.CAPIVARA || a.getType() == com.guilhermegoes.arraial.registry.ModEntities.JACARE;
 	}
 
 	private @Nullable Animal escolherPresa() {
@@ -100,7 +104,7 @@ public class CacadorGoal extends OficioGoal {
 		for (Animal a : bichos) {
 			// Leave enough of the kind to breed back.
 			long iguais = level().getEntitiesOfClass(Animal.class, a.getBoundingBox().inflate(RAIO), b -> b.getType() == a.getType()).size();
-			if (iguais <= MINIMO) {
+			if (iguais <= MINIMO && !(a instanceof com.guilhermegoes.arraial.fauna.Onca)) {
 				continue;
 			}
 			double x = a.distanceToSqr(morador);

@@ -1440,5 +1440,17 @@
 	"arraial.jei.algodao": "Colhido no algodoeiro. Plantado na terra vira um pé de algodão. Dois algodões dão uma linha na bancada; o tecelão tece três em um pano.",
 	"arraial.jei.pano": "Tecido pelo tecelão (de algodão ou de lã). Vai para a roupa de festa do alfaiate e para a rede de dormir.",
 	"arraial.jei.roupa_festa": "Feita pelo alfaiate com chita e pano. Com roupa de festa no Armazém para boa parte do povo, a festa rende mais satisfação.",
-	"arraial.guia.oficios.11": "§lTecelão e alfaiate§0\n\nNa §ltecelagem§0, o §ltecelão§0 planta algodão em volta do tear, colhe e tece: três algodões dão um §lpano§0. Ele faz também linha e §lrede de dormir§0.\n\nNa §lalfaiataria§0 (Vila), o §lalfaiate§0 faz §lroupa de festa§0 com chita e pano. Povo bem vestido aproveita mais a festa (mais satisfação)."
+	"arraial.guia.oficios.11": "§lTecelão e alfaiate§0\n\nNa §ltecelagem§0, o §ltecelão§0 planta algodão em volta do tear, colhe e tece: três algodões dão um §lpano§0. Ele faz também linha e §lrede de dormir§0.\n\nNa §lalfaiataria§0 (Vila), o §lalfaiate§0 faz §lroupa de festa§0 com chita e pano. Povo bem vestido aproveita mais a festa (mais satisfação).",
+	"item.arraial.couro_jacare": "Couro de Jacaré",
+	"item.arraial.pena_arara": "Pena de Arara",
+	"item.arraial.pele_onca": "Pele de Onça",
+	"block.arraial.tapete_onca": "Tapete de Pele de Onça",
+	"arraial.cronica.onca_rondando": "Uma onça matou %s perto de %s! O caçador e os soldados saíram atrás dela.",
+	"arraial.cronica.onca_abatida": "%s abateu a onça que rondava a vila. O povo respirou aliviado.",
+	"arraial.cronica.onca_sumiu": "A onça que rondava a vila caiu longe dos olhos de todos.",
+	"arraial.cronica.crise.praga_tamandua": "Apareceu uma praga na roça, mas os tamanduás da vila estão comendo os cupins e as formigas.",
+	"arraial.jei.couro_jacare": "Couro escamado do jacaré, caçado pelo caçador ou por você. O navio paga caro por ele, e o alfaiate faz chapéu e alpercatas finos.",
+	"arraial.jei.pena_arara": "As araras deixam cair penas de vez em quando. Três penas e uma linha dão oito bandeirinhas de festa.",
+	"arraial.jei.pele_onca": "A pele da onça-pintada. Coloque no chão como tapete de troféu, ou venda caro no navio e na feira.",
+	"arraial.guia.fauna.3": "§lOs bichos e a vila§0\n\n§lCapivara§0 e §ljacaré§0 são caça do caçador: carne, couro e o couro de jacaré, que o navio paga caro.\n\n§lTamanduá§0 no território come cupim e formiga: a praga é mais rara e mais curta.\n\n§lOnça§0 que mata bicho perto da vila vira caça dos soldados e do caçador. Abatida, deixa a §lpele§0 (tapete) e alivia o povo.\n\n§lAraras§0 alegram a vila e deixam §lpenas§0 para bandeirinhas."
 }

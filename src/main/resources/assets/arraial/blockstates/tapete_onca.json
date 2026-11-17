@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arraial:block/tapete_onca"
+    },
+    "facing=east": {
+      "model": "arraial:block/tapete_onca",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arraial:block/tapete_onca",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arraial:block/tapete_onca",
+      "y": 270
+    }
+  }
+}

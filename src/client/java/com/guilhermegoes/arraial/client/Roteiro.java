@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=bichos: the fauna and the village (onça hunted, tamanduá vs praga, araras, capivaras).
+		if ("bichos".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			bichos();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=tecidos: the tecelagem (cotton, cloth) and the alfaiataria (festa clothes).
 		if ("tecidos".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			tecidos();
@@ -1681,6 +1690,88 @@ public final class Roteiro {
 		passo(30, () -> foto("104_tecelagem"));
 		passo(10, () -> verObra("alfaiataria", 9));
 		passo(30, () -> foto("105_alfaiataria"));
+	}
+
+	private static String bichosPerto(net.minecraft.server.level.ServerLevel level, BlockPos v) {
+		var caixa = new net.minecraft.world.phys.AABB(v).inflate(70);
+		return "oncas=" + level.getEntitiesOfClass(com.guilhermegoes.arraial.fauna.Onca.class, caixa, e -> e.isAlive()).size()
+				+ " capivaras=" + level.getEntitiesOfClass(com.guilhermegoes.arraial.fauna.Capivara.class, caixa, e -> e.isAlive()).size()
+				+ " galinhas=" + level.getEntitiesOfClass(net.minecraft.world.entity.animal.chicken.Chicken.class, caixa, e -> e.isAlive()).size()
+				+ " tamanduas=" + com.guilhermegoes.arraial.vila.Bichos.tamanduas(level, v) + " araras=" + com.guilhermegoes.arraial.vila.Bichos.araras(level, v)
+				+ " onca rondando=" + com.guilhermegoes.arraial.vila.Bichos.rondando(level, v);
+	}
+
+	/**
+	 * The fauna and the village: a guarita (soldado) and a rancho de caçador (caçador); capivaras for
+	 * the caçador; chickens and an onça (it kills one: the hunt is on, the soldado brings it down);
+	 * a tamanduá (the praga is shorter) and two araras (satisfaction).
+	 */
+	private static void bichos() {
+		final int x = 350, z = 2800;
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("bichos: chunks carregados"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta guarita"));
+		passo(40, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial obra_pronta rancho_cacador"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			for (int i = 0; i < 2; i++) {
+				cmd("summon arraial:morador " + x + " 121 " + (z + 2) + " {Profissao:0,Visual:" + (2 + i) + "}");
+			}
+			int alvoAntes = com.guilhermegoes.arraial.vila.Satisfacao.alvo(level, (com.guilhermegoes.arraial.vila.ArraialBlockEntity) level.getBlockEntity(v),
+					level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60), m -> v.equals(m.vila())));
+			log("bichos: satisfacao alvo sem araras=" + alvoAntes);
+			cmd("summon arraial:arara " + (x + 4) + " 122 " + (z + 6), "summon arraial:arara " + (x - 4) + " 122 " + (z + 6),
+					"summon arraial:tamandua " + (x + 8) + " 121 " + (z + 10));
+			for (int i = 0; i < 6; i++) {
+				cmd("summon arraial:capivara " + (x - 20 + i) + " 121 " + (z + 20));
+			}
+		}));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			int alvo = com.guilhermegoes.arraial.vila.Satisfacao.alvo(level, (com.guilhermegoes.arraial.vila.ArraialBlockEntity) level.getBlockEntity(v),
+					level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60), m -> v.equals(m.vila())));
+			log("bichos: satisfacao alvo com araras=" + alvo + " | " + bichosPerto(level, v));
+			// The praga with a tamanduá about.
+			cmd("execute positioned " + x + " 120 " + z + " run arraial crise praga");
+		}));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				var e = a.cronica();
+				log("bichos: cronica da praga: " + (e.isEmpty() ? "-" : e.get(e.size() - 1).texto().getString()));
+			}
+			cmd("execute positioned " + x + " 120 " + z + " run arraial crise fim");
+			// Chickens and an onça near them.
+			for (int i = 0; i < 4; i++) {
+				cmd("summon minecraft:chicken " + (x + 14 + i) + " 121 " + (z - 10));
+			}
+			cmd("summon arraial:onca " + (x + 22) + " 121 " + (z - 10));
+		}));
+		for (int i = 0; i < 6; i++) {
+			passo(300, () -> servidor((srv, sp) -> {
+				var level = sp.level();
+				BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+				StringBuilder q = new StringBuilder();
+				for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(70),
+						e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.SOLDADO || e.profissao() == com.guilhermegoes.arraial.npc.Profissao.CACADOR)) {
+					q.append(m.profissao().name()).append(' ').append(m.nome()).append(" alvo=").append(m.getTarget() == null ? "-" : m.getTarget().getName().getString())
+							.append(" status=").append(m.status().getString()).append("; ");
+				}
+				StringBuilder cr = new StringBuilder();
+				if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+					var e = a.cronica();
+					for (int k = Math.max(0, e.size() - 2); k < e.size(); k++) {
+						cr.append(e.get(k).texto().getString()).append(" / ");
+					}
+				}
+				log("bichos: " + bichosPerto(level, v) + " | " + q + " | cronica: " + cr);
+			}));
+		}
 	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */

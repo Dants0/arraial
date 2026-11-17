@@ -64,6 +64,9 @@ public final class Satisfacao {
 		if (Prefeitura.obras(level, vila, "chafariz") > 0) {
 			alvo += 4;
 		}
+		if (Bichos.araras(level, vila) >= 2) {
+			alvo += 3; // araras about: an arraial full of colour and noise
+		}
 		alvo -= a.politica.imposto() * 4; // taxes weigh on everyone
 		// How the people feel in their own lives (rest, company, dreams).
 		if (!moradores.isEmpty()) {

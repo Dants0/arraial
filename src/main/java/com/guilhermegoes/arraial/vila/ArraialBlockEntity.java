@@ -75,6 +75,8 @@ public class ArraialBlockEntity extends BlockEntity {
 	int navioVendeu;
 	int navioComprou;
 	long navioUltimo;
+	/** Until when an onça prowls around the arraial (it killed an animal here); see Bichos. */
+	long oncaAte;
 	/** Neighbours (Registro ids) a finished road leads to (see EngenheiroGoal). */
 	final java.util.Set<String> estradas = new java.util.HashSet<>();
 
@@ -430,6 +432,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		navioVendeu = input.getIntOr("NavioVendeu", 0);
 		navioComprou = input.getIntOr("NavioComprou", 0);
 		navioUltimo = input.getLongOr("NavioUltimo", 0L);
+		oncaAte = input.getLongOr("OncaAte", 0L);
 		estradas.clear();
 		for (String e : input.getStringOr("Estradas", "").split(";")) {
 			if (!e.isBlank()) {
@@ -469,6 +472,7 @@ public class ArraialBlockEntity extends BlockEntity {
 		output.putInt("NavioVendeu", navioVendeu);
 		output.putInt("NavioComprou", navioComprou);
 		output.putLong("NavioUltimo", navioUltimo);
+		output.putLong("OncaAte", oncaAte);
 		output.putString("Estradas", String.join(";", estradas));
 		output.putBoolean("Autonoma", autonoma);
 		output.putBoolean("Abandonada", abandonada);

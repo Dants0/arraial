@@ -232,6 +232,10 @@ public final class ModBlocks {
 	public static final Block REDE = register("rede",
 			new com.guilhermegoes.arraial.obra.RedeBlock(props("rede").mapColor(MapColor.WOOL).strength(0.8F).sound(SoundType.WOOL).noOcclusion()));
 
+	/** The pele de onça laid on the floor (its item is the pele). */
+	public static final Block TAPETE_ONCA = registerSemItem("tapete_onca",
+			new com.guilhermegoes.arraial.obra.TapeteBlock(props("tapete_onca").mapColor(MapColor.COLOR_ORANGE).strength(0.1F).sound(SoundType.WOOL).noOcclusion()));
+
 	/** Pedra-sabão: soapstone, the grey-green stone of the Baroque of Minas. */
 	public static final Block PEDRA_SABAO = register("pedra_sabao",
 			new Block(props("pedra_sabao").mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));

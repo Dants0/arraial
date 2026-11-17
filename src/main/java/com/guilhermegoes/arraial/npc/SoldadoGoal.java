@@ -160,6 +160,23 @@ public class SoldadoGoal extends Goal {
 		}
 	}
 
+	/** Hunts the onça that prowls around the arraial (it has been killing the animals). */
+	public static class CacarOnca extends NearestAttackableTargetGoal<com.guilhermegoes.arraial.fauna.Onca> {
+		private final MoradorEntity soldado;
+
+		public CacarOnca(MoradorEntity soldado) {
+			super(soldado, com.guilhermegoes.arraial.fauna.Onca.class, 10, true, false,
+					(alvo, level) -> soldado.vila() != null && alvo.blockPosition().closerThan(soldado.vila(), com.guilhermegoes.arraial.vila.Vilas.RAIO + 16)
+							&& com.guilhermegoes.arraial.vila.Bichos.rondando(level, soldado.vila()));
+			this.soldado = soldado;
+		}
+
+		@Override
+		public boolean canUse() {
+			return soldado.profissao() == Profissao.SOLDADO && super.canUse();
+		}
+	}
+
 	/** Hunts monsters inside the arraial (not creepers: those are best left alone). */
 	public static class Cacar extends NearestAttackableTargetGoal<Monster> {
 		private final MoradorEntity soldado;

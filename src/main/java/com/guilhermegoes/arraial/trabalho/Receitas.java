@@ -129,6 +129,8 @@ public final class Receitas {
 		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.GIBAO, 1, Map.of(Items.LEATHER, 5));
 		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.PERNEIRA, 1, Map.of(Items.LEATHER, 4));
 		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.ALPERCATAS, 1, Map.of(Items.LEATHER, 2));
+		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.CHAPEU_COURO, 1, Map.of(com.guilhermegoes.arraial.registry.ModItems.COURO_JACARE, 1));
+		add(Profissao.ALFAIATE, com.guilhermegoes.arraial.registry.ModItems.ALPERCATAS, 1, Map.of(com.guilhermegoes.arraial.registry.ModItems.COURO_JACARE, 1));
 
 		// Moleiro: the moinho d'água grinds one sheaf into two portions of farinha de trigo.
 		add(Profissao.MOLEIRO, com.guilhermegoes.arraial.registry.ModItems.FARINHA_TRIGO, 2, Map.of(Items.WHEAT, 1));
