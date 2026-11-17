@@ -287,4 +287,137 @@ tag(path.join(MINEAVEL, 'axe.json'), ['arraial:rede']);
 json(path.join(RC, 'linha_de_algodao.json'), { type: 'minecraft:crafting_shapeless', category: 'misc',
   ingredients: ['arraial:algodao', 'arraial:algodao'], result: { count: 1, id: 'minecraft:string' } });
 
+// ================================================================== arqueiro
+// Suporte de arcos: a wooden rack with two bows hanging and a quiver of arrows.
+posto('suporte_arcos', { madeira: 'minecraft:block/spruce_planks', tora: 'minecraft:block/spruce_log', arco: 'minecraft:block/stripped_oak_log',
+  corda: 'minecraft:block/white_wool', couro: 'minecraft:block/brown_wool', pena: 'minecraft:block/white_concrete', particle: 'minecraft:block/spruce_planks' }, [
+  caixa([1, 0, 12], [3, 16, 14], '#tora'), caixa([13, 0, 12], [15, 16, 14], '#tora'),
+  caixa([1, 13, 12], [15, 15, 14], '#madeira'), caixa([1, 1, 12], [15, 3, 14], '#madeira'),
+  // Two bows: a curved stave (three pieces) and its string.
+  caixa([4, 4, 11], [5, 6, 12], '#arco'), caixa([3.5, 6, 11], [4.5, 10, 12], '#arco'), caixa([4, 10, 11], [5, 12, 12], '#arco'),
+  caixa([5.5, 4.5, 11.3], [5.8, 11.5, 11.6], '#corda'),
+  caixa([8, 4, 11], [9, 6, 12], '#arco'), caixa([7.5, 6, 11], [8.5, 10, 12], '#arco'), caixa([8, 10, 11], [9, 12, 12], '#arco'),
+  caixa([9.5, 4.5, 11.3], [9.8, 11.5, 11.6], '#corda'),
+  // The quiver, arrows sticking out.
+  caixa([11, 0, 8], [14, 7, 11], '#couro'),
+  caixa([11.5, 7, 9], [12, 11, 9.5], '#arco'), caixa([13, 7, 9.5], [13.5, 10, 10], '#arco'),
+  caixa([11.3, 10, 8.8], [12.2, 11.5, 9.7], '#pena'), caixa([12.8, 9, 9.3], [13.7, 10.5, 10.2], '#pena')]);
+json(path.join(RC, 'suporte_arcos.json'), shaped('suporte_arcos', ['LBL', 'LAL', 'PPP'],
+  { L: '#minecraft:logs', B: 'minecraft:bow', A: 'minecraft:arrow', P: '#minecraft:planks' }));
+tag(path.join(MINEAVEL, 'axe.json'), ['arraial:suporte_arcos']);
+
+// ================================================================== the sertanejo's tools
+function ferramenta(nome) {
+  json(path.join(A, 'models', 'item', nome + '.json'), { parent: 'minecraft:item/handheld', textures: { layer0: 'arraial:item/' + nome } });
+  json(path.join(A, 'items', nome + '.json'), { model: { type: 'minecraft:model', model: 'arraial:item/' + nome } });
+}
+// Bateia: a shallow wooden pan with gold specks in the gravel.
+grade(path.join(TI, 'bateia.png'), [
+  '................',
+  '................',
+  '................',
+  '..aaaaaaaaaaaa..',
+  '.abbbbbbbbbbbba.',
+  'abccccccccccccba',
+  'abcdcecdcddcecba',
+  '.abcddcdecdccba.',
+  '..abccdcccdcba..',
+  '...abbccccbba...',
+  '....aabbbbaa....',
+  '......aaaa......',
+  '................',
+  '................',
+  '................',
+  '................'],
+{ a: '#5A3A1C', b: '#8A5E30', c: '#A88660', d: '#7A7468', e: '#F2C230' });
+ferramenta('bateia');
+// Enxadão: a broad iron blade on a long handle.
+grade(path.join(TI, 'enxadao.png'), [
+  '................',
+  '.........iiiii..',
+  '........iiiiiii.',
+  '........ijiiiji.',
+  '.........iiiii..',
+  '..........hh....',
+  '.........hh.....',
+  '........hh......',
+  '.......hh.......',
+  '......hh........',
+  '.....hh.........',
+  '....hh..........',
+  '...hh...........',
+  '..hh............',
+  '.hh.............',
+  '................'],
+{ i: '#B8BCC0', j: '#7A7E82', h: '#7A5230' });
+ferramenta('enxadao');
+// Laço: a coiled lasso of braided rope.
+grade(path.join(TI, 'laco.png'), [
+  '................',
+  '.....aaaaaa.....',
+  '....abbbbbba....',
+  '...ab......ba...',
+  '..ab.aaaaaa.ba..',
+  '..ab.abbbba.ba..',
+  '..ab.ab..ba.ba..',
+  '..ab.ab..ba.ba..',
+  '..ab.abbbba.ba..',
+  '..ab..aaaa..ba..',
+  '...ab......ba...',
+  '....abbbbbbaa...',
+  '.....aaaaaa.ab..',
+  '.............ab.',
+  '..............a.',
+  '................'],
+{ a: '#7A5A30', b: '#C8A060' });
+ferramenta('laco');
+// Tarrafa: a round cast net with its lead weights.
+grade(path.join(TI, 'tarrafa.png'), [
+  '.......aa.......',
+  '.......aa.......',
+  '......abba......',
+  '.....ab..ba.....',
+  '....ab.ab.ba....',
+  '...ab.a..a.ba...',
+  '..ab.a.ab.a.ba..',
+  '..b.a.a..a.a.b..',
+  '.ab.a.ab.ab.a.b.',
+  '.b.a.a..a..a.ab.',
+  'ab.a.a.ab.a.a.ba',
+  'b.a.a.a..a.a.a.b',
+  'cbcbcbcbcbcbcbcb',
+  'c.c.c.c.c.c.c.c.',
+  '................',
+  '................'],
+{ a: '#C8B890', b: '#9A8A64', c: '#5A5E66' });
+ferramenta('tarrafa');
+// Berrante: the curved cattle horn, banded with brass.
+grade(path.join(TI, 'berrante.png'), [
+  '................',
+  '..............aa',
+  '.............abb',
+  '............abba',
+  '...........abba.',
+  '..........cbba..',
+  '.........abba...',
+  '........abbc....',
+  '.......abba.....',
+  '......cbba......',
+  '.....abba.......',
+  '...aabba........',
+  '..abbba.........',
+  '.abba...........',
+  '.aaa............',
+  '................'],
+{ a: '#3A2A1A', b: '#E8D8B0', c: '#C9A23A' });
+ferramenta('berrante');
+// Recipes.
+json(path.join(RC, 'bateia.json'), shaped('bateia', ['P P', 'PGP'], { P: '#minecraft:planks', G: 'minecraft:gold_nugget' }));
+json(path.join(RC, 'enxadao.json'), shaped('enxadao', ['III', 'IS ', ' S '], { I: 'minecraft:iron_ingot', S: 'minecraft:stick' }));
+json(path.join(RC, 'laco.json'), { type: 'minecraft:crafting_shapeless', category: 'misc',
+  ingredients: ['minecraft:lead', 'minecraft:string', 'minecraft:string', 'minecraft:string'], result: { count: 1, id: 'arraial:laco' } });
+json(path.join(RC, 'tarrafa.json'), shaped('tarrafa', ['SSS', 'SNS', 'SSS'], { S: 'minecraft:string', N: 'minecraft:iron_nugget' }));
+json(path.join(RC, 'berrante.json'), { type: 'minecraft:crafting_shapeless', category: 'misc',
+  ingredients: ['minecraft:bone', 'minecraft:bone', 'minecraft:leather', 'minecraft:gold_nugget'], result: { count: 1, id: 'arraial:berrante' } });
+
 console.log('recursos dos oficios gerados');

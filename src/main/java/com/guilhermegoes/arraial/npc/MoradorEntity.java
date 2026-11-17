@@ -309,6 +309,7 @@ public class MoradorEntity extends PathfinderMob {
 	protected void registerGoals() {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new SoldadoGoal.Atacar(this));
+		goalSelector.addGoal(1, new ArqueiroGoal(this));
 		goalSelector.addGoal(1, new FugirGoal(this));
 		goalSelector.addGoal(1, new DormirGoal(this));
 		goalSelector.addGoal(1, new ApagarFogoGoal(this));

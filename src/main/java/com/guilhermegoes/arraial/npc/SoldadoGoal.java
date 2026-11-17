@@ -173,7 +173,7 @@ public class SoldadoGoal extends Goal {
 
 		@Override
 		public boolean canUse() {
-			return soldado.profissao() == Profissao.SOLDADO && super.canUse();
+			return guarda(soldado) && super.canUse();
 		}
 	}
 
@@ -182,13 +182,14 @@ public class SoldadoGoal extends Goal {
 		private final MoradorEntity soldado;
 
 		public Cacar(MoradorEntity soldado) {
-			super(soldado, Monster.class, 5, true, false, (alvo, level) -> (dentroDaVila(soldado, alvo) || pertoDoEscoltado(soldado, alvo)) && !(alvo instanceof Creeper));
+			super(soldado, Monster.class, 5, true, false, (alvo, level) -> (dentroDaVila(soldado, alvo) || pertoDoEscoltado(soldado, alvo))
+					&& !(alvo instanceof Creeper && soldado.profissao() == Profissao.SOLDADO)); // the arqueiro shoots creepers from afar
 			this.soldado = soldado;
 		}
 
 		@Override
 		public boolean canUse() {
-			return soldado.profissao() == Profissao.SOLDADO && super.canUse();
+			return guarda(soldado) && super.canUse();
 		}
 	}
 
@@ -203,13 +204,18 @@ public class SoldadoGoal extends Goal {
 
 		@Override
 		public boolean canUse() {
-			return soldado.profissao() == Profissao.SOLDADO && super.canUse();
+			return guarda(soldado) && super.canUse();
 		}
 	}
 
 	static boolean pertoDoEscoltado(MoradorEntity soldado, LivingEntity alvo) {
 		MoradorEntity p = soldado.escoltado();
 		return p != null && alvo.distanceToSqr(p) < 16 * 16;
+	}
+
+	/** Soldados and arqueiros keep the arraial safe (same targets, different weapons). */
+	static boolean guarda(MoradorEntity m) {
+		return m.profissao() == Profissao.SOLDADO || m.profissao() == Profissao.ARQUEIRO;
 	}
 
 	static boolean dentroDaVila(MoradorEntity soldado, LivingEntity alvo) {

@@ -236,6 +236,10 @@ public final class ModBlocks {
 	public static final Block TAPETE_ONCA = registerSemItem("tapete_onca",
 			new com.guilhermegoes.arraial.obra.TapeteBlock(props("tapete_onca").mapColor(MapColor.COLOR_ORANGE).strength(0.1F).sound(SoundType.WOOL).noOcclusion()));
 
+	/** Suporte de arcos: the bow rack on the torre de vigia, workstation of the arqueiro. */
+	public static final Block SUPORTE_ARCOS = register("suporte_arcos",
+			new com.guilhermegoes.arraial.obra.PostoDirecionalBlock(props("suporte_arcos").mapColor(MapColor.WOOD).strength(2.0F).sound(SoundType.WOOD).noOcclusion()));
+
 	/** Pedra-sabão: soapstone, the grey-green stone of the Baroque of Minas. */
 	public static final Block PEDRA_SABAO = register("pedra_sabao",
 			new Block(props("pedra_sabao").mapColor(MapColor.COLOR_GRAY).strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.STONE)));

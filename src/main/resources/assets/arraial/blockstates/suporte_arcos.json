@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "arraial:block/suporte_arcos"
+    },
+    "facing=east": {
+      "model": "arraial:block/suporte_arcos",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "arraial:block/suporte_arcos",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "arraial:block/suporte_arcos",
+      "y": 270
+    }
+  }
+}

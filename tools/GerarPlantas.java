@@ -664,6 +664,25 @@ public class GerarPlantas {
 				new String[] {"LPPPPPL", "P.....P", "P..l..P", "P.....P", "P.....P", "LPPPPPL"},
 				new String[] {"sssssss", "sssssss", "sssssss", "sssssss", "sssssss", "sssssss"}));
 
+		// ---- The torre de vigia: a platform three blocks up on log legs, reached by a run of steps,
+		// with a railing, a slab roof on corner posts and the suporte de arcos (arqueiro) on top.
+		Map<Character, String> torre = new HashMap<>();
+		torre.put('P', "minecraft:spruce_planks");
+		torre.put('L', "minecraft:spruce_log[axis=y]");
+		torre.put('F', "minecraft:spruce_fence[east=false,north=false,south=false,waterlogged=false,west=false]");
+		torre.put('e', "minecraft:spruce_stairs[facing=north,half=bottom,shape=straight,waterlogged=false]");
+		torre.put('s', "minecraft:spruce_slab[type=bottom,waterlogged=false]");
+		torre.put('K', "arraial:suporte_arcos[facing=south]");
+		torre.put('l', "arraial:lampiao[hanging=true,waterlogged=false]");
+		escrever(out.resolve("torre_vigia.nbt"), torre, List.of(
+				new String[] {"L...L", ".....", ".....", "L...L", "..L..", "..L..", "..e.."},
+				new String[] {"L...L", ".....", ".....", "L...L", "..L..", "..e..", "....."},
+				new String[] {"L...L", ".....", ".....", "L...L", "..e..", ".....", "....."},
+				new String[] {"PPPPP", "PPPPP", "PPPPP", "PPPPP", ".....", ".....", "....."},
+				new String[] {"FFFFF", "F...F", "F.K.F", "FF.FF", ".....", ".....", "....."},
+				new String[] {"F...F", ".....", ".....", "F...F", "     ", "     ", "     "},
+				new String[] {"sssss", "sssss", "sssss", "sssss", "     ", "     ", "     "}));
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

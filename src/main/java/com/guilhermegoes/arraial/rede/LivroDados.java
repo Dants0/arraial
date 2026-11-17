@@ -49,7 +49,7 @@ public final class LivroDados {
 			Map.entry("poco", "civico"), Map.entry("prefeitura", "civico"), Map.entry("botica", "civico"), Map.entry("cartorio", "civico"),
 			Map.entry("oficina_engenheiro", "civico"), Map.entry("chafariz", "civico"),
 			Map.entry("capela", "fe"), Map.entry("matriz", "fe"), Map.entry("missao", "fe"),
-			Map.entry("guarita", "defesa"), Map.entry("muralha", "defesa"));
+			Map.entry("guarita", "defesa"), Map.entry("torre_vigia", "defesa"), Map.entry("muralha", "defesa"));
 
 	public static String categoria(String id) {
 		return CATEGORIA.getOrDefault(id, "outros");

@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=arqueiro: the torre de vigia at night, the araras' cheer, and the five tools.
+		if ("arqueiro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			arqueiro();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=bichos: the fauna and the village (onça hunted, tamanduá vs praga, araras, capivaras).
 		if ("bichos".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			bichos();
@@ -1026,8 +1035,15 @@ public final class Roteiro {
 
 	/** A flat grass field 100x100 at y=120 (cleared above), centred on x0+50, z0, for buildings that need room. */
 	private static void campoPlano(int x0, int z0) {
-		passo(10, () -> cmd("tp @s " + (x0 + 50) + " 140 " + z0 + " 0 90"));
-		passo(80, () -> {
+		// Keep the whole field loaded (and generated) before levelling it: on a slow machine the edges
+		// were not ready in time and the fills failed ("That position is not loaded").
+		passo(10, () -> cmd("tp @s " + (x0 + 50) + " 140 " + z0 + " 0 90",
+				"forceload add " + (x0 - 16) + " " + (z0 - 66) + " " + (x0 + 115) + " " + (z0 + 65)));
+		passoAte(80, 1200, () -> {
+			var srv = mc().getSingleplayerServer();
+			return srv != null && srv.overworld().isLoaded(new BlockPos(x0, 120, z0 - 50)) && srv.overworld().isLoaded(new BlockPos(x0 + 99, 120, z0 + 49))
+					&& srv.overworld().isLoaded(new BlockPos(x0, 120, z0 + 49)) && srv.overworld().isLoaded(new BlockPos(x0 + 99, 120, z0 - 50));
+		}, () -> {
 			java.util.List<String> c = new java.util.ArrayList<>();
 			for (int i = 0; i < 100; i += 20) {
 				c.add("fill " + (x0 + i) + " 116 " + (z0 - 50) + " " + (x0 + i + 19) + " 119 " + (z0 + 49) + " minecraft:dirt");
@@ -1772,6 +1788,152 @@ public final class Roteiro {
 				log("bichos: " + bichosPerto(level, v) + " | " + q + " | cronica: " + cr);
 			}));
 		}
+	}
+
+	private static int satisfacaoAlvo(net.minecraft.server.level.ServerLevel level, BlockPos v) {
+		return com.guilhermegoes.arraial.vila.Satisfacao.alvo(level, (com.guilhermegoes.arraial.vila.ArraialBlockEntity) level.getBlockEntity(v),
+				level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60), m -> v.equals(m.vila())));
+	}
+
+	/** Uses the item in the player's main hand as if right-clicked (server side). */
+	private static net.minecraft.world.InteractionResult usar(net.minecraft.server.level.ServerPlayer sp) {
+		return sp.getMainHandItem().getItem().use(sp.level(), sp, net.minecraft.world.InteractionHand.MAIN_HAND);
+	}
+
+	/**
+	 * The arqueiro and the tools: a torre de vigia with an arqueiro, zombies at night (he shoots
+	 * them); two araras (satisfaction, measured alone); then the bateia, enxadão, laço, tarrafa
+	 * and berrante used for real by the player.
+	 */
+	private static void arqueiro() {
+		final int x = 350, z = 3000;
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("arqueiro: chunks carregados"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta torre_vigia"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos k = blocoNaObra(level, v, "torre_vigia", com.guilhermegoes.arraial.registry.ModBlocks.SUPORTE_ARCOS);
+			log("arqueiro: suporte=" + (k == null ? "NAO" : k.toShortString()));
+			cmd("summon arraial:morador " + x + " 121 " + (z + 2) + " {Profissao:0,Visual:4}");
+		}));
+		// The araras, measured alone (nobody else arrives in between).
+		passo(200, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			log("arqueiro: satisfacao alvo sem araras=" + satisfacaoAlvo(level, v));
+			cmd("summon arraial:arara " + (x + 4) + " 122 " + (z + 6), "summon arraial:arara " + (x - 4) + " 122 " + (z + 6));
+		}));
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			log("arqueiro: satisfacao alvo com araras=" + satisfacaoAlvo(level, v) + " (araras=" + com.guilhermegoes.arraial.vila.Bichos.araras(level, v) + ")");
+		}));
+		// Night: zombies walk into the arraial.
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			StringBuilder q = new StringBuilder();
+			for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60),
+					e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.ARQUEIRO)) {
+				q.append(m.nome()).append(" pos=").append(m.blockPosition().toShortString()).append(" status=").append(m.status().getString());
+			}
+			log("arqueiro: antes da noite " + (q.length() == 0 ? "sem arqueiro" : q));
+			cmd("time set 14000");
+			for (int i = 0; i < 4; i++) {
+				cmd("summon minecraft:zombie " + (x + 12 + i * 2) + " 121 " + (z + 14) + " {PersistenceRequired:1b}");
+			}
+		}));
+		for (int i = 0; i < 4; i++) {
+			passo(200, () -> servidor((srv, sp) -> {
+				var level = sp.level();
+				BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+				int zumbis = level.getEntitiesOfClass(net.minecraft.world.entity.monster.zombie.Zombie.class, new net.minecraft.world.phys.AABB(v).inflate(70), e -> e.isAlive()).size();
+				int flechas = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.arrow.Arrow.class, new net.minecraft.world.phys.AABB(v).inflate(70)).size();
+				StringBuilder q = new StringBuilder();
+				for (var m : level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(v).inflate(60),
+						e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.ARQUEIRO)) {
+					q.append(m.nome()).append(" alvo=").append(m.getTarget() == null ? "-" : m.getTarget().getName().getString())
+							.append(" status=").append(m.status().getString()).append(" vida=").append((int) m.getHealth());
+				}
+				log("arqueiro: zumbis=" + zumbis + " flechas no chao/ar=" + flechas + " | " + q);
+			}));
+		}
+		passo(10, () -> verObra("torre_vigia", 10));
+		passo(30, () -> foto("106_torre_vigia"));
+		// The tools, with a pond (gravel bottom) and some cows.
+		passo(10, () -> cmd("time set 1000", "kill @e[type=minecraft:zombie]",
+				"fill " + (x + 20) + " 118 " + (z - 20) + " " + (x + 24) + " 118 " + (z - 16) + " minecraft:gravel",
+				"fill " + (x + 20) + " 119 " + (z - 20) + " " + (x + 24) + " 120 " + (z - 16) + " minecraft:water",
+				"tp @s " + (x + 22) + ".5 121 " + (z - 21) + ".5 0 60"));
+		passo(20, () -> servidor((srv, sp) -> {
+			var inv = sp.getInventory();
+			sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(com.guilhermegoes.arraial.registry.ModItems.BATEIA));
+			var r = usar(sp);
+			StringBuilder premios = new StringBuilder();
+			for (int i = 0; i < 30; i++) {
+				var antes = inv.countItem(net.minecraft.world.item.Items.GOLD_NUGGET) + inv.countItem(net.minecraft.world.item.Items.IRON_NUGGET) + inv.countItem(net.minecraft.world.item.Items.FLINT);
+				sp.getMainHandItem().getItem().finishUsingItem(sp.getMainHandItem(), sp.level(), sp);
+			}
+			log("ferramentas: bateia use=" + r + " | 30 bateadas -> ouro=" + inv.countItem(net.minecraft.world.item.Items.GOLD_NUGGET) + " ferro=" + inv.countItem(net.minecraft.world.item.Items.IRON_NUGGET)
+					+ " pederneira=" + inv.countItem(net.minecraft.world.item.Items.FLINT) + " diamante=" + inv.countItem(net.minecraft.world.item.Items.DIAMOND)
+					+ " desgaste=" + sp.getMainHandItem().getDamageValue());
+			sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(com.guilhermegoes.arraial.registry.ModItems.TARRAFA));
+			int peixe = inv.countItem(net.minecraft.world.item.Items.COD) + inv.countItem(net.minecraft.world.item.Items.SALMON);
+			var t = usar(sp);
+			log("ferramentas: tarrafa use=" + t + " peixes ganhos=" + (inv.countItem(net.minecraft.world.item.Items.COD) + inv.countItem(net.minecraft.world.item.Items.SALMON)
+					+ inv.countItem(net.minecraft.world.item.Items.TROPICAL_FISH) + inv.countItem(net.minecraft.world.item.Items.PUFFERFISH) - peixe)
+					+ " recarga=" + sp.getCooldowns().isOnCooldown(sp.getMainHandItem()));
+		}));
+		// Enxadão on the grass.
+		passo(10, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos c = new BlockPos(x - 20, 120, z - 20);
+			sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(com.guilhermegoes.arraial.registry.ModItems.ENXADAO));
+			var ctx = new net.minecraft.world.item.context.UseOnContext(sp, net.minecraft.world.InteractionHand.MAIN_HAND,
+					new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(c).add(0, 0.5, 0), net.minecraft.core.Direction.UP, c, false));
+			var r = sp.getMainHandItem().getItem().useOn(ctx);
+			int arada = 0;
+			for (BlockPos p : BlockPos.betweenClosed(c.offset(-1, 0, -1), c.offset(1, 0, 1))) {
+				if (level.getBlockState(p).is(net.minecraft.world.level.block.Blocks.FARMLAND)) {
+					arada++;
+				}
+			}
+			log("ferramentas: enxadao use=" + r + " terra arada=" + arada + "/9");
+			// Cows for the laço and the berrante.
+			cmd("tp @s " + (x - 30) + ".5 121 " + (z - 30) + ".5 0 0",
+					"summon minecraft:cow " + (x - 30) + " 121 " + (z - 25),
+					"summon minecraft:cow " + (x - 42) + " 121 " + (z - 10), "summon minecraft:cow " + (x - 18) + " 121 " + (z - 12));
+		}));
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(com.guilhermegoes.arraial.registry.ModItems.LACO));
+			var vacaFrente = level.getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(9), e -> true);
+			if (!vacaFrente.isEmpty()) {
+				sp.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, vacaFrente.get(0).getEyePosition());
+			}
+			var r = usar(sp);
+			long presas = level.getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(30),
+					e -> e.isLeashed() && e.getLeashHolder() == sp).size();
+			log("ferramentas: laco use=" + r + " vacas lacadas=" + presas);
+			sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(com.guilhermegoes.arraial.registry.ModItems.BERRANTE));
+			StringBuilder antes = new StringBuilder();
+			for (var c : level.getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(30), e -> !e.isLeashed())) {
+				antes.append((int) c.distanceTo(sp)).append(' ');
+			}
+			var b = usar(sp);
+			log("ferramentas: berrante use=" + b + " distancias antes=" + antes);
+		}));
+		passo(160, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			StringBuilder depois = new StringBuilder();
+			for (var c : level.getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(30), e -> !e.isLeashed())) {
+				depois.append((int) c.distanceTo(sp)).append(' ');
+			}
+			log("ferramentas: berrante distancias depois=" + depois);
+		}));
 	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */

@@ -100,6 +100,12 @@ public final class ModItems {
 	/** Pele de onça: the jaguar's coat; laid on the floor it is a rug. */
 	public static final Item PELE_ONCA = register("pele_onca",
 			p -> new net.minecraft.world.item.BlockItem(ModBlocks.TAPETE_ONCA, p), new Item.Properties().useItemDescriptionPrefix());
+	// ---- The sertanejo's tools (see item.Ferramentas)
+	public static final Item BATEIA = register("bateia", com.guilhermegoes.arraial.item.Ferramentas.Bateia::new, new Item.Properties().durability(160));
+	public static final Item ENXADAO = register("enxadao", com.guilhermegoes.arraial.item.Ferramentas.Enxadao::new, new Item.Properties().durability(400));
+	public static final Item LACO = register("laco", com.guilhermegoes.arraial.item.Ferramentas.Laco::new, new Item.Properties().durability(96));
+	public static final Item TARRAFA = register("tarrafa", com.guilhermegoes.arraial.item.Ferramentas.Tarrafa::new, new Item.Properties().durability(80));
+	public static final Item BERRANTE = register("berrante", com.guilhermegoes.arraial.item.Ferramentas.Berrante::new, new Item.Properties().durability(200));
 	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
 	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));

@@ -36,10 +36,11 @@ public final class ModPois {
 	public static final PoiType FORNO_PAO = PoiHelper.register(Arraial.id("forno_pao"), 1, 1, ModBlocks.FORNO_PAO);
 	public static final PoiType TEAR = PoiHelper.register(Arraial.id("tear"), 1, 1, ModBlocks.TEAR);
 	public static final PoiType MESA_ALFAIATE = PoiHelper.register(Arraial.id("mesa_alfaiate"), 1, 1, ModBlocks.MESA_ALFAIATE);
+	public static final PoiType SUPORTE_ARCOS = PoiHelper.register(Arraial.id("suporte_arcos"), 1, 1, ModBlocks.SUPORTE_ARCOS);
 
 	private static final Set<PoiType> POSTOS = Set.of(CEPO, BALAIO, FORNO_OLARIA, POSTO_GUARDA, COCHO, GAMELA, BANCADA_CANTEIRO,
 			FORNO_FARINHA, BANCA_FEIRA, CANGALHA, BALCAO_BOTICA,
-			COVO, VARAL_CACA, PRANCHETA, ESCRIVANINHA, MOENDA, TERREIRO, BANCADA_ENTALHE, AMARRA, GUINDASTE, MO, BILHETERIA, FORJA, BANCADA_CARPINTEIRO, FORNO_PAO, TEAR, MESA_ALFAIATE);
+			COVO, VARAL_CACA, PRANCHETA, ESCRIVANINHA, MOENDA, TERREIRO, BANCADA_ENTALHE, AMARRA, GUINDASTE, MO, BILHETERIA, FORJA, BANCADA_CARPINTEIRO, FORNO_PAO, TEAR, MESA_ALFAIATE, SUPORTE_ARCOS);
 
 	public static boolean ePosto(Holder<PoiType> tipo) {
 		return POSTOS.contains(tipo.value());
@@ -75,6 +76,7 @@ public final class ModPois {
 			case PADEIRO -> FORNO_PAO;
 			case TECELAO -> TEAR;
 			case ALFAIATE -> MESA_ALFAIATE;
+			case ARQUEIRO -> SUPORTE_ARCOS;
 			default -> null;
 		};
 	}

@@ -60,6 +60,7 @@ public final class Catalogo {
 			new Projeto("padaria"),
 			new Projeto("tecelagem"),
 			new Projeto("alfaiataria"),
+			new Projeto("torre_vigia"),
 			new Projeto(Muralha.ID));
 
 	public static Optional<Projeto> porId(String id) {

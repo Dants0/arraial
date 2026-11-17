@@ -46,6 +46,9 @@ public final class Satisfacao {
 		if (postos(level, vila, ModPois.POSTO_GUARDA)) {
 			alvo += 5;
 		}
+		if (postos(level, vila, ModPois.SUPORTE_ARCOS)) {
+			alvo += 3; // a watchtower: the people sleep easier
+		}
 		if (Prefeitura.obras(level, vila, Muralha.ID) > 0) {
 			alvo += 5;
 		}

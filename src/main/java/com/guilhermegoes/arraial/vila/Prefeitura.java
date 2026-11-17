@@ -69,7 +69,8 @@ public final class Prefeitura {
 			Map.entry(Profissao.CARPINTEIRO, "carpintaria"),
 			Map.entry(Profissao.PADEIRO, "padaria"),
 			Map.entry(Profissao.TECELAO, "tecelagem"),
-			Map.entry(Profissao.ALFAIATE, "alfaiataria"));
+			Map.entry(Profissao.ALFAIATE, "alfaiataria"),
+			Map.entry(Profissao.ARQUEIRO, "torre_vigia"));
 
 	/** Called every few seconds by the Cruzeiro. */
 	static void cuidar(ServerLevel level, ArraialBlockEntity arraial, List<MoradorEntity> moradores) {
@@ -263,6 +264,10 @@ public final class Prefeitura {
 		}
 		if (n >= 9 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.FORNO_PAO) == 0) {
 			desejos.add("padaria");
+		}
+		// The watch: once there is a guarita, a torre de vigia for an arqueiro who shoots from afar.
+		if (n >= 10 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.POSTO_GUARDA) > 0 && postos(level, vila, ModPois.SUPORTE_ARCOS) == 0) {
+			desejos.add("torre_vigia");
 		}
 		// Cloth: a tecelagem (cotton, pano, redes) once established; the alfaiataria for a Vila (festa clothes).
 		if (n >= 8 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.TEAR) == 0) {

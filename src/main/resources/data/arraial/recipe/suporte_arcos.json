@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "#minecraft:logs",
+    "B": "minecraft:bow",
+    "A": "minecraft:arrow",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "LBL",
+    "LAL",
+    "PPP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:suporte_arcos"
+  }
+}
