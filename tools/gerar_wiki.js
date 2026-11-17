@@ -244,7 +244,7 @@ const LINKS = {
 const TXT = {
 	pt: {
 		html: 'pt-BR', titulo: 'Arraial: mod de vilas brasileiras para Minecraft (Fabric) | Wiki oficial', outra: 'English', outraUrl: 'en/', raiz: '',
-		desc: 'Wiki oficial do Arraial, mod brasileiro de Minecraft (Fabric 26.3): funde um povoado no sertão e veja virar cidade. Moradores com 28 ofícios, obras bloco a bloco, feira, São João, política, guerras, eras coloniais e fauna brasileira. Receitas, guia e download.',
+		desc: 'Wiki oficial do Arraial, mod brasileiro de Minecraft (Fabric 26.3): funde um povoado no sertão e veja virar cidade. Moradores com 29 ofícios, obras bloco a bloco, feira, São João, política, guerras, eras coloniais e fauna brasileira. Receitas, guia e download.',
 		h1: 'mod de vilas brasileiras para Minecraft', altNome: 'Arraial mod', locale: 'pt_BR', localeOutro: 'en_US',
 		ogAlt: 'Arraial: uma vila colonial brasileira no Minecraft',
 		palavras: 'Arraial, mod Minecraft brasileiro, mod de vilas Minecraft, Minecraft Fabric mod, vila colonial, sertão, São João Minecraft, colônia Minecraft, mod brasileiro, capivara Minecraft, onça Minecraft, Minecraft 26.3',
@@ -294,7 +294,7 @@ const TXT = {
 	},
 	en: {
 		html: 'en', titulo: 'Arraial: Brazilian Colonial Village Mod for Minecraft (Fabric) | Official Wiki', outra: 'Português', outraUrl: '../', raiz: '../',
-		desc: 'Official wiki of Arraial, a Minecraft Fabric 26.3 colony and village mod set in colonial Brazil: found a hamlet, watch it grow into a city. Villagers with 28 trades, buildings raised block by block, markets, festivals, politics, wars, eras and Brazilian wildlife. Recipes, guide and download.',
+		desc: 'Official wiki of Arraial, a Minecraft Fabric 26.3 colony and village mod set in colonial Brazil: found a hamlet, watch it grow into a city. Villagers with 29 trades, buildings raised block by block, markets, festivals, politics, wars, eras and Brazilian wildlife. Recipes, guide and download.',
 		h1: 'Brazilian colonial village mod for Minecraft', altNome: 'Arraial mod', locale: 'en_US', localeOutro: 'pt_BR',
 		ogAlt: 'Arraial: a Brazilian colonial village in Minecraft',
 		palavras: 'Arraial, Minecraft village mod, Minecraft colony mod, Fabric mod, Brazilian Minecraft mod, colonial Brazil, villagers with jobs, town building mod, capybara Minecraft, jaguar Minecraft, Minecraft 26.3',
@@ -351,7 +351,7 @@ const PROFISSOES = [
 	['boticario', 'balcao_botica'], ['soldado', 'posto_guarda'], ['engenheiro', 'prancheta'], ['relacoes', 'escrivaninha'], ['mestre_engenho', 'moenda'],
 	['cafeicultor', 'terreiro'], ['entalhador', 'bancada_entalhe'], ['barqueiro', 'amarra'],
 	['estivador', 'guindaste'], ['moleiro', 'mo'], ['ferroviario', 'bilheteria'],
-	['ferreiro', 'forja'], ['carpinteiro', 'bancada_carpinteiro'], ['padeiro', 'forno_pao'], ['tecelao', 'tear'], ['alfaiate', 'mesa_alfaiate'], ['mascate', null]
+	['ferreiro', 'forja'], ['carpinteiro', 'bancada_carpinteiro'], ['padeiro', 'forno_pao'], ['tecelao', 'tear'], ['alfaiate', 'mesa_alfaiate'], ['arqueiro', 'suporte_arcos'], ['mascate', null]
 ];
 const PROJETOS = Object.keys(LANG.pt).filter(k => /^projeto\.arraial\.[a-z_]+$/.test(k)).map(k => k.split('.')[2]);
 const ESTAGIOS = ['povoado', 'arraial', 'vila', 'vila_prospera', 'cidade'];
