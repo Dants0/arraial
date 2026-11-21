@@ -191,6 +191,15 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=cinema_navio: a recording (OBS, see tools/gravar_obs.js) of the merchant ship coming in.
+		if ("cinema_navio".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			cinemaNavio();
+			passo(40, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=arqueiro: the torre de vigia at night, the araras' cheer, and the five tools.
 		if ("arqueiro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			arqueiro();
@@ -1934,6 +1943,131 @@ public final class Roteiro {
 			}
 			log("ferramentas: berrante distancias depois=" + depois);
 		}));
+	}
+
+	/** Clean picture for a recording: no HUD, spectator (no collisions), a 1920×1080 window. */
+	private static void prepararFilmagem() {
+		cmd("gamemode spectator", "weather clear", "kill @e[type=minecraft:item]");
+		if (!mc().gui.hud.isHidden()) {
+			mc().gui.hud.toggle();
+		}
+		mc().getWindow().setWindowed(1920, 1080);
+		Camera.ligar();
+		log("filmagem: janela " + mc().getWindow().getWidth() + "x" + mc().getWindow().getHeight());
+	}
+
+	/** Runs a shot on the client thread (positions are computed on the server). */
+	private static void plano(Runnable r) {
+		mc().execute(r);
+	}
+
+	/**
+	 * Film: the merchant ship. A village on a deep lagoon with a finished porto, an estivador and
+	 * goods; six shots, each centred (they are also cut vertically for Shorts): the village from
+	 * above, the quay from the water, the ship moored (it comes in while the camera is high), the
+	 * estivador at work, the captain on the quay, and the pull-back at golden hour.
+	 * "GRAVAR inicio" / "GRAVAR fim" in the log start and stop the OBS recording.
+	 */
+	private static void cinemaNavio() {
+		final int x = 350, z = 3200;
+		final Vec3[] vila = {null}, cais = {null}, navio = {null};
+		final Vec3[] frente = {null}, lado = {null};
+		campoComLagoa(300, z);
+		passo(160, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta porto"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			var porto = com.guilhermegoes.arraial.vila.Navio.porto(level, v);
+			if (porto == null) {
+				log("cinema: porto NAO construido");
+				return;
+			}
+			BlockPos c = com.guilhermegoes.arraial.vila.Navio.cais(porto);
+			cmd("summon arraial:morador " + c.getX() + " " + (c.getY() + 1) + " " + c.getZ() + " {Profissao:0,Visual:3}");
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.SUGAR, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, com.guilhermegoes.arraial.registry.ModItems.RAPADURA, 48);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.LEATHER, 32);
+			cmd("execute positioned " + x + " 120 " + z + " run arraial tesouro 150");
+			var d = porto.frente();
+			vila[0] = Vec3.atCenterOf(v);
+			cais[0] = Vec3.atBottomCenterOf(c).add(0, 1, 0);
+			frente[0] = new Vec3(d.getStepX(), 0, d.getStepZ());
+			lado[0] = new Vec3(d.getClockWise().getStepX(), 0, d.getClockWise().getStepZ());
+			log("cinema: vila " + v.toShortString() + " cais " + c.toShortString() + " frente " + d);
+		}));
+		// Let the village settle (people at work) before filming.
+		passo(600, () -> {
+			prepararFilmagem();
+			cmd("time set 1500");
+		});
+		passo(40, () -> log("GRAVAR inicio"));
+		// 1. The village from above, orbiting slowly; the ship comes in halfway (the camera is far).
+		passo(10, () -> plano(() -> Camera.orbita(vila[0].add(0, 2, 0), 42, 26, 200, 290, 220)));
+		passo(110, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial navio"));
+		passo(20, () -> servidor((srv, sp) -> {
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(sp.level(), new BlockPos(x, 120, z));
+			if (sp.level().getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				String[] p = com.guilhermegoes.arraial.vila.Navio.area(a).split(",");
+				if (p.length == 6) {
+					navio[0] = new Vec3((Integer.parseInt(p[0]) + Integer.parseInt(p[3])) / 2.0 + 0.5, Integer.parseInt(p[1]) + 4,
+							(Integer.parseInt(p[2]) + Integer.parseInt(p[5])) / 2.0 + 0.5);
+				}
+			}
+			if (navio[0] == null) {
+				navio[0] = cais[0].add(lado[0].scale(7));
+			}
+			log("cinema: navio em " + navio[0]);
+		}));
+		passo(95, () -> {
+		});
+		// 2. Over the water towards the quay and the ship.
+		passo(1, () -> plano(() -> Camera.travelling(cais[0].add(frente[0].scale(26)).add(lado[0].scale(-6)).add(0, 7, 0),
+				cais[0].add(frente[0].scale(9)).add(lado[0].scale(-2)).add(0, 3, 0), navio[0], 140)));
+		passo(140, () -> {
+		});
+		// 3. A crane up the ship's side, from the waterline to above the masts.
+		passo(1, () -> plano(() -> Camera.travelling(navio[0].add(lado[0].scale(9)).add(0, -3, 0),
+				navio[0].add(lado[0].scale(11)).add(frente[0].scale(-4)).add(0, 9, 0), navio[0].add(0, 2, 0), 170)));
+		passo(170, () -> {
+		});
+		// 4. The estivador carrying the goods.
+		passo(1, () -> plano(() -> Camera.seguir(() -> {
+			var lvl = mc().level;
+			if (lvl == null) {
+				return null;
+			}
+			for (var e : lvl.entitiesForRendering()) {
+				if (e instanceof com.guilhermegoes.arraial.npc.MoradorEntity m && m.profissao() == com.guilhermegoes.arraial.npc.Profissao.ESTIVADOR) {
+					return m;
+				}
+			}
+			return null;
+		}, 4.5, 2.4, 190)));
+		passo(190, () -> {
+		});
+		// 5. The captain on the quay, the camera circling close.
+		passo(1, () -> plano(() -> {
+			var lvl = mc().level;
+			Vec3 capitao = cais[0];
+			if (lvl != null) {
+				for (var e : lvl.entitiesForRendering()) {
+					if (e instanceof com.guilhermegoes.arraial.npc.MoradorEntity m && m.profissao() == com.guilhermegoes.arraial.npc.Profissao.MASCATE) {
+						capitao = m.position();
+					}
+				}
+			}
+			Camera.orbita(capitao.add(0, 1.5, 0), 3.6, 0.4, 0, 130, 140);
+		}));
+		passo(140, () -> {
+		});
+		// 6. Golden hour: the long pull-back from the quay, the ship and the village behind.
+		passo(1, () -> {
+			cmd("time set 11700");
+			plano(() -> Camera.travelling(cais[0].add(lado[0].scale(-3)).add(0, 2.5, 0),
+					cais[0].add(frente[0].scale(30)).add(lado[0].scale(-22)).add(0, 20, 0), navio[0], 230));
+		});
+		passo(250, () -> log("GRAVAR fim"));
 	}
 
 	/** Puts the camera somewhere, flying (so it does not fall into the river before the photo). */

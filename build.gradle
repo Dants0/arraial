@@ -90,10 +90,12 @@ jar {
 	}
 	// The automated in-game test script is for development only.
 	exclude 'com/guilhermegoes/arraial/client/Roteiro*'
+	exclude 'com/guilhermegoes/arraial/client/Camera*'
 }
 
 sourcesJar {
 	exclude 'com/guilhermegoes/arraial/client/Roteiro*'
+	exclude 'com/guilhermegoes/arraial/client/Camera*'
 }
 
 // configure the maven publication
