@@ -81,6 +81,22 @@ final class Camera {
 		}, ticks);
 	}
 
+	/** Alongside an entity at a fixed offset from it (a tracking shot), looking at it. */
+	static void acompanhar(Supplier<@Nullable Entity> quem, Vec3 deslocamento, int ticks) {
+		final Vec3[] ultimo = {null};
+		tocar(s -> {
+			Entity e = quem.get();
+			if (e != null) {
+				Vec3 p = e.position().add(deslocamento);
+				ultimo[0] = ultimo[0] == null ? p : ultimo[0].lerp(p, 0.3);
+			}
+			return ultimo[0] == null ? Vec3.ZERO : ultimo[0];
+		}, () -> {
+			Entity e = quem.get();
+			return e == null ? (ultimo[0] == null ? Vec3.ZERO : ultimo[0].subtract(deslocamento)) : e.position().add(0, 0.8, 0);
+		}, ticks);
+	}
+
 	private static void tick(Minecraft mc) {
 		Plano p = atual;
 		LocalPlayer jogador = mc.player;

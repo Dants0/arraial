@@ -192,6 +192,15 @@ public final class Roteiro {
 			return;
 		}
 		// ARRAIAL_ROTEIRO_SO=cinema_navio: a recording (OBS, see tools/gravar_obs.js) of the merchant ship coming in.
+		// ARRAIAL_ROTEIRO_SO=cinema_trem: a recording of the train leaving the station.
+		if ("cinema_trem".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			cinemaTrem();
+			passo(40, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=cinema_arqueiro: a recording of the archer defending the village at night.
 		if ("cinema_arqueiro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			cinemaArqueiro();
@@ -2079,6 +2088,98 @@ public final class Roteiro {
 					cais[0].add(frente[0].scale(30)).add(lado[0].scale(-22)).add(0, 20, 0), navio[0], 230));
 		});
 		passo(250, () -> log("GRAVAR fim"));
+	}
+
+	/** The ferroviário (server side), or null. */
+	private static com.guilhermegoes.arraial.npc.@org.jspecify.annotations.Nullable MoradorEntity ferroviario(net.minecraft.server.level.ServerLevel level, int x, int z) {
+		var l = level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(x - 70, 100, z - 70, x + 70, 160, z + 70),
+				e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.FERROVIARIO);
+		return l.isEmpty() ? null : l.get(0);
+	}
+
+	/** The furnace minecart (the locomotive) the client can see, or null. */
+	private static net.minecraft.world.entity.@org.jspecify.annotations.Nullable Entity locomotiva() {
+		var lvl = mc().level;
+		if (lvl == null) {
+			return null;
+		}
+		for (var e : lvl.entitiesForRendering()) {
+			if (e instanceof net.minecraft.world.entity.vehicle.minecart.MinecartFurnace) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Film: the train. Two Republican villages with stations; the ferroviário loads the wagons and
+	 * walks to the bilheteria (followed), the train pulls out with him on the locomotive (a tracking
+	 * shot beside it, then a high shot as it goes), and the station at golden hour.
+	 */
+	private static void cinemaTrem() {
+		vilaComEstacao(300, 1600, "B");
+		vilaComEstacao(300, 1400, "A");
+		final int x = 350, z = 1400;
+		final Vec3[] estacao = {null};
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			var armazens = com.guilhermegoes.arraial.vila.Vilas.armazens(level, v);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.BREAD, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.COBBLESTONE, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.OAK_LOG, 64);
+			com.guilhermegoes.arraial.vila.Vilas.depositar(armazens, net.minecraft.world.item.Items.BRICKS, 64);
+			BlockPos k = blocoNaObra(level, v, "estacao", com.guilhermegoes.arraial.registry.ModBlocks.BILHETERIA);
+			estacao[0] = k == null ? Vec3.atCenterOf(v) : Vec3.atCenterOf(k);
+			log("cinema trem: estacao " + estacao[0]);
+		}));
+		passo(300, () -> {
+			prepararFilmagem();
+			cmd("time set 1500");
+		});
+		passo(40, () -> log("GRAVAR inicio"));
+		// 1. The station from above, circling, before the trip is called.
+		passo(10, () -> plano(() -> Camera.orbita(estacao[0], 16, 9, 120, 200, 180)));
+		passo(150, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial tropa"));
+		// 2. The ferroviário at work: followed while he loads and walks to the bilheteria (until he boards).
+		passo(30, () -> plano(() -> Camera.seguir(() -> {
+			var lvl = mc().level;
+			if (lvl == null) {
+				return null;
+			}
+			for (var e : lvl.entitiesForRendering()) {
+				if (e instanceof com.guilhermegoes.arraial.npc.MoradorEntity m && m.profissao() == com.guilhermegoes.arraial.npc.Profissao.FERROVIARIO) {
+					return m;
+				}
+			}
+			return null;
+		}, 3.5, 3.5, 2400)));
+		passoAte(1, 2400, () -> {
+			var srv = mc().getSingleplayerServer();
+			if (srv == null) {
+				return false;
+			}
+			var f = ferroviario(srv.overworld(), x, z);
+			return f != null && f.isPassenger();
+		}, () -> {
+			log("cinema trem: embarcou");
+			// 3. Beside the train as it pulls out.
+			plano(() -> Camera.acompanhar(Roteiro::locomotiva, new Vec3(4.5, 2.2, 4.5), 60));
+		});
+		// 4. Up and away as it goes, smoke behind.
+		passo(60, () -> plano(() -> {
+			var l = locomotiva();
+			Vec3 c = l == null ? estacao[0] : l.position();
+			Camera.travelling(c.add(5, 3, 5), c.add(14, 16, 14), estacao[0], 160);
+		}));
+		passo(160, () -> {
+		});
+		// 5. Golden hour at the empty station.
+		passo(1, () -> {
+			cmd("time set 11800");
+			plano(() -> Camera.orbita(estacao[0], 9, 3, 200, 290, 200));
+		});
+		passo(220, () -> log("GRAVAR fim"));
 	}
 
 	/** The first villager of a trade the client can see, or null (for the camera). */
