@@ -55,18 +55,28 @@ function conectar() {
   });
 }
 
+// Game capture (hooks the game's OpenGL frames): a window capture of the 1920x1080 window left a
+// black block in the lower left, while the game's own screenshot of the same moment was clean.
+const VIDEO = 'Arraial - imagem do jogo';
 async function prepararCena() {
   const { scenes } = await pedir('GetSceneList');
   if (!scenes.some(s => s.sceneName === CENA)) {
     await pedir('CreateScene', { sceneName: CENA });
-    await pedir('CreateInput', { sceneName: CENA, inputName: 'Arraial - janela do jogo', inputKind: 'window_capture',
-      inputSettings: { window: JANELA, priority: 2, method: 2, cursor: false, client_area: true } });
     await pedir('CreateInput', { sceneName: CENA, inputName: 'Arraial - som do jogo', inputKind: 'wasapi_process_output_capture',
       inputSettings: { window: JANELA, priority: 2 } });
     console.log(`cena "${CENA}" criada`);
   }
+  const { inputs } = await pedir('GetInputList');
+  if (inputs.some(i => i.inputName === 'Arraial - janela do jogo')) {
+    await pedir('RemoveInput', { inputName: 'Arraial - janela do jogo' });
+  }
+  if (!inputs.some(i => i.inputName === VIDEO)) {
+    await pedir('CreateInput', { sceneName: CENA, inputName: VIDEO, inputKind: 'game_capture',
+      inputSettings: { capture_mode: 'window', window: JANELA, priority: 2, capture_cursor: false, allow_transparency: false } });
+    console.log('captura de jogo criada');
+  }
   // Stretch the capture to the whole canvas.
-  const { sceneItemId } = await pedir('GetSceneItemId', { sceneName: CENA, sourceName: 'Arraial - janela do jogo' });
+  const { sceneItemId } = await pedir('GetSceneItemId', { sceneName: CENA, sourceName: VIDEO });
   const v = await pedir('GetVideoSettings');
   await pedir('SetSceneItemTransform', { sceneName: CENA, sceneItemId, sceneItemTransform: {
     boundsType: 'OBS_BOUNDS_SCALE_INNER', boundsWidth: v.baseWidth, boundsHeight: v.baseHeight, positionX: 0, positionY: 0, alignment: 5 } });
@@ -105,6 +115,12 @@ async function main() {
         await pedir('StartRecord');
         gravando = true;
         console.log('gravando...');
+        await new Promise(r => setTimeout(r, 3000));
+        const diag = path.join(__dirname, '..', 'run', 'screenshots', 'obs_diag.png');
+        try {
+          await pedir('SaveSourceScreenshot', { sourceName: VIDEO, imageFormat: 'png', imageFilePath: diag });
+          console.log('quadro do OBS: ' + diag);
+        } catch (e) { console.log('sem quadro do OBS: ' + e.message); }
       } else if (gravando && linha.includes('[ROTEIRO] GRAVAR fim')) {
         const r = await pedir('StopRecord');
         console.log('gravação salva em: ' + (r.outputPath || '(veja a pasta de gravações do OBS)'));

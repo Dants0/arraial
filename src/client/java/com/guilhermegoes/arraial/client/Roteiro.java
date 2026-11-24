@@ -1962,7 +1962,9 @@ public final class Roteiro {
 		}
 		mc().getWindow().setWindowed(1920, 1080);
 		Camera.ligar();
-		log("filmagem: janela " + mc().getWindow().getWidth() + "x" + mc().getWindow().getHeight());
+		mc().options.gamma().set(1.0);
+		log("filmagem: janela " + mc().getWindow().getWidth() + "x" + mc().getWindow().getHeight()
+				+ " framebuffer " + mc().getWindow().getWidth() + "x" + mc().getWindow().getHeight());
 	}
 
 	/** Runs a shot on the client thread (positions are computed on the server). */
@@ -2036,8 +2038,8 @@ public final class Roteiro {
 		passo(140, () -> {
 		});
 		// 3. A crane up the ship's side, from the waterline to above the masts.
-		passo(1, () -> plano(() -> Camera.travelling(navio[0].add(lado[0].scale(9)).add(0, -3, 0),
-				navio[0].add(lado[0].scale(11)).add(frente[0].scale(-4)).add(0, 9, 0), navio[0].add(0, 2, 0), 170)));
+		passo(1, () -> plano(() -> Camera.travelling(navio[0].add(lado[0].scale(9)).add(0, 0, 0),
+				navio[0].add(lado[0].scale(11)).add(frente[0].scale(-4)).add(0, 14, 0), navio[0].add(0, 4, 0), 170)));
 		passo(170, () -> {
 		});
 		// 4. The estivador carrying the goods.
@@ -2052,7 +2054,7 @@ public final class Roteiro {
 				}
 			}
 			return null;
-		}, 4.5, 2.4, 190)));
+		}, 3.5, 4.5, 190)));
 		passo(190, () -> {
 		});
 		// 5. The captain on the quay, the camera circling close.
@@ -2066,7 +2068,7 @@ public final class Roteiro {
 					}
 				}
 			}
-			Camera.orbita(capitao.add(0, 1.5, 0), 3.6, 0.4, 0, 130, 140);
+			Camera.orbita(capitao.add(0, 1.5, 0), 3.6, 1.0, 0, 130, 140);
 		}));
 		passo(140, () -> {
 		});
@@ -2129,17 +2131,36 @@ public final class Roteiro {
 			vila[0] = Vec3.atCenterOf(v);
 			torre[0] = k == null ? vila[0].add(0, 8, 0) : Vec3.atCenterOf(k);
 			log("cinema arqueiro: vila " + v.toShortString() + " suporte " + (k == null ? "NAO" : k.toShortString()));
-			cmd("summon arraial:morador " + x + " 121 " + (z + 2) + " {Profissao:0,Visual:4}",
+			cmd("summon arraial:morador " + x + " 121 " + (z + 2) + " {Profissao:" + com.guilhermegoes.arraial.npc.Profissao.ARQUEIRO.ordinal() + ",Visual:4}",
 					"summon arraial:arara " + (x + 4) + " 124 " + (z + 6), "summon arraial:arara " + (x - 4) + " 124 " + (z + 6));
 		}));
 		// Let the archer take the post and climb the tower.
 		passo(600, () -> {
 			prepararFilmagem();
-			cmd("time set 12300", "effect give @s minecraft:night_vision infinite 0 true");
+			cmd("time set 12300");
 		});
-		passo(40, () -> log("GRAVAR inicio"));
+		// The archer on his tower whatever happened in the setup (the film needs him up there).
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos k = BlockPos.containing(torre[0]);
+			BlockPos pe = null;
+			for (BlockPos q : BlockPos.betweenClosed(k.offset(-2, -1, -2), k.offset(2, 1, 2))) {
+				if (level.getBlockState(q).isAir() && level.getBlockState(q.above()).isAir() && level.getBlockState(q.below()).isSolid()
+						&& (pe == null || q.distSqr(k) < pe.distSqr(k))) {
+					pe = q.immutable();
+				}
+			}
+			var arqueiros = level.getEntitiesOfClass(com.guilhermegoes.arraial.npc.MoradorEntity.class, new net.minecraft.world.phys.AABB(k).inflate(80),
+					e -> e.profissao() == com.guilhermegoes.arraial.npc.Profissao.ARQUEIRO);
+			log("cinema arqueiro: arqueiros=" + arqueiros.size() + " pe=" + (pe == null ? "-" : pe.toShortString()));
+			if (!arqueiros.isEmpty() && pe != null) {
+				arqueiros.get(0).teleportTo(pe.getX() + 0.5, pe.getY(), pe.getZ() + 0.5);
+			}
+		}));
+		passo(20, () -> foto("cinema_diag"));
+		passo(20, () -> log("GRAVAR inicio"));
 		// 1. Dusk: a slow orbit around the top of the tower.
-		passo(10, () -> plano(() -> Camera.orbita(torre[0], 14, 5, 160, 250, 200)));
+		passo(10, () -> plano(() -> Camera.orbita(torre[0], 8, 3, 160, 250, 200)));
 		passo(200, () -> cmd("time set 14000"));
 		// 2. Night: the zombies come out of the dark; the camera low behind them, looking at the tower.
 		passo(1, () -> {
@@ -2170,12 +2191,15 @@ public final class Roteiro {
 		passo(170, () -> {
 		});
 		// 5. Down among the zombies as the arrows land.
-		passo(1, () -> plano(() -> Camera.seguir(() -> zumbiPerto(torre[0]), 5, 2.2, 160)));
+		passo(1, () -> plano(() -> {
+			var alvo = zumbiPerto(torre[0]);
+			Camera.seguir(() -> alvo != null && alvo.isAlive() ? alvo : null, 5, 2.2, 160);
+		}));
 		passo(160, () -> {
 		});
 		// 6. Sunrise: the long pull-back over the safe village.
 		passo(1, () -> {
-			cmd("time set 23300", "kill @e[type=minecraft:zombie]", "effect clear @s minecraft:night_vision");
+			cmd("time set 23300", "kill @e[type=minecraft:zombie]");
 			plano(() -> Camera.travelling(torre[0].add(4, 2, 6), torre[0].add(26, 18, 34), torre[0], 230));
 		});
 		passo(250, () -> log("GRAVAR fim"));
