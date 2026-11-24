@@ -2097,6 +2097,14 @@ public final class Roteiro {
 		return l.isEmpty() ? null : l.get(0);
 	}
 
+	/** Where the train is (or the station, once it has gone). */
+	private static Vec3 alvoTrem() {
+		var l = locomotiva();
+		return l == null ? (ultimoTrem == null ? Vec3.ZERO : ultimoTrem) : (ultimoTrem = l.position());
+	}
+
+	private static @org.jspecify.annotations.Nullable Vec3 ultimoTrem;
+
 	/** The furnace minecart (the locomotive) the client can see, or null. */
 	private static net.minecraft.world.entity.@org.jspecify.annotations.Nullable Entity locomotiva() {
 		var lvl = mc().level;
@@ -2161,18 +2169,38 @@ public final class Roteiro {
 			}
 			var f = ferroviario(srv.overworld(), x, z);
 			return f != null && f.isPassenger();
-		}, () -> {
-			log("cinema trem: embarcou");
-			// 3. Beside the train as it pulls out.
-			plano(() -> Camera.acompanhar(Roteiro::locomotiva, new Vec3(4.5, 2.2, 4.5), 60));
+		}, () -> servidor((srv, sp) -> {
+			// 3. The train comes past a camera standing beside the track, down the line, on the
+			// side away from the station; then the camera swings round to watch it go.
+			var f = ferroviario(sp.level(), x, z);
+			var loco = f == null ? null : f.getVehicle();
+			if (loco == null) {
+				log("cinema trem: sem locomotiva");
+				return;
+			}
+			Vec3 p = loco.position();
+			var vagoes = sp.level().getEntitiesOfClass(net.minecraft.world.entity.vehicle.minecart.MinecartChest.class, loco.getBoundingBox().inflate(4));
+			Vec3 rumo = vagoes.isEmpty() ? new Vec3(1, 0, 0) : p.subtract(vagoes.get(0).position()).multiply(1, 0, 1).normalize();
+			Vec3 l0 = new Vec3(-rumo.z, 0, rumo.x);
+			Vec3 lado = p.add(l0).distanceToSqr(estacao[0]) < p.subtract(l0).distanceToSqr(estacao[0]) ? l0.scale(-1) : l0;
+			Vec3 ponto = p.add(rumo.scale(9)).add(lado.scale(4.5)).add(0, 0.6, 0);
+			Vec3 fim = p.add(rumo.scale(11)).add(lado.scale(6)).add(0, 2.5, 0);
+			log("cinema trem: embarcou; locomotiva " + p + " rumo " + rumo);
+			plano(() -> Camera.travelling(ponto, fim, () -> {
+				var l = locomotiva();
+				return l == null ? ponto.add(rumo.scale(12)) : l.position().add(0, 0.6, 0);
+			}, 90));
+		}));
+		passo(90, () -> {
 		});
 		// 4. Up and away as it goes, smoke behind.
-		passo(60, () -> plano(() -> {
+		passo(1, () -> plano(() -> {
 			var l = locomotiva();
 			Vec3 c = l == null ? estacao[0] : l.position();
-			Camera.travelling(c.add(5, 3, 5), c.add(14, 16, 14), estacao[0], 160);
+			Camera.travelling(c.add(0, 4, 0).add(estacao[0].subtract(c).multiply(1, 0, 1).normalize().scale(-6)),
+					c.add(0, 16, 0).add(estacao[0].subtract(c).multiply(1, 0, 1).normalize().scale(-14)), Roteiro::alvoTrem, 140);
 		}));
-		passo(160, () -> {
+		passo(140, () -> {
 		});
 		// 5. Golden hour at the empty station.
 		passo(1, () -> {
@@ -2276,7 +2304,7 @@ public final class Roteiro {
 		passo(1, () -> plano(() -> {
 			var a = oficio(com.guilhermegoes.arraial.npc.Profissao.ARQUEIRO);
 			Vec3 c = a == null ? torre[0] : a.position().add(0, 1.4, 0);
-			Camera.orbita(c, 3.2, 0.8, 30, 140, 170);
+			Camera.orbita(c, 6.5, -0.2, 30, 140, 170);
 		}));
 		passo(170, () -> {
 		});
@@ -2284,7 +2312,7 @@ public final class Roteiro {
 		passo(1, () -> plano(() -> {
 			var a = oficio(com.guilhermegoes.arraial.npc.Profissao.ARQUEIRO);
 			Vec3 c = a == null ? torre[0] : a.position().add(0, 1.6, 0);
-			Camera.travelling(c.add(-1.5, 1.2, -2), c.add(-1.2, 0.6, 1.5), () -> {
+			Camera.travelling(c.add(-1.4, 0.1, -1.6), c.add(-0.9, -0.1, 1.2), () -> {
 				var zb = zumbiPerto(c);
 				return zb == null ? c.add(0, -6, 20) : zb.position().add(0, 1, 0);
 			}, 170);
@@ -2294,7 +2322,7 @@ public final class Roteiro {
 		// 5. Down among the zombies as the arrows land.
 		passo(1, () -> plano(() -> {
 			var alvo = zumbiPerto(torre[0]);
-			Camera.seguir(() -> alvo != null && alvo.isAlive() ? alvo : null, 5, 2.2, 160);
+			Camera.seguir(() -> alvo != null && alvo.isAlive() ? alvo : zumbiPerto(torre[0]), 5, 2.2, 160);
 		}));
 		passo(160, () -> {
 		});
