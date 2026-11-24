@@ -192,6 +192,15 @@ public final class Roteiro {
 			return;
 		}
 		// ARRAIAL_ROTEIRO_SO=cinema_navio: a recording (OBS, see tools/gravar_obs.js) of the merchant ship coming in.
+		// ARRAIAL_ROTEIRO_SO=cinema_arqueiro: a recording of the archer defending the village at night.
+		if ("cinema_arqueiro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			cinemaArqueiro();
+			passo(40, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		if ("cinema_navio".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			cinemaNavio();
 			passo(40, () -> {
@@ -2066,6 +2075,108 @@ public final class Roteiro {
 			cmd("time set 11700");
 			plano(() -> Camera.travelling(cais[0].add(lado[0].scale(-3)).add(0, 2.5, 0),
 					cais[0].add(frente[0].scale(30)).add(lado[0].scale(-22)).add(0, 20, 0), navio[0], 230));
+		});
+		passo(250, () -> log("GRAVAR fim"));
+	}
+
+	/** The first villager of a trade the client can see, or null (for the camera). */
+	private static net.minecraft.world.entity.@org.jspecify.annotations.Nullable Entity oficio(com.guilhermegoes.arraial.npc.Profissao p) {
+		var lvl = mc().level;
+		if (lvl == null) {
+			return null;
+		}
+		for (var e : lvl.entitiesForRendering()) {
+			if (e instanceof com.guilhermegoes.arraial.npc.MoradorEntity m && m.profissao() == p) {
+				return m;
+			}
+		}
+		return null;
+	}
+
+	/** The zombie nearest to a point that the client can see, or null. */
+	private static net.minecraft.world.entity.@org.jspecify.annotations.Nullable Entity zumbiPerto(Vec3 p) {
+		var lvl = mc().level;
+		if (lvl == null) {
+			return null;
+		}
+		net.minecraft.world.entity.Entity melhor = null;
+		for (var e : lvl.entitiesForRendering()) {
+			if (e instanceof net.minecraft.world.entity.monster.zombie.Zombie z && z.isAlive()
+					&& (melhor == null || z.distanceToSqr(p) < melhor.distanceToSqr(p))) {
+				melhor = z;
+			}
+		}
+		return melhor;
+	}
+
+	/**
+	 * Film: the archer at night. A village with a finished torre de vigia and its arqueiro; dusk
+	 * over the tower, the zombies coming out of the dark, the archer shooting from the top, the
+	 * zombies falling, and the sunrise over the safe village. Night vision keeps the night readable.
+	 */
+	private static void cinemaArqueiro() {
+		final int x = 350, z = 3000;
+		final Vec3[] torre = {null}, vila = {null};
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("cinema arqueiro: chunks"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta torre_vigia"));
+		passo(40, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos k = blocoNaObra(level, v, "torre_vigia", com.guilhermegoes.arraial.registry.ModBlocks.SUPORTE_ARCOS);
+			vila[0] = Vec3.atCenterOf(v);
+			torre[0] = k == null ? vila[0].add(0, 8, 0) : Vec3.atCenterOf(k);
+			log("cinema arqueiro: vila " + v.toShortString() + " suporte " + (k == null ? "NAO" : k.toShortString()));
+			cmd("summon arraial:morador " + x + " 121 " + (z + 2) + " {Profissao:0,Visual:4}",
+					"summon arraial:arara " + (x + 4) + " 124 " + (z + 6), "summon arraial:arara " + (x - 4) + " 124 " + (z + 6));
+		}));
+		// Let the archer take the post and climb the tower.
+		passo(600, () -> {
+			prepararFilmagem();
+			cmd("time set 12300", "effect give @s minecraft:night_vision infinite 0 true");
+		});
+		passo(40, () -> log("GRAVAR inicio"));
+		// 1. Dusk: a slow orbit around the top of the tower.
+		passo(10, () -> plano(() -> Camera.orbita(torre[0], 14, 5, 160, 250, 200)));
+		passo(200, () -> cmd("time set 14000"));
+		// 2. Night: the zombies come out of the dark; the camera low behind them, looking at the tower.
+		passo(1, () -> {
+			for (int i = 0; i < 5; i++) {
+				cmd("summon minecraft:zombie " + (x - 6 + i * 3) + " 121 " + (z + 30) + " {PersistenceRequired:1b}");
+			}
+			plano(() -> Camera.travelling(new Vec3(x + 0.5, 122, z + 40), new Vec3(x + 0.5, 123.5, z + 33), torre[0], 150));
+		});
+		passo(150, () -> {
+		});
+		// 3. The archer on the tower, the camera circling close behind him.
+		passo(1, () -> plano(() -> {
+			var a = oficio(com.guilhermegoes.arraial.npc.Profissao.ARQUEIRO);
+			Vec3 c = a == null ? torre[0] : a.position().add(0, 1.4, 0);
+			Camera.orbita(c, 3.2, 0.8, 30, 140, 170);
+		}));
+		passo(170, () -> {
+		});
+		// 4. From the archer's shoulder down to the zombies.
+		passo(1, () -> plano(() -> {
+			var a = oficio(com.guilhermegoes.arraial.npc.Profissao.ARQUEIRO);
+			Vec3 c = a == null ? torre[0] : a.position().add(0, 1.6, 0);
+			Camera.travelling(c.add(-1.5, 1.2, -2), c.add(-1.2, 0.6, 1.5), () -> {
+				var zb = zumbiPerto(c);
+				return zb == null ? c.add(0, -6, 20) : zb.position().add(0, 1, 0);
+			}, 170);
+		}));
+		passo(170, () -> {
+		});
+		// 5. Down among the zombies as the arrows land.
+		passo(1, () -> plano(() -> Camera.seguir(() -> zumbiPerto(torre[0]), 5, 2.2, 160)));
+		passo(160, () -> {
+		});
+		// 6. Sunrise: the long pull-back over the safe village.
+		passo(1, () -> {
+			cmd("time set 23300", "kill @e[type=minecraft:zombie]", "effect clear @s minecraft:night_vision");
+			plano(() -> Camera.travelling(torre[0].add(4, 2, 6), torre[0].add(26, 18, 34), torre[0], 230));
 		});
 		passo(250, () -> log("GRAVAR fim"));
 	}
