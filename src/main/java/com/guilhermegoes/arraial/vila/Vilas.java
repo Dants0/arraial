@@ -102,7 +102,9 @@ public final class Vilas {
 	/** The middle of the arraial's finished praça (where the coreto stands), or null; checked once a minute. */
 	public static @org.jspecify.annotations.Nullable BlockPos praca(ServerLevel level, BlockPos vila) {
 		Praca c = PRACAS.get(vila);
-		if (c != null && level.getGameTime() < c.ate()) {
+		// A cached centre is trusted for a minute; "no praça" is not, since one may have just been finished
+		// (looking for the finished canteiro is cheap; only working out its centre is not).
+		if (c != null && level.getGameTime() < c.ate() && (c.centro() != null || obraPronta(level, vila, "praca") == null)) {
 			return c.centro();
 		}
 		BlockPos centro = null;

@@ -2001,7 +2001,7 @@ public final class Roteiro {
 		// Chicote: three cows behind the player, facing +z; a zombie in front.
 		passo(10, () -> cmd("tp @s " + x + ".5 121 " + (z - 20) + ".5 0 0",
 				"summon minecraft:cow " + (x - 3) + " 121 " + (z - 22), "summon minecraft:cow " + (x + 3) + " 121 " + (z - 23), "summon minecraft:cow " + x + " 121 " + (z - 25),
-				"summon minecraft:zombie " + x + " 121 " + (z - 17) + " {NoAI:1b,PersistenceRequired:1b}"));
+				"summon minecraft:zombie " + x + " 121 " + (z - 17) + " {NoAI:1b,PersistenceRequired:1b,Tags:[\"chicote\"]}"));
 		final double[] zAntes = {0};
 		passo(20, () -> servidor((srv, sp) -> {
 			var vacas = sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(14), e -> true);
@@ -2009,6 +2009,10 @@ public final class Roteiro {
 			sp.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, new Vec3(x + 0.5, 122.5, z - 10));
 			mao(sp, com.guilhermegoes.arraial.registry.ModItems.CHICOTE);
 			log("ferramentas2: chicote use=" + usar(sp) + " vacas=" + vacas.size());
+		}));
+		passo(3, () -> servidor((srv, sp) -> {
+			var alvo = sp.level().getEntitiesOfClass(net.minecraft.world.entity.monster.zombie.Zombie.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(12), e -> e.entityTags().contains("chicote"));
+			log("ferramentas2: chicote zumbi da frente " + (alvo.isEmpty() ? "SUMIU" : "vida=" + alvo.get(0).getHealth() + " lento=" + alvo.get(0).hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS) + " dist=" + String.format("%.1f", alvo.get(0).distanceTo(sp))));
 		}));
 		passo(100, () -> servidor((srv, sp) -> {
 			var vacas = sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(30), e -> true);
