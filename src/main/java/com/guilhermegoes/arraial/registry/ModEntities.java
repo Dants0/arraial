@@ -35,6 +35,11 @@ public final class ModEntities {
 	public static final EntityType<com.guilhermegoes.arraial.fauna.Arara> ARARA = bicho("arara",
 			EntityType.Builder.of(com.guilhermegoes.arraial.fauna.Arara::new, MobCategory.CREATURE).sized(0.7F, 1.2F).clientTrackingRange(8));
 
+	/** The estilingue's pebble in flight. */
+	public static final EntityType<com.guilhermegoes.arraial.item.Pedrada> PEDRADA = bicho("pedrada",
+			EntityType.Builder.<com.guilhermegoes.arraial.item.Pedrada>of(com.guilhermegoes.arraial.item.Pedrada::new, MobCategory.MISC)
+					.sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10));
+
 	private static <T extends net.minecraft.world.entity.Entity> EntityType<T> bicho(String nome, EntityType.Builder<T> builder) {
 		ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Arraial.id(nome));
 		return Registry.register(BuiltInRegistries.ENTITY_TYPE, key, builder.build(key));
@@ -48,6 +53,7 @@ public final class ModEntities {
 		FabricDefaultAttributeRegistry.register(ONCA, com.guilhermegoes.arraial.fauna.Onca.atributos());
 		FabricDefaultAttributeRegistry.register(ARARA, net.minecraft.world.entity.animal.parrot.Parrot.createAttributes());
 		com.guilhermegoes.arraial.fauna.Fauna.init();
+		com.guilhermegoes.arraial.item.Ferramentas.Candeeiro.init();
 	}
 
 	private ModEntities() {

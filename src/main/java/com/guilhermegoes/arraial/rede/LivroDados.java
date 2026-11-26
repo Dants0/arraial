@@ -47,7 +47,7 @@ public final class LivroDados {
 			Map.entry("feira", "comercio"), Map.entry("rancho_tropeiro", "comercio"), Map.entry("trapiche", "comercio"),
 			Map.entry("porto", "comercio"), Map.entry("estacao", "comercio"),
 			Map.entry("poco", "civico"), Map.entry("prefeitura", "civico"), Map.entry("botica", "civico"), Map.entry("cartorio", "civico"),
-			Map.entry("oficina_engenheiro", "civico"), Map.entry("chafariz", "civico"),
+			Map.entry("oficina_engenheiro", "civico"), Map.entry("chafariz", "civico"), Map.entry("praca", "civico"), Map.entry("mercado", "comercio"),
 			Map.entry("capela", "fe"), Map.entry("matriz", "fe"), Map.entry("missao", "fe"),
 			Map.entry("guarita", "defesa"), Map.entry("torre_vigia", "defesa"), Map.entry("muralha", "defesa"));
 

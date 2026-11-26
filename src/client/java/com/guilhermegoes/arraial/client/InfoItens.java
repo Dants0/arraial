@@ -20,6 +20,7 @@ final class InfoItens {
 			ModItems.MAPA_REGIAO, ModBlocks.TAIPA, ModBlocks.TELHA, ModBlocks.CAL, ModBlocks.AZULEJO,
 			ModBlocks.MOENDA, ModBlocks.TERREIRO, ModBlocks.BANCADA_ENTALHE, ModBlocks.AMARRA, ModBlocks.GUINDASTE, ModItems.SAL, ModItems.CHITA, ModBlocks.MO, ModBlocks.RODA_DAGUA, ModBlocks.MONJOLO, ModItems.FARINHA_TRIGO, ModBlocks.BILHETERIA, ModBlocks.FORJA, ModItems.FERRADURA, ModBlocks.BANCADA_CARPINTEIRO, ModBlocks.FORNO_PAO, ModItems.PAO_DE_QUEIJO, ModBlocks.TEAR, ModBlocks.MESA_ALFAIATE, ModBlocks.REDE, ModItems.ALGODAO, ModItems.PANO, ModItems.ROUPA_FESTA, ModItems.COURO_JACARE, ModItems.PENA_ARARA, ModItems.PELE_ONCA, ModBlocks.SUPORTE_ARCOS, ModItems.BATEIA, ModItems.ENXADAO, ModItems.LACO, ModItems.TARRAFA, ModItems.BERRANTE, ModItems.CAFE_CEREJA, ModItems.CAFEZINHO, ModItems.QUEIJO_COALHO,
 			ModItems.CHARQUE, ModBlocks.PEDRA_SABAO, ModBlocks.TALHA_DOURADA, ModBlocks.ADOBE,
+			ModItems.ESTILINGUE, ModItems.SEIXO, ModItems.PENEIRA, ModItems.CANDEEIRO, ModItems.CABACA_CACHACA, ModItems.CHICOTE,
 			ModItems.CAPIVARA_SPAWN_EGG, ModItems.TAMANDUA_SPAWN_EGG, ModItems.JACARE_SPAWN_EGG, ModItems.ONCA_SPAWN_EGG, ModItems.ARARA_SPAWN_EGG};
 
 	private InfoItens() {

@@ -683,6 +683,142 @@ public class GerarPlantas {
 				new String[] {"F...F", ".....", ".....", "F...F", "     ", "     ", "     "},
 				new String[] {"sssss", "sssss", "sssss", "sssss", "     ", "     ", "     "}));
 
+		// ---- The praça: a square paved in pedra portuguesa (black waves on white), a coreto (bandstand)
+		// in the middle, a tree in each corner, benches facing the coreto, lamp posts and flower beds.
+		// The festas are held here once it stands.
+		Map<Character, String> praca = new HashMap<>();
+		praca.put('W', "minecraft:polished_diorite");
+		praca.put('K', "minecraft:polished_blackstone");
+		praca.put('g', "minecraft:grass_block[snowy=false]");
+		praca.put('f', "minecraft:poppy");
+		praca.put('y', "minecraft:dandelion");
+		praca.put('L', "minecraft:oak_log[axis=y]");
+		praca.put('v', "minecraft:oak_leaves[distance=1,persistent=true,waterlogged=false]");
+		praca.put('S', "minecraft:stone_bricks");
+		praca.put('e', "minecraft:stone_brick_stairs[facing=south,half=bottom,shape=straight,waterlogged=false]");
+		praca.put('F', "minecraft:birch_fence[east=false,north=false,south=false,waterlogged=false,west=false]");
+		praca.put('P', "minecraft:dark_oak_fence[east=false,north=false,south=false,waterlogged=false,west=false]");
+		praca.put('l', "arraial:lampiao[hanging=false,waterlogged=false]");
+		praca.put('h', "arraial:lampiao[hanging=true,waterlogged=false]");
+		praca.put('t', "arraial:telha_laje[type=bottom,waterlogged=false]");
+		praca.put('T', "arraial:telha");
+		praca.put('n', "minecraft:spruce_stairs[facing=north,half=bottom,shape=straight,waterlogged=false]");
+		praca.put('s', "minecraft:spruce_stairs[facing=south,half=bottom,shape=straight,waterlogged=false]");
+		praca.put('w', "minecraft:spruce_stairs[facing=west,half=bottom,shape=straight,waterlogged=false]");
+		praca.put('o', "minecraft:spruce_stairs[facing=east,half=bottom,shape=straight,waterlogged=false]");
+		Grade gp = new Grade(15, 7, 15);
+		// The paving: zigzag waves of black on white (Copacabana's calçadão, after Lisbon's).
+		for (int z = 0; z < 15; z++) {
+			for (int x = 0; x < 15; x++) {
+				int onda = (z / 3) % 2 == 0 ? z % 3 : 2 - z % 3;
+				gp.p(x, 0, z, (x + onda) % 5 == 0 ? 'K' : 'W');
+			}
+		}
+		gp.caixa(0, 1, 0, 14, 6, 14, '.');
+		// Corner trees on grass, with flowers about.
+		int[][] cantos = {{1, 1}, {13, 1}, {1, 13}, {13, 13}};
+		for (int[] c : cantos) {
+			gp.caixa(c[0] - 1, 0, c[1] - 1, c[0] + 1, 0, c[1] + 1, 'g');
+			gp.caixa(c[0] - 1, 4, c[1] - 1, c[0] + 1, 5, c[1] + 1, 'v');
+			gp.p(c[0], 6, c[1], 'v');
+			gp.caixa(c[0], 1, c[1], c[0], 4, c[1], 'L');
+		}
+		gp.p(0, 1, 2, 'f');
+		gp.p(2, 1, 0, 'y');
+		gp.p(14, 1, 2, 'y');
+		gp.p(12, 1, 0, 'f');
+		gp.p(0, 1, 12, 'y');
+		gp.p(2, 1, 14, 'f');
+		gp.p(14, 1, 12, 'f');
+		gp.p(12, 1, 14, 'y');
+		// The coreto: a raised octagon-ish platform of stone, white posts and railing, a tiled roof.
+		gp.caixa(5, 1, 5, 9, 1, 9, 'S');
+		gp.p(7, 1, 4, 'e');
+		gp.caixa(5, 2, 5, 9, 2, 9, 'F');
+		gp.caixa(6, 2, 6, 8, 2, 8, '.');
+		gp.p(7, 2, 5, '.');
+		gp.p(5, 3, 5, 'F');
+		gp.p(9, 3, 5, 'F');
+		gp.p(5, 3, 9, 'F');
+		gp.p(9, 3, 9, 'F');
+		gp.p(5, 4, 5, 'F');
+		gp.p(9, 4, 5, 'F');
+		gp.p(5, 4, 9, 'F');
+		gp.p(9, 4, 9, 'F');
+		gp.caixa(4, 5, 4, 10, 5, 10, 't');
+		gp.caixa(5, 5, 5, 9, 5, 9, 'T');
+		gp.caixa(6, 6, 6, 8, 6, 8, 't');
+		gp.p(7, 4, 7, 'h');
+		// Benches (spruce stairs) facing the coreto, and lamp posts beside them.
+		gp.p(6, 1, 2, 'n');
+		gp.p(8, 1, 2, 'n');
+		gp.p(6, 1, 12, 's');
+		gp.p(8, 1, 12, 's');
+		gp.p(2, 1, 6, 'w');
+		gp.p(2, 1, 8, 'w');
+		gp.p(12, 1, 6, 'o');
+		gp.p(12, 1, 8, 'o');
+		for (int[] l : new int[][] {{4, 2}, {10, 2}, {4, 12}, {10, 12}}) {
+			gp.caixa(l[0], 1, l[1], l[0], 2, l[1], 'P');
+			gp.p(l[0], 3, l[1], 'l');
+		}
+		escrever(out.resolve("praca.nbt"), praca, gp.camadas());
+
+		// ---- The mercado: the big covered market. A hall on log columns under a tiled roof, open on
+		// all sides, with three bancas de feira (three more feirantes) and the produce piled behind.
+		Map<Character, String> mercado = new HashMap<>();
+		mercado.put('C', "minecraft:cobblestone");
+		mercado.put('A', "minecraft:polished_andesite");
+		mercado.put('L', "minecraft:spruce_log[axis=y]");
+		mercado.put('B', "arraial:banca_feira[facing=north]");
+		mercado.put('b', "minecraft:barrel[facing=up,open=false]");
+		mercado.put('h', "minecraft:hay_block[axis=y]");
+		mercado.put('m', "minecraft:melon");
+		mercado.put('p', "minecraft:pumpkin");
+		mercado.put('c', "minecraft:composter[level=7]");
+		mercado.put('t', "arraial:telha_laje[type=bottom,waterlogged=false]");
+		mercado.put('T', "arraial:telha");
+		mercado.put('n', "arraial:telha_escada[facing=north,half=bottom,shape=straight,waterlogged=false]");
+		mercado.put('s', "arraial:telha_escada[facing=south,half=bottom,shape=straight,waterlogged=false]");
+		mercado.put('l', "arraial:lampiao[hanging=true,waterlogged=false]");
+		mercado.put('k', "minecraft:spruce_planks");
+		Grade gm2 = new Grade(13, 7, 9);
+		gm2.caixa(0, 0, 0, 12, 0, 8, 'C');
+		gm2.caixa(1, 0, 1, 11, 0, 1, 'A');
+		gm2.caixa(1, 0, 4, 11, 0, 4, 'A');
+		gm2.caixa(0, 1, 0, 12, 6, 8, '.');
+		for (int x = 0; x <= 12; x += 4) {
+			gm2.caixa(x, 1, 0, x, 3, 0, 'L');
+			gm2.caixa(x, 1, 8, x, 3, 8, 'L');
+		}
+		gm2.caixa(0, 1, 4, 0, 3, 4, 'L');
+		gm2.caixa(12, 1, 4, 12, 3, 4, 'L');
+		// The stalls at the front row, the goods along the back.
+		gm2.p(2, 1, 2, 'B');
+		gm2.p(6, 1, 2, 'B');
+		gm2.p(10, 1, 2, 'B');
+		String fundo = "bhmbpcbhmbp";
+		for (int x = 1; x <= 11; x++) {
+			gm2.p(x, 1, 7, fundo.charAt(x - 1));
+		}
+		gm2.p(3, 2, 7, 'b');
+		gm2.p(8, 2, 7, 'b');
+		gm2.caixa(2, 1, 5, 3, 1, 5, 'k');
+		gm2.caixa(9, 1, 5, 10, 1, 5, 'k');
+		// The roof: tile eaves sloping up to a ridge, the gable ends left open (air).
+		gm2.caixa(0, 4, 0, 12, 4, 8, 'T');
+		gm2.caixa(0, 4, 0, 12, 4, 0, 's');
+		gm2.caixa(0, 4, 8, 12, 4, 8, 'n');
+		gm2.caixa(0, 5, 1, 12, 5, 1, 's');
+		gm2.caixa(0, 5, 7, 12, 5, 7, 'n');
+		gm2.caixa(0, 5, 2, 12, 5, 6, 'T');
+		gm2.caixa(0, 6, 2, 12, 6, 2, 's');
+		gm2.caixa(0, 6, 6, 12, 6, 6, 'n');
+		gm2.caixa(0, 6, 3, 12, 6, 5, 't');
+		gm2.p(4, 3, 4, 'l');
+		gm2.p(8, 3, 4, 'l');
+		escrever(out.resolve("mercado.nbt"), mercado, gm2.camadas());
+
 		System.out.println("plantas geradas em " + out.toAbsolutePath());
 	}
 

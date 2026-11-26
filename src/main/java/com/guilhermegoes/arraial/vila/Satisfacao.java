@@ -67,6 +67,12 @@ public final class Satisfacao {
 		if (Prefeitura.obras(level, vila, "chafariz") > 0) {
 			alvo += 4;
 		}
+		if (Prefeitura.obras(level, vila, "praca") > 0) {
+			alvo += 4; // a praça with its coreto: somewhere to be in the evening
+		}
+		if (Prefeitura.obras(level, vila, "mercado") > 0) {
+			alvo += 3;
+		}
 		if (Bichos.araras(level, vila) >= 2) {
 			alvo += 3; // araras about: an arraial full of colour and noise
 		}

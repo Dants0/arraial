@@ -98,7 +98,7 @@ public final class Politica {
 	}
 
 	/** Buildings a proposal can ask for. */
-	private static final List<String> OBRAS = List.of("casa", "roca", "poco", "guarita", Muralha.ID, "feira", "botica", "prefeitura");
+	private static final List<String> OBRAS = List.of("casa", "roca", "poco", "guarita", Muralha.ID, "feira", "botica", "prefeitura", "praca", "mercado");
 	private static final int CUSTO_FESTA = 8;
 
 	Regime regime = Regime.ELEITO;
@@ -211,6 +211,8 @@ public final class Politica {
 			case "feira" -> v += (g == Grupo.COMERCIO ? 2.0 : 0.3) + (e.feira() ? -1.5 : 0);
 			case "botica" -> v += e.doentes() > 0 ? 1.5 : 0.1;
 			case "prefeitura" -> v += g == Grupo.ORDEM ? 0.8 : -0.1;
+			case "praca" -> v += g == Grupo.POVO ? 1.6 : 0.4;
+			case "mercado" -> v += (g == Grupo.COMERCIO ? 2.0 : 0.4) + (e.feira() ? 0.3 : -1.0);
 			default -> {
 			}
 		}

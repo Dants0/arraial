@@ -208,7 +208,26 @@ public final class PlanoDeObra {
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.COVO, new Custo(Items.STICK, 4)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.VARAL_CACA, new Custo(Items.STICK, 5)),
 			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.PRANCHETA, new Custo(Items.OAK_PLANKS, 4)),
-			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.ESCRIVANINHA, new Custo(Items.OAK_PLANKS, 5)));
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.ESCRIVANINHA, new Custo(Items.OAK_PLANKS, 5)),
+			// The praça and the mercado: pedra portuguesa and dressed stone are laid from cobblestone, the flowers
+			// and the corner trees come with the plan, any wood serves for the fences, the goods are for show.
+			Map.entry(net.minecraft.world.level.block.Blocks.POLISHED_DIORITE, new Custo(Items.COBBLESTONE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.POLISHED_BLACKSTONE, new Custo(Items.COBBLESTONE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.POLISHED_ANDESITE, new Custo(Items.COBBLESTONE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.STONE_BRICK_STAIRS, new Custo(Items.COBBLESTONE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.POPPY, new Custo(Items.POPPY, 0)),
+			Map.entry(net.minecraft.world.level.block.Blocks.DANDELION, new Custo(Items.DANDELION, 0)),
+			Map.entry(net.minecraft.world.level.block.Blocks.OAK_LEAVES, new Custo(Items.OAK_LEAVES, 0)),
+			Map.entry(net.minecraft.world.level.block.Blocks.BIRCH_FENCE, new Custo(Items.OAK_FENCE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.DARK_OAK_FENCE, new Custo(Items.OAK_FENCE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.SPRUCE_LOG, new Custo(Items.OAK_LOG, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.SPRUCE_FENCE, new Custo(Items.OAK_FENCE, 1)),
+			Map.entry(net.minecraft.world.level.block.Blocks.SPRUCE_SLAB, new Custo(Items.OAK_SLAB, 1)),
+			Map.entry(com.guilhermegoes.arraial.registry.ModBlocks.TELHA, new Custo(Items.BRICK, 2)),
+			Map.entry(net.minecraft.world.level.block.Blocks.HAY_BLOCK, new Custo(Items.WHEAT, 3)),
+			Map.entry(net.minecraft.world.level.block.Blocks.MELON, new Custo(Items.MELON_SLICE, 0)),
+			Map.entry(net.minecraft.world.level.block.Blocks.PUMPKIN, new Custo(Items.PUMPKIN, 0)),
+			Map.entry(net.minecraft.world.level.block.Blocks.COMPOSTER, new Custo(Items.OAK_PLANKS, 3)));
 
 	private static BlockState trocarMadeira(BlockState state, int madeira) {
 		var lista = com.guilhermegoes.arraial.trabalho.Receitas.MADEIRAS;

@@ -218,6 +218,24 @@ public final class Roteiro {
 			});
 			return;
 		}
+		// ARRAIAL_ROTEIRO_SO=praca: the praça (coreto, festa there) and the mercado (more bancas, better prices).
+		if ("praca".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			praca();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
+		// ARRAIAL_ROTEIRO_SO=ferramentas2: the second batch of tools, used for real.
+		if ("ferramentas2".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
+			ferramentas2();
+			passo(20, () -> {
+				log("fim do roteiro");
+				mc().stop();
+			});
+			return;
+		}
 		// ARRAIAL_ROTEIRO_SO=arqueiro: the torre de vigia at night, the araras' cheer, and the five tools.
 		if ("arqueiro".equals(System.getenv("ARRAIAL_ROTEIRO_SO"))) {
 			arqueiro();
@@ -1825,6 +1843,197 @@ public final class Roteiro {
 	/** Uses the item in the player's main hand as if right-clicked (server side). */
 	private static net.minecraft.world.InteractionResult usar(net.minecraft.server.level.ServerPlayer sp) {
 		return sp.getMainHandItem().getItem().use(sp.level(), sp, net.minecraft.world.InteractionHand.MAIN_HAND);
+	}
+
+	private static net.minecraft.world.item.ItemStack mao(net.minecraft.server.level.ServerPlayer sp, net.minecraft.world.item.Item item) {
+		var st = new net.minecraft.world.item.ItemStack(item);
+		sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, st);
+		return st;
+	}
+
+	private static net.minecraft.world.InteractionResult usarEm(net.minecraft.server.level.ServerPlayer sp, BlockPos c) {
+		var ctx = new net.minecraft.world.item.context.UseOnContext(sp, net.minecraft.world.InteractionHand.MAIN_HAND,
+				new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(c).add(0, 0.5, 0), net.minecraft.core.Direction.UP, c, false));
+		return sp.getMainHandItem().getItem().useOn(ctx);
+	}
+
+	private static String bancas(net.minecraft.server.level.ServerLevel level, BlockPos v) {
+		return String.valueOf(level.getPoiManager().getCountInRange(h -> h.value() == com.guilhermegoes.arraial.registry.ModPois.BANCA_FEIRA, v,
+				com.guilhermegoes.arraial.vila.Vilas.RAIO, net.minecraft.world.entity.ai.village.poi.PoiManager.Occupancy.ANY));
+	}
+
+	/** The praça and the mercado on a flat field: centre found, satisfaction, the festa's fogueira at the praça, the stalls. */
+	private static void praca() {
+		final int x = 350, z = 3800;
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("praca: chunks"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("tp @s " + x + ".5 121 " + (z - 24) + ".5 0 0", "arraial vila_nova luso"));
+		passo(60, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			log("praca: antes satisfacao alvo=" + satisfacaoAlvo(level, v) + " bancas=" + bancas(level, v) + " praca=" + com.guilhermegoes.arraial.vila.Vilas.praca(level, v));
+			cmd("time set 1000", "execute positioned " + x + " 120 " + z + " run arraial obra_pronta praca");
+		}));
+		passo(80, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial obra_pronta mercado"));
+		passo(80, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			BlockPos centro = com.guilhermegoes.arraial.vila.Vilas.praca(level, v);
+			log("praca: depois satisfacao alvo=" + satisfacaoAlvo(level, v) + " bancas=" + bancas(level, v) + " praca=" + (centro == null ? "NAO" : centro.toShortString())
+					+ " bloco no centro=" + (centro == null ? "-" : level.getBlockState(centro.below()).getBlock().getDescriptionId()));
+			cmd("execute positioned " + x + " 120 " + z + " run arraial festa sao_joao");
+		}));
+		passo(200, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			BlockPos v = com.guilhermegoes.arraial.vila.Vilas.maisProxima(level, new BlockPos(x, 120, z));
+			if (level.getBlockEntity(v) instanceof com.guilhermegoes.arraial.vila.ArraialBlockEntity a) {
+				BlockPos c = a.festa().centro(a);
+				BlockPos p = com.guilhermegoes.arraial.vila.Vilas.praca(level, v);
+				log("praca: festa=" + a.festa().agora() + " centro da festa=" + c.toShortString() + " fogueira=" + level.getBlockState(c).getBlock().getDescriptionId()
+						+ " distancia da praca=" + (p == null ? "-" : String.format("%.1f", Math.sqrt(c.distSqr(p)))) + " | cruzeiro " + v.toShortString());
+			}
+		}));
+		passo(10, () -> verObra("praca", 20));
+		passo(30, () -> foto("111_praca_festa"));
+		passo(10, () -> cmd("execute positioned " + x + " 120 " + z + " run arraial festa fim", "time set 13500"));
+		passo(40, () -> verObra("praca", 18));
+		passo(30, () -> foto("112_praca_noite"));
+		passo(10, () -> cmd("time set 2000"));
+		passo(20, () -> verObra("mercado", 15));
+		passo(30, () -> foto("113_mercado"));
+	}
+
+	/** Estilingue, peneira, candeeiro, cabaça de cachaça, chicote and the facão, used by the player (survival). */
+	private static void ferramentas2() {
+		final int x = 350, z = 3600;
+		passo(10, () -> cmd("tp @s " + x + " 140 " + z));
+		passo(200, () -> log("ferramentas2: chunks"));
+		campoPlano(300, z);
+		passo(20, () -> cmd("gamemode survival", "time set 1000", "tp @s " + x + ".5 121 " + z + ".5 0 0", "effect give @s minecraft:resistance infinite 4 true"));
+		// Peneira: five of each.
+		passo(20, () -> servidor((srv, sp) -> {
+			var level = sp.level();
+			var inv = sp.getInventory();
+			String[] blocos = {"gravel", "sand", "dirt"};
+			net.minecraft.world.level.block.Block[] tipos = {net.minecraft.world.level.block.Blocks.GRAVEL, net.minecraft.world.level.block.Blocks.SAND, net.minecraft.world.level.block.Blocks.DIRT};
+			StringBuilder r = new StringBuilder();
+			for (int t = 0; t < 3; t++) {
+				int sumiu = 0;
+				for (int i = 0; i < 6; i++) {
+					BlockPos p = new BlockPos(x - 10 + i, 120, z + 5 + t * 2);
+					level.setBlock(p, tipos[t].defaultBlockState(), 3);
+					mao(sp, com.guilhermegoes.arraial.registry.ModItems.PENEIRA);
+					usarEm(sp, p);
+					if (level.getBlockState(p).isAir()) {
+						sumiu++;
+					}
+				}
+				r.append(blocos[t]).append(" peneirados=").append(sumiu).append("/6; ");
+			}
+			log("ferramentas2: peneira " + r + "| pederneira=" + inv.countItem(net.minecraft.world.item.Items.FLINT) + " seixo=" + inv.countItem(com.guilhermegoes.arraial.registry.ModItems.SEIXO)
+					+ " argila=" + inv.countItem(net.minecraft.world.item.Items.CLAY_BALL) + " sementes=" + inv.countItem(net.minecraft.world.item.Items.WHEAT_SEEDS)
+					+ " maniva=" + inv.countItem(com.guilhermegoes.arraial.registry.ModItems.MANIVA) + " pepitas=" + (inv.countItem(net.minecraft.world.item.Items.IRON_NUGGET) + inv.countItem(net.minecraft.world.item.Items.GOLD_NUGGET)));
+			sp.getInventory().clearContent();
+		}));
+		// Estilingue: none first, then a zombie (no AI) 8 blocks ahead.
+		passo(10, () -> servidor((srv, sp) -> {
+			mao(sp, com.guilhermegoes.arraial.registry.ModItems.ESTILINGUE);
+			log("ferramentas2: estilingue sem seixo use=" + usar(sp));
+			sp.getInventory().add(new net.minecraft.world.item.ItemStack(com.guilhermegoes.arraial.registry.ModItems.SEIXO, 10));
+			cmd("summon minecraft:zombie " + x + " 121 " + (z + 8) + " {NoAI:1b,PersistenceRequired:1b,Tags:[\"alvo\"]}");
+		}));
+		for (int i = 0; i < 3; i++) {
+			passo(16, () -> servidor((srv, sp) -> {
+				var zb = sp.level().getEntitiesOfClass(net.minecraft.world.entity.monster.zombie.Zombie.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(12), e -> true);
+				if (!zb.isEmpty()) {
+					sp.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, zb.get(0).getBoundingBox().getCenter());
+				}
+				sp.getCooldowns().removeCooldown(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(com.guilhermegoes.arraial.registry.ModItems.ESTILINGUE));
+				usar(sp);
+			}));
+		}
+		passo(30, () -> servidor((srv, sp) -> {
+			var zb = sp.level().getEntitiesOfClass(net.minecraft.world.entity.monster.zombie.Zombie.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(12), e -> true);
+			log("ferramentas2: estilingue zumbi vida=" + (zb.isEmpty() ? "morto" : String.valueOf(zb.get(0).getHealth())) + " seixos restantes="
+					+ sp.getInventory().countItem(com.guilhermegoes.arraial.registry.ModItems.SEIXO) + " desgaste=" + sp.getMainHandItem().getDamageValue());
+			cmd("kill @e[type=minecraft:zombie]");
+		}));
+		// Candeeiro at night.
+		passo(10, () -> servidor((srv, sp) -> {
+			cmd("time set 18000");
+			mao(sp, com.guilhermegoes.arraial.registry.ModItems.CANDEEIRO);
+		}));
+		passo(10, () -> servidor((srv, sp) -> {
+			BlockPos p = BlockPos.containing(sp.getEyePosition());
+			log("ferramentas2: candeeiro luz na cabeca=" + sp.level().getBlockState(p).is(net.minecraft.world.level.block.Blocks.LIGHT) + " brilho=" + sp.level().getBrightness(net.minecraft.world.level.LightLayer.BLOCK, p));
+			cmd("tp @s " + (x + 6) + ".5 121 " + z + ".5 0 30");
+		}));
+		passo(10, () -> servidor((srv, sp) -> {
+			BlockPos antes = BlockPos.containing(new Vec3(x + 0.5, 121 + sp.getEyeHeight(), z + 0.5));
+			BlockPos agora = BlockPos.containing(sp.getEyePosition());
+			log("ferramentas2: candeeiro andou: luz velha=" + sp.level().getBlockState(antes).is(net.minecraft.world.level.block.Blocks.LIGHT)
+					+ " luz nova=" + sp.level().getBlockState(agora).is(net.minecraft.world.level.block.Blocks.LIGHT));
+		}));
+		passo(5, () -> foto("110_candeeiro"));
+		passo(10, () -> servidor((srv, sp) -> mao(sp, net.minecraft.world.item.Items.AIR)));
+		passo(10, () -> servidor((srv, sp) -> {
+			int luzes = 0;
+			for (BlockPos p : BlockPos.betweenClosed(new BlockPos(x - 3, 120, z - 3), new BlockPos(x + 9, 124, z + 3))) {
+				if (sp.level().getBlockState(p).is(net.minecraft.world.level.block.Blocks.LIGHT)) {
+					luzes++;
+				}
+			}
+			log("ferramentas2: candeeiro guardado: luzes que ficaram=" + luzes);
+			cmd("time set 1000");
+		}));
+		// Cabaça de cachaça: four swigs.
+		passo(10, () -> servidor((srv, sp) -> {
+			mao(sp, com.guilhermegoes.arraial.registry.ModItems.CABACA_CACHACA);
+			for (int i = 0; i < 4; i++) {
+				var res = sp.getMainHandItem().getItem().finishUsingItem(sp.getMainHandItem(), sp.level(), sp);
+				sp.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, res);
+			}
+			log("ferramentas2: cachaca forca=" + sp.hasEffect(net.minecraft.world.effect.MobEffects.STRENGTH) + " resistencia=" + sp.hasEffect(net.minecraft.world.effect.MobEffects.RESISTANCE)
+					+ " nausea=" + sp.hasEffect(net.minecraft.world.effect.MobEffects.NAUSEA) + " na mao=" + net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(sp.getMainHandItem().getItem()));
+			cmd("effect clear @s minecraft:nausea");
+		}));
+		// Chicote: three cows behind the player, facing +z; a zombie in front.
+		passo(10, () -> cmd("tp @s " + x + ".5 121 " + (z - 20) + ".5 0 0",
+				"summon minecraft:cow " + (x - 3) + " 121 " + (z - 22), "summon minecraft:cow " + (x + 3) + " 121 " + (z - 23), "summon minecraft:cow " + x + " 121 " + (z - 25),
+				"summon minecraft:zombie " + x + " 121 " + (z - 17) + " {NoAI:1b,PersistenceRequired:1b}"));
+		final double[] zAntes = {0};
+		passo(20, () -> servidor((srv, sp) -> {
+			var vacas = sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(14), e -> true);
+			zAntes[0] = vacas.stream().mapToDouble(e -> e.getZ()).average().orElse(0);
+			sp.lookAt(net.minecraft.commands.arguments.EntityAnchorArgument.Anchor.EYES, new Vec3(x + 0.5, 122.5, z - 10));
+			mao(sp, com.guilhermegoes.arraial.registry.ModItems.CHICOTE);
+			log("ferramentas2: chicote use=" + usar(sp) + " vacas=" + vacas.size());
+		}));
+		passo(100, () -> servidor((srv, sp) -> {
+			var vacas = sp.level().getEntitiesOfClass(net.minecraft.world.entity.animal.cow.Cow.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(30), e -> true);
+			double zDepois = vacas.stream().mapToDouble(e -> e.getZ()).average().orElse(0);
+			var zb = sp.level().getEntitiesOfClass(net.minecraft.world.entity.monster.zombie.Zombie.class, new net.minecraft.world.phys.AABB(sp.blockPosition()).inflate(12), e -> true);
+			log("ferramentas2: chicote vacas andaram " + String.format("%.1f", zDepois - zAntes[0]) + " blocos para a frente | zumbi vida="
+					+ (zb.isEmpty() ? "-" : zb.get(0).getHealth() + " lento=" + zb.get(0).hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS) + " dist=" + String.format("%.1f", zb.get(0).distanceTo(sp))));
+			cmd("kill @e[type=minecraft:zombie]");
+		}));
+		// Facão: a 3x3x3 bush of leaves and vines.
+		passo(10, () -> servidor((srv, sp) -> {
+			cmd("fill " + (x + 10) + " 121 " + (z - 1) + " " + (x + 12) + " 123 " + (z + 1) + " minecraft:oak_leaves[persistent=true]");
+		}));
+		passo(5, () -> servidor((srv, sp) -> {
+			mao(sp, com.guilhermegoes.arraial.registry.ModItems.FACAO);
+			BlockPos c = new BlockPos(x + 11, 122, z);
+			var r = usarEm(sp, c);
+			int ficou = 0;
+			for (BlockPos p : BlockPos.betweenClosed(c.offset(-1, -1, -1), c.offset(1, 1, 1))) {
+				if (!sp.level().getBlockState(p).isAir()) {
+					ficou++;
+				}
+			}
+			log("ferramentas2: facao use=" + r + " folhas que ficaram=" + ficou + "/27 desgaste=" + sp.getMainHandItem().getDamageValue());
+		}));
 	}
 
 	/**

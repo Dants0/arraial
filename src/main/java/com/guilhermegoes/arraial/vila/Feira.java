@@ -205,7 +205,7 @@ public final class Feira {
 			return;
 		}
 		// Sell to the arraial, paid from the coffers at 80% of the price.
-		double unidade = preco(a, mao.getItem()) * 0.8 / desconto(a, p);
+		double unidade = preco(a, mao.getItem()) * (Prefeitura.obras(level, a.getBlockPos(), "mercado") > 0 ? 0.9 : 0.8) / desconto(a, p);
 		int qtd = Math.min(16, mao.getCount());
 		while (qtd > 0 && (int) Math.floor(unidade * qtd) > a.tesouro) {
 			qtd--;

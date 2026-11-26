@@ -111,6 +111,12 @@ public final class Festa {
 
 	/** Where the moradores gather: the fogueira for São João, the Cruzeiro otherwise. */
 	public BlockPos centro(ArraialBlockEntity a) {
+		if (fogueira == null && agua == null && a.getLevel() instanceof ServerLevel level) {
+			BlockPos praca = Vilas.praca(level, a.getBlockPos());
+			if (praca != null) {
+				return praca; // processions and the feira grande gather at the praça too
+			}
+		}
 		return fogueira != null ? fogueira : agua != null ? agua : a.getBlockPos();
 	}
 
@@ -197,7 +203,11 @@ public final class Festa {
 		Festa f = a.festa;
 		f.comecou = true;
 		if (f.estilo() == Cultura.Estilo.RODA && f.tipo != Tipo.FEIRA_GRANDE) {
-			f.fogueira = acenderFogueira(level, a.getBlockPos());
+			BlockPos praca = Vilas.praca(level, a.getBlockPos());
+			f.fogueira = praca != null ? acenderFogueira(level, praca, 3) : null;
+			if (f.fogueira == null) {
+				f.fogueira = acenderFogueira(level, a.getBlockPos());
+			}
 		}
 		// The feast: festa sweets first, then any food.
 		List<ArmazemBlockEntity> armazens = Vilas.armazens(level, a.getBlockPos());
@@ -238,7 +248,8 @@ public final class Festa {
 				boolean enfeitada = bandeirinhas(level, a.getBlockPos()) >= 4;
 				// Dressed for the festa: chita clothes from the alfaiate for a good part of the people.
 				boolean trajada = Vilas.contar(Vilas.armazens(level, a.getBlockPos()), com.guilhermegoes.arraial.registry.ModItems.ROUPA_FESTA) >= Math.max(2, gente / 3);
-				int bonus = 4 + (f.farta ? 4 : 0) + (enfeitada ? 3 : 0) + (trajada ? 3 : 0) + (gente >= 5 ? 2 : 0)
+				boolean naPraca = Vilas.praca(level, a.getBlockPos()) != null;
+				int bonus = 4 + (f.farta ? 4 : 0) + (enfeitada ? 3 : 0) + (trajada ? 3 : 0) + (gente >= 5 ? 2 : 0) + (naPraca ? 3 : 0)
 						+ (Cultura.costume(level, a, "festeiros") ? 3 : 0)
 						+ (Cultura.costume(level, a, "devotos") && f.estilo() == Cultura.Estilo.PROCISSAO ? 3 : 0);
 				Satisfacao.agradar(level, a.getBlockPos(), bonus);
@@ -246,7 +257,7 @@ public final class Festa {
 					a.legitimidade = Math.min(100, a.legitimidade + 3);
 				}
 				if (t == Tipo.FEIRA_GRANDE) {
-					a.mudarTesouro(2 + gente);
+					a.mudarTesouro((2 + gente) * (Prefeitura.obras(level, a.getBlockPos(), "mercado") > 0 ? 2 : 1));
 				}
 				String como = f.farta && enfeitada ? "linda" : f.farta ? "boa" : "fraca";
 				texto = Component.translatable("arraial.cronica.festa_" + como, t.nome(a), gente);
@@ -283,7 +294,11 @@ public final class Festa {
 
 	/** A spot near the Cruzeiro with room to dance around; the campfire goes there. */
 	private static @Nullable BlockPos acenderFogueira(ServerLevel level, BlockPos cruzeiro) {
-		for (int r = 5; r <= 9; r++) {
+		return acenderFogueira(level, cruzeiro, 5);
+	}
+
+	private static @Nullable BlockPos acenderFogueira(ServerLevel level, BlockPos cruzeiro, int desde) {
+		for (int r = desde; r <= desde + 4; r++) {
 			for (Direction d : Direction.Plane.HORIZONTAL) {
 				BlockPos chao = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, cruzeiro.relative(d, r));
 				if (Math.abs(chao.getY() - cruzeiro.getY()) > 2 || !livre(level, chao)) {

@@ -106,6 +106,16 @@ public final class ModItems {
 	public static final Item LACO = register("laco", com.guilhermegoes.arraial.item.Ferramentas.Laco::new, new Item.Properties().durability(96));
 	public static final Item TARRAFA = register("tarrafa", com.guilhermegoes.arraial.item.Ferramentas.Tarrafa::new, new Item.Properties().durability(80));
 	public static final Item BERRANTE = register("berrante", com.guilhermegoes.arraial.item.Ferramentas.Berrante::new, new Item.Properties().durability(200));
+	/** Seixo: a river pebble, the estilingue's shot (sifted from gravel, or knapped from cobblestone). */
+	public static final Item SEIXO = register("seixo", Item::new, new Item.Properties());
+	public static final Item ESTILINGUE = register("estilingue", com.guilhermegoes.arraial.item.Ferramentas.Estilingue::new, new Item.Properties().durability(250));
+	public static final Item PENEIRA = register("peneira", com.guilhermegoes.arraial.item.Ferramentas.Peneira::new, new Item.Properties().durability(200));
+	public static final Item CANDEEIRO = register("candeeiro", com.guilhermegoes.arraial.item.Ferramentas.Candeeiro::new,
+			new Item.Properties().durability(720).repairable(net.minecraft.world.item.Items.COAL));
+	/** Cabaça: a dried gourd, empty; filled with cachaça it is four swigs. */
+	public static final Item CABACA = register("cabaca", Item::new, new Item.Properties().stacksTo(16));
+	public static final Item CABACA_CACHACA = register("cabaca_cachaca", com.guilhermegoes.arraial.item.Ferramentas.Cabaca::new, new Item.Properties().durability(4));
+	public static final Item CHICOTE = register("chicote", com.guilhermegoes.arraial.item.Ferramentas.Chicote::new, new Item.Properties().durability(240));
 	/** Pé-de-moleque: rapadura with nuts, the sweet of the festas. */
 	public static final Item PE_DE_MOLEQUE = register("pe_de_moleque", Item::new, new Item.Properties()
 			.food(new FoodProperties.Builder().nutrition(5).saturationModifier(0.5F).build()));
@@ -144,7 +154,7 @@ public final class ModItems {
 	public static final net.minecraft.world.item.ToolMaterial FERRO_SERTANEJO = new net.minecraft.world.item.ToolMaterial(
 			net.minecraft.tags.BlockTags.INCORRECT_FOR_IRON_TOOL, 300, 6.5F, 2.0F, 14, net.minecraft.tags.ItemTags.IRON_TOOL_MATERIALS);
 	/** Facão: the machete; hits hard and clears the way. */
-	public static final Item FACAO = register("facao", Item::new, new Item.Properties().sword(FERRO_SERTANEJO, 3.5F, -2.3F));
+	public static final Item FACAO = register("facao", com.guilhermegoes.arraial.item.Ferramentas.Facao::new, new Item.Properties().sword(FERRO_SERTANEJO, 3.5F, -2.3F));
 	/** Peixeira: the long knife; light and very fast. */
 	public static final Item PEIXEIRA = register("peixeira", Item::new, new Item.Properties().sword(FERRO_SERTANEJO, 1.5F, -1.4F));
 	/** Foice: reaps the ripe crops in a 3x3 and replants them. */

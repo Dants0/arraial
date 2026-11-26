@@ -94,6 +94,36 @@ public final class Vilas {
 		return null;
 	}
 
+	private record Praca(@org.jspecify.annotations.Nullable BlockPos centro, long ate) {
+	}
+
+	private static final java.util.Map<BlockPos, Praca> PRACAS = new java.util.HashMap<>();
+
+	/** The middle of the arraial's finished praça (where the coreto stands), or null; checked once a minute. */
+	public static @org.jspecify.annotations.Nullable BlockPos praca(ServerLevel level, BlockPos vila) {
+		Praca c = PRACAS.get(vila);
+		if (c != null && level.getGameTime() < c.ate()) {
+			return c.centro();
+		}
+		BlockPos centro = null;
+		BlockPos m = obraPronta(level, vila, "praca");
+		if (m != null && level.getBlockEntity(m) instanceof com.guilhermegoes.arraial.obra.CanteiroBlockEntity cb) {
+			var etapas = cb.plano(level).map(com.guilhermegoes.arraial.obra.PlanoDeObra::etapas).orElse(java.util.List.of());
+			if (!etapas.isEmpty()) {
+				long sx = 0, sz = 0;
+				int minY = Integer.MAX_VALUE;
+				for (var e : etapas) {
+					sx += e.pos().getX();
+					sz += e.pos().getZ();
+					minY = Math.min(minY, e.pos().getY());
+				}
+				centro = new BlockPos((int) Math.round((double) sx / etapas.size()), minY + 1, (int) Math.round((double) sz / etapas.size()));
+			}
+		}
+		PRACAS.put(vila.immutable(), new Praca(centro, level.getGameTime() + 1200));
+		return centro;
+	}
+
 	/**
 	 * On the coast (or a great lake): many columns around the Cruzeiro are open water at least three
 	 * deep, enough for a ship's keel.

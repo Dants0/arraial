@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "minecraft:string",
+    "I": "minecraft:iron_nugget",
+    "C": "minecraft:coal"
+  },
+  "pattern": [
+    " L ",
+    "ICI",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "arraial:candeeiro"
+  }
+}

@@ -269,6 +269,13 @@ public final class Prefeitura {
 		if (n >= 10 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.POSTO_GUARDA) > 0 && postos(level, vila, ModPois.SUPORTE_ARCOS) == 0) {
 			desejos.add("torre_vigia");
 		}
+		// The praça (with its coreto) for a Vila of twelve; the covered mercado once the feira is too small.
+		if (n >= 12 && estagio.pelo(Estagio.VILA) && obras(level, vila, "praca") == 0) {
+			desejos.add("praca");
+		}
+		if (n >= 14 && estagio.pelo(Estagio.VILA) && arraial.temFeira(level) && obras(level, vila, "mercado") == 0) {
+			desejos.add("mercado");
+		}
 		// Cloth: a tecelagem (cotton, pano, redes) once established; the alfaiataria for a Vila (festa clothes).
 		if (n >= 8 && estagio.pelo(Estagio.ARRAIAL) && postos(level, vila, ModPois.TEAR) == 0) {
 			desejos.add("tecelagem");

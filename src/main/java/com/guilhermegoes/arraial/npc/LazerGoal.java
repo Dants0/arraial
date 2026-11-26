@@ -111,7 +111,11 @@ public class LazerGoal extends Goal {
 			default -> {
 			}
 		}
-		// A stroll around the Cruzeiro.
+		// A stroll around the praça, if there is one, or the Cruzeiro.
+		BlockPos praca = com.guilhermegoes.arraial.vila.Vilas.praca(level, vila);
+		if (praca != null) {
+			return praca.offset(m.getRandom().nextInt(13) - 6, 0, m.getRandom().nextInt(13) - 6);
+		}
 		return vila.offset(m.getRandom().nextInt(21) - 10, 0, m.getRandom().nextInt(21) - 10);
 	}
 

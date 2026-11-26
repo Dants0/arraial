@@ -11,6 +11,7 @@ public class ArraialClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(ModEntities.MORADOR, MoradorRenderer::new);
+		EntityRendererRegistry.register(ModEntities.PEDRADA, net.minecraft.client.renderer.entity.ThrownItemRenderer::new);
 		com.guilhermegoes.arraial.client.fauna.FaunaClient.init();
 		ClientPlayNetworking.registerGlobalReceiver(Rede.AbrirTela.TYPE, (p, ctx) -> TelaArraial.receber(p.dados()));
 		ClientPlayNetworking.registerGlobalReceiver(Rede.AbrirLivro.TYPE, (p, ctx) -> TelaLivro.abrir(p.dados()));

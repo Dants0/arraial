@@ -420,4 +420,143 @@ json(path.join(RC, 'tarrafa.json'), shaped('tarrafa', ['SSS', 'SNS', 'SSS'], { S
 json(path.join(RC, 'berrante.json'), { type: 'minecraft:crafting_shapeless', category: 'misc',
   ingredients: ['minecraft:bone', 'minecraft:bone', 'minecraft:leather', 'minecraft:gold_nugget'], result: { count: 1, id: 'arraial:berrante' } });
 
+// ================================================================== second batch of tools
+function simples(nome) {
+  json(path.join(A, 'models', 'item', nome + '.json'), { parent: 'minecraft:item/generated', textures: { layer0: 'arraial:item/' + nome } });
+  json(path.join(A, 'items', nome + '.json'), { model: { type: 'minecraft:model', model: 'arraial:item/' + nome } });
+}
+// Estilingue: a forked stick with a rubber band and a leather pouch.
+grade(path.join(TI, 'estilingue.png'), [
+  '................',
+  '..aa.......aa...',
+  '..ab.......ab...',
+  '..abc.....cab...',
+  '...abc...cba....',
+  '...ab.cdc.ab....',
+  '....ab.d.ba.....',
+  '....abbbbba.....',
+  '.....abbba......',
+  '......aba.......',
+  '......aba.......',
+  '......aba.......',
+  '......aba.......',
+  '......aba.......',
+  '.......a........',
+  '................'],
+{ a: '#4A3018', b: '#8A5E30', c: '#C04A2A', d: '#6A4A2A' });
+ferramenta('estilingue');
+// Seixo: a smooth grey river pebble.
+grade(path.join(TI, 'seixo.png'), [
+  '................',
+  '................',
+  '................',
+  '................',
+  '................',
+  '......aaaa......',
+  '....aabbbbaa....',
+  '...abbccbbbba...',
+  '...abccbbbbda...',
+  '...abbbbbbdda...',
+  '....aabbddaa....',
+  '......aaaa......',
+  '................',
+  '................',
+  '................',
+  '................'],
+{ a: '#4E5156', b: '#8E9298', c: '#B8BCC2', d: '#6E7278' });
+simples('seixo');
+// Peneira: a round sieve, a wooden rim and a woven straw mesh.
+grade(path.join(TI, 'peneira.png'), [
+  '................',
+  '.....aaaaaa.....',
+  '...aabbbbbbaa...',
+  '..abcbcbcbcbca..',
+  '.abcbcbcbcbcbca.',
+  '.acbcbcbcbcbcba.',
+  'abcbcbcbcbcbcbca',
+  'acbcbcbcbcbcbcba',
+  'abcbcbcbcbcbcbca',
+  'acbcbcbcbcbcbcba',
+  '.acbcbcbcbcbcba.',
+  '.abcbcbcbcbcbca.',
+  '..abcbcbcbcbca..',
+  '...aabbbbbbaa...',
+  '.....aaaaaa.....',
+  '................'],
+{ a: '#5A3A1C', b: '#D8C07A', c: '#A88A48' });
+simples('peneira');
+// Candeeiro: a tin oil lamp with a flame and a handle.
+grade(path.join(TI, 'candeeiro.png'), [
+  '................',
+  '.......d........',
+  '......ded.......',
+  '......ded.......',
+  '.......d........',
+  '.......c........',
+  '......aaa.......',
+  '.....abbba......',
+  '....abbbbba..a..',
+  '...abbbbbbbaaba.',
+  '...abbbbbbbab.a.',
+  '...aabbbbbaab.a.',
+  '....aaaaaaa.aa..',
+  '.....aaaaa......',
+  '................',
+  '................'],
+{ a: '#4A4E56', b: '#9AA0A8', c: '#3A2A1A', d: '#F2A030', e: '#FFF0A0' });
+simples('candeeiro');
+// Cabaça: the dried gourd, a cork in its neck (empty and full).
+const CABACA = [
+  '................',
+  '.......cc.......',
+  '.......cc.......',
+  '......abba......',
+  '......abba......',
+  '.......aa.......',
+  '......abba......',
+  '.....abbbba.....',
+  '....abbbbbba....',
+  '...abbbbbbbba...',
+  '...abbbbbbbda...',
+  '...abbbbbbdda...',
+  '....abbbbdda....',
+  '.....aaaaaa.....',
+  '................',
+  '................'];
+grade(path.join(TI, 'cabaca.png'), CABACA, { a: '#6A4A1A', b: '#C8A050', c: '#8A6A40', d: '#A88038' });
+simples('cabaca');
+grade(path.join(TI, 'cabaca_cachaca.png'), CABACA.map((l, i) => i === 1 || i === 2 ? l.replace('cc', 'ee') : l),
+  { a: '#5A3A14', b: '#B88A3A', c: '#8A6A40', d: '#946A28', e: '#E8D8B0' });
+simples('cabaca_cachaca');
+// Chicote: a braided leather whip on a short wooden handle.
+grade(path.join(TI, 'chicote.png'), [
+  '................',
+  '..........bbb...',
+  '........bb...b..',
+  '.......b......b.',
+  '......b.......b.',
+  '.....b.......b..',
+  '....b.....bbb...',
+  '...b.....b......',
+  '..aa.....b......',
+  '..ca......bb....',
+  '.ca.........b...',
+  '.ca..........b..',
+  'ca...........b..',
+  'ca..........b...',
+  'a...............',
+  '................'],
+{ a: '#3A2A1A', b: '#8A5A30', c: '#6A4A2A' });
+ferramenta('chicote');
+json(path.join(RC, 'estilingue.json'), shaped('estilingue', ['S S', 'LCL', ' S '], { S: 'minecraft:stick', L: 'minecraft:string', C: 'minecraft:leather' }));
+json(path.join(RC, 'seixo.json'), { type: 'minecraft:crafting_shapeless', category: 'misc',
+  ingredients: ['minecraft:cobblestone'], result: { count: 4, id: 'arraial:seixo' } });
+json(path.join(RC, 'peneira.json'), shaped('peneira', ['SPS', 'PLP', 'SPS'], { S: 'minecraft:stick', P: 'minecraft:wheat', L: 'minecraft:string' }));
+json(path.join(RC, 'candeeiro.json'), shaped('candeeiro', [' L ', 'ICI', ' I '], { L: 'minecraft:string', I: 'minecraft:iron_nugget', C: 'minecraft:coal' }));
+json(path.join(RC, 'cabaca.json'), { type: 'minecraft:crafting_shapeless', category: 'misc',
+  ingredients: ['minecraft:pumpkin', 'minecraft:string'], result: { count: 2, id: 'arraial:cabaca' } });
+json(path.join(RC, 'cabaca_cachaca.json'), { type: 'minecraft:crafting_shapeless', category: 'misc',
+  ingredients: ['arraial:cabaca', 'minecraft:sugar_cane', 'minecraft:sugar_cane', 'minecraft:sugar_cane', 'minecraft:sugar'], result: { count: 1, id: 'arraial:cabaca_cachaca' } });
+json(path.join(RC, 'chicote.json'), shaped('chicote', ['  L', ' L ', 'S  '], { L: 'minecraft:leather', S: 'minecraft:stick' }));
+
 console.log('recursos dos oficios gerados');
